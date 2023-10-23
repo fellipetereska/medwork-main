@@ -43,7 +43,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         if(onEdit){
             //Caso já tiver o cadastro ele vai colocar as opções para editar
             await axios
-                .put(`http://localhost:8800/${onEdit.id}`, {
+                .put(`http://localhost:8800/empresas/${onEdit.id}`, {
                     nome_empresa: user.nome_empresa.value,
                     razao_social: user.razao_social.value,
                     cnpj: user.cnpj.value,
@@ -56,7 +56,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         } else {
             //Caso não tiver o cadastro ele cadastra
             await axios
-            .post("http://localhost:8800",{
+            .post("http://localhost:8800/empresas/",{
                 nome_empresa: user.nome_empresa.value,
                 razao_social: user.razao_social.value,
                 cnpj: user.cnpj.value,
@@ -93,7 +93,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
       };
 
     return(
-        <div class="flex justify-center mt-10 mb-20">
+        <div class="flex justify-center mt-10">
             <form class="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
                 <div class="flex flex-wrap -mx-3 mb-6">
                     <div class="w-full md:w-1/3 px-3">

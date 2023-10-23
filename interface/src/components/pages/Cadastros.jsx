@@ -4,6 +4,7 @@ import GridCadastroEmpresa from "./subPages/gridCadastroEmpresa";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import axios from 'axios';
+import TabCadastroEmpresa from './subPages/tbCadastroEmpresa';
 
 function Cadastros () {
 
@@ -28,8 +29,9 @@ function Cadastros () {
 
     return (
         <div>
-          <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers}/>
-          <GridCadastroEmpresa users={users} setUsers={setUsers} setOnEdit={setOnEdit}/>
+          {/* <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers}/>
+          <GridCadastroEmpresa users={users} setUsers={setUsers} setOnEdit={setOnEdit}/> */}
+          <TabCadastroEmpresa />
 
             <ToastContainer autoClose={3000} position={toast.POSITION.TOP_RIGHT} />
         </div>

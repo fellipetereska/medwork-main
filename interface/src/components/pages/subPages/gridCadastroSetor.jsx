@@ -2,7 +2,7 @@ import { BsFillTrash3Fill, BsFillPencilFill } from 'react-icons/bs'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
+function GridCadastroSetor ({ users, setUsers, setOnEdit }) {
 
     const handleEdit = (item) => {
         setOnEdit(item);
@@ -10,7 +10,7 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
 
     const handleDelete = async (id) => {
         await axios
-        .delete(`http://localhost:8800/empresas/${id}`)
+        .delete(`http://localhost:8800/setores/${id}`)
         .then(({data}) => {
             const newArray = users.filter((user) => user.id !== id);
 
@@ -30,19 +30,10 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3">
-                                Empresa
+                                Setor
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                CNPJ
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Endereco
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Contato
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Telefone
+                                Descrição
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Ações
@@ -53,19 +44,10 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
                         {users.map((item, i) => (
                             <tr key={i} class="bg-white border-b">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    {item.nome_empresa}
+                                    {item.nome_setor}
                                 </th>
                                 <td class="px-6 py-4">
-                                    {item.cnpj}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {item.endereco}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {item.contato}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {item.telefone}
+                                    {item.descricao}
                                 </td>
                                 <td class="px-5 py-4 gap-4 flex justify-start">
                                     <a class="font-medium text-blue-600 hover:text-blue-800">
@@ -83,4 +65,4 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
     )
 }
 
-export default GridCadastroEmpresa;
+export default GridCadastroSetor;
