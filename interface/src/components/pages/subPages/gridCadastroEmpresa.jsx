@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
 
     const handleEdit = (item) => {
-        console.log(item)
         setOnEdit(item);
     }
 
@@ -19,6 +18,7 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
             toast.success(data);
         })
         .catch(({data}) => toast.error(data))
+        console.log(id)
 
         setOnEdit(null);
     }
@@ -72,7 +72,7 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
                                         <BsFillPencilFill onClick={() => handleEdit(item)} />
                                     </a>
                                     <a class="font-medium text-red-600 hover:text-red-800">
-                                        <BsFillTrash3Fill onClick={() => handleDelete(item)} />
+                                        <BsFillTrash3Fill onClick={() => handleDelete(item.id)} />
                                     </a>
                                 </td>
                             </tr>

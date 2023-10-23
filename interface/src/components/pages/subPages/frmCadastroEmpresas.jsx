@@ -16,13 +16,11 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
             //Passando o dado do input para a props
             user.nome_empresa.value = onEdit.nome_empresa;
             user.razao_social.value = onEdit.razao_social;
-            user.cnpj_empresa.value = onEdit.cnpj_empresa;
-            user.endereco_empresa.value = onEdit.endereco_empresa;
+            user.cnpj_empresa.value = onEdit.cnpj;
+            user.endereco_empresa.value = onEdit.endereco;
             user.cidade.value = onEdit.cidade;
             user.contato.value = onEdit.contato;
             user.telefone.value = onEdit.telefone;
-
-            console.log("onEdit.cnpj_empresa:", onEdit.cnpj_empresa);
         }
     }, [onEdit]);
 
@@ -34,8 +32,8 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         if(
             !user.nome_empresa.value ||
             !user.razao_social.value ||
-            !user.cnpj_empresa.value ||
-            !user.endereco_empresa.value ||
+            !user.cnpj.value ||
+            !user.endereco.value ||
             !user.cidade.value ||
             !user.contato.value ||
             !user.telefone.value){
@@ -48,8 +46,8 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                 .put(`http://localhost:8800/${onEdit.id}`, {
                     nome_empresa: user.nome_empresa.value,
                     razao_social: user.razao_social.value,
-                    cnpj: user.cnpj_empresa.value,
-                    endereco: user.endereco_empresa.value,
+                    cnpj: user.cnpj.value,
+                    endereco: user.endereco.value,
                     cidade: user.cidade.value,
                     contato: user.contato.value,
                     telefone: user.telefone.value,
@@ -61,8 +59,8 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
             .post("http://localhost:8800",{
                 nome_empresa: user.nome_empresa.value,
                 razao_social: user.razao_social.value,
-                cnpj: user.cnpj_empresa.value,
-                endereco: user.endereco_empresa.value,
+                cnpj: user.cnpj.value,
+                endereco: user.endereco.value,
                 cidade: user.cidade.value,
                 contato: user.contato.value,
                 telefone: user.telefone.value,
@@ -126,7 +124,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         </label>
                         <input 
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
-                            type="text" 
+                            type="number" 
                             name="cnpj_empresa"
                             placeholder="00.000.000/0000-00"
                         />
