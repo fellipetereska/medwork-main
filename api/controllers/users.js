@@ -10,7 +10,6 @@ const tableFieldsMap = {
     table: 'setor',
     fields: ['nome_setor', 'descricao', 'fk_id_empresa'],
   },
-  // Adicione outras tabelas e seus campos aqui
 };
 
 export const getTableData = (req, res) => {
@@ -45,7 +44,10 @@ export const addTableData = (req, res) => {
   const q = `INSERT INTO ${tableFields.table} (${fields.join(', ')}) VALUES (?)`;
 
   db.query(q, [values], (err) => {
-    if (err) return res.status(500).json(err);
+    if (err) {
+      console.error("Erro ao inserir dados na tabela", err);
+      return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+    }
 
     return res.status(200).json(`${tableName} cadastrado com sucesso!`);
   });
