@@ -1,115 +1,90 @@
 import { db } from "../db.js";
 
-//Empresa
-export const getEmpresas = (_, res) => {
-    const q = "SELECT * FROM empresa";
+// Define o objeto de mapeamento de tabelas para campos
+const tableFieldsMap = {
+  empresa: {
+    table: 'empresa',
+    fields: ['nome_empresa', 'razao_social', 'cnpj', 'endereco', 'cidade', 'contato', 'telefone'],
+  },
+  setor: {
+    table: 'setor',
+    fields: ['nome_setor', 'descricao', 'fk_id_empresa'],
+  },
+  // Adicione outras tabelas e seus campos aqui
+};
 
-    db.query(q, (err, data) => {
-        if (err) return res.json(err);
+export const getTableData = (req, res) => {
+  const tableName = req.params.table;
+  const tableFields = tableFieldsMap[tableName];
 
-        return res.status(200).json(data);
-    });
+  if (!tableFields) {
+    return res.status(404).json({ error: 'Tabela não encontrada' });
+  }
+
+  const q = `SELECT * FROM ${tableFields.table}`;
+
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(data);
+  });
 }
 
-export const addEmpresas = (req, res) => {
-    const q = "INSERT INTO empresa (`nome_empresa`, `razao_social`, `cnpj`, `endereco`, `cidade`, `contato`, `telefone`) VALUES (?)";
+export const addTableData = (req, res) => {
+  const tableName = req.params.table;
+  const tableFields = tableFieldsMap[tableName];
 
-    const values = [
-        req.body.nome_empresa,
-        req.body.razao_social,
-        req.body.cnpj,
-        req.body.endereco,
-        req.body.cidade,
-        req.body.contato,
-        req.body.telefone
-    ];
+  if (!tableFields) {
+    return res.status(404).json({ error: 'Tabela não encontrada' });
+  }
 
-    db.query(q, [values], (err) => {
-        if (err) return res.json(err);
+  const fields = tableFields.fields;
 
-        return res.status(200).json("Empresa Cadastrado com sucesso!")
-    })
+  const values = fields.map(field => req.body[field]);
+
+  const q = `INSERT INTO ${tableFields.table} (${fields.join(', ')}) VALUES (?)`;
+
+  db.query(q, [values], (err) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(`${tableName} cadastrado com sucesso!`);
+  });
 }
 
-export const updateEmpresas = (req, res) => {
-    const q = "UPDATE empresa SET `nome_empresa` = ?, `razao_social` = ?, `cnpj` = ?, `endereco` = ?, `cidade` = ?, `contato` = ?, `telefone` = ? WHERE `id` = ?";
-    const values = [
-        req.body.nome_empresa,
-        req.body.razao_social,
-        req.body.cnpj,
-        req.body.endereco,
-        req.body.cidade,
-        req.body.contato,
-        req.body.telefone
-    ];
+export const updateTableData = (req, res) => {
+  const tableName = req.params.table;
+  const tableFields = tableFieldsMap[tableName];
 
-    db.query(q, [...values, req.params.id], (err) => {
-        if (err) return res.json(err)
+  if (!tableFields) {
+    return res.status(404).json({ error: 'Tabela não encontrada' });
+  }
 
-        return res.status(200).json("Empresa Atualizado com Sucesso!")
-    })
+  const fields = tableFields.fields;
+
+  const q = `UPDATE ${tableFields.table} SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE id = ?`;
+
+  const values = fields.map(field => req.body[field]);
+
+  db.query(q, [...values, req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(`${tableName} atualizado com sucesso!`);
+  });
 }
 
-export const deleteEmpresas = (req, res) => {
-    const q = "DELETE FROM empresa WHERE `id` = ?";
+export const deleteTableData = (req, res) => {
+  const tableName = req.params.table;
+  const tableFields = tableFieldsMap[tableName];
 
-    db.query(q, [req.params.id], (err) => {
-        if (err) return res.json(err)
+  if (!tableFields) {
+    return res.status(404).json({ error: 'Tabela não encontrada' });
+  }
 
-        return res.status(200).json("Empresa Excluido com sucesso")
-    })
+  const q = `DELETE FROM ${tableFields.table} WHERE id = ?`;
+
+  db.query(q, [req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(`${tableName} excluído com sucesso!`);
+  });
 }
-
-
-
-//Setores
-export const getSetores = (_, res) => {
-        const q = "SELECT * FROM setor";
-    
-        db.query(q, (err, data) => {
-            if (err) return res.json(err);
-    
-            return res.status(200).json(data);
-        });
-    }
-    
-export const addSetores = (req, res) => {
-        const q = "INSERT INTO setor (`nome_setor`, `descricao`, `fk_id_empresa`) VALUES (?)";
-    
-        const values = [
-            req.body.nome_setor,
-            req.body.descricao
-        ];
-    
-        db.query(q, [values], (err) => {
-            if (err) return res.json(err);
-    
-            return res.status(200).json("Setor Cadastrado com sucesso!")
-        })
-    }
-    
-export const updateSetores = (req, res) => {
-        const q = "UPDATE setor SET `nome_setor` = ?, `descricao` = ?, `fk_id_empresa` = ? WHERE `id` = ?";
-        const values = [
-            req.body.nome_setor,
-            req.body.descricao
-        ];
-    
-        db.query(q, [...values, req.params.id], (err) => {
-            if (err) return res.json(err)
-    
-            return res.status(200).json("Setor Atualizado com Sucesso!")
-        })
-    }
-    
-export const deleteSetores = (req, res) => {
-        const q = "DELETE FROM setor WHERE `id` = ?";
-    
-        db.query(q, [req.params.id], (err) => {
-            if (err) return res.json(err)
-    
-            return res.status(200).json("Setor Excluido com sucesso")
-        })
-    }
-
-

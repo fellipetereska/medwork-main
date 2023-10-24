@@ -11,7 +11,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
     // Colocando as informações do formulario nas variaveis
     useEffect( () => {
         if(onEdit) {
-            const user = ref.current;
+            const user = ref.current
 
             //Passando o dado do input para a props
             user.nome_empresa.value = onEdit.nome_empresa;
@@ -32,8 +32,8 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         if(
             !user.nome_empresa.value ||
             !user.razao_social.value ||
-            !user.cnpj.value ||
-            !user.endereco.value ||
+            !user.cnpj_empresa.value ||
+            !user.endereco_empresa.value ||
             !user.cidade.value ||
             !user.contato.value ||
             !user.telefone.value){
@@ -43,11 +43,11 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         if(onEdit){
             //Caso já tiver o cadastro ele vai colocar as opções para editar
             await axios
-                .put(`http://localhost:8800/empresas/${onEdit.id}`, {
+                .put(`http://localhost:8800/empresa/${onEdit.id}`, {
                     nome_empresa: user.nome_empresa.value,
                     razao_social: user.razao_social.value,
-                    cnpj: user.cnpj.value,
-                    endereco: user.endereco.value,
+                    cnpj: user.cnpj_empresa.value,
+                    endereco: user.endereco_empresa.value,
                     cidade: user.cidade.value,
                     contato: user.contato.value,
                     telefone: user.telefone.value,
@@ -56,11 +56,11 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         } else {
             //Caso não tiver o cadastro ele cadastra
             await axios
-            .post("http://localhost:8800/empresas/",{
+            .post(`http://localhost:8800/empresa`,{
                 nome_empresa: user.nome_empresa.value,
                 razao_social: user.razao_social.value,
-                cnpj: user.cnpj.value,
-                endereco: user.endereco.value,
+                cnpj: user.cnpj_empresa.value,
+                endereco: user.endereco_empresa.value,
                 cidade: user.cidade.value,
                 contato: user.contato.value,
                 telefone: user.telefone.value,
@@ -100,7 +100,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Nome da Empresa:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="nome_empresa"
@@ -111,7 +111,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Razão Social:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="razao_social"
@@ -122,7 +122,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             CNPJ:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="number" 
                             name="cnpj_empresa"
@@ -133,7 +133,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Endereço:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="endereco_empresa"
@@ -144,7 +144,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Cidade:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="cidade"
@@ -155,7 +155,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Responsável:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="contato"
@@ -166,7 +166,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Telefone:
                         </label>
-                        <input 
+                        <input
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="number" 
                             name="telefone"

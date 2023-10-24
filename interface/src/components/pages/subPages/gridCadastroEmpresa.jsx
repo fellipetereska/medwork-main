@@ -6,11 +6,12 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
 
     const handleEdit = (item) => {
         setOnEdit(item);
+        console.log(item)
     }
 
     const handleDelete = async (id) => {
         await axios
-        .delete(`http://localhost:8800/empresas/${id}`)
+        .delete(`http://localhost:8800/empresa/${id}`)
         .then(({data}) => {
             const newArray = users.filter((user) => user.id !== id);
 

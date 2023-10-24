@@ -1,24 +1,18 @@
 import express from "express";
-import { getEmpresas, addEmpresas, updateEmpresas, deleteEmpresas, getSetores, addSetores, updateSetores, deleteSetores } from "../controllers/users.js";
+import { getTableData, addTableData, updateTableData, deleteTableData } from "../controllers/users.js";
 
 const router = express.Router();
 
-//Rotas da tabela empresa
-router.get("/empresas", getEmpresas);
+// Rota genérica para buscar informações de uma tabela
+router.get("/:table", getTableData);
 
-router.post("/empresas", addEmpresas);
+// Rota genérica para adicionar informações a uma tabela
+router.post("/:table", addTableData);
 
-router.put("/empresas/:id", updateEmpresas);
+// Rota genérica para atualizar informações em uma tabela
+router.put("/:table/:id", updateTableData);
 
-router.delete("/empresas/:id", deleteEmpresas);
-
-//Rotas da tabela setor
-router.get("/setores", getSetores);
-
-router.post("/setores", addSetores);
-
-router.put("/setores/:id", updateSetores);
-
-router.delete("/setores/:id", deleteSetores);
+// Rota genérica para excluir informações de uma tabela
+router.delete("/:table/:id", deleteTableData);
 
 export default router;

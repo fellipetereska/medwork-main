@@ -40,7 +40,7 @@ function TabCadastroEmpresa (){
     //Pegando os dados do banco
      const getUsers = async () => {
         try{
-        const res = await axios.get("http://localhost:8800");
+        const res = await axios.get("http://localhost:8800/empresa");
         setUsers(res.data.sort((a, b) => (a.nome > b.nome ? 1 : -1)));
         } catch (error){
         toast.error(error);
