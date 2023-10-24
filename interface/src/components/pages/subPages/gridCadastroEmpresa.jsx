@@ -2,7 +2,7 @@ import { BsFillTrash3Fill, BsFillPencilFill } from 'react-icons/bs'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
+function GridCadastroEmpresa ({ empresa, setEmpresa, setOnEdit }) {
 
     const handleEdit = (item) => {
         setOnEdit(item);
@@ -10,12 +10,13 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
     }
 
     const handleDelete = async (id) => {
+        console.log(id)
         await axios
         .delete(`http://localhost:8800/empresa/${id}`)
         .then(({data}) => {
-            const newArray = users.filter((user) => user.id !== id);
+            const newArray = empresa.filter((item) => item.id !== id);
 
-            setUsers(newArray);
+            setEmpresa(newArray);
             toast.success(data);
         })
         .catch(({data}) => toast.error(data))
@@ -51,7 +52,7 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((item, i) => (
+                        {empresa.map((item, i) => (
                             <tr key={i} class="bg-white border-b">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     {item.nome_empresa}
@@ -77,7 +78,7 @@ function GridCadastroEmpresa ({ users, setUsers, setOnEdit }) {
                                     </a>
                                 </td>
                             </tr>
-                        ))};
+                        ))}
                     </tbody>
                 </table>
             </div>

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import axios from 'axios'
 
 
-function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
+function CadastroSetor ({onEdit, setOnEdit, getSetor}) {
 
     // Instanciando a variavel que vai referenciar o formulario
     const ref = useRef(null);
@@ -14,7 +14,7 @@ function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
             const user = ref.current;
 
             //Passando o dado do input para a props
-            user.nome_empresa.value = onEdit.nome_empresa;
+            user.nome_setor.value = onEdit.nome_setor;
             user.descricao.value = onEdit.descricao
         }
     }, [onEdit]);
@@ -33,7 +33,7 @@ function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
         if(onEdit){
             //Caso já tiver o cadastro ele vai colocar as opções para editar
             await axios
-                .put(`http://localhost:8800/setores/${onEdit.id}`, {
+                .put(`http://localhost:8800/setor/${onEdit.id}`, {
                     nome_setor: user.nome_setor.value,
                     descricao: user.descricao.value,
                 }).then(({data}) => toast.success(data))
@@ -45,7 +45,7 @@ function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
                 descricao: user.descricao.value,
             });
             await axios
-            .post("http://localhost:8800/setores",{
+            .post("http://localhost:8800/setor",{
                 nome_setor: user.nome_setor.value,
                 descricao: user.descricao.value,
             }).then(({data}) => toast.success(data))
@@ -56,7 +56,7 @@ function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
         user.descricao.value = "";
 
         setOnEdit(null);
-        getUsers();
+        getSetor();
     }
 
     const handleClear = () => {
@@ -78,10 +78,10 @@ function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
                             class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="nome_setor"
-                            placeholder="Nome da empresa"
+                            placeholder="Nome do Setor"
                         />
                     </div>
-                    <div class="w-full md:w-1/3 px-3">
+                    <div class="w-full md:w-2/3 px-3">
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Descrição
                         </label>
@@ -89,7 +89,7 @@ function CadastroSetor ({onEdit, setOnEdit, getUsers}) {
                             class="apperance-none block w-full bg-gray-100 rounded h-20 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="descricao"
-                            placeholder="Razão Social da Empresa"
+                            placeholder="Descrição do Setor"
                         />
                     </div>
                     <div class="w-full px-3 pl-8 flex justify-end">

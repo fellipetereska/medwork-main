@@ -8,7 +8,7 @@ const tableFieldsMap = {
   },
   setor: {
     table: 'setor',
-    fields: ['nome_setor', 'descricao', 'fk_id_empresa'],
+    fields: ['nome_setor', 'descricao'],
   },
 };
 

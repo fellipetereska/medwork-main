@@ -173,7 +173,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             placeholder="(00) 00000-0000"
                         />
                     </div>
-                    <div class="w-full md:w-1/3 px-3">
+                    {/* <div class="w-full md:w-1/3 px-3">
                         <div>
                             <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                                 Setor:
@@ -182,7 +182,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                                 <option>Selecione uma Opção</option>
                             </select>
                         </div>
-                    </div>
+                    </div> */}
                     <div class="w-full px-3 pl-8 flex justify-end">
                         <div>
                             <button onClick={handleClear} class="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
