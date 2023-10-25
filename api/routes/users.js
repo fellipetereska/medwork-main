@@ -15,4 +15,7 @@ router.put("/:table/:id", updateTableData);
 // Rota genérica para excluir informações de uma tabela
 router.delete("/:table/:id", deleteTableData);
 
+// //Rota Grid Setor_Empresa
+// router.get("/:setor_empresa", GridSetorEmpresa)
+
 export default router;

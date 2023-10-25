@@ -1,10 +1,10 @@
 import "react-toastify/dist/ReactToastify.css";
-import CadastroEmpresa from "./subPages/frmCadastroEmpresas";
-import GridCadastroEmpresa from "./subPages/gridCadastroEmpresa";
+import CadastroEmpresa from "./subPages/empresa/frmCadastroEmpresas";
+import GridCadastroEmpresa from "./subPages/empresa/gridCadastroEmpresa";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import axios from 'axios';
-import TabCadastroEmpresa from './subPages/tbCadastroEmpresa';
+import TabCadastroEmpresa from './subPages/tbCadastros';
 
 function Cadastros () {
 

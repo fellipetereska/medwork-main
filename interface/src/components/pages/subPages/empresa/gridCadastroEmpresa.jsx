@@ -2,11 +2,10 @@ import { BsFillTrash3Fill, BsFillPencilFill } from 'react-icons/bs'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-function GridCadastroEmpresa ({ empresa, setEmpresa, setOnEdit }) {
+function GridCadastroEmpresa ({ empresa, setEmpresa, setOnEdit, handleEditModalOpen }) {
 
     const handleEdit = (item) => {
-        setOnEdit(item);
-        console.log(item)
+        handleEditModalOpen(item);
     }
 
     const handleDelete = async (id) => {

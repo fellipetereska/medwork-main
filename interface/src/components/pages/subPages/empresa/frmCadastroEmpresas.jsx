@@ -95,7 +95,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
     return(
         <div class="flex justify-center mt-10">
             <form class="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-                <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="flex flex-wrap -mx-3 mb-6 p-3">
                     <div class="w-full md:w-1/3 px-3">
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                             Nome da Empresa:

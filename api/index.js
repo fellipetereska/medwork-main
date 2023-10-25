@@ -13,6 +13,7 @@ app.use(cors());
 
 // Usar as rotas definidas em userRoutes no caminho "/"
 app.use("/", userRoutes);
+// app.use("/setor_empresa", userRoutes)
 
 // Port
 app.listen(8800, () => {

@@ -10,6 +10,10 @@ const tableFieldsMap = {
     table: 'setor',
     fields: ['nome_setor', 'descricao'],
   },
+  setor_empresa: {
+    table: 'setor_empresa',
+    fields: ['fk_id_empresa', 'fk_id_setor'],
+  },
 };
 
 export const getTableData = (req, res) => {
@@ -20,13 +24,28 @@ export const getTableData = (req, res) => {
     return res.status(404).json({ error: 'Tabela não encontrada' });
   }
 
-  const q = `SELECT * FROM ${tableFields.table}`;
+  if (tableName === 'setor_empresa') {
+    // Se a tabela for 'setor_empresa', fazemos um JOIN para obter os nomes da empresa e setor.
+    const q = `
+      SELECT empresa.nome_empresa, setor.nome_setor
+      FROM setor_empresa
+      JOIN empresa ON setor_empresa.fk_id_empresa = empresa.id
+      JOIN setor ON setor_empresa.fk_id_setor = setor.id
+    `;
+    db.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json(data);
+    });
+  }else{
+    const q = `SELECT * FROM ${tableFields.table}`;
+  
+    db.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+  
+      return res.status(200).json(data);
+    });
+  }
 
-  db.query(q, (err, data) => {
-    if (err) return res.status(500).json(err);
-
-    return res.status(200).json(data);
-  });
 }
 
 export const addTableData = (req, res) => {
@@ -90,3 +109,21 @@ export const deleteTableData = (req, res) => {
     return res.status(200).json(`${tableName} excluído com sucesso!`);
   });
 }
+
+// export const GridSetorEmpresa = (req, res) => {
+//   const tableName = req.params.table;
+//   const tableFields = tableFieldsMap[tableName];
+
+//   if (!tableFields) {
+//     return res.status(404).json({error: 'Erro ao juntar tabelas'});
+//   }
+
+//   // const q = `SELECT empresa.nome_empresa, setor.nome_setor FROM empresa JOIN JOIN setor_empresa ON empresa.id = setor_empresa.fk_id_empresa
+//   // JOIN setor ON setor_empresa.fk_id_setor = setor.id`
+
+//   db.query(q, (err, data) => {
+//     if (err) return res.status(500).json(err);
+
+//     return res.status(200).json(data);
+//   });
+// }

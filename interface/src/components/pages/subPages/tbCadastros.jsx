@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 
-import CadastroEmpresa from "./frmCadastroEmpresas";
-import GridCadastroEmpresa from './gridCadastroEmpresa';
-import CadastroSetor from "./frmCadastroSetor";
-import GridCadastroSetor from "./gridCadastroSetor";
+import CadastroEmpresa from "./empresa/frmCadastroEmpresas";
+import GridCadastroEmpresa from './empresa/gridCadastroEmpresa';
+import CadastroSetor from "./setor/frmCadastroSetor";
+import GridCadastroSetor from "./setor/gridCadastroSetor";
+import EditModal from "./ModalCadastro";
 
 function TabCadastroEmpresa() {
+
+    console.log("Rendereziado")
+
     // Instanciando e Definindo como vazio
     const [empresa, setEmpresa] = useState([]);
     const [setor, setSetor] = useState([]);
@@ -22,6 +26,10 @@ function TabCadastroEmpresa() {
         contato: '',
         telefone: ''
     });
+
+    //Instanciando Modal
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const handleTabChange = (index) => {
         setActiveTab(index);
@@ -65,6 +73,30 @@ function TabCadastroEmpresa() {
         getSetor();
     }, []); // Chama apenas uma vez quando o componente é montado
 
+    //Funções do Modal
+    const handleEditModalOpen = (data) => {
+        data = empresa;
+        if(data){
+            setIsEditModalOpen(true);
+            setEditData(data);
+        }
+        console.log("Chamado", isEditModalOpen)
+    };
+
+    const handleEditModalClose = () => {
+        setIsEditModalOpen(false);
+    };
+
+    const handleEdit = (data) => {
+        setEditData(data);
+        setIsEditModalOpen(true);
+    };
+
+    const handleCancelEdit = () => {
+        setEditData(null);
+        setIsEditModalOpen(false);
+    }
+
     return (
         <div>
             <div className="m-2 text-sm font-medium text-start text-gray-500 border-b border-gray-200">
@@ -87,7 +119,8 @@ function TabCadastroEmpresa() {
                         <div className="border-b border-gray-200 mb-10">
                             <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
                         </div>
-                        <GridCadastroEmpresa empresa={empresa} setEmpresa={setEmpresa} setOnEdit={setOnEdit} />
+                        <EditModal data={editData} onCancel={handleCancelEdit} onSave={handleSave} isOpen={isEditModalOpen}>{console.log(isEditModalOpen)}</EditModal>
+                        <GridCadastroEmpresa empresa={empresa} setEmpresa={setEmpresa} setOnEdit={setOnEdit} handleEditModalOpen={handleEditModalOpen} />
                     </div>
                 )}
             </div>
