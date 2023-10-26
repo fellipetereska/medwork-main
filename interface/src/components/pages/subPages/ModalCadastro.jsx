@@ -8,6 +8,54 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
 
     const ref = useRef(null);
     const [setorEmpresa, setSetorEmpresa] = useState([]);
+    const [onEdit, setOnEdit] = useState(null);
+    const [setores, setSetores] = useState([]);
+    const [selectedSetor, setSelectedSetor] = useState('');
+
+    const cadastrarSetor = async () => {
+        try {
+          // Verifique se a empresa e o setor foram selecionados
+          if (!data.id_empresa || !selectedSetor) {
+            toast.error('Selecione uma empresa e um setor.');
+            return;
+          }
+      
+          // Crie um objeto com os dados a serem enviados para o servidor
+          const novoRegistro = {
+            id_empresa: data.id_empresa,
+            id_setor: selectedSetor,
+          };
+      
+          // Faça a requisição para adicionar o novo registro
+          const response = await axios.post('http://localhost:8800/setor_empresa', novoRegistro);
+      
+          // Verifique a resposta do servidor e trate-a conforme necessário
+          if (response.data) {
+            toast.success('Setor adicionado com sucesso.');
+            // Limpe o valor selecionado no <select>
+            setSelectedSetor('');
+          } else {
+            toast.error('Ocorreu um erro ao adicionar o setor.');
+          }
+        } catch (error) {
+          toast.error('Ocorreu um erro ao adicionar o setor.');
+        }
+      };
+      
+
+    useEffect(() => {
+        fetchSetores();
+      }, []);
+      
+      const fetchSetores = async () => {
+        try {
+          const response = await axios.get("http://localhost:8800/setor");
+          setSetores(response.data);
+        } catch (error) {
+          toast.error(error);
+        }
+      };
+      
 
     const getSetorEmpresa = async () => {
         try {
@@ -21,6 +69,10 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
         getSetorEmpresa();
     }, []);
 
+    const handleEdit = (item) => {
+        setOnEdit(item);
+      };    
+
     if (!isOpen || !data) {
         return null;
     }
@@ -28,8 +80,8 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
     const {
         nome_empresa = '',
         razao_social = '',
-        cnpj_empresa = '',
-        endereco_empresa = '',
+        cnpj = '',
+        endereco= '',
         cidade = '',
         contato = '',
         telefone = '',
@@ -40,8 +92,8 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
         const user = ref.current;
         user.nome_empresa.value = "";
         user.razao_social.value = "";
-        user.cnpj_empresa.value = "";
-        user.endereco_empresa.value = "";
+        user.cnpj.value = "";
+        user.endereco.value = "";
         user.cidade.value = "";
         user.contato.value = "";
         user.telefone.value = "";
@@ -73,7 +125,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="text"
                                     name="nome_empresa"
-                                    value={data.nome_empresa}  // Adicione o value correspondente
+                                    value={nome_empresa}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, nome_empresa: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='Nome da Empresa'
@@ -86,7 +138,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="text"
                                     name="razao_social"
-                                    value={data.razao_social}  // Adicione o value correspondente
+                                    value={razao_social}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, razao_social: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='Razao Social'
@@ -99,7 +151,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="number"
                                     name="cnpj_empresa"
-                                    value={data.cnpj_empresa}  // Adicione o value correspondente
+                                    value={cnpj}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, cnpj_empresa: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='00..000.000/0000-00'
@@ -112,7 +164,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="text"
                                     name="endereco_empresa"
-                                    value={data.endereco_empresa}  // Adicione o value correspondente
+                                    value={endereco}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, endereco_empresa: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='Endereço'
@@ -125,7 +177,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="text"
                                     name="cidade"
-                                    value={data.cidade}  // Adicione o value correspondente
+                                    value={cidade}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, cidade: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='Cidade'
@@ -138,7 +190,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="text"
                                     name="contato"
-                                    value={data.contato}  // Adicione o value correspondente
+                                    value={contato}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, contato: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='Responsável pela empresa'
@@ -151,7 +203,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                 <input
                                     type="number"
                                     name="telefone"
-                                    value={data.telefone}  // Adicione o value correspondente
+                                    value={telefone}  // Adicione o value correspondente
                                     onChange={e => onSave({ ...data, telefone: e.target.value })}  // Adicione o onChange correspondente
                                     className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                                     placeholder='(00) 00000-0000'
@@ -174,14 +226,31 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                             Setor:
                                         </label>
                                     <div className='flex pr-8'>
-                                        <select class="w-1/3 block appearance-none bg-gray-100 border-gray-200 mt-1 text-gray-400 py-3 px-4 rounded leading-tight focus:outline-none" id="grid-state">
-                                            <option>Selecione uma Opção</option>
-                                        </select>
-                                        <div className="px-3 pl-8 flex items-center">
-                                            <button className="shadow bg-green-600 hover-bg-green-700 focus-shadow-outline focus-outline-none text-white font-bold py-2 px-4 rounded" type="submit">
-                                                Cadastrar Setor
-                                            </button>
+                                    <select
+                                        className="w-1/3 block appearance-none bg-gray-100 border-gray-200 mt-1 text-gray-400 py-3 px-4 rounded leading-tight focus:outline-none"
+                                        id="grid-state"
+                                        name="setor"  // Adicione um atributo name para identificar o campo
+                                        value={data.setor}  // Adicione um valor selecionado, se houver, com base nos dados do formulário
+                                        onChange={e => onSave({ ...data, setor: e.target.value })}  // Atualize o estado quando o valor for alterado
+                                        >
+                                    <option value="">Selecione uma Opção</option>
+                                        {setores.map(setor => (
+                                            <option key={setor.id} value={setor.nome_setor}>
+                                            {setor.nome_setor}
+                                    </option>
+                                        ))}
+                                    </select>
+
+                                    <div className="px-3 pl-8 flex items-center">
+                                        <button
+                                            className="shadow bg-green-600 hover-bg-green-700 focus-shadow-outline focus-outline-none text-white font-bold py-2 px-4 rounded"
+                                            type="button"
+                                            onClick={cadastrarSetor}
+                                        >
+                                            Cadastrar Setor
+                                        </button>
                                         </div>
+
                                     </div>
                                 </div>
                         </div>
@@ -189,7 +258,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                 </div>
                 <div className='border-b border-gray-200'></div>
                 <div className='mt-10'>
-                    <GridSetorEmpresa setorEmpresa={setorEmpresa} setSetorEmpresa={setSetorEmpresa} />
+                    <GridSetorEmpresa setorEmpresa={setorEmpresa} setSetorEmpresa={setSetorEmpresa} setOnEdit={handleEdit} />
 
                 </div>
             </div>

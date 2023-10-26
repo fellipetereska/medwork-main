@@ -10,8 +10,6 @@ import EditModal from "./ModalCadastro";
 
 function TabCadastroEmpresa() {
 
-    console.log("Rendereziado")
-
     // Instanciando e Definindo como vazio
     const [empresa, setEmpresa] = useState([]);
     const [setor, setSetor] = useState([]);
@@ -26,10 +24,26 @@ function TabCadastroEmpresa() {
         contato: '',
         telefone: ''
     });
+    const [formEmpresa, setFormEmpresa] = useState({
+        nome_empresa: '',
+        razao_social: '',
+        cnpj_empresa: '',
+        endereco_empresa: '',
+        cidade: '',
+        contato: '',
+        telefone: ''
+    });
+    const [editModalData, setEditModalData] = useState(null);
+    const [empresaToEdit, setEmpresaToEdit] = useState(null);
+
+    const handleSetFormEmpresa = (data) => {
+        setFormEmpresa(data);
+    };
 
     //Instanciando Modal
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
+    
 
     const handleTabChange = (index) => {
         setActiveTab(index);
@@ -75,21 +89,17 @@ function TabCadastroEmpresa() {
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {
-        data = empresa;
-        if(data){
             setIsEditModalOpen(true);
             setEditData(data);
-        }
-        console.log("Chamado", isEditModalOpen)
     };
 
     const handleEditModalClose = () => {
         setIsEditModalOpen(false);
     };
 
-    const handleEdit = (data) => {
-        setEditData(data);
-        setIsEditModalOpen(true);
+    const handleEdit = (empresa) => {
+        setEmpresa(empresa);
+        setIsEditModalOpen(false);
     };
 
     const handleCancelEdit = () => {
@@ -117,10 +127,32 @@ function TabCadastroEmpresa() {
                 {activeTab === 0 && (
                     <div>
                         <div className="border-b border-gray-200 mb-10">
-                            <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
+                            <CadastroEmpresa 
+                                onEdit={onEdit} 
+                                setOnEdit={setOnEdit} 
+                                getUsers={getEmpresa} 
+                                formData={formData}
+                                handleInputChange={handleInputChange}
+                                handleSave={handleSave}
+                                setFormEmpresa={setFormEmpresa}
+                                formEmpresa={formEmpresa}
+                                setEditModalData={setEditModalData}
+                            />
                         </div>
-                        <EditModal data={editData} onCancel={handleCancelEdit} onSave={handleSave} isOpen={isEditModalOpen}>{console.log(isEditModalOpen)}</EditModal>
-                        <GridCadastroEmpresa empresa={empresa} setEmpresa={setEmpresa} setOnEdit={setOnEdit} handleEditModalOpen={handleEditModalOpen} />
+                        <EditModal 
+                            data={editData} 
+                            onCancel={handleCancelEdit} 
+                            onSave={handleSave} 
+                            isOpen={isEditModalOpen}
+                        />
+
+                        <GridCadastroEmpresa 
+                            empresa={empresa} 
+                            setEmpresa={setEmpresa} 
+                            setOnEdit={setOnEdit} 
+                            handleEditModalOpen={handleEditModalOpen}
+                            
+                        />
                     </div>
                 )}
             </div>

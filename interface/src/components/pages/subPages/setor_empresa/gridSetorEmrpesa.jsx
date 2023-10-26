@@ -1,8 +1,9 @@
-import { BsFillTrash3Fill, BsFillPencilFill } from 'react-icons/bs';
+import { BsFillTrash3Fill, BsFillPencilFill, BsBoxArrowDown } from 'react-icons/bs';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 function GridSetorEmpresa({ setorEmpresa, setSetorEmpresa, setOnEdit }) {
+
   const handleEdit = (item) => {
     setOnEdit(item);
   };
@@ -13,12 +14,10 @@ function GridSetorEmpresa({ setorEmpresa, setSetorEmpresa, setOnEdit }) {
     .delete(`http://localhost:8800/setor_empresa/${id}`)
     .then(({data}) => {
         const newArray = setorEmpresa.filter((item) => item.id !== id);
-
         setSetorEmpresa(newArray);
         toast.success(data);
     })
     .catch(({data}) => toast.error(data))
-    console.log(id)
 
     setOnEdit(null);
 }
@@ -48,7 +47,7 @@ function GridSetorEmpresa({ setorEmpresa, setSetorEmpresa, setOnEdit }) {
               <td className="px-6 py-4">{item.nome_setor}</td>
               <td className="px-5 py-4 gap-4 flex justify-start">
                 <a className="font-medium text-blue-600 hover:text-blue-800" onClick={() => handleEdit(item)}>
-                  <BsFillPencilFill />
+                  <BsBoxArrowDown />
                 </a>
                 <a className="font-medium text-red-600 hover:text-red-800" onClick={() => handleDelete(item.id)}>
                   <BsFillTrash3Fill />

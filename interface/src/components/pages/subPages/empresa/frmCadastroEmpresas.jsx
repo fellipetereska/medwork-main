@@ -101,7 +101,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Nome da Empresa:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="nome_empresa"
                             placeholder="Nome da empresa"
@@ -112,7 +112,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Razão Social:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="razao_social"
                             placeholder="Razão Social da Empresa"
@@ -123,7 +123,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             CNPJ:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="number" 
                             name="cnpj_empresa"
                             placeholder="00.000.000/0000-00"
@@ -134,7 +134,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Endereço:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="endereco_empresa"
                             placeholder="Endereço da Empresa"
@@ -145,7 +145,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Cidade:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="cidade"
                             placeholder="Cidade"
@@ -156,7 +156,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Responsável:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
                             name="contato"
                             placeholder="Nome do Responsável"
@@ -167,7 +167,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Telefone:
                         </label>
                         <input
-                            class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="number" 
                             name="telefone"
                             placeholder="(00) 00000-0000"
