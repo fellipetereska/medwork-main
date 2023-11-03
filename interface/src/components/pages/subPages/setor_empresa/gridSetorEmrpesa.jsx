@@ -1,15 +1,16 @@
-import { BsFillTrash3Fill, BsFillPencilFill, BsBoxArrowDown } from 'react-icons/bs';
+import { BsFillTrash3Fill } from 'react-icons/bs';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-function GridSetorEmpresa({ setorEmpresa, setSetorEmpresa, setOnEdit }) {
+function GridSetorEmpresa({ setorEmpresa, setSetorEmpresa, setOnEdit, empresaAtiva }) {
+
+  const setoresDaEmpresaAtiva = setorEmpresa.filter((item) => item.nome_empresa === empresaAtiva.nome_empresa);
 
   const handleEdit = (item) => {
     setOnEdit(item);
   };
 
   const handleDelete = async (id) => {
-    console.log(id)
     await axios
     .delete(`http://localhost:8800/setor_empresa/${id}`)
     .then(({data}) => {
@@ -34,21 +35,22 @@ function GridSetorEmpresa({ setorEmpresa, setSetorEmpresa, setOnEdit }) {
               Setor
             </th>
             <th scope="col" className="px-6 py-3">
+              Descrição
+            </th>
+            <th scope="col" className="px-6 py-3 flex justify-center">
               Ações
             </th>
           </tr>
         </thead>
         <tbody>
-          {setorEmpresa.map((item, i) => (
+          {setoresDaEmpresaAtiva.map((item, i) => (
             <tr key={i} className="bg-white border-b">
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.nome_empresa}
               </th>
               <td className="px-6 py-4">{item.nome_setor}</td>
-              <td className="px-5 py-4 gap-4 flex justify-start">
-                <a className="font-medium text-blue-600 hover:text-blue-800" onClick={() => handleEdit(item)}>
-                  <BsBoxArrowDown />
-                </a>
+              <td className="px-6 py-4">{item.descricao}</td>
+              <td className="px-5 py-4 flex justify-center">
                 <a className="font-medium text-red-600 hover:text-red-800" onClick={() => handleDelete(item.id)}>
                   <BsFillTrash3Fill />
                 </a>

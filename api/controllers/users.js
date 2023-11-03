@@ -27,10 +27,10 @@ export const getTableData = (req, res) => {
   if (tableName === 'setor_empresa') {
     // Se a tabela for 'setor_empresa', fazemos um JOIN para obter os nomes da empresa e setor.
     const q = `
-      SELECT empresa.nome_empresa, setor.nome_setor
+      SELECT empresa.nome_empresa, setor.nome_setor, setor.descricao
       FROM setor_empresa
-      JOIN empresa ON setor_empresa.fk_id_empresa = empresa.id
-      JOIN setor ON setor_empresa.fk_id_setor = setor.id
+      JOIN empresa ON setor_empresa.fk_id_empresa = empresa.id_empresa
+      JOIN setor ON setor_empresa.fk_id_setor = setor.id_setor
     `;
     db.query(q, (err, data) => {
       if (err) return res.status(500).json(err);
@@ -109,21 +109,3 @@ export const deleteTableData = (req, res) => {
     return res.status(200).json(`${tableName} excluído com sucesso!`);
   });
 }
-
-// export const GridSetorEmpresa = (req, res) => {
-//   const tableName = req.params.table;
-//   const tableFields = tableFieldsMap[tableName];
-
-//   if (!tableFields) {
-//     return res.status(404).json({error: 'Erro ao juntar tabelas'});
-//   }
-
-//   // const q = `SELECT empresa.nome_empresa, setor.nome_setor FROM empresa JOIN JOIN setor_empresa ON empresa.id = setor_empresa.fk_id_empresa
-//   // JOIN setor ON setor_empresa.fk_id_setor = setor.id`
-
-//   db.query(q, (err, data) => {
-//     if (err) return res.status(500).json(err);
-
-//     return res.status(200).json(data);
-//   });
-// }

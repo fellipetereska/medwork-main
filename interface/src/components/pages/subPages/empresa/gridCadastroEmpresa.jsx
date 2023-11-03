@@ -10,11 +10,10 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
     };
 
     const handleDelete = async (id) => {
-        console.log(id);
         await axios
             .delete(`http://localhost:8800/empresa/${id}`)
             .then(({ data }) => {
-                const newArray = empresa.filter((item) => item.id !== id);
+                const newArray = empresa.filter((item) => item.id_empresa !== id);
 
                 setEmpresa(newArray);
                 toast.success(data);
@@ -69,11 +68,8 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
                                 {item.telefone}
                             </td>
                             <td className="px-5 py-4 gap-4 flex justify-start">
-                                <a className="font-medium text-blue-600 hover:text-blue-800">
-                                    <BsFillPencilFill onClick={() => handleEdit(item)} />
-                                </a>
                                 <a className="font-medium text-red-600 hover:text-red-800">
-                                    <BsFillTrash3Fill onClick={() => handleDelete(item.id)} />
+                                    <BsFillTrash3Fill onClick={() => handleDelete(item.id_empresa)} />
                                 </a>
                                 <a className="font-medium text-blue-600 hover:text-blue-800">
                                     <BsBoxArrowDown onClick={() => handleEditModalOpen(item)} />
