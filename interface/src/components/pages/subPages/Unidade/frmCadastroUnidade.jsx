@@ -3,14 +3,15 @@ import { toast } from "react-toastify";
 import axios from 'axios'
 
 
-function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
+function FrmCadastroUnidade ({onEdit, setOnEdit, getUsers}) {
 
     // Instanciando a variavel que vai referenciar o formulario
     const ref = useRef(null);
-    
-    const [contato, setContato] = useState(null);
 
-    //Busca os contatos para colocar no select
+    const [contato, setContato] = useState(null);
+    const [empresa, setEmpresa] = useState(null);
+
+    //Buscar os contatos para colocar no select
     const fetchContato = async () => {
         try {
           const response = await axios.get("http://localhost:8800/contato");
@@ -18,11 +19,25 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         } catch (error) {
           console.error("Erro ao buscar contato:", error);
         }
-      }
+    };
 
       useEffect(() => {
         fetchContato();
-      })
+    });
+
+    //Buscar as empresas para colocar no select
+    const fetchEmpresa = async () => {
+        try{
+            const res = await axios.get("http://localhost:8800/empresa")
+            setEmpresa(res.data);
+        }catch (error){
+            console.log("Erro ao buscar Empresa: ", error)
+        }
+    };
+
+    useEffect(() => {
+        fetchEmpresa();
+    });
 
     // Colocando as informações do formulario nas variaveis
     useEffect( () => {
@@ -30,12 +45,15 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
             const user = ref.current
 
             //Passando o dado do input para a props
-            user.nome_empresa.value = onEdit.nome_empresa;
-            user.razao_social.value = onEdit.razao_social;
-            user.cnpj_empresa.value = onEdit.cnpj;
-            user.inscrica_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
-            user.inscrica_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
+            user.nome_unidade.value = onEdit.nome_unidade;
+            user.cnpj_unidade.value = onEdit.cnpj_unidade;
+            user.cep_unidade.value = onEdit.cep_unidade;
+            user.endereco_unidade.value = onEdit.endereco_unidade;
+            user.bairro_unidade.value = onEdit.bairro_unidade;
+            user.cidade_unidade.value = onEdit.cidade_unidade;
+            user.uf_unidade.value = onEdit.uf_unidade;
             user.fk_contato_id.value = onEdit.fk_contato_id;
+            user.fk_empresa_id.value = onEdit.fk_empresa_id;
         }
     }, [onEdit]);
 
@@ -45,47 +63,59 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
         const user = ref.current;
 
         if(
-            !user.nome_empresa.value ||
-            !user.razao_social.value ||
-            !user.cnpj_empresa.value ||
-            !user.inscricao_estadual_empresa ||
-            !user.inscricao_municipal_empresa ||
-            !user.fk_contato_id.value){
+            !user.nome_unidade.value ||
+            !user.cnpj_unidade.value ||
+            !user.cep_unidade.value ||
+            !user.endereco_unidade.value ||
+            !user.bairro_unidade.value ||
+            !user.cidade_unidade.value ||
+            !user.uf_unidade.value ||
+            !user.fk_contato_id.value ||
+            !user.fk_empresa_id.value){
                 return toast.warn("Preencha Todos os Campos!")
             }
         
         if(onEdit){
             //Caso já tiver o cadastro ele vai colocar as opções para editar
             await axios
-                .put(`http://localhost:8800/empresa/${onEdit.id}`, {
-                    nome_empresa: user.nome_empresa.value,
-                    razao_social: user.razao_social.value,
-                    cnpj_empresa: user.cnpj_empresa.value,
-                    inscricao_estadual_empresa: user.inscricao_estadual_empresa.value,
-                    inscricao_municipal_empresa: user.inscricao_municipal_empresa.value,
+                .put(`http://localhost:8800/unidade/${onEdit.id}`, {
+                    nome_unidade: user.nome_unidade.value,
+                    cnpj_unidade: user.cnpj_unidade.value,
+                    cep_unidade: user.cep_unidade.value,
+                    endereco_unidade: user.endereco_unidade.value,
+                    bairro_unidade: user.bairro_unidade.value,
+                    cidade_unidade: user.cidade_unidade.value,
+                    uf_unidade: user.uf_unidade.value,
                     fk_contato_id: user.fk_contato_id.value,
+                    fk_empresa_id: user.fk_empresa_id.value
                 }).then(({data}) => toast.success(data))
                 .catch(({data}) => toast.error(data))
         } else {
             //Caso não tiver o cadastro ele cadastra
             await axios
-            .post(`http://localhost:8800/empresa`,{
-                    nome_empresa: user.nome_empresa.value,
-                    razao_social: user.razao_social.value,
-                    cnpj_empresa: user.cnpj_empresa.value,
-                    inscricao_estadual_empresa: user.inscricao_estadual_empresa.value,
-                    inscricao_municipal_empresa: user.inscricao_municipal_empresa.value,
-                    fk_contato_id: user.fk_contato_id.value,
+            .post(`http://localhost:8800/unidade`,{
+                nome_unidade: user.nome_unidade.value,
+                cnpj_unidade: user.cnpj_unidade.value,
+                cep_unidade: user.cep_unidade.value,
+                endereco_unidade: user.endereco_unidade.value,
+                bairro_unidade: user.bairro_unidade.value,
+                cidade_unidade: user.cidade_unidade.value,
+                uf_unidade: user.uf_unidade.value,
+                fk_contato_id: user.fk_contato_id.value,
+                fk_empresa_id: user.fk_empresa_id.value,
             }).then(({data}) => toast.success(data))
             .catch(({data}) => toast.error(data))
         }
 
-        user.nome_empresa.value = "";
-        user.razao_social.value = "";
-        user.cnpj_empresa.value = "";
-        user.inscricao_estadual_empresa.value = "";
-        user.inscricao_municipal_empresa.value = "";
+        user.nome_unidade.value = "";
+        user.cnpj_unidade.value = "";
+        user.cep_unidade.value = "";
+        user.endereco_unidade.value = "";
+        user.bairro_unidade.value = "";
+        user.cidade_unidade.value = "";
+        user.uf_unidade.value = "";
         user.fk_contato_id.value = "";
+        user.fk_empresa_id.value = "";
 
         setOnEdit(null);
         getUsers();
@@ -94,12 +124,15 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
     const handleClear = () => {
         // Limpa todos os campos do formulário
         const user = ref.current;
-        user.nome_empresa.value = "";
-        user.razao_social.value = "";
-        user.cnpj_empresa.value = "";
-        user.inscricao_estadual_empresa.value = "";
-        user.inscricao_municipal_empresa.value = "";
+        user.nome_unidade.value = "";
+        user.cnpj_unidade.value = "";
+        user.cep_unidade.value = "";
+        user.endereco_unidade.value = "";
+        user.bairro_unidade.value = "";
+        user.cidade_unidade.value = "";
+        user.uf_unidade.value = "";
         user.fk_contato_id.value = "";
+        user.fk_empresa_id.value = "";
       };
 
     return(
@@ -108,24 +141,13 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                 <div class="flex flex-wrap -mx-3 mb-6 p-3">
                     <div class="w-full md:w-1/3 px-3">
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-                            Nome da Empresa:
+                            Nome da Unidade:
                         </label>
                         <input
                             class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
-                            name="nome_empresa"
-                            placeholder="Nome da empresa"
-                        />
-                    </div>
-                    <div class="w-full md:w-1/3 px-3">
-                        <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-                            Razão Social:
-                        </label>
-                        <input
-                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
-                            type="text" 
-                            name="razao_social"
-                            placeholder="Razão Social da Empresa"
+                            name="nome_unidade"
+                            placeholder="Nome da Unidade"
                         />
                     </div>
                     <div class="w-full md:w-1/3 px-3">
@@ -135,32 +157,63 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                         <input
                             class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
-                            name="cnpj_empresa"
-                            placeholder="00.000.000/0000-00"
+                            name="cnpj_unidade"
+                            placeholder="CNPJ da Unidade"
                         />
                     </div>
-                    {/* Colocar um select com a opção de isento */}
                     <div class="w-full md:w-1/3 px-3">
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-                            Inscrição Estadual:
+                            CEP:
                         </label>
                         <input
                             class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
-                            name="inscricao_estadual_empresa"
-                            placeholder="Inscrição Estadual"
+                            name="cep_unidade"
+                            placeholder="00000-000"
                         />
                     </div>
-                    {/* Colocar um select com a opção de isento */}
                     <div class="w-full md:w-1/3 px-3">
                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-                            Inscrição Municipal:
+                            Endereço:
                         </label>
                         <input
                             class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
                             type="text" 
-                            name="inscricao_municipal_empresa"
-                            placeholder="Inscrição Municipal"
+                            name="endereco_unidade"
+                            placeholder="Endereço da Unidade"
+                        />
+                    </div>
+                    <div class="w-full md:w-1/3 px-3">
+                        <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                            Bairro:
+                        </label>
+                        <input
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            type="text" 
+                            name="bairro_unidade"
+                            placeholder="Bairro da Unidade"
+                        />
+                    </div>
+                    <div class="w-full md:w-1/3 px-3">
+                        <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                            Cidade:
+                        </label>
+                        <input
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            type="text" 
+                            name="cidade_unidade"
+                            placeholder="Cidade da Unidade"
+                        />
+                    </div>
+                    <div class="w-full md:w-1/3 px-3">
+                        <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                            UF:
+                        </label>
+                        <input
+                            class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white" 
+                            type="text" 
+                            name="uf_unidade"
+                            placeholder="UF da Unidade"
                         />
                     </div>
                     <div class="w-full md:w-1/3 px-3">
@@ -176,6 +229,23 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             {contato && contato.map(contato => (
                             <option key={contato.id_contato} value={contato.id_contato}>
                                 {contato.nome_contato}
+                            </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div class="w-full md:w-1/3 px-3">
+                        <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                            Empresa:
+                        </label>
+                        <select
+                            className="w-full appearance-none bg-gray-100 border-gray-200 mt-1 text-gray-400 py-3 px-4 rounded leading-tight focus:outline-none"
+                            id="grid-contato"
+                            name="fk_empresa_id"
+                        >
+                            <option value="">Selecione uma Empresa</option>
+                            {empresa && empresa.map(empresa => (
+                            <option key={empresa.id_empresa} value={empresa.id_empresa}>
+                                {empresa.nome_empresa}
                             </option>
                             ))}
                         </select>
@@ -198,4 +268,4 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
     )
 }
 
-export default CadastroEmpresa;
+export default FrmCadastroUnidade;

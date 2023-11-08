@@ -145,10 +145,6 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
         setOnEdit(item);
     };    
 
-    if (!isOpen || !data) {
-        return null;
-    }
-
 
     const handleClear = () => {
         // Limpa todos os campos do formulário
@@ -288,7 +284,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                     </button>
                                 </div>
                             </div>
-                                <div class="w-full px-3 mb-10">
+                                {/* <div class="w-full px-3 mb-10">
                                         <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                                             Setor:
                                         </label>
@@ -318,7 +314,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                                         </div>
 
                                     </div>
-                                </div>
+                                </div> */}
                         </div>
                     </form>
                 </div>
@@ -329,9 +325,6 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                 </div>
             </div>
             <div>
-                <div>
-                    <div></div>
-                </div>
             </div>
         </div>
     );

@@ -2,7 +2,7 @@ import { BsFillTrash3Fill, BsFillPencilFill } from 'react-icons/bs';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
+function GridCadastroCargo({ setor, setSetor, setOnEdit }) {
   const handleEdit = (item) => {
     setOnEdit(item);
   };
@@ -62,4 +62,4 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
   );
 }
 
-export default GridCadastroSetor;
+export default GridCadastroCargo;

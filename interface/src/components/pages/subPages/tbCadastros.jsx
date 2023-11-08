@@ -2,13 +2,20 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { BsBuildingAdd } from 'react-icons/bs'
+import {Link} from 'react-router-dom'
 
 import CadastroEmpresa from "./empresa/frmCadastroEmpresas";
 import GridCadastroEmpresa from './empresa/gridCadastroEmpresa';
-import CadastroSetor from "./setor/frmCadastroSetor";
+import FrmCadastroSetor from "./setor/frmCadastroSetor";
 import GridCadastroSetor from "./setor/gridCadastroSetor";
 import EditModal from "./ModalCadastro";
 import SearchInput from "./components/SearchInput";
+import BotaoEmpresa from "./buttons/BotaoEmpresa";
+import BotaoUnidade from "./buttons/BotaoUnidade";
+import BotaoSetor from "./buttons/BotaoSetor";
+import BotaoCargo from "./buttons/BotaoCargo";
+import BotaoContato from "./buttons/BotaoContato";
+
 
 function TabCadastroEmpresa() {
 
@@ -35,15 +42,15 @@ function TabCadastroEmpresa() {
         contato: '',
         telefone: ''
     });
-    const [editModalData, setEditModalData] = useState(null);
-    const [empresaToEdit, setEmpresaToEdit] = useState(null);
+    // const [editModalData, setEditModalData] = useState(null);
+    // const [empresaToEdit, setEmpresaToEdit] = useState(null);
 
     const handleSetFormEmpresa = (data) => {
         setFormEmpresa(data);
     };
 
     //Instanciando o Search
-    const [searchTerm, setSearchTerm] = useState('');
+    // const [searchTerm, setSearchTerm] = useState('');
     const [filteredEmpresas, setFilteredEmpresas] = useState([]);
 
     //Instanciando Modal
@@ -52,20 +59,20 @@ function TabCadastroEmpresa() {
 
     const openModal = (data) => {
         setIsEditModalOpen(true);
-        setEditData(data);
-};
+        setEditData(data)
+    };
     
 
     const handleTabChange = (index) => {
         setActiveTab(index);
     };
 
-    const handleInputChange = (e) => {
-        e.preventDefault();
+    // const handleInputChange = (e) => {
+    //     e.preventDefault();
 
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+    //     const { name, value } = e.target;
+    //     setFormData({ ...formData, [name]: value });
+    // };
 
     const handleSave = () => {
         console.log("Dados Salvos", formData);
@@ -99,58 +106,76 @@ function TabCadastroEmpresa() {
     }, []); // Chama apenas uma vez quando o componente é montado
 
     //Funções do Modal
-    const handleEditModalOpen = (data) => {
-            setIsEditModalOpen(true);
-            setEditData(data);
-    };
+    // const handleEditModalOpen = (data) => {
+    //         setIsEditModalOpen(true);
+    //         setEditData(data);
+    // };
 
-    const handleEditModalClose = () => {
-        setIsEditModalOpen(false);
-    };
+    // const handleEditModalClose = () => {
+    //     setIsEditModalOpen(false);
+    // };
 
-    const handleEdit = (empresa) => {
-        setEmpresa(empresa);
-        setIsEditModalOpen(false);
-    };
+    // const handleEdit = (empresa) => {
+    //     setEmpresa(empresa);
+    //     setIsEditModalOpen(false);
+    // };
 
     const handleCancelEdit = () => {
         setEditData(null);
         setIsEditModalOpen(false);
     }
 
+    // const handleteste = () => {
+    //     console.log("Teste Botao")
+    // }
+
     //Função para Pesquisa
-    useEffect(() => {
-        const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
-        setFilteredEmpresas(filtered);
-    }, [searchTerm, empresa]);
+    // useEffect(() => {
+    //     const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
+    //     setFilteredEmpresas(filtered);
+    // }, [searchTerm, empresa]);
 
     
-    const handleSearch = (term) => {
-        // Atualizar o estado do termo de pesquisa com o valor fornecido
-        setSearchTerm(term);
-    }
+    // const handleSearch = (term) => {
+    //     // Atualizar o estado do termo de pesquisa com o valor fornecido
+    //     setSearchTerm(term);
+    // }
+
 
     return (
         <div>
-            <div className="m-2 text-sm font-medium text-start text-gray-500 border-b border-gray-200">
-                <button
-                    className={`ml-1 inline-block p-4 rounded-t-lg bg-gray-100 text-gray-900 hover:text-gray-600 hover:bg-gray-200 ${activeTab === 0 ? 'active' : ''}`}
-                    onClick={() => handleTabChange(0)}
-                >
-                    Cadastrar Empresa
-                </button>
-                <button
-                    className={`ml-1 inline-block p-4 rounded-t-lg bg-gray-100 text-gray-900 hover:text-gray-600 hover:bg-gray-200 ${activeTab === 1 ? 'active' : ''}`}
-                    onClick={() => handleTabChange(1)}
-                >
-                    Cadastrar Setor
-                </button>
-            </div>
-            <div className="tab-content">
-                {activeTab === 0 && (
+            <div className="tab-content mt-32 mb-32">
                     <div>
                         <div>
-                            <div className="flex justify-end px-32 mb-10 mt-4 items-center">
+                            <div className="flex justify-center w-full gap-10">
+                                <Link to="/cadastro_empresa">
+                                    <BotaoEmpresa/>
+                                </Link>
+                                <Link to="/cadastro_unidade">
+                                    <BotaoUnidade/>
+                                </Link>
+                                <Link to="/cadastro_setor">
+                                    <BotaoSetor/>
+                                </Link>
+                                <Link to="/cadastro_cargo">
+                                    <BotaoCargo/>
+                                </Link>
+                                <Link to="/cadastro_contato">
+                                    <BotaoContato/>
+                                </Link>
+                            </div>
+                        </div>
+                        <div className="border-b mt-5 mb-5 border-gray-200 mx-auto w-9/12"></div>
+                        <div>
+                            {/* <div className="flex justify-center w-full gap-10">
+                                
+                                <BotaoUnidade />
+                                <BotaoSetor />
+                                <BotaoCargo />
+                            </div> */}
+                        </div>
+                        {/* <div>
+                            <div className="flex justify-end px-32 mb-10 mt-14 items-center">
                                 <div className="w-11/12 px-20">
                                     <SearchInput onSearch={handleSearch} />
                                 </div>
@@ -158,9 +183,8 @@ function TabCadastroEmpresa() {
                                     <BsBuildingAdd />
                                 </button>
                             </div>
+                        </div> */}
 
-
-                        </div>
                         <EditModal 
                             data={editData} 
                             onCancel={handleCancelEdit} 
@@ -168,25 +192,14 @@ function TabCadastroEmpresa() {
                             isOpen={isEditModalOpen}
                         />
 
-                        <GridCadastroEmpresa 
+                        {/* <GridCadastroEmpresa 
                             empresa={filteredEmpresas} 
                             setEmpresa={setEmpresa} 
                             setOnEdit={setOnEdit} 
                             handleEditModalOpen={handleEditModalOpen}
                             
-                        />
+                        /> */}
                     </div>
-                )}
-            </div>
-            <div className="tab-content">
-                {activeTab === 1 && (
-                    <div>
-                        <div className="border-b border-gray-200 mb-10">
-                            <CadastroSetor onEdit={onEdit} setOnEdit={setOnEdit} getSetor={getSetor} />
-                        </div>
-                        <GridCadastroSetor setor={setor} setSetor={setSetor} setOnEdit={setOnEdit} />
-                    </div>
-                )}
             </div>
         </div>
     )

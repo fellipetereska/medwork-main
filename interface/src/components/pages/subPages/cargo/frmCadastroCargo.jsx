@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import axios from 'axios'
 
 
-function FrmCadastroSetor ({onEdit, setOnEdit, getSetor}) {
+function FrmCadastroCargo ({onEdit, setOnEdit, getSetor}) {
 
     // Instanciando a variavel que vai referenciar o formulario
     const ref = useRef(null);
@@ -110,4 +110,4 @@ function FrmCadastroSetor ({onEdit, setOnEdit, getSetor}) {
     )
 }
 
-export default FrmCadastroSetor;
+export default FrmCadastroCargo;

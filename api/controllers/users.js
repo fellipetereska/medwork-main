@@ -101,7 +101,7 @@ export const deleteTableData = (req, res) => {
     return res.status(404).json({ error: 'Tabela não encontrada' });
   }
 
-  const q = `DELETE FROM ${tableFields.table} WHERE id = ?`;
+  const q = `DELETE FROM empresa WHERE id = ?`;
 
   db.query(q, [req.params.id], (err) => {
     if (err) return res.status(500).json(err);
