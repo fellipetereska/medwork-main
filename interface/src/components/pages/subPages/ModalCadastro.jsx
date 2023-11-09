@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import GridSetorEmpresa from './setor_empresa//gridSetorEmrpesa'
+import GridSetorEmpresa from './setor_empresa/gridSetorEmrpesa'
 import axios from 'axios'
 import { toast } from "react-toastify";
 
@@ -180,7 +180,7 @@ const EditModal = ({ data, onSave, onCancel, isOpen }) => {
                 </div>
                 <div className="flex justify-center">
                     <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-                        <div className="flex flex-wrap -mx-3 mb-6 p-3">
+                        <div className="flex flex-wrap mx-3 mb-6 p-3">
                             <div className="w-full md:w-1/3 px-3">
                                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                                     Nome da Empresa:
