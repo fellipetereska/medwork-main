@@ -1,28 +1,38 @@
 import React, { useState, useRef } from 'react';
+import { Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import useAuth from '../../hooks/useAuth';
 
 function Login () {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [nomeUsuario, setNomeUsuario] = useState(null)
-
+    const [nomeUsuario, setNomeUsuario] = useState(null);
+    const [redirect, setRedirect] = useState(false);
+    const { signin } = useAuth();
+  
     const handleSubmit = async (e) => {
-        e.preventDefault();
+      e.preventDefault();
+  
+      if (!username || !password) {
+        toast.warn("Preencha todos os campos!");
+        return;
+      }
+  
+      try {
+        await signin(username, password);
+        setRedirect(true)
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-        try{
-            const res = await axios.post(`http://localhost:8800/login`, {
-                usuario: username,
-                senha: password
-            });
-            
-            setNomeUsuario(username);
-            console.log("Usuário", username, "logado com sucesso!")
-
-        }catch(error) {
-            console.log(error)
-        }
+    if(redirect){
+        return <Navigate to="/home" />
     }
+  
+  
 
     return(
         <div>

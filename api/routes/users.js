@@ -1,9 +1,12 @@
 import express from "express";
 // import { getTableData, addTableData, updateTableData, deleteTableData } from "../controllers/users.js";
 import { db } from "../db.js";
+import bcrypt from 'bcrypt';
 
 
 const router = express.Router();
+
+
 
 
 //Tabela Empresa
@@ -46,7 +49,7 @@ router.put("/empresa/:id_empresa", (req, res) => {
     cnpj_empresa = ?,
     endereco_empresa = ?,
     inscricao_estadual_empresa = ?,
-    inscricao_municipal_empresa = ?,
+    inscricao_municipal_empresa = ?
     WHERE id_empresa = ?
     `;
     
@@ -151,7 +154,7 @@ router.put("/unidade/:id_unidade", (req, res) => {
 router.delete("/unidade/:id_unidade", (req, res) =>{
     const q = `DELETE FROM unidade WHERE id = ?`;
     
-    db.query(q, [req.params.id_contato], (err) => {
+    db.query(q, [req.params.id_unidade], (err) => {
         console.error("Erro ao deletar unidade na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
     });
@@ -269,7 +272,7 @@ router.put("/usuarios/:id_usuario", (req, res) => {
     const { nome_usuario, cpf_usuario, email_usuario, usuario, senha } = req.body;
     
     const q = `
-    UPDATE usuario
+    UPDATE usuaris
     SET nome_usuario = ?,
     cpf_usuario = ?,
     email_usuario = ?,
@@ -311,48 +314,39 @@ router.delete("/usuarios/:id_usuario", (req, res) =>{
 
 
 // Verifica Usuário para Logar
-router.post("/login", async (req, res) => {
+// Rota para verificar o usuário ao fazer login
+router.post('/login', async (req, res) => {
     const { usuario, senha } = req.body;
 
     try {
-        const query = "SELECT * FROM usuarios WHERE usuario = ?";
+        const query = 'SELECT * FROM usuarios WHERE usuario = ?';
 
         db.query(query, [usuario], async (err, results) => {
             if (err) {
-                console.error("Erro ao verificar usuário", err);
-                return res.status(500).json({ message: "Erro interno do servidor" });
+                console.error('Erro ao verificar usuário', err);
+                return res.status(500).json({ message: 'Erro interno do servidor' });
             }
 
             const user = results[0];
 
-            // Valida a senha de acordo com o usuario
             if (user && user.senha === senha) {
-                res.status(200).json({ message: "Autenticação bem-sucedida" });
+                res.status(200).json({ message: 'Autenticação bem-sucedida', user });
             } else {
-                res.status(401).json({ message: "Usuário ou senha incorretos!" });
+                res.status(401).json({ message: 'Usuário ou senha incorretos!' });
             }
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Erro interno do servidor" });
+        res.status(500).json({ message: 'Erro interno do servidor' });
     }
 });
 
+//Rota para Logout
+router.post("/logout", async (req, res) => {
+
+    res.json({ message: 'Logout bem-sucedido!' })
+})
 
 
 
 export default router;
-
-
-// Rota genérica para buscar informações de uma tabela
-
-// router.get("/:table", getTableData);
-
-// Rota genérica para adicionar informações a uma tabela
-// router.post("/:table", addTableData);
-
-// // Rota genérica para atualizar informações em uma tabela
-// router.put("/:table/:id", updateTableData);
-
-// // Rota genérica para excluir informações de uma tabela
-// router.delete("/:table/:id", deleteTableData);
