@@ -6,6 +6,7 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [empresa, setEmpresa] = useState(null);
 
   const signin = async (usuario, senha) => {
     try{
@@ -16,13 +17,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const selectCompany = async (id_empresa) => {
+    try{
+        const res = await axios.post(`http://localhost:8800/selectCompany`,{ id_empresa })
+        setEmpresa(res.data.company);
+    }catch(error){
+        console.log(error)
+    }
+  };
+
   const signout = () => {
     setUser(null);
+    setEmpresa(null);
   };
 
   
   return (
-    <AuthContext.Provider value={{ user, signed: !!user, signin, signout }}>
+    <AuthContext.Provider value={{ user, empresa, signed: !!user, signin, signout, selectCompany }}>
       {children}
     </AuthContext.Provider>
   );

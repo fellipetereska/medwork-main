@@ -1,5 +1,4 @@
 import express from "express";
-// import { getTableData, addTableData, updateTableData, deleteTableData } from "../controllers/users.js";
 import { db } from "../db.js";
 import bcrypt from 'bcrypt';
 
@@ -347,6 +346,32 @@ router.post("/logout", async (req, res) => {
     res.json({ message: 'Logout bem-sucedido!' })
 })
 
+//Selecionar Empresa
+router.post('/selectCompany', async (req, res) => {
+    const { id_empresa } = req.body;
+
+    try {
+        const query = 'SELECT * FROM empresa WHERE id_empresa = ?';
+
+        db.query(query, [id_empresa], async (err, results) => {
+            if (err) {
+                console.error('Erro ao selecionar Empresa', err);
+                return res.status(500).json({ message: 'Erro interno do servidor' });
+            }
+
+            const company = results[0];
+
+            if (company) {
+                res.status(200).json({ message: 'Autenticação bem-sucedida', company });
+            } else {
+                res.status(401).json({ message: 'Selecione uma Empresa!' });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Erro interno do servidor' });
+    }
+});
 
 
 export default router;

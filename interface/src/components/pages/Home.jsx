@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 
-import GridCadastroEmpresa from './subPages/empresa/gridCadastroEmpresa';
+import GridHome from "./subPages/GridHome";
 import EditModal from "./subPages/ModalCadastro";
 import SearchInput from "./subPages/components/SearchInput";
 
@@ -123,7 +123,7 @@ function Home () {
                             isOpen={isEditModalOpen}
                     />
 
-                    <GridCadastroEmpresa 
+                    <GridHome 
                             empresa={filteredEmpresas} 
                             setEmpresa={setEmpresa} 
                             setOnEdit={setOnEdit} 

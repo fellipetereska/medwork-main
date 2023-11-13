@@ -1,19 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 
 import { BiLogIn } from 'react-icons/bi'
 import logo from '../media/logo_menu.png'
-import useAuth from '../../hooks/useAuth'
+import useAuth from '../../hooks/useAuth';
 
-function Navbar ({ handleLogout }) {
+function Navbar({ handleLogout }) {
 
-    const { user } = useAuth();
-    const { signout } = useAuth();
-    const navigate = useNavigate();
+    const {  user, signed, empresa, signout, selectCompany  } = useAuth()
     
     //Instanciando as variaveis
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
+
 
     const OpenModal = () => {
         setModalOpen(true);
@@ -23,38 +22,44 @@ function Navbar ({ handleLogout }) {
         setModalOpen(false);
     }
 
-    const handleLogoutClick = async () =>{
+    const handleLogoutClick = async () => {
         await handleLogout();
         signout(true);
         navigate("/")
     }
 
 
-    return(
+    return (
         <div>
             <nav>
-                <div class="flex flex-wrap items-center justify-between h-20 px-20 shadow-md max-w-screen-2xl mx-auto mb-10">
+                <div class="flex flex-wrap items-center justify-between h-20 px-20 shadow-md max-w-screen-2xl mx-auto">
                     <div>
                         <div className='flex gap-10 items-center'>
                             <div>
                                 <Link to="/home"><img class="w-12 h-12 flex justify-start" src={logo} alt="" /></Link>
                             </div>
-                            <div className='flex items-center gap-2'>
-                                <p className='font- text-sm text-zinc-600'>Empresa:</p>
-                                <div className='bg-zinc-50 rounded-md py-2 px-3 shadow-sm hover:bg-zinc-100'>
-                                    <p className='text-red-900 font-bold text-base'>MedWork</p>
+                            {/* Informa o Usuario Selecionado */}
+                            {user ? (
+                                <div className='flex items-center gap-2'>
+                                    <p className='font- text-sm text-zinc-600'>Usuário:</p>
+                                    <div className='bg-zinc-50 rounded-md py-2 px-3 shadow-sm hover:bg-zinc-100'>
+                                        <p className='text-gray-600 font-bold text-base'>{user.nome_usuario}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <p className='font- text-sm text-zinc-600'>Usuário:</p>
-                                <div className='bg-zinc-50 rounded-md py-2 px-3 shadow-sm hover:bg-zinc-100'>
-                                {user ? (
-                                        <p className='text-red-900 font-bold text-base'>{user.nome_usuario}</p>
-                                    ) : (
-                                        <p></p>
-                                    )}
+                            ) : (
+                                <div></div>
+                            )}
+                            {/* Informa a empresa selecioanda */}
+                            {empresa ? (
+                                <div className='flex items-center gap-2'>
+                                    <p className='font- text-sm text-zinc-600'>Empresa:</p>
+                                    <div className='bg-zinc-50 rounded-md py-2 px-3 shadow-sm hover:bg-zinc-100'>
+                                        <p className='text-gray-600 font-bold text-base'>{empresa.nome_empresa}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div></div>
+                            )}
                         </div>
                     </div>
                     <div>
@@ -65,23 +70,24 @@ function Navbar ({ handleLogout }) {
                             <li class="text-zinc-900 hover:text-red-500 py-2 text-sm font-semibold"><Link to="/inventario">Inventario de Risco</Link></li>
                             <li class="text-zinc-900 hover:text-red-500 py-2 text-sm font-semibold"><Link to="/plano">Plano de Ação</Link></li>
                             <li class="text-zinc-900 hover:text-red-500 py-2 text-sm font-semibold"><Link to="/laudos">Laudos</Link></li>
-                            <Link to="/">
-                                <button
-                                    class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 border shadow hover:shadow-md rounded"
-                                >
-                                    Login
-                                </button>
-                            </Link>
-                            <div className='flex items-center hover:cursor-pointer px-2 rounded-md'>
-                                {user ? (
-                                    <BiLogIn 
+                            {/* Renderiza o icon logout quando o usuario loga */}
+                            {user ? (
+                                <div className='flex items-center hover:cursor-pointer px-2 rounded-md'>
+                                    <BiLogIn
                                         className='text-gray-700 scale-150'
                                         onClick={handleLogoutClick}
                                     />
-                                ) : (
-                                    <p></p>
-                                )}
-                            </div>
+                                </div>
+                            ) : (
+                                // Renderiza o botão login quando o usuario da logout
+                                <Link to="/">
+                                    <button
+                                        class="bg-sky-600 hover:bg-skky-700 text-white font-bold py-2 px-4 border shadow hover:shadow-md rounded"
+                                    >
+                                        Login
+                                    </button>
+                                </Link>
+                            )}
                         </ul>
                     </div>
                 </div>

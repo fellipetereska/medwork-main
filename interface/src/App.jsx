@@ -49,7 +49,7 @@ function App() {
   return (
     <>
       <AuthProvider>
-
+    
         <Router>
           {/* Menu */}
           <Navbar handleLogout={handleLogout} />

@@ -2,16 +2,20 @@ import { BsFillTrash3Fill, BsFillPencilFill, BsBoxArrowDown } from 'react-icons/
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAuth from '../../../hooks/useAuth';
 
-function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOpen }) {
+function GridHome({ empresa, setEmpresa, setOnEdit, handleEditModalOpen }) {
 
     //Instanciando o id da Empresa
     const [idEmpresa, setIdEmpresa] = useState(null);
     const [nomeEmpresa, setNomeEmpresa] = useState(null);
-
     const [contatoNomes, setContatoNomes] = useState({});
     const [contatos, setContatos] = useState([]);
+    const { selectCompany } = useAuth();
+    const [selectEmpresa, setSelectEmpresa] = useState(null);
+    const [redirect, setRedirect] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchContatos = async () => {
@@ -25,6 +29,11 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
 
         fetchContatos();
     }, []);
+
+    const findContactName = (fkContatoId) => {
+        const contato = contatos.find((c) => c.id_contato === fkContatoId);
+        return contato ? contato.nome_contato : 'N/A';
+    };
 
     const handleEdit = (empresa) => {
         setOnEdit(empresa);
@@ -47,11 +56,17 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
     // }
 
     const handleOpenCompany = async (id) => {
-        const company = empresa.filter((item) => item.id_empresa === id);
-        // setOnEdit(company)
-        setIdEmpresa(company[0].id_empresa)
-        console.log(company[0].id_empresa)
-        console.log(company[0].nome_empresa)
+        if (!id) {
+            toast.warn("Selecione uma Empresa!");
+            return;
+        }
+
+        try {
+            await selectCompany(id);
+            navigate('/cadastros')
+        } catch (error) {
+            console.log(error);
+        }
     };
 
 
@@ -71,6 +86,9 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
                         </th>
                         <th scope="col" className="px-6 py-3">
                             CNPJ
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Contato
                         </th>
                         <th scope="col" className="flex justify-center px-6 py-3">
                             Ações
@@ -92,15 +110,16 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
                             <td className="px-6 py-4">
                                 {item.cnpj_empresa}
                             </td>
+                            <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {findContactName(item.fk_contato_id)}
+                            </th>
                             <td className="py-4 flex justify-center">
                                 {/* <a className="font-medium text-red-600 hover:text-red-800">
                                     <BsFillTrash3Fill onClick={() => handleDelete(item.id_empresa)} />
                                 </a> */}
-                                {/* <a className="font-medium text-blue-600 hover:text-blue-800">
-                                    <Link to="/cadastros">
-                                        <BsBoxArrowDown onClick={() => handleOpenCompany(item.id_empresa)} />
-                                    </Link>
-                                </a> */}
+                                <a className="font-medium text-blue-600 hover:text-blue-800">
+                                    <BsBoxArrowDown onClick={() => handleOpenCompany(item.id_empresa)} />
+                                </a>
                             </td>
                         </tr>
                     ))}
@@ -110,4 +129,4 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
     );
 }
 
-export default GridCadastroEmpresa;
+export default GridHome;
