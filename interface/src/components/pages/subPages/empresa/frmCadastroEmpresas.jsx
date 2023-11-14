@@ -32,9 +32,9 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
             //Passando o dado do input para a props
             user.nome_empresa.value = onEdit.nome_empresa;
             user.razao_social.value = onEdit.razao_social;
-            user.cnpj_empresa.value = onEdit.cnpj;
-            user.inscrica_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
-            user.inscrica_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
+            user.cnpj_empresa.value = onEdit.cnpj_empresa;
+            user.inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
+            user.inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
             user.fk_contato_id.value = onEdit.fk_contato_id;
         }
     }, [onEdit]);
@@ -53,11 +53,10 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
             !user.fk_contato_id.value){
                 return toast.warn("Preencha Todos os Campos!")
             }
-        
         if(onEdit){
             //Caso já tiver o cadastro ele vai colocar as opções para editar
             await axios
-                .put(`http://localhost:8800/empresa/${onEdit.id}`, {
+                .put(`http://localhost:8800/empresa/${onEdit.id_empresa}`, {
                     nome_empresa: user.nome_empresa.value,
                     razao_social: user.razao_social.value,
                     cnpj_empresa: user.cnpj_empresa.value,
@@ -168,7 +167,7 @@ function CadastroEmpresa ({onEdit, setOnEdit, getUsers}) {
                             Contato:
                         </label>
                         <select
-                            className="w-full appearance-none bg-gray-100 border-gray-200 mt-1 text-gray-400 py-3 px-4 rounded leading-tight focus:outline-none"
+                            className="w-full appearance-none bg-gray-100 border-gray-200 mt-1 text-gray-700 py-3 px-4 rounded leading-tight focus:outline-none"
                             id="grid-contato"
                             name="fk_contato_id"
                         >

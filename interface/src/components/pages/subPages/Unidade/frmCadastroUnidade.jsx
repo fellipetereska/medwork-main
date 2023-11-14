@@ -70,7 +70,6 @@ function FrmCadastroUnidade ({onEdit, setOnEdit, getUsers}) {
             !user.bairro_unidade.value ||
             !user.cidade_unidade.value ||
             !user.uf_unidade.value ||
-            !user.fk_contato_id.value ||
             !user.fk_empresa_id.value){
                 return toast.warn("Preencha Todos os Campos!")
             }
@@ -225,7 +224,7 @@ function FrmCadastroUnidade ({onEdit, setOnEdit, getUsers}) {
                             id="grid-contato"
                             name="fk_contato_id"
                         >
-                            <option value="">Selecione um Contato</option>
+                            <option value="null">Selecione um Contato</option>
                             {contato && contato.map(contato => (
                             <option key={contato.id_contato} value={contato.id_contato}>
                                 {contato.nome_contato}

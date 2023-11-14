@@ -6,8 +6,6 @@ import bcrypt from 'bcrypt';
 const router = express.Router();
 
 
-
-
 //Tabela Empresa
 //Get table
 router.get("/empresa", (req, res) => {
@@ -39,16 +37,22 @@ router.post("/empresa", (req, res) => {
 //Update row in table
 router.put("/empresa/:id_empresa", (req, res) => {
     const id_empresa = req.params.id_empresa; // Obtém o ID da empresa da URL
-    const { nome_empresa, razao_social, cnpj_empresa, inscricao_estadual_empresa, inscricao_municipal_empresa } = req.body;
+    const { 
+            nome_empresa, 
+            razao_social, 
+            cnpj_empresa, 
+            inscricao_estadual_empresa, 
+            inscricao_municipal_empresa,
+            fk_contato_id } = req.body;
     
     const q = `
     UPDATE empresa
     SET nome_empresa = ?,
     razao_social = ?,
     cnpj_empresa = ?,
-    endereco_empresa = ?,
     inscricao_estadual_empresa = ?,
-    inscricao_municipal_empresa = ?
+    inscricao_municipal_empresa = ?,
+    fk_contato_id = ?
     WHERE id_empresa = ?
     `;
     
@@ -58,6 +62,7 @@ router.put("/empresa/:id_empresa", (req, res) => {
         cnpj_empresa,
         inscricao_estadual_empresa,
         inscricao_municipal_empresa,
+        fk_contato_id,
         id_empresa
     ];
     

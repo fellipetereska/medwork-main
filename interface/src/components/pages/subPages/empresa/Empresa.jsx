@@ -5,6 +5,7 @@ import axios from 'axios';
 import CadastroEmpresa from "./frmCadastroEmpresas";
 import GridCadastroEmpresa from './gridCadastroEmpresa';
 import EditModal from "../ModalCadastro";
+import SearchInput from "../components/SearchInput";
 
 function Empresa() {
 
@@ -23,6 +24,10 @@ function Empresa() {
         telefone: ''
     });
 
+    //Instanciando o Search
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredEmpresas, setFilteredEmpresas] = useState([]);
+
     //Instanciando Modal
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
@@ -33,7 +38,7 @@ function Empresa() {
         setIsEditModalOpen(true);
         setEditData(data)
     };
-    
+
 
     const handleSave = () => {
         console.log("Dados Salvos", formData);
@@ -64,8 +69,8 @@ function Empresa() {
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {
-            setIsEditModalOpen(true);
-            setEditData(data);
+        setIsEditModalOpen(true);
+        setEditData(data);
     };
 
     const handleCancelEdit = () => {
@@ -77,29 +82,45 @@ function Empresa() {
         setOnEdit(selectedEmpresa)
     };
 
-    console.log(contato)
+    //Função para Pesquisa
+    useEffect(() => {
+        const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
+        setFilteredEmpresas(filtered);
+    }, [searchTerm, empresa]);
+
+
+    const handleSearch = (term) => {
+        // Atualizar o estado do termo de pesquisa com o valor fornecido
+        setSearchTerm(term);
+    }
 
 
     return (
         <div>
             <div className="tab-content mt-14 mb-32">
-                    <div>
-                        <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
+                <div>
+                    <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
 
-                        <EditModal 
-                            data={editData} 
-                            onCancel={handleCancelEdit} 
-                            onSave={handleSave} 
-                            isOpen={isEditModalOpen}
-                        />
+                    <EditModal
+                        data={editData}
+                        onCancel={handleCancelEdit}
+                        onSave={handleSave}
+                        isOpen={isEditModalOpen}
+                    />
 
-                        <GridCadastroEmpresa
-                            empresa={empresa}
-                            setEmpresa={setEmpresa} 
-                            setOnEdit={handleEdit} 
-                            handleEditModalOpen={() => handleEditModalOpen(data)}
-                        />
+                    <div className="flex justify-center mb-10">
+                        <div className="w-6/12 px-20">
+                            <SearchInput onSearch={handleSearch} />
+                        </div>
                     </div>
+
+                    <GridCadastroEmpresa
+                        empresa={empresa}
+                        setEmpresa={setEmpresa}
+                        setOnEdit={handleEdit}
+                        handleEditModalOpen={() => handleEditModalOpen(data)}
+                    />
+                </div>
             </div>
         </div>
     )
