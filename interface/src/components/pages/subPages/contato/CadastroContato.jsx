@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
+import Back from '../../../layout/Back'
 import FrmCadastroContato from "./frmCadastroContato";
 import GridCadastroContato from './gridCadastroContato'
 import EditModal from "../ModalCadastro";
@@ -27,7 +29,7 @@ function CadastroSetor() {
         setIsEditModalOpen(true);
         setEditData(data)
     };
-    
+
 
     const handleSave = () => {
         console.log("Dados Salvos", formData);
@@ -49,8 +51,8 @@ function CadastroSetor() {
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {
-            setIsEditModalOpen(true);
-            setEditData(data);
+        setIsEditModalOpen(true);
+        setEditData(data);
     };
 
     const handleCancelEdit = () => {
@@ -66,23 +68,28 @@ function CadastroSetor() {
     return (
         <div>
             <div className="tab-content mt-14 mb-32">
-                    <div>
-                        <FrmCadastroContato onEdit={onEdit} setOnEdit={setOnEdit} getContato={getContato} />
+                <div>
 
-                        <EditModal 
-                            data={editData} 
-                            onCancel={handleCancelEdit} 
-                            onSave={handleSave} 
-                            isOpen={isEditModalOpen}
-                        />
+                    <Link to="/cadastros">
+                        <Back />
+                    </Link>
 
-                        <GridCadastroContato
-                            contato={contato} 
-                            setContato={setContato} 
-                            setOnEdit={handleEdit} 
-                            handleEditModalOpen={() => handleEditModalOpen(data)}
-                        />
-                    </div>
+                    <FrmCadastroContato onEdit={onEdit} setOnEdit={setOnEdit} getContato={getContato} />
+
+                    <EditModal
+                        data={editData}
+                        onCancel={handleCancelEdit}
+                        onSave={handleSave}
+                        isOpen={isEditModalOpen}
+                    />
+
+                    <GridCadastroContato
+                        contato={contato}
+                        setContato={setContato}
+                        setOnEdit={handleEdit}
+                        handleEditModalOpen={() => handleEditModalOpen(data)}
+                    />
+                </div>
             </div>
         </div>
     )

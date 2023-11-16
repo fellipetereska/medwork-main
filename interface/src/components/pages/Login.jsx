@@ -4,7 +4,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import useAuth from '../../hooks/useAuth';
 import logoColor from '../media/logo_menu.png'
-import logoWhite from '../media/logo_login-white.png'
 
 function Login() {
 

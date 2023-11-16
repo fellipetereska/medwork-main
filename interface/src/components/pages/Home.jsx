@@ -6,7 +6,7 @@ import GridHome from "./subPages/GridHome";
 import EditModal from "./subPages/ModalCadastro";
 import SearchInput from "./subPages/components/SearchInput";
 
-function Home () {
+function Home() {
 
     // Instanciando e Definindo como vazio
 
@@ -84,8 +84,8 @@ function Home () {
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {
-            setIsEditModalOpen(true);
-            setEditData(data);
+        setIsEditModalOpen(true);
+        setEditData(data);
     };
 
     const handleCancelEdit = () => {
@@ -99,39 +99,35 @@ function Home () {
         setFilteredEmpresas(filtered);
     }, [searchTerm, empresa]);
 
-    
+
     const handleSearch = (term) => {
         // Atualizar o estado do termo de pesquisa com o valor fornecido
         setSearchTerm(term);
     }
+    
     return (
-            <div>
-                {/* <div className="flex justify-start m-4">
-                    <p>Empresa: {nome_empresa}</p>
-                </div> */}
-                <div className="flex justify-end px-32 mb-10 mt-4 items-center">
-                    <div className="w-11/12 px-20">
-                        <SearchInput onSearch={handleSearch} />
-                    </div>
-
-
-                    </div>
-                        <EditModal 
-                            data={editData} 
-                            onCancel={handleCancelEdit} 
-                            onSave={handleSave} 
-                            isOpen={isEditModalOpen}
-                    />
-
-                    <GridHome 
-                            empresa={filteredEmpresas} 
-                            setEmpresa={setEmpresa} 
-                            setOnEdit={setOnEdit} 
-                            handleEditModalOpen={handleEditModalOpen}
-                            fetchNomeEmpresa={fetchNomeEmpresa}
-                            
-                    />
+        <div>
+            <div className="flex justify-center w-full mt-6">
+                <div className="w-3/6">
+                    <SearchInput onSearch={handleSearch} />
                 </div>
+            </div>
+            <EditModal
+                data={editData}
+                onCancel={handleCancelEdit}
+                onSave={handleSave}
+                isOpen={isEditModalOpen}
+            />
+
+            <GridHome
+                empresa={filteredEmpresas}
+                setEmpresa={setEmpresa}
+                setOnEdit={setOnEdit}
+                handleEditModalOpen={handleEditModalOpen}
+                fetchNomeEmpresa={fetchNomeEmpresa}
+
+            />
+        </div>
     )
 }
 

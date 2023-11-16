@@ -53,9 +53,9 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
 
 
     return (
-        <div className="flex justify-center mb-20">
-            <table className="w-5/6 shadow-md text-sm text-left text-gray-500">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
+            <table class="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" className="px-6 py-3">
                             ID
@@ -79,7 +79,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, handleEditModalOp
                 </thead>
                 <tbody>
                     {empresa.map((item, i) => (
-                        <tr key={i} className="bg-white border-b">
+                        <tr key={i} class="border-b bg-white">
                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                 {item.id_empresa}
                             </th>
