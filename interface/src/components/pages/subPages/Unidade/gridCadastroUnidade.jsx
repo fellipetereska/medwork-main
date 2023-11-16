@@ -15,36 +15,36 @@ function GridCadastroUnidade({ unidade, setEmpresa, setOnEdit, handleEditModalOp
 
     useEffect(() => {
         const fetchContatos = async () => {
-          try {
-            const response = await axios.get('http://localhost:8800/contato');
-            setContatos(response.data);
-          } catch (error) {
-            console.error('Erro ao buscar contatos:', error);
-          }
+            try {
+                const response = await axios.get('http://localhost:8800/contato');
+                setContatos(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar contatos:', error);
+            }
         };
-    
-        fetchContatos();
-      }, []);
 
-      const findContactName = (fkContatoId) => {
+        fetchContatos();
+    }, []);
+
+    const findContactName = (fkContatoId) => {
         const contato = contatos.find((c) => c.id_contato === fkContatoId);
         return contato ? contato.nome_contato : 'N/A';
     };
 
     useEffect(() => {
         const fetchEmpresa = async () => {
-          try {
-            const response = await axios.get('http://localhost:8800/empresa');
-            setEmpresaUnidade(response.data);
-          } catch (error) {
-            console.error('Erro ao buscar empresas:', error);
-          }
+            try {
+                const response = await axios.get('http://localhost:8800/empresa');
+                setEmpresaUnidade(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar empresas:', error);
+            }
         };
-    
-        fetchEmpresa();
-      }, []);
 
-      const findEmpresaName = (fkEmpresaID) => {
+        fetchEmpresa();
+    }, []);
+
+    const findEmpresaName = (fkEmpresaID) => {
         const nameCompany = empresaUnidade.find((c) => c.id_empresa === fkEmpresaID);
         return nameCompany ? nameCompany.nome_empresa : 'N/A';
     };
@@ -70,9 +70,9 @@ function GridCadastroUnidade({ unidade, setEmpresa, setOnEdit, handleEditModalOp
     // }
 
     return (
-        <div className="flex justify-center mb-20">
-            <table className="w-5/6 shadow-md text-sm text-left text-gray-500">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
+            <table class="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" className="px-6 py-3">
                             ID

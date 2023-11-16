@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from 'axios';
 
@@ -6,6 +7,7 @@ import CadastroEmpresa from "./frmCadastroEmpresas";
 import GridCadastroEmpresa from './gridCadastroEmpresa';
 import EditModal from "../ModalCadastro";
 import SearchInput from "../components/SearchInput";
+import Back from '../../../layout/Back'
 
 function Empresa() {
 
@@ -99,6 +101,11 @@ function Empresa() {
         <div>
             <div className="tab-content mt-14 mb-32">
                 <div>
+
+                    <Link to="/cadastros">
+                        <Back />
+                    </Link>
+
                     <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
 
                     <EditModal
@@ -108,14 +115,14 @@ function Empresa() {
                         isOpen={isEditModalOpen}
                     />
 
-                    <div className="flex justify-center mb-10">
-                        <div className="w-6/12 px-20">
+                    <div className="flex justify-center w-full mt-6">
+                        <div className="w-3/6">
                             <SearchInput onSearch={handleSearch} />
                         </div>
                     </div>
 
                     <GridCadastroEmpresa
-                        empresa={empresa}
+                        empresa={filteredEmpresas}
                         setEmpresa={setEmpresa}
                         setOnEdit={handleEdit}
                         handleEditModalOpen={() => handleEditModalOpen(data)}

@@ -15,7 +15,7 @@ import Laudos from './components/pages/Laudos';
 import Empresa from './components/pages/subPages/empresa/Empresa';
 import Unidade from './components/pages/subPages/Unidade/CadastroUnidade'
 import Setor from './components/pages/subPages/setor/CadastroSetor'
-import Cargo from './components/pages/subPages/setor/CadastroSetor'
+import Cargo from './components/pages/subPages/cargo/CadastroCargo'
 import Contato from './components/pages/subPages/contato/CadastroContato'
 import Usuario from './components/pages/subPages/usuarios/CadastroUsuario'
 import Login from './components/pages/Login'

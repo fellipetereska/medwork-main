@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 function GridCadastroContato({ contato, setContato, setOnEdit }) {
-  
+
   const handleEdit = (item) => {
     setOnEdit(item);
   };
@@ -11,23 +11,23 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
   const handleDelete = async (id) => {
     console.log(id)
     await axios
-    .delete(`http://localhost:8800/contato/${id}`)
-    .then(({data}) => {
+      .delete(`http://localhost:8800/contato/${id}`)
+      .then(({ data }) => {
         const newArray = contato.filter((item) => item.id !== id);
 
         setContato(newArray);
         toast.success(data);
-    })
-    .catch(({data}) => toast.error(data))
+      })
+      .catch(({ data }) => toast.error(data))
     console.log(id)
 
     setOnEdit(null);
-}
+  }
 
   return (
-    <div className="flex justify-center mb-20">
-      <table className="w-5/6 shadow-md text-sm text-left text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+    <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
+      <table class="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-3">
               ID

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { BsBuildingAdd } from 'react-icons/bs'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import CadastroEmpresa from "./empresa/frmCadastroEmpresas";
 import GridCadastroEmpresa from './empresa/gridCadastroEmpresa';
@@ -61,7 +61,7 @@ function TabCadastroEmpresa() {
         setIsEditModalOpen(true);
         setEditData(data)
     };
-    
+
 
     const handleTabChange = (index) => {
         setActiveTab(index);
@@ -135,7 +135,7 @@ function TabCadastroEmpresa() {
     //     setFilteredEmpresas(filtered);
     // }, [searchTerm, empresa]);
 
-    
+
     // const handleSearch = (term) => {
     //     // Atualizar o estado do termo de pesquisa com o valor fornecido
     //     setSearchTerm(term);
@@ -143,65 +143,96 @@ function TabCadastroEmpresa() {
 
 
     return (
-        <div>
-            <div className="tab-content mt-32 mb-32">
+        <>
+            <div className="mt-16 px-12">
+                <div class="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
+                    <figure class="flex flex-col justify-center">
+                        <Link to="/cadastro_empresa">
+                            <BotaoEmpresa />
+                        </Link>
+                    </figure>
+                    <figure class="flex flex-col justify-center">
+                        <Link to="/cadastro_unidade">
+                            <BotaoUnidade />
+                        </Link>
+                    </figure>
+                    <figure class="flex flex-col justify-center">
+                        <Link to="/cadastro_setor">
+                            <BotaoSetor />
+                        </Link>
+                    </figure>
+                    <figure class="flex flex-col justify-center">
+                        <Link to="/cadastro_cargo">
+                            <BotaoCargo />
+                        </Link>
+                    </figure>
+                    <figure class="flex flex-col justify-center">
+                        <Link to="/cadastro_contato">
+                            <BotaoContato />
+                        </Link>
+                    </figure>
+                </div>
+                <div className="border-b border-gray-300 mt-8 mb-8"></div>
+            </div>
+
+            {/* <div className="mt-32 mb-32">
                     <div>
                         <div>
                             <div className="flex justify-center w-full gap-10">
                                 <Link to="/cadastro_empresa">
-                                    <BotaoEmpresa/>
+                                    <BotaoEmpresa />
                                 </Link>
                                 <Link to="/cadastro_unidade">
-                                    <BotaoUnidade/>
+                                    <BotaoUnidade />
                                 </Link>
                                 <Link to="/cadastro_setor">
-                                    <BotaoSetor/>
+                                    <BotaoSetor />
                                 </Link>
                                 <Link to="/cadastro_cargo">
-                                    <BotaoCargo/>
+                                    <BotaoCargo />
                                 </Link>
                                 <Link to="/cadastro_contato">
-                                    <BotaoContato/>
+                                    <BotaoContato />
                                 </Link>
                             </div>
                         </div>
                         <div className="border-b mt-5 mb-5 border-gray-200 mx-auto w-9/12"></div>
-                        <div>
-                            {/* <div className="flex justify-center w-full gap-10">
-                                
-                                <BotaoUnidade />
-                                <BotaoSetor />
-                                <BotaoCargo />
-                            </div> */}
-                        </div>
-                        {/* <div>
-                            <div className="flex justify-end px-32 mb-10 mt-14 items-center">
-                                <div className="w-11/12 px-20">
-                                    <SearchInput onSearch={handleSearch} />
+                        <div> */}
+            {/* <div className="flex justify-center w-full gap-10">
+                                    
+                                    <BotaoUnidade />
+                                    <BotaoSetor />
+                                    <BotaoCargo />
+                                </div> */}
+            {/* </div> */}
+            {/* <div>
+                                <div className="flex justify-end px-32 mb-10 mt-14 items-center">
+                                    <div className="w-11/12 px-20">
+                                        <SearchInput onSearch={handleSearch} />
+                                    </div>
+                                    <button onClick={openModal} className="shadow flex justify-center items-center w-16 h-9 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+                                        <BsBuildingAdd />
+                                    </button>
                                 </div>
-                                <button onClick={openModal} className="shadow flex justify-center items-center w-16 h-9 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
-                                    <BsBuildingAdd />
-                                </button>
-                            </div>
-                        </div> */}
+                            </div> */}
 
-                        <EditModal 
-                            data={editData} 
-                            onCancel={handleCancelEdit} 
-                            onSave={handleSave} 
+            {/* <EditModal
+                            data={editData}
+                            onCancel={handleCancelEdit}
+                            onSave={handleSave}
                             isOpen={isEditModalOpen}
-                        />
-
-                        {/* <GridCadastroEmpresa 
-                            empresa={filteredEmpresas} 
-                            setEmpresa={setEmpresa} 
-                            setOnEdit={setOnEdit} 
-                            handleEditModalOpen={handleEditModalOpen}
-                            
                         /> */}
-                    </div>
-            </div>
-        </div>
+
+            {/* <GridCadastroEmpresa 
+                                empresa={filteredEmpresas} 
+                                setEmpresa={setEmpresa} 
+                                setOnEdit={setOnEdit} 
+                                handleEditModalOpen={handleEditModalOpen}
+                                
+                            /> */}
+            {/* </div>
+                </div> */}
+        </>
     )
 }
 

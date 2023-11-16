@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
+import Back from '../../../layout/Back'
 import FrmCadastroUnidade from "./frmCadastroUnidade";
 import GridCadastroUnidade from './gridCadastroUnidade';
 import EditModal from "../ModalCadastro";
@@ -30,7 +32,7 @@ function CadastroUnidade() {
         setIsEditModalOpen(true);
         setEditData(data)
     };
-    
+
 
     const handleSave = () => {
         console.log("Dados Salvos", formData);
@@ -52,8 +54,8 @@ function CadastroUnidade() {
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {
-            setIsEditModalOpen(true);
-            setEditData(data);
+        setIsEditModalOpen(true);
+        setEditData(data);
     };
 
     const handleCancelEdit = () => {
@@ -69,23 +71,28 @@ function CadastroUnidade() {
     return (
         <div>
             <div className="tab-content mt-14 mb-32">
-                    <div>
-                        <FrmCadastroUnidade onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUnidade} />
+                <div>
 
-                        <EditModal 
-                            data={editData} 
-                            onCancel={handleCancelEdit} 
-                            onSave={handleSave} 
-                            isOpen={isEditModalOpen}
-                        />
+                    <Link to="/cadastros">
+                        <Back />
+                    </Link>
 
-                        <GridCadastroUnidade
-                            unidade={unidade} 
-                            setEmpresa={setUnidade} 
-                            setOnEdit={handleEdit} 
-                            handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
-                        />
-                    </div>
+                    <FrmCadastroUnidade onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUnidade} />
+
+                    <EditModal
+                        data={editData}
+                        onCancel={handleCancelEdit}
+                        onSave={handleSave}
+                        isOpen={isEditModalOpen}
+                    />
+
+                    <GridCadastroUnidade
+                        unidade={unidade}
+                        setEmpresa={setUnidade}
+                        setOnEdit={handleEdit}
+                        handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
+                    />
+                </div>
             </div>
         </div>
     )
