@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify';
 import { AuthProvider } from './contexts/auth';
-import { useState } from 'react';
 import useAuth from './hooks/useAuth';
 import axios from 'axios';
 
@@ -28,28 +27,26 @@ import Footer from './components/layout/Footer';
 //Função Principal
 function App() {
 
-
   const Private = ({ Item }) => {
-    const { user } = useAuth();
-  
-    return user ? <Item /> : <Login />;
+    const { signed } = useAuth();
+
+    return signed ? <Item /> : <Login />;
   };
 
-  const handleLogout = async () =>{
-    try{
-        const res = await axios.post("http://localhost:8800/logout");
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:8800/logout");
 
-    }catch (error) {
-        console.log("Erro ao fazer logout:", error)
+    } catch (error) {
+      console.log("Erro ao fazer logout:", error)
     }
-};
+  };
 
-  
 
   return (
     <>
       <AuthProvider>
-    
+
         <Router>
           {/* Menu */}
           <Navbar handleLogout={handleLogout} />
@@ -57,21 +54,21 @@ function App() {
           <Routes>
             {/* Linkando as rotas as paginas */}
             {/* Menu */}
-            <Route path='/' element={<Login />}/>
-            <Route path='/home' element={<Private Item={Home}/>}/>
-            <Route path='/gestao' element={<Private Item={Gestao} />}/>
-            <Route path='/cadastros' element={<Private Item={Cadastros} />}/>
-            <Route path='/inventario' element={<Private Item={Inventario} />}/>
-            <Route path='/plano' element={<Private Item={Plano} />}/>
-            <Route path='/laudos' element={<Private Item={Laudos} />}/>
+            <Route path='/' element={<Login />} />
+            <Route path='/home' element={<Private Item={Home} />} />
+            <Route path='/gestao' element={<Private Item={Gestao} />} />
+            <Route path='/cadastros' element={<Private Item={Cadastros} />} />
+            <Route path='/inventario' element={<Private Item={Inventario} />} />
+            <Route path='/plano' element={<Private Item={Plano} />} />
+            <Route path='/laudos' element={<Private Item={Laudos} />} />
 
             {/* Cadastros */}
-            <Route path='/cadastro_empresa' element={<Private Item={Empresa} />}/>
-            <Route path='/cadastro_unidade' element={<Private Item={Unidade} />}/>
-            <Route path='/cadastro_setor' element={<Private Item={Setor} />}/>
-            <Route path='/cadastro_cargo' element={<Private Item={Cargo} />}/>
-            <Route path='/cadastro_contato' element={<Private Item={Contato} />}/>
-            <Route path='/cadastro_usuario' element={<Private Item={Usuario} />}/>
+            <Route path='/cadastro_empresa' element={<Private Item={Empresa} />} />
+            <Route path='/cadastro_unidade' element={<Private Item={Unidade} />} />
+            <Route path='/cadastro_setor' element={<Private Item={Setor} />} />
+            <Route path='/cadastro_cargo' element={<Private Item={Cargo} />} />
+            <Route path='/cadastro_contato' element={<Private Item={Contato} />} />
+            <Route path='/cadastro_usuario' element={<Private Item={Usuario} />} />
 
           </Routes>
           {/* Rodapé */}

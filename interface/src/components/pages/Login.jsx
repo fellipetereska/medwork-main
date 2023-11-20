@@ -1,12 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { Navigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useAuth from '../../hooks/useAuth';
-import logoColor from '../media/logo_menu.png'
 
 function Login() {
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [nomeUsuario, setNomeUsuario] = useState(null);
