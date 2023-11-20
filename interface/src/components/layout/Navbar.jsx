@@ -1,16 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
-
+import useAuth from '../../hooks/useAuth';
 
 import { FiMenu } from "react-icons/fi";
 import { BiLogIn } from 'react-icons/bi'
 import logo from '../media/logo_menu.png'
-import useAuth from '../../hooks/useAuth';
 
 function Navbar({ handleLogout }) {
 
     //Instanciando as variaveis
-    const { user, signed, empresa, signout, selectCompany } = useAuth()
+    const { user, signed, empresa, signout, selectCompany } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -57,9 +56,8 @@ function Navbar({ handleLogout }) {
                                         <p className='text-gray-600 font-bold text-base'>{user.nome_usuario}</p>
                                     </div>
                                 </div>
-                            ) : (
-                                <div></div>
-                            )}
+                            ) : null}
+
                             {/* Informa a empresa selecioanda */}
                             {empresa ? (
                                 <div className='flex items-center gap-2'>
@@ -68,9 +66,7 @@ function Navbar({ handleLogout }) {
                                         <p className='text-gray-600 font-bold text-base'>{empresa.nome_empresa}</p>
                                     </div>
                                 </div>
-                            ) : (
-                                <div></div>
-                            )}
+                            ) : null}
                         </div>
                         <div className='border-b border-gray-300 mt-2 mb-2'></div>
 
@@ -109,7 +105,7 @@ function Navbar({ handleLogout }) {
                     </ul>
                 </div>
             </div>
-            
+
         </nav>
     )
 }

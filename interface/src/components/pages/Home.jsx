@@ -8,8 +8,6 @@ import SearchInput from "./subPages/components/SearchInput";
 
 function Home() {
 
-    // Instanciando e Definindo como vazio
-
     //Instanciando o id da Empresa
     const [idEmpresa, setIdEmpresa] = useState(null);
     const [nome_empresa, setNomeEmpresa] = useState(null);
@@ -58,7 +56,9 @@ function Home() {
     // Pegando os dados do banco
     const getEmpresa = async () => {
         try {
-            const res = await axios.get("http://localhost:8800/empresa");
+            const token = localStorage.getItem('token');
+            const headers = { Authorization: `Bearer ${token}` };
+            const res = await axios.get("http://localhost:8800/empresa", { headers });
             setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
         } catch (error) {
             toast.error(error);
