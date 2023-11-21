@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import { supabase } from "../../../../services/api";
 
 import Back from '../../../layout/Back'
 import FrmCadastroSetor from "./frmCadastroSetor";
@@ -12,7 +13,7 @@ function CadastroSetor() {
 
     // Instanciando e Definindo como vazio
     const [data, setData] = useState(null);
-    const [empresa, setEmpresa] = useState([]);
+    const [setor, setSetor] = useState([]);
     const [onEdit, setOnEdit] = useState(null);
     const [formData, setFormData] = useState({
         nome_empresa: '',
@@ -39,17 +40,19 @@ function CadastroSetor() {
     };
 
     // Pegando os dados do banco
-    const getEmpresa = async () => {
+    const getSetor = async () => {
         try {
-            const res = await axios.get("http://localhost:8800/empresa");
-            setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
+            const { data } = await supabase.from("setor").select();
+            setSetor(data);
+            // const res = await axios.get("http://localhost:8800/empresa");
+            // setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }
     };
 
     useEffect(() => {
-        getEmpresa();
+        getSetor();
     }, []); // Chama apenas uma vez quando o componente é montado
 
     //Funções do Modal
@@ -77,7 +80,7 @@ function CadastroSetor() {
                         <Back />
                     </Link>
 
-                    <FrmCadastroSetor onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
+                    <FrmCadastroSetor onEdit={onEdit} setOnEdit={setOnEdit} getSetor={getSetor} />
 
                     <EditModal
                         data={editData}
@@ -87,8 +90,8 @@ function CadastroSetor() {
                     />
 
                     <GridCadastroSetor
-                        empresa={empresa}
-                        setEmpresa={setEmpresa}
+                        setor={setor}
+                        setSetor={setSetor}
                         setOnEdit={handleEdit}
                         handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
                     />

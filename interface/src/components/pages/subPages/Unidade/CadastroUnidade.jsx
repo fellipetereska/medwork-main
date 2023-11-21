@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import { supabase } from "../../../../services/api";
 
 import Back from '../../../layout/Back'
 import FrmCadastroUnidade from "./frmCadastroUnidade";
@@ -41,8 +42,10 @@ function CadastroUnidade() {
     // Pegando os dados do banco
     const getUnidade = async () => {
         try {
-            const res = await axios.get("http://localhost:8800/unidade");
-            setUnidade(res.data.sort((a, b) => (a.nome_unidade > b.nome_unidade ? 1 : -1)));
+            const { data } = await supabase.from("unidade").select();
+            setUnidade(data)
+            // const res = await axios.get("http://localhost:8800/unidade");
+            // setUnidade(res.data.sort((a, b) => (a.nome_unidade > b.nome_unidade ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }

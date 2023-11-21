@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { supabase } from '../../../../services/api'
 
 function GridUsuarios({ usuario, setOnEdit, handleEditModalOpen }) {
 
@@ -12,8 +13,10 @@ function GridUsuarios({ usuario, setOnEdit, handleEditModalOpen }) {
     useEffect(() => {
         const fetchUsuarios = async () => {
           try {
-            const response = await axios.get('http://localhost:8800/usuarios');
-            setUsuarios(response.data);
+            const { data } = await supabase.from("usuarios").select();
+            setUsuarios(data)
+            // const response = await axios.get('http://localhost:8800/usuarios');
+            // setUsuarios(response.data);
           } catch (error) {
             console.error('Erro ao buscar usuários:', error);
           }

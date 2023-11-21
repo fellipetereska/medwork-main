@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { supabase } from "../../services/api";
 
 import GridHome from "./subPages/GridHome";
 import EditModal from "./subPages/ModalCadastro";
@@ -13,7 +14,7 @@ function Home() {
     const [idEmpresa, setIdEmpresa] = useState(null);
     const [nome_empresa, setNomeEmpresa] = useState(null);
 
-    const [empresa, setEmpresa] = useState([]);
+    const [empresas, setEmpresa] = useState([]);
     const [setor, setSetor] = useState([]);
     const [onEdit, setOnEdit] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
@@ -57,10 +58,10 @@ function Home() {
     // Pegando os dados do banco
     const getEmpresa = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-            const res = await api.get("/empresa", { headers });
-            setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
+            const { data } = await supabase.from("empresa").select();
+            setEmpresa(data);
+            // const res = await api.get("/empresa");
+            // setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }
@@ -96,9 +97,9 @@ function Home() {
 
     //Função para Pesquisa
     useEffect(() => {
-        const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
+        const filtered = empresas.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
         setFilteredEmpresas(filtered);
-    }, [searchTerm, empresa]);
+    }, [searchTerm, empresas]);
 
 
     const handleSearch = (term) => {
@@ -121,7 +122,7 @@ function Home() {
             />
 
             <GridHome
-                empresa={filteredEmpresas}
+                empresas={filteredEmpresas}
                 setEmpresa={setEmpresa}
                 setOnEdit={setOnEdit}
                 handleEditModalOpen={handleEditModalOpen}

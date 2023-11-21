@@ -8,19 +8,19 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
   };
 
   const handleDelete = async (id) => {
-    console.log(id)
-    await axios
-      .delete(`http://localhost:8800/setor/${id}`)
-      .then(({ data }) => {
-        const newArray = setor.filter((item) => item.id !== id);
+    // console.log(id)
+    // await axios
+    //   .delete(`http://localhost:8800/setor/${id}`)
+    //   .then(({ data }) => {
+    //     const newArray = setor.filter((item) => item.id !== id);
 
-        setSetor(newArray);
-        toast.success(data);
-      })
-      .catch(({ data }) => toast.error(data))
-    console.log(id)
+    //     setSetor(newArray);
+    //     toast.success(data);
+    //   })
+    //   .catch(({ data }) => toast.error(data))
+    // console.log(id)
 
-    setOnEdit(null);
+    // setOnEdit(null);
   }
 
   return (
@@ -45,7 +45,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.nome_setor}
               </th>
-              <td className="px-6 py-4">{item.descricao}</td>
+              <td className="px-6 py-4">{item.ambiente_setor}</td>
               <td className="px-5 py-4 gap-4 flex justify-start">
                 <a className="font-medium text-blue-600 hover:text-blue-800" onClick={() => handleEdit(item)}>
                   <BsFillPencilFill />
