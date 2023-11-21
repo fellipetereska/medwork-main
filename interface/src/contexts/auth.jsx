@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import api from "../services/api";
 
 export const AuthContext = createContext({});
 
@@ -11,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadingStoreData = async () => {
       const storageToken = localStorage.getItem('token');
-      console.log('Stored token:', storageToken);
 
       if (storageToken) {
         setToken(storageToken);
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
           console.log('User loaded from localStorage:', storedUser);
         } else {
           try {
-            const res = await axios.post(`http://localhost:8800/validate`, null, {
+            const res = await api.post(`validate`, null, {
               headers: { Authorization: storageToken },
             });
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const signin = async (usuario, senha) => {
     try {
-      const res = await axios.post(`http://localhost:8800/login`, { usuario, senha })
+      const res = await api.post(`/login`, { usuario, senha })
       if (res.data.user) {
         setUser(res.data.user)
         setToken(res.data.token)
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 
   const selectCompany = async (id_empresa) => {
     try {
-      const res = await axios.post(`http://localhost:8800/selectCompany`, { id_empresa })
+      const res = await api.post(`/selectCompany`, { id_empresa })
       setEmpresa(res.data.company);
       localStorage.setItem('empresa', JSON.stringify(res.data.company))
     } catch (error) {
@@ -76,6 +76,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setEmpresa(null);
     localStorage.removeItem('token')
+    localStorage.removeItem('empresa')
   };
 
 

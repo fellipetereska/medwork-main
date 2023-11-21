@@ -5,6 +5,7 @@ import axios from 'axios';
 import GridHome from "./subPages/GridHome";
 import EditModal from "./subPages/ModalCadastro";
 import SearchInput from "./subPages/components/SearchInput";
+import api from "../../services/api";
 
 function Home() {
 
@@ -58,7 +59,7 @@ function Home() {
         try {
             const token = localStorage.getItem('token');
             const headers = { Authorization: `Bearer ${token}` };
-            const res = await axios.get("http://localhost:8800/empresa", { headers });
+            const res = await api.get("/empresa", { headers });
             setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
         } catch (error) {
             toast.error(error);
