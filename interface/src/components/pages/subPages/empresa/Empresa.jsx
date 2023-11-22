@@ -70,7 +70,7 @@ function Empresa() {
 
     useEffect(() => {
         getEmpresa();
-    }, []); // Chama apenas uma vez quando o componente é montado
+    }, []);
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {

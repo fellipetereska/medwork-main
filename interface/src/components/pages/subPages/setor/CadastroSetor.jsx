@@ -1,102 +1,91 @@
+//Importando ferramentas
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios';
 import { Link } from "react-router-dom";
-import { supabase } from "../../../../services/api";
+import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
 
+//Importando componentes da tela
 import Back from '../../../layout/Back'
 import FrmCadastroSetor from "./frmCadastroSetor";
 import GridCadastroSetor from "./gridCadastroSetor";
-import EditModal from "../ModalCadastro";
+import SearchInput from "../components/SearchInput";
+
 
 function CadastroSetor() {
 
     // Instanciando e Definindo como vazio
-    const [data, setData] = useState(null);
     const [setor, setSetor] = useState([]);
     const [onEdit, setOnEdit] = useState(null);
-    const [formData, setFormData] = useState({
-        nome_empresa: '',
-        razao_social: '',
-        cnpj: '',
-        endereco: '',
-        cidade: '',
-        contato: '',
-        telefone: ''
-    });
 
-    //Instanciando Modal
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editData, setEditData] = useState(null);
+    //Instanciando o Search
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredSetor, setFilteredSetor] = useState([]);
 
-    const openModal = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data)
-    };
-
-
-    const handleSave = () => {
-        console.log("Dados Salvos", formData);
-    };
-
-    // Pegando os dados do banco
+    // Pegando os dados da tabela Setor
     const getSetor = async () => {
         try {
             const { data } = await supabase.from("setor").select();
-            setSetor(data);
-            // const res = await axios.get("http://localhost:8800/empresa");
-            // setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
+            const sortedData = data.sort((a, b) => {
+                // Ordenar por status do checkbox (ativo ou inativo)
+                if (a.ativo !== b.ativo) {
+                    return a.ativo ? -1 : 1;
+                }
+
+                // Ordenar por ordem alfabética
+                return a.nome_setor.localeCompare(b.nome_setor);
+            });
+            setSetor(sortedData);
         } catch (error) {
             toast.error(error);
         }
     };
 
+    //Renderizando os dados
     useEffect(() => {
         getSetor();
-    }, []); // Chama apenas uma vez quando o componente é montado
+    }, []);
 
-    //Funções do Modal
-    const handleEditModalOpen = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data);
+    //Função para edição
+    const handleEdit = (selectedSetor) => {
+        setOnEdit(selectedSetor)
     };
 
-    const handleCancelEdit = () => {
-        setEditData(null);
-        setIsEditModalOpen(false);
+    //Função para Pesquisa
+    useEffect(() => {
+        const filtered = setor.filter((set) => set.nome_setor.toLowerCase().includes(searchTerm.toLowerCase()));
+        setFilteredSetor(filtered);
+    }, [searchTerm, setor]);
+
+    //Função para Busca
+    const handleSearch = (term) => {
+        // Atualizar o estado do termo de pesquisa com o valor fornecido
+        setSearchTerm(term);
     }
-
-    const handleEdit = (selectedEmpresa) => {
-        setOnEdit(selectedEmpresa)
-    };
 
 
     return (
-        <div>
-            <div className="tab-content mt-14 mb-32">
-                <div>
+        <div className="p-6">
+            {/* Botão para voltar */}
+            <Link to="/cadastros">
+                <Back />
+            </Link>
 
-                    <Link to="/cadastros">
-                        <Back />
-                    </Link>
+            {/* Formulário de Cadastro */}
+            <FrmCadastroSetor onEdit={onEdit} setOnEdit={setOnEdit} getSetor={getSetor} />
 
-                    <FrmCadastroSetor onEdit={onEdit} setOnEdit={setOnEdit} getSetor={getSetor} />
-
-                    <EditModal
-                        data={editData}
-                        onCancel={handleCancelEdit}
-                        onSave={handleSave}
-                        isOpen={isEditModalOpen}
-                    />
-
-                    <GridCadastroSetor
-                        setor={setor}
-                        setSetor={setSetor}
-                        setOnEdit={handleEdit}
-                        handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
-                    />
+            {/* Barra de pesquisa */}
+            <div className="flex justify-center w-full mt-6">
+                <div className="w-3/6">
+                    <SearchInput onSearch={handleSearch} />
                 </div>
             </div>
+
+            {/* Tabela Setor */}
+            <GridCadastroSetor
+                setor={filteredSetor}
+                setSetor={setSetor}
+                setOnEdit={handleEdit}
+            />
         </div>
     )
 }
