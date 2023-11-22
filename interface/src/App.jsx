@@ -26,6 +26,7 @@ import Footer from './components/layout/Footer';
 
 //Função Principal
 function App() {
+  const { signout } = useAuth();
 
   const Private = ({ Item }) => {
     const { signed } = useAuth();
@@ -35,7 +36,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8800/logout");
+      await signout;
 
     } catch (error) {
       console.log("Erro ao fazer logout:", error)

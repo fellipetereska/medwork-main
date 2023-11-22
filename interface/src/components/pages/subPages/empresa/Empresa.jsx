@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { supabase } from "../../../../services/api";
 
 import CadastroEmpresa from "./frmCadastroEmpresas";
 import GridCadastroEmpresa from './gridCadastroEmpresa';
@@ -49,8 +50,10 @@ function Empresa() {
     // Pegando os dados do banco
     const getEmpresa = async () => {
         try {
-            const res = await axios.get("http://localhost:8800/empresa");
-            setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
+            const { data } = await supabase.from("empresa").select();
+            setEmpresa(data)
+            // const res = await axios.get("http://localhost:8800/empresa");
+            // setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }
@@ -67,7 +70,7 @@ function Empresa() {
 
     useEffect(() => {
         getEmpresa();
-    }, []); // Chama apenas uma vez quando o componente é montado
+    }, []);
 
     //Funções do Modal
     const handleEditModalOpen = (data) => {

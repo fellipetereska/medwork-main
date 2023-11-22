@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { supabase } from "../../../../services/api";
 
 import FrmCadastroUsuario from './frmCadastroUsuario'
 import GridUsuarios from './gridUsuarios';
@@ -38,8 +39,10 @@ function CadastroUsuario() {
     // Pegando os dados do banco
     const getUsuario = async () => {
         try {
-            const res = await axios.get("http://localhost:8800/usuarios");
-            setUsuario(res.data.sort((a, b) => (a.id_usuario > b.id_usuario ? 1 : -1)));
+            const { data } = await supabase.from("usuarios").select();
+            setUsuario(data)
+            // const res = await axios.get("http://localhost:8800/usuarios");
+            // setUsuario(res.data.sort((a, b) => (a.id_usuario > b.id_usuario ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }

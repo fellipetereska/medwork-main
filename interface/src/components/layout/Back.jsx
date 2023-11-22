@@ -6,8 +6,8 @@ function BotaoVoltar() {
         <>
             <button
                 type="submit"
-                className="absolut xl:ml-32 px-4 py-2 rounded-lg shadow-md bg-gray-50 hover:bg-gray-100">
-                    <IoArrowBackOutline className="text-sky-800" />
+                className="absolut xl:ml-32 px-6 py-2">
+                    <IoArrowBackOutline className="text-sky-800 hover:text-sky-600" />
             </button>
         </>
     )

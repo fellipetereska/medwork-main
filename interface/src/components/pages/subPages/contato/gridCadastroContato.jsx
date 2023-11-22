@@ -8,21 +8,21 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
     setOnEdit(item);
   };
 
-  const handleDelete = async (id) => {
-    console.log(id)
-    await axios
-      .delete(`http://localhost:8800/contato/${id}`)
-      .then(({ data }) => {
-        const newArray = contato.filter((item) => item.id !== id);
+  // const handleDelete = async (id) => {
+  //   console.log(id)
+  //   await axios
+  //     .delete(`http://localhost:8800/contato/${id}`)
+  //     .then(({ data }) => {
+  //       const newArray = contato.filter((item) => item.id !== id);
 
-        setContato(newArray);
-        toast.success(data);
-      })
-      .catch(({ data }) => toast.error(data))
-    console.log(id)
+  //       setContato(newArray);
+  //       toast.success(data);
+  //     })
+  //     .catch(({ data }) => toast.error(data))
+  //   console.log(id)
 
-    setOnEdit(null);
-  }
+  //   setOnEdit(null);
+  // }
 
   return (
     <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">

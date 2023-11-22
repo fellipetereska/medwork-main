@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import { supabase } from '../../../../services/api'
 
 import Back from '../../../layout/Back'
 import FrmCadastroContato from "./frmCadastroContato";
@@ -38,8 +39,10 @@ function CadastroSetor() {
     // Pegando os dados do banco
     const getContato = async () => {
         try {
-            const res = await axios.get("http://localhost:8800/contato");
-            setContato(res.data.sort((a, b) => (a.id_contato > b.id_contato ? 1 : -1)));
+            const { data } = await supabase.from("contato").select();
+            setContato(data)
+            // const res = await axios.get("http://localhost:8800/contato");
+            // setContato(res.data.sort((a, b) => (a.id_contato > b.id_contato ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }
