@@ -1,139 +1,117 @@
+//Importando Ferramentas
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from 'axios';
-import { supabase } from "../../../../services/api";
+import { supabase } from "../../../../services/api"; //Conexão com o banco
 
+//Importando componentes
 import CadastroEmpresa from "./frmCadastroEmpresas";
 import GridCadastroEmpresa from './gridCadastroEmpresa';
-import EditModal from "../ModalCadastro";
 import SearchInput from "../components/SearchInput";
 import Back from '../../../layout/Back'
 
 function Empresa() {
 
-    // Instanciando e Definindo como vazio
-    const [data, setData] = useState(null);
-    const [empresa, setEmpresa] = useState([]);
-    const [contato, setContato] = useState([]);
-    const [onEdit, setOnEdit] = useState(null);
-    const [formData, setFormData] = useState({
-        nome_empresa: '',
-        razao_social: '',
-        cnpj: '',
-        endereco: '',
-        cidade: '',
-        contato: '',
-        telefone: ''
-    });
+  // Instanciando e Definindo como vazio
+  const [empresa, setEmpresa] = useState([]);
+  const [contato, setContato] = useState([]);
+  const [onEdit, setOnEdit] = useState(null);
 
-    //Instanciando o Search
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredEmpresas, setFilteredEmpresas] = useState([]);
+  //Instanciando o Search
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredEmpresas, setFilteredEmpresas] = useState([]);
 
-    //Instanciando Modal
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editData, setEditData] = useState(null);
-
-    // const [contatoNomes, setContatoNomes] = useState({});
-
-    const openModal = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data)
-    };
-
-
-    const handleSave = () => {
-        console.log("Dados Salvos", formData);
-    };
-
-    // Pegando os dados do banco
-    const getEmpresa = async () => {
-        try {
-            const { data } = await supabase.from("empresa").select();
-            setEmpresa(data)
-            // const res = await axios.get("http://localhost:8800/empresa");
-            // setEmpresa(res.data.sort((a, b) => (a.nome_empresa > b.nome_empresa ? 1 : -1)));
-        } catch (error) {
-            toast.error(error);
+  // Pegando os dados da tabela Empresa
+  const getEmpresa = async () => {
+    try {
+      const { data } = await supabase.from("empresa").select();
+      const sortData = data.sort((a, b) => {
+        //Ordenar pro status (ativo ou inativo)
+        if (a.ativo !== b.ativo) {
+          return a.ativo ? -1 : 1;
         }
-    };
 
-    const getContato = async () => {
-        try {
-            const res = await axios.get("http://localhost:8800/contato");
-            setContato(res.data);
-        } catch (error) {
-            toast.error(error);
+        //Ordenar por ordem alfabética
+        return a.nome_empresa.localeCompare(b.nome_empresa);
+      })
+
+      setEmpresa(sortData)
+    } catch (error) {
+      console.log("Erro ao buscar empresas: ", error);
+    }
+  };
+
+  const getContato = async () => {
+    try {
+      const { data } = await supabase.from("contato").select();
+      const sortData = data.sort((a, b) => {
+        //Ordenar por status (ativo ou inativo)
+        if (a.ativo !== b.ativo) {
+          return a.ativo ? -1 : 1;
         }
-    };
 
-    useEffect(() => {
-        getEmpresa();
-    }, []);
-
-    //Funções do Modal
-    const handleEditModalOpen = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data);
-    };
-
-    const handleCancelEdit = () => {
-        setEditData(null);
-        setIsEditModalOpen(false);
+        //Ordenar por ordem alfabética
+        return a.nome_contato.localeCompare(b.nome_contato);
+      })
+      setContato(sortData)
+    } catch (error) {
+      toast.error(error);
     }
+  };
 
-    const handleEdit = (selectedEmpresa) => {
-        setOnEdit(selectedEmpresa)
-    };
+  useEffect(() => {
+    getEmpresa();
+    getContato();
+  }, []);
 
-    //Função para Pesquisa
-    useEffect(() => {
-        const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
-        setFilteredEmpresas(filtered);
-    }, [searchTerm, empresa]);
+  const handleEdit = (selectedEmpresa) => {
+    setOnEdit(selectedEmpresa)
+  };
+
+  //Função para Pesquisa
+  useEffect(() => {
+    const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
+    setFilteredEmpresas(filtered);
+  }, [searchTerm, empresa]);
 
 
-    const handleSearch = (term) => {
-        // Atualizar o estado do termo de pesquisa com o valor fornecido
-        setSearchTerm(term);
-    }
+  const handleSearch = (term) => {
+    // Atualizar o estado do termo de pesquisa com o valor fornecido
+    setSearchTerm(term);
+  }
 
 
-    return (
-        <div>
-            <div className="tab-content mt-14 mb-32">
-                <div>
-
-                    <Link to="/cadastros">
-                        <Back />
-                    </Link>
-
-                    <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
-
-                    <EditModal
-                        data={editData}
-                        onCancel={handleCancelEdit}
-                        onSave={handleSave}
-                        isOpen={isEditModalOpen}
-                    />
-
-                    <div className="flex justify-center w-full mt-6">
-                        <div className="w-3/6">
-                            <SearchInput onSearch={handleSearch} />
-                        </div>
-                    </div>
-
-                    <GridCadastroEmpresa
-                        empresa={filteredEmpresas}
-                        setEmpresa={setEmpresa}
-                        setOnEdit={handleEdit}
-                        handleEditModalOpen={() => handleEditModalOpen(data)}
-                    />
-                </div>
-            </div>
+  return (
+    <div className="tab-content mt-14 mb-32">
+      <div className="flex justify-center items-center">
+        {/* Botão para voltar */}
+        <div className="absolute left-0">
+          <Link to="/cadastros">
+            <Back />
+          </Link>
         </div>
-    )
+
+        <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Empresa</h1>
+      </div>
+
+      {/* Formulário de cadastro */}
+      <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getEmpresa={getEmpresa} />
+
+      {/* Barra de pesquisa */}
+      <div className="flex justify-center w-full">
+        <div className="w-3/6">
+          <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
+        </div>
+      </div>
+
+      {/* Tabela Empresa */}
+      <GridCadastroEmpresa
+        empresa={filteredEmpresas}
+        setEmpresa={setEmpresa}
+        setOnEdit={handleEdit}
+      />
+    </div>
+  )
 }
 
 export default Empresa;

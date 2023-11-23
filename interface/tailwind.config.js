@@ -5,10 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-      textColor: {
-        'custom-checkbox': '#000000',
+      backdropBlur: {
+        xs: '1px',
       },
-    },
+    }
   },
   fontFamily: {
     body: ['Open Sans']
