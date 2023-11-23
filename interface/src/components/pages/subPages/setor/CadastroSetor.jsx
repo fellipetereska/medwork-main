@@ -76,7 +76,7 @@ function CadastroSetor() {
             {/* Barra de pesquisa */}
             <div className="flex justify-center w-full mt-6">
                 <div className="w-3/6">
-                    <SearchInput onSearch={handleSearch} />
+                    <SearchInput onSearch={handleSearch} placeholder="Buscar Setor..." />
                 </div>
             </div>
 

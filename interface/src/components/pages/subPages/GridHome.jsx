@@ -2,7 +2,7 @@ import { BsFillTrash3Fill, BsFillPencilFill, BsBoxArrowDown } from 'react-icons/
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 
 function GridHome({ empresas, setEmpresa, setOnEdit, handleEditModalOpen }) {

@@ -41,8 +41,6 @@ function CadastroSetor() {
         try {
             const { data } = await supabase.from("contato").select();
             setContato(data)
-            // const res = await axios.get("http://localhost:8800/contato");
-            // setContato(res.data.sort((a, b) => (a.id_contato > b.id_contato ? 1 : -1)));
         } catch (error) {
             toast.error(error);
         }

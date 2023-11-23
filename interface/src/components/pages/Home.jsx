@@ -6,18 +6,15 @@ import { supabase } from "../../services/api";
 import GridHome from "./subPages/GridHome";
 import EditModal from "./subPages/ModalCadastro";
 import SearchInput from "./subPages/components/SearchInput";
-import api from "../../services/api";
 
 function Home() {
 
     //Instanciando o id da Empresa
-    const [idEmpresa, setIdEmpresa] = useState(null);
     const [nome_empresa, setNomeEmpresa] = useState(null);
 
     const [empresas, setEmpresa] = useState([]);
     const [setor, setSetor] = useState([]);
     const [onEdit, setOnEdit] = useState(null);
-    const [activeTab, setActiveTab] = useState(0);
     const [formData, setFormData] = useState({
         nome_empresa: '',
         razao_social: '',
@@ -111,7 +108,7 @@ function Home() {
         <div>
             <div className="flex justify-center w-full mt-6">
                 <div className="w-3/6">
-                    <SearchInput onSearch={handleSearch} />
+                    <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
                 </div>
             </div>
             <EditModal

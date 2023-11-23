@@ -72,31 +72,32 @@ function CadastroUnidade() {
 
 
     return (
-        <div>
-            <div className="tab-content mt-14 mb-32">
-                <div>
+        <div className="tab-content mt-14 mb-32">
 
+            <div className="flex justify-center items-center">
+                {/* Botão para voltar */}
+                <div className="absolute left-0">
                     <Link to="/cadastros">
                         <Back />
                     </Link>
-
-                    <FrmCadastroUnidade onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUnidade} />
-
-                    <EditModal
-                        data={editData}
-                        onCancel={handleCancelEdit}
-                        onSave={handleSave}
-                        isOpen={isEditModalOpen}
-                    />
-
-                    <GridCadastroUnidade
-                        unidade={unidade}
-                        setEmpresa={setUnidade}
-                        setOnEdit={handleEdit}
-                        handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
-                    />
                 </div>
+                <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Unidade</h1>
             </div>
+            <FrmCadastroUnidade onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUnidade} />
+
+            <EditModal
+                data={editData}
+                onCancel={handleCancelEdit}
+                onSave={handleSave}
+                isOpen={isEditModalOpen}
+            />
+
+            <GridCadastroUnidade
+                unidade={unidade}
+                setEmpresa={setUnidade}
+                setOnEdit={handleEdit}
+                handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
+            />
         </div>
     )
 }
