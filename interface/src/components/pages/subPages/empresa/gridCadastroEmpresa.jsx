@@ -41,72 +41,84 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
 
   const handleDesactivation = async (id, ativo) => {
     try {
-      await supabase
-        .from("empresa")
-        .upsert({ ativo: !ativo })
-        .eq("id_empresa", id)
-
+      // Inverte o estado ativo localmente
       const novaEmpresa = empresa.map(item =>
         item.id_empresa === id ? { ...item, ativo: !ativo } : item
       );
-      setEmpresa(novaEmpresa)
-      toast.success(`Empresa ${!ativo ? 'ativada' : 'inativada'} com sucesso`)
+      setEmpresa(novaEmpresa);
+
+      // Atualiza o estado no banco de dados
+      const { error } = await supabase
+        .from("empresa")
+        .upsert([{ id_empresa: id, ativo: !ativo }]);
+
+      if (error) {
+        // Se houver um erro na atualização do banco de dados, reverte o estado local
+        setEmpresa(empresa.map(item =>
+          item.id_empresa === id ? { ...item, ativo } : item
+        ));
+        throw new Error(error.message);
+      }
+
+      toast.success(`Empresa ${!ativo ? 'ativada' : 'inativada'} com sucesso`);
     } catch (error) {
       console.log("Erro ao atualizar status da empresa", error);
-      toast.error("Erro ao atualizar statuso da empresa, verifique o console")
+      toast.error("Erro ao atualizar status da empresa, verifique o console");
     }
   };
 
 
-
   return (
-    <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
-      <table class="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+    <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
+      <table className="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3">
               ID
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3">
               Empresa
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3">
               Razão Social
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3">
               CNPJ
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3">
               Contato
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
+            <th scope="col" className="px-4 py-3 text-center">
               Ações
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
-              Ativo?
+            <th scope="col" className="px-4 py-3 text-center">
+              Inativo?
             </th>
           </tr>
         </thead>
         <tbody>
           {empresa.map((item, i) => (
-            <tr key={i} class="border-b bg-white">
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+            <tr
+              key={i}
+              className={`border-b bg-white ${!item.ativo ? 'opacity-25' : ''}`}
+            >
+              <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_empresa}
               </th>
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+              <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.nome_empresa}
               </th>
-              <td className="px-6 py-4">
+              <td className="px-4 py-4">
                 {item.razao_social}
               </td>
-              <td className="px-6 py-4">
+              <td className="px-4 py-4">
                 {item.cnpj_empresa}
               </td>
-              <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+              <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {findContato(item.fk_contato_id)}
               </th>
               <td className="py-4 gap-4">
-                <a className="flex justify-center font-medium text-blue-600 hover:text-blue-800">
+                <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
               </td>

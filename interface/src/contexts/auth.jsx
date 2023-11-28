@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }) => {
 
         if (storedUser) {
           setUser(storedUser);
-          console.log('User loaded from localStorage:', storedUser);
         } else {
           try {
             const res = await api.post(`validate`, null, {
@@ -30,7 +29,6 @@ export const AuthProvider = ({ children }) => {
 
             setUser(res.data.user);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            console.log('User loaded from token validation:', res.data.user);
           } catch (error) {
             console.error('Erro ao validar o token:', error);
             signout();

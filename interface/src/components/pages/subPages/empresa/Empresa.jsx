@@ -16,6 +16,7 @@ function Empresa() {
   const [empresa, setEmpresa] = useState([]);
   const [contato, setContato] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
+  const [contactName, setContactName] = useState(null)
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,7 +66,14 @@ function Empresa() {
   }, []);
 
   const handleEdit = (selectedEmpresa) => {
-    setOnEdit(selectedEmpresa)
+    setOnEdit(selectedEmpresa);
+
+    if (selectedEmpresa.fk_contato_id) {
+      const contactInfo = contato.find((c) => c.id_contato === selectedEmpresa.fk_contato_id)
+      if (contactInfo) {
+        setContactName(contactInfo.nome_contato)
+      }
+    }
   };
 
   //Função para Pesquisa
@@ -95,7 +103,12 @@ function Empresa() {
       </div>
 
       {/* Formulário de cadastro */}
-      <CadastroEmpresa onEdit={onEdit} setOnEdit={setOnEdit} getEmpresa={getEmpresa} />
+      <CadastroEmpresa 
+        onEdit={onEdit} 
+        setOnEdit={setOnEdit} 
+        getEmpresa={getEmpresa}
+        contact={contactName}
+        />
 
       {/* Barra de pesquisa */}
       <div className="flex justify-center w-full">

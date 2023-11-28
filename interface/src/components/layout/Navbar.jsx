@@ -31,12 +31,12 @@ function Navbar({ handleLogout }) {
 
 
     return (
-        <nav class="bg-white border-gray-200 shadow-md">
-            <div class="flex flex-wrap items-center justify-between mx-auto p-4 px-10">
+        <nav className="bg-white border-gray-200 shadow-md">
+            <div className="flex flex-wrap items-center justify-between mx-auto p-4 px-10">
                 <div className='flex gap-8 items-center'>
-                    <Link to="/home"><img class="h-10 flex justify-start" src={logo} alt="" /></Link>
+                    <Link to="/home"><img className="h-10 flex justify-start" src={logo} alt="" /></Link>
                 </div>
-                <div class="flex xl:order-1">
+                <div className="flex xl:order-1">
                     <div
                         type="button"
                         onClick={handleMenuClick}
@@ -71,17 +71,17 @@ function Navbar({ handleLogout }) {
                         <div className='border-b border-gray-300 mt-2 mb-2'></div>
 
                         <li onClick={handleMenuItemClick}
-                            class="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/home">Home</Link></li>
+                            className="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/home">Home</Link></li>
                         <li onClick={handleMenuItemClick}
-                            class="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/cadastros">Cadastros</Link></li>
+                            className="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/cadastros">Cadastros</Link></li>
                         <li onClick={handleMenuItemClick}
-                            class="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/gestao">Gestão</Link></li>
+                            className="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/gestao">Gestão</Link></li>
                         <li onClick={handleMenuItemClick}
-                            class="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/inventario">Inventario de Risco</Link></li>
+                            className="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/inventario">Inventario de Risco</Link></li>
                         <li onClick={handleMenuItemClick}
-                            class="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/plano">Plano de Ação</Link></li>
+                            className="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/plano">Plano de Ação</Link></li>
                         <li onClick={handleMenuItemClick}
-                            class="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/laudos">Laudos</Link></li>
+                            className="block py-2 px-3 text-zinc-700 md:bg-transparent md:text-zinc-700 md:p-0 hover:rounded-md hover:text-sky-800"><Link to="/laudos">Laudos</Link></li>
 
                         <div className='border-b border-gray-300 mt-2 mb-2'></div>
                         {/* Renderiza o icon logout quando o usuario loga */}
@@ -96,7 +96,7 @@ function Navbar({ handleLogout }) {
                             // Renderiza o botão login quando o usuario da logout
                             <Link to="/">
                                 <button
-                                    class=" bg-sky-600 hover:bg-skky-700 text-white font-bold py-2 px-4 border shadow hover:shadow-md rounded"
+                                    className=" bg-sky-600 hover:bg-skky-700 text-white font-bold py-2 px-4 border shadow hover:shadow-md rounded"
                                 >
                                     Login
                                 </button>
