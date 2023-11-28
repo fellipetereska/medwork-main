@@ -7,30 +7,35 @@ import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
 
-function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa }) {
+function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
   const [contato, setContato] = useState(null); //Armazenar o Contato
   const [showModal, setShowModal] = useState(false); //Controlar o Modal
   const [contactId, setContactId] = useState(null); //Armazenar o Id do Contato recebido do Modal
-  const [contatcName, setContactName] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
+  const [contactName, setContactName] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
   const [checkedEstadual, setCheckedEstadual] = useState(false); //Armazena o estado do checkbox da Inscrição Estadual
   const [checkedMunicipal, setCheckedMunicipal] = useState(false); //Armazena o estado do checkbox da Inscrição Municipal
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
     if (onEdit) {
-      const user = ref.current
+      const user = ref.current;
 
       user.nome_empresa.value = onEdit.nome_empresa;
       user.razao_social.value = onEdit.razao_social;
       user.cnpj_empresa.value = onEdit.cnpj_empresa;
       user.inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
       user.inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
-      user.fk_contato_id.value = onEdit.fk_contato_id;
+
+      if (contact && onEdit.fk_contato_id) {
+        setContactName(contact);
+      } else {
+        setContactName(null)
+      }
     }
-  }, [onEdit]);
+  }, [onEdit, contact]);
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -92,6 +97,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa }) {
     setOnEdit(null);
     setContactId(null);
     setContactName(null);
+    setCheckedEstadual(null);
+    setCheckedMunicipal(null);
 
     //Atualiza os dados
     getEmpresa();
@@ -108,6 +115,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa }) {
     user.inscricao_municipal_empresa.value = "";
     setContactId(null);
     setContactName(null);
+    setCheckedEstadual(null);
+    setCheckedMunicipal(null);
   };
 
   //Busca os contatos para colocar no select
@@ -147,7 +156,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa }) {
   }
 
   //Função para limpar o campo Contato
-  const handleClearUnidade = () => {
+  const handleClearContato = () => {
     setContactId(null);
     setContactName(null);
   };
@@ -238,27 +247,34 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa }) {
               Contato:
             </label>
             <div className="flex items-center w-full">
-              {contatcName ? (
+              {contactName ? (
                 <>
-                  <div className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-end mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
-                    <p className="px-2 text-sm font-sm text-gray-600">
+                  <button
+                    className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModal}
+                  >
+                    <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
                       Contato:
                     </p>
                     <p className="font-bold">
-                      {contatcName}
+                      {contactName}
                     </p>
-                  </div>
-                  <button className="ml-4" onClick={handleClearUnidade}>
+                  </button>
+                  <button className="ml-4" onClick={handleClearContato}>
                     <img src={icon_sair} alt="" className="h-9" />
                   </button>
                 </>
               ) : (
-                <div className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-end mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                <button
+                  className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                  onClick={openModal}
+                >
                   <p className="px-2 text-sm font-medium">
                     Nenhum Contato Selecionado
                   </p>
-                </div>
+                </button>
               )}
+
               <button
                 type="button"
                 onClick={openModal}

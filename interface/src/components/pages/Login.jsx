@@ -42,44 +42,44 @@ function Login() {
                         </div>
                         <form className="rounded space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div className='mb-6 border-b border-gray-100'></div>
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="usuario">
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="usuario">
                                     Usuário
                                 </label>
                                 <input
-                                    class="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                                    className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                                     name='usuario'
                                     type="text"
                                     value={username}
                                     placeholder="Username"
                                     onChange={(e) => setUsername(e.target.value)}></input>
                             </div>
-                            <div class="mb-6">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="senha">
+                            <div className="mb-6">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="senha">
                                     Senha
                                 </label>
                                 <input
-                                    class="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                                    className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                                     name='senha'
                                     value={password}
                                     type="password"
                                     placeholder="••••••••"
                                     onChange={(e) => setPassword(e.target.value)}></input>
                             </div>
-                            <div class="flex items-start">
-                                <div class="flex items-center h-5">
+                            <div className="flex items-start">
+                                <div className="flex items-center h-5">
                                     <input
-                                        class="w-4 h-4 bg-gray-50 focus:ring-3 focus:ring-primary-300"
+                                        className="w-4 h-4 bg-gray-50 focus:ring-3 focus:ring-primary-300"
                                         id="remember"
                                         aria-describedby="remember"
                                         type="checkbox"
                                     />
                                 </div>
-                                <div class="ml-3 text-sm">
-                                    <label for="remember" class="text-gray-500 hover:text-gray-800">Remember me</label>
+                                <div className="ml-3 text-sm">
+                                    <label htmlFor="remember" className="text-gray-500 hover:text-gray-800">Remember me</label>
                                 </div>
                             </div>
-                            <button class="w-full py-2 font-semibold cursor-pointer text-center focus:outline-none shadow hover:bg-sky-700 rounded-md text-white bg-sky-600"
+                            <button className="w-full py-2 font-semibold cursor-pointer text-center focus:outline-none shadow hover:bg-sky-700 rounded-md text-white bg-sky-600"
                                 type='submit'>
                                 Entrar
                             </button>
