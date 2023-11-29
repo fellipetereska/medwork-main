@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
 import InputMask from 'react-input-mask';
 
-import ModalSearchUnidadeContato from './ModalSearchUnidadeContato'
-import ModalSearchUnidadeEmpresa from './ModalSearchUnidadeEmpresa'
+import ModalSearchUnidadeContato from '../components/Modal/ModalSearchContato'
+import ModalSearchUnidadeEmpresa from '../components/Modal/ModalSearchEmpresa'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 

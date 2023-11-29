@@ -5,19 +5,18 @@ import { supabase } from '../../../../services/api' //Conexão com o banco de da
 
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
-import ModalSearchSetor from "./ModalSearchSetor";
+import ModalSearchSetor from "../components/Modal/ModalSearchUnidade";
 
 
-function FrmCadastroSetor({ onEdit, setOnEdit, getSetor }) {
+function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
 
   //Instanciando Variaveis
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
   const [unidade, setUnidade] = useState(null);
   const [showModal, setShowModal] = useState(false); //Controlar o Modal
-  const [unidadeId, setunidadeId] = useState(null); //Armazenar o Id do Contato recebido do Modal
+  const [unidadeId, setUnidadeId] = useState(null); //Armazenar o Id do Contato recebido do Modal
   const [nomeUnidade, setNomeUnidade] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
-
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
@@ -27,9 +26,16 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor }) {
       user.nome_setor.value = onEdit.nome_setor;
       user.ambiente_setor.value = onEdit.ambiente_setor;
       user.observacao_setor.value = onEdit.observacao_setor;
-      user.fk_unidade_id.value = onEdit.fk_unidade_id;
+
+      if (unidade && onEdit.fk_unidade_id) {
+        setNomeUnidade(unidade);
+        setUnidadeId(onEdit.fk_unidade_id);
+      } else {
+        setNomeUnidade(null);
+        setUnidadeId(null);
+      }
     }
-  }, [onEdit]);
+  }, [onEdit, unidade]);
 
   //Função para adicionar ou atualizar dado
   const handleSubmit = async (e) => {
@@ -84,7 +90,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor }) {
     user.nome_setor.value = "";
     user.ambiente_setor.value = "";
     user.observacao_setor.value = "";
-    setunidadeId(null);
+    setUnidadeId(null);
     setNomeUnidade(null);
     setOnEdit(null);
 
@@ -99,7 +105,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor }) {
     user.nome_setor.value = "";
     user.ambiente_setor.value = "";
     user.observacao_setor.value = "";
-    setunidadeId(null);
+    setUnidadeId(null);
     setNomeUnidade(null);
   };
 
@@ -126,13 +132,13 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor }) {
   // Função para atualizar o Id Contato
   const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
     closeModal();
-    setunidadeId(unidadeId)
+    setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
   };
 
   //Função para limpar o campo Unidade
   const handleClearUnidade = () => {
-    setunidadeId(null);
+    setUnidadeId(null);
     setNomeUnidade(null);
   };
 
@@ -158,24 +164,30 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor }) {
             <div className="flex items-center w-full">
               {nomeUnidade ? (
                 <>
-                  <div className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                  <button
+                    className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModal}
+                  >
                     <p className="px-2 text-sm font-sm text-gray-600">
                       unidade:
                     </p>
                     <p className="font-bold">
                       {nomeUnidade}
                     </p>
-                  </div>
+                  </button>
                   <button className="ml-4" onClick={handleClearUnidade}>
                     <img src={icon_sair} alt="" className="h-9" />
                   </button>
                 </>
               ) : (
-                <div className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                <button
+                  className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                  onClick={openModal}
+                >
                   <p className="text-sm font-medium">
                     Nenhuma Unidade Selecionado
                   </p>
-                </div>
+                </button>
               )}
               <button
                 type="button"

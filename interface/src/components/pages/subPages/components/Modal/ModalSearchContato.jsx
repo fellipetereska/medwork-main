@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import SearchInput from '../components/SearchInput';
+import SearchInput from '../SearchInput';
 
-const ModalSearchUnidadeContato = ({ onCancel, isOpen, children, onContactSelect }) => {
+const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -25,7 +25,7 @@ const ModalSearchUnidadeContato = ({ onCancel, isOpen, children, onContactSelect
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
               onClick={onCancel}>
               <svg className="flex m-auto w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
               </svg>
             </button>
           </div>
@@ -33,7 +33,7 @@ const ModalSearchUnidadeContato = ({ onCancel, isOpen, children, onContactSelect
         <div className='border-b border-gray-200'></div>
         <div className='flex justify-center items-center py-2'>
           <p className='text-sm text-gray-500 text-center'>
-            Selecione o responsável pela Empresa
+            Selecione um Contato para ser o responsável pela Empresa
           </p>
         </div>
         <div className="flex justify-center w-full mt-4 mb-4">
@@ -54,16 +54,16 @@ const ModalSearchUnidadeContato = ({ onCancel, isOpen, children, onContactSelect
                 className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
                 onClick={() => onContactSelect(contato.id_contato, contato.nome_contato)}
               >
-                <div className="flex items-center gap-12">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700">
+                <div class="flex items-center gap-12">
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-700">
                       {contato.nome_contato}
                     </p>
-                    <p className="text-sm text-gray-500 truncate">
+                    <p class="text-sm text-gray-500 truncate">
                       {contato.email_contato}
                     </p>
                   </div>
-                  <div className="inline-flex items-center text-base font-semibold text-gray-900">
+                  <div class="inline-flex items-center text-base font-semibold text-gray-900">
                     {contato.telefone_contato}
                   </div>
                 </div>
@@ -76,4 +76,4 @@ const ModalSearchUnidadeContato = ({ onCancel, isOpen, children, onContactSelect
 };
 
 
-export default ModalSearchUnidadeContato;
+export default ModalSearchEmpresa;
