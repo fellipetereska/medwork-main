@@ -5,7 +5,6 @@ import { supabase } from "../../../../services/api";
 
 import FrmCadastroUsuario from './frmCadastroUsuario'
 import GridUsuarios from './gridUsuarios';
-import EditModal from "../ModalCadastro";
 
 function CadastroUsuario() {
 
@@ -73,13 +72,6 @@ function CadastroUsuario() {
             <div className="tab-content mt-14 mb-32">
                     <div>
                         <FrmCadastroUsuario onEdit={onEdit} setOnEdit={setOnEdit} getUsuario={getUsuario} />
-
-                        <EditModal 
-                            data={editData} 
-                            onCancel={handleCancelEdit} 
-                            onSave={handleSave} 
-                            isOpen={isEditModalOpen}
-                        />
 
                         <GridUsuarios 
                             usuario={usuario}

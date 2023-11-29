@@ -1,13 +1,14 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios'
-import ModalSearchUnidadeContato from './ModalSearchUnidadeContato'
-import ModalSearchUnidadeEmpresa from './ModalSearchUnidadeEmpresa'
+import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import InputMask from 'react-input-mask';
+
+import ModalSearchUnidadeContato from '../components/Modal/ModalSearchContato'
+import ModalSearchUnidadeEmpresa from '../components/Modal/ModalSearchEmpresa'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
-import { supabase } from "../../../../services/api";
 
-function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
+function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
@@ -34,10 +35,24 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
       user.bairro_unidade.value = onEdit.bairro_unidade;
       user.cidade_unidade.value = onEdit.cidade_unidade;
       user.uf_unidade.value = onEdit.uf_unidade;
-      user.fk_contato_id.value = onEdit.fk_contato_id;
-      user.fk_empresa_id.value = onEdit.fk_empresa_id;
+
+      if (contact && onEdit.fk_contato_id) {
+        setNomeContato(contact);
+        setContatoId(onEdit.fk_contato_id);
+      } else {
+        setNomeContato(null)
+        setContatoId(null);
+      }
+
+      if (company && onEdit.fk_empresa_id) {
+        setNomeEmpresa(company);
+        setEmpresaId(onEdit.fk_empresa_id);
+      } else {
+        setNomeEmpresa(null);
+        setEmpresaId(null);
+      }
     }
-  }, [onEdit]);
+  }, [onEdit, contact, company]);
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -57,16 +72,16 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
     }
     try {
       const unidadeData = {
-        nome_unidade: user.nome_unidade.value,
-        cnpj_unidade: user.cnpj_unidade.value,
-        cep_unidade: user.cep_unidade.value,
-        endereco_unidade: user.endereco_unidade.value,
-        bairro_unidade: user.bairro_unidade.value,
-        cidade_unidade: user.cidade_unidade.value,
-        uf_unidade: user.uf_unidade.value,
-        fk_contato_id: contatoId,
-        fk_empresa_id: empresaId,
-      }
+        nome_unidade: user.nome_unidade.value || null,
+        cnpj_unidade: user.cnpj_unidade.value || null,
+        cep_unidade: user.cep_unidade.value || null,
+        endereco_unidade: user.endereco_unidade.value || null,
+        bairro_unidade: user.bairro_unidade.value || null,
+        cidade_unidade: user.cidade_unidade.value || null,
+        uf_unidade: user.uf_unidade.value || null,
+        fk_contato_id: contatoId || null,
+        fk_empresa_id: empresaId || null,
+      };
 
       if (onEdit) {
         //Caso já tiver o cadastro ele vai colocar as opções para editar
@@ -105,12 +120,15 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
     user.uf_unidade.value = "";
     setOnEdit(null);
     setContatoId(null);
+    setNomeContato(null);
     setEmpresaId(null);
+    setNomeEmpresa(null);
 
     //Atualiza os dados
-    getUsers();
+    getUnidade();
   }
 
+  //Função para limpar os campos
   const handleClear = () => {
     // Limpa todos os campos do formulário
     const user = ref.current;
@@ -122,7 +140,9 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
     user.cidade_unidade.value = "";
     user.uf_unidade.value = "";
     setContatoId(null);
+    setNomeContato(null);
     setEmpresaId(null);
+    setNomeEmpresa(null);
   };
 
   //Busca os contatos para colocar no select
@@ -135,10 +155,6 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
     }
   }
 
-  useEffect(() => {
-    fetchContato();
-  }, [])
-
   //Buscar as empresas para colocar no select
   const fetchEmpresa = async () => {
     try {
@@ -148,8 +164,9 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
       console.log("Erro ao buscar Empresa: ", error)
     }
   };
-  
+
   useEffect(() => {
+    fetchContato();
     fetchEmpresa();
   }, [])
 
@@ -188,81 +205,83 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
   };
 
   return (
-    <div class="flex justify-center mt-10">
-      <form class="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-        <div class="flex flex-wrap -mx-3 mb-6 p-3">
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+    <div className="flex justify-center mt-10">
+      <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+        <div className="flex flex-wrap -mx-3 mb-6 p-3">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Nome da Unidade:
             </label>
             <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="nome_unidade"
               placeholder="Nome da Unidade"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               CNPJ:
             </label>
-            <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+            <InputMask
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="cnpj_unidade"
+              mask="99.999.999/9999-99"
               placeholder="CNPJ da Unidade"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               CEP:
             </label>
-            <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+            <InputMask
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="cep_unidade"
+              mask="99999-999"
               placeholder="00000-000"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Endereço:
             </label>
             <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="endereco_unidade"
               placeholder="Endereço da Unidade"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Bairro:
             </label>
             <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="bairro_unidade"
               placeholder="Bairro da Unidade"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Cidade:
             </label>
             <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="cidade_unidade"
               placeholder="Cidade da Unidade"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               UF:
             </label>
             <input
-              class="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="uf_unidade"
               placeholder="UF da Unidade"
@@ -275,24 +294,30 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
             <div className="flex items-center w-full">
               {nomeContato ? (
                 <>
-                  <div className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-end mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                  <button
+                    className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModalContato}
+                  >
                     <p className="px-2 text-sm font-sm text-gray-600">
                       Contato:
                     </p>
                     <p className="font-bold">
                       {nomeContato}
                     </p>
-                  </div>
+                  </button>
                   <button className="ml-4" onClick={handleClearContato}>
                     <img src={icon_sair} alt="" className="h-9" />
                   </button>
                 </>
               ) : (
-                <div className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-end mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                <button
+                  className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                  onClick={openModalContato}
+                >
                   <p className="px-2 text-sm font-medium">
                     Nenhum Contato Selecionado
                   </p>
-                </div>
+                </button>
               )}
               <button
                 type="button"
@@ -318,20 +343,26 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
             <div className="flex items-center w-full">
               {nomeEmpresa ? (
                 <>
-                  <div className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-end mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                  <button
+                    className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModalEmpresa}
+                  >
                     <p className="px-2 text-sm font-sm text-gray-600">
                       Empresa:
                     </p>
                     <p className="font-bold">
                       {nomeEmpresa}
                     </p>
-                  </div>
+                  </button>
                   <button className="ml-4" onClick={handleClearEmpresa}>
                     <img src={icon_sair} alt="" className="h-9" />
                   </button>
                 </>
               ) : (
-                <div className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-end mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text">
+                <div
+                  className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                  onClick={openModalEmpresa}
+                >
                   <p className="px-2 text-sm font-medium">
                     Nenhuma Empresa Selecionado
                   </p>
@@ -352,16 +383,14 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUsers }) {
               onContactSelect={handleEmpresaSelect}
             />
           </div>
-
-          
-          <div class="w-full px-3 pl-8 flex justify-end">
+          <div className="w-full px-3 pl-8 flex justify-end">
             <div>
-              <button onClick={handleClear} class="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
                 Limpar
               </button>
             </div>
-            <div class="px-3 pl-8">
-              <button class="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+            <div className="px-3 pl-8">
+              <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                 Cadastrar
               </button>
             </div>
