@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import Back from '../../../layout/Back'
 import FrmCadastroCargo from "./frmCadastroCargo";
 import GridCadastroCargo from "./gridCadastroCargo";
-import EditModal from "../ModalCadastro";
 
 function CadastroCargo() {
 
@@ -78,13 +77,6 @@ function CadastroCargo() {
                     </Link>
                     
                     <FrmCadastroCargo onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getEmpresa} />
-
-                    <EditModal
-                        data={editData}
-                        onCancel={handleCancelEdit}
-                        onSave={handleSave}
-                        isOpen={isEditModalOpen}
-                    />
 
                     <GridCadastroCargo
                         empresa={empresa}

@@ -1,105 +1,135 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios';
 import { Link } from "react-router-dom";
-import { supabase } from "../../../../services/api";
+import { supabase } from "../../../../services/api"; //Conexão com o bando de dados
 
-import Back from '../../../layout/Back'
+//Importando Componentes
 import FrmCadastroUnidade from "./frmCadastroUnidade";
 import GridCadastroUnidade from './gridCadastroUnidade';
-import EditModal from "../ModalCadastro";
+import SearchInput from "../components/SearchInput";
+import Back from '../../../layout/Back'
 
 function CadastroUnidade() {
 
-    // Instanciando e Definindo como vazio
-    const [data, setData] = useState(null);
-    const [unidade, setUnidade] = useState([]);
-    const [onEdit, setOnEdit] = useState(null);
-    const [formData, setFormData] = useState({
-        nome_unidade: '',
-        cnpj_unidade: '',
-        cep_unidade: '',
-        endereco_unidade: '',
-        bairro_unidade: '',
-        cidade_unidade: '',
-        uf_unidade: ''
-    });
+  // Instanciando variáveis e definindo como vazio
+  const [unidade, setUnidade] = useState([]);
+  const [contato, setContato] = useState([]);
+  const [contactName, setContactName] = useState([]);
+  const [empresa, setEmpresa] = useState([]);
+  const [companyName, setCompanyName] = useState([]);
+  const [onEdit, setOnEdit] = useState(null);
 
-    //Instanciando Modal
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editData, setEditData] = useState(null);
+  //Instanciando o Search
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUnidade, setFilteredUnidades] = useState([]);
 
-    const openModal = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data)
-    };
-
-
-    const handleSave = () => {
-        console.log("Dados Salvos", formData);
-    };
-
-    // Pegando os dados do banco
-    const getUnidade = async () => {
-        try {
-            const { data } = await supabase.from("unidade").select();
-            setUnidade(data)
-            // const res = await axios.get("http://localhost:8800/unidade");
-            // setUnidade(res.data.sort((a, b) => (a.nome_unidade > b.nome_unidade ? 1 : -1)));
-        } catch (error) {
-            toast.error(error);
+  // Pegando os dados do banco
+  const getUnidade = async () => {
+    try {
+      const { data } = await supabase.from("unidade").select();
+      const sortData = data.sort((a, b) => {
+        if (a.ativo !== b.ativo) {
+          return a.ativo ? -1 : 1;
         }
-    };
 
-    useEffect(() => {
-        getUnidade();
-    }, []); // Chama apenas uma vez quando o componente é montado
+        return a.nome_unidade.localeCompare(b.nome_unidade);
+      })
+      setUnidade(sortData)
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
-    //Funções do Modal
-    const handleEditModalOpen = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data);
-    };
+  const getContato = async () => {
+    try {
+      const { data } = await supabase.from("contato").select();
+      setContato(data)
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
-    const handleCancelEdit = () => {
-        setEditData(null);
-        setIsEditModalOpen(false);
+  const getEmpresa = async () => {
+    try {
+      const { data } = await supabase.from("empresa").select();
+      setEmpresa(data)
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getUnidade();
+    getContato();
+    getEmpresa();
+  }, []);
+
+  //Função para Editar
+  const handleEdit = (selectUnidade) => {
+    setOnEdit(selectUnidade);
+
+    if (selectUnidade.fk_contato_id) {
+      const contactInfo = contato.find((c) => c.id_contato === selectUnidade.fk_contato_id)
+      if (contactInfo) {
+        setContactName(contactInfo.nome_contato)
+      }
     }
 
-    const handleEdit = (selectedEmpresa) => {
-        setOnEdit(selectedEmpresa)
-    };
+    if (selectUnidade.fk_empresa_id) {
+      const companyInfo = empresa.find((c) => c.id_empresa === selectUnidade.fk_empresa_id)
+      if (companyInfo) {
+        setCompanyName(companyInfo.nome_empresa)
+      }
+    }
+  };
+
+  //Função para Pesquisa
+  useEffect(() => {
+    const filtred = unidade.filter((udd) => udd.nome_unidade.toLowerCase().includes(searchTerm.toLocaleLowerCase()));
+    setFilteredUnidades(filtred);
+  }, [searchTerm, unidade]);
+
+  const handleSearch = (term) => {
+    setSearchTerm(term)
+  }
 
 
-    return (
-        <div className="tab-content mt-14 mb-32">
-
-            <div className="flex justify-center items-center">
-                {/* Botão para voltar */}
-                <div className="absolute left-0">
-                    <Link to="/cadastros">
-                        <Back />
-                    </Link>
-                </div>
-                <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Unidade</h1>
-            </div>
-            <FrmCadastroUnidade onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUnidade} />
-
-            <EditModal
-                data={editData}
-                onCancel={handleCancelEdit}
-                onSave={handleSave}
-                isOpen={isEditModalOpen}
-            />
-
-            <GridCadastroUnidade
-                unidade={unidade}
-                setEmpresa={setUnidade}
-                setOnEdit={handleEdit}
-                handleEditModalOpen={() => handleEditModalOpen(data)} // Chamando a função para abrir o modal
-            />
+  return (
+    <div className="tab-content mt-14 mb-32">
+      <div className="flex justify-center items-center">
+        {/* Botão para voltar */}
+        <div className="absolute left-0">
+          <Link to="/cadastros">
+            <Back />
+          </Link>
         </div>
-    )
+        <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Unidade</h1>
+      </div>
+
+      {/* Formulário de Cadastro */}
+      <FrmCadastroUnidade
+        onEdit={onEdit}
+        setOnEdit={setOnEdit}
+        getUnidade={getUnidade}
+        contact={contactName}
+        company={companyName}
+      />
+
+      {/* Barra de Pesquisa */}
+      <div className="flex justify-center w-full">
+        <div className="w-3/6">
+          <SearchInput onSearch={handleSearch} placeholder="Buscar Unidade..." />
+        </div>
+      </div>
+
+      {/* Tabela Unidade */}
+      <GridCadastroUnidade
+        unidade={filteredUnidade}
+        setUnidade={setUnidade}
+        setOnEdit={handleEdit}
+      />
+    </div>
+  )
 }
 
 export default CadastroUnidade;

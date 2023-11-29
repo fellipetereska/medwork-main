@@ -3,8 +3,6 @@ import SearchInput from '../components/SearchInput';
 
 const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
 
-  console.log(children)
-
   const [searchTerm, setSearchTerm] = useState('');
 
   if (!isOpen) {
@@ -27,7 +25,7 @@ const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
               onClick={onCancel}>
               <svg className="flex m-auto w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
               </svg>
             </button>
           </div>
@@ -56,16 +54,16 @@ const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
                 className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
                 onClick={() => onContactSelect(unidade.id_unidade, unidade.nome_unidade)}
               >
-                <div class="flex items-center">
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-700">
+                <div className="flex items-center">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-700">
                       {unidade.nome_unidade}
                     </p>
-                    <p class="text-sm text-gray-500 truncate">
+                    <p className="text-sm text-gray-500 truncate">
                       {unidade.cidade_unidade}
                     </p>
                   </div>
-                  <div class="inline-flex items-center text-base font-semibold text-gray-900">
+                  <div className="inline-flex items-center text-base font-semibold text-gray-900">
                     {unidade.cnpj_unidade}
                   </div>
                 </div>

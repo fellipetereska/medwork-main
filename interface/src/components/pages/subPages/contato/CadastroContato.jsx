@@ -7,7 +7,6 @@ import { supabase } from '../../../../services/api'
 import Back from '../../../layout/Back'
 import FrmCadastroContato from "./frmCadastroContato";
 import GridCadastroContato from './gridCadastroContato'
-import EditModal from "../ModalCadastro";
 
 function CadastroSetor() {
 
@@ -25,11 +24,6 @@ function CadastroSetor() {
     //Instanciando Modal
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
-
-    const openModal = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data)
-    };
 
 
     const handleSave = () => {
@@ -76,13 +70,6 @@ function CadastroSetor() {
                     </Link>
 
                     <FrmCadastroContato onEdit={onEdit} setOnEdit={setOnEdit} getContato={getContato} />
-
-                    <EditModal
-                        data={editData}
-                        onCancel={handleCancelEdit}
-                        onSave={handleSave}
-                        isOpen={isEditModalOpen}
-                    />
 
                     <GridCadastroContato
                         contato={contato}

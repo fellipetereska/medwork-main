@@ -2,9 +2,12 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import InputMask from 'react-input-mask';
+
 import ModalSearchEmpresa from "./ModalSearchEmpresa";
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
+
 
 
 function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
@@ -31,8 +34,10 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
 
       if (contact && onEdit.fk_contato_id) {
         setContactName(contact);
+        setContactId(onEdit.fk_contato_id);
       } else {
-        setContactName(null)
+        setContactName(null);
+        setContactId(null);
       }
     }
   }, [onEdit, contact]);
@@ -191,10 +196,11 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
               CNPJ:
             </label>
-            <input
+            <InputMask
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="cnpj_empresa"
+              mask="99.999.999/9999-99"
               placeholder="00.000.000/0000-00"
             />
           </div>
