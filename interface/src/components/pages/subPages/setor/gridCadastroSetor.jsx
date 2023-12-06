@@ -85,7 +85,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
         </thead>
         <tbody>
           {setor && setor.map((item, i) => (
-            <tr key={i} className="bg-white border-b">
+            <tr key={i} className={`border-b bg-white ${!item.ativo ? 'opacity-25' : ''}`}>
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_setor}
               </th>
