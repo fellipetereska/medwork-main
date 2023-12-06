@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { supabase } from '../../../../services/api';
