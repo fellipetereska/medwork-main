@@ -1,11 +1,8 @@
-import { useState } from 'react';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { supabase } from '../../../../services/api';
 
 function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
-
-  const [setor, setSetor] = useState(null);
 
   const handleEdit = (item) => {
     setOnEdit(item);
@@ -69,7 +66,7 @@ function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
         </thead>
         <tbody>
           {cargos.map((item, i) => (
-            <tr key={i} className="bg-white border-b">
+            <tr key={i} className={`border-b bg-white ${!item.ativo ? 'opacity-25' : ''}`}>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_cargo}
               </th>
@@ -80,9 +77,9 @@ function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
                 {item.descricao}
               </td>
               <td className="text-center px-4 py-4 space-x-2">
-                <span className='font-medium'>Masc:</span> {item.func_masc}
-                <span className='font-medium'>Fem:</span> {item.func_fem}
-                <span className='font-medium'>Menor:</span> {item.func_menor}
+                <span className='font-medium text-gray-900'>Masc:</span> {item.func_masc}
+                <span className='font-medium text-gray-900'>Fem:</span> {item.func_fem}
+                <span className='font-medium text-gray-900'>Menor:</span> {item.func_menor}
               </td>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {find(item.fk_setor_id)}

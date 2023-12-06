@@ -30,14 +30,16 @@ function Login() {
         return <Navigate to="/home" />
     }
 
+
+
     return (
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <div className='w-full bg-white rounded-xl shadow dark:border md:mt-0 sm:max-w-md xl:p-0'>
                     <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
-                        {/* <div>
+                        <div>
                             <h1 className='text-3xl font-semibold text-neutral-800'>Faça login em sua conta</h1>
                             <p className='text-lg font-light text-sky-700'>Medwork - Segurança do Trabalho</p>
-                        </div> */}
+                        </div>
                         <form className="rounded space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div className='mb-6 border-b border-gray-100'></div>
                             <div className="mb-4">

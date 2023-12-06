@@ -1,33 +1,35 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios'
 import { supabase } from '../../../../services/api' //Conexão com o banco de dados
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 import ModalSearchSetor from '../components/Modal/ModalSearchSetor'
 
 
-function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
+function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
-
   const [setor, setSetor] = useState(null);
   const [setorId, setSetorId] = useState(null);
   const [setorNome, setSetorNome] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    //Adicionando o setor recebido do CadastroCargo.jsx na variavel setor
+    setSetor(getSetor);
+  })
 
   useEffect(() => {
     if (onEdit) {
       const user = ref.current;
 
       //Passando o dado do input para a props
-      user.nome_cargo.value = onEdit.nome_cargo;
-      user.ambiente_setor.value = onEdit.ambiente_setor;
-      user.fuc_masc.value = onEdit.func_masc;
-      user.func_fem.value = onEdit.func_fem;
-      user.func_menor.value = onEdit.func_menor;
+      user.nome_cargo.value = onEdit.nome_cargo || '';
+      user.descricao.value = onEdit.descricao || '';
+      user.func_masc.value = onEdit.func_masc || '';
+      user.func_fem.value = onEdit.func_fem || '';
+      user.func_menor.value = onEdit.func_menor || '';
 
       if (setor && onEdit.fk_setor_id) {
         setSetorId(onEdit.fk_setor_id);
@@ -45,14 +47,13 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
     const user = ref.current;
 
     if (
-      !user.nome_setor.value ||
-      !user.ambiente_setor.value) {
+      !user.nome_cargo.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
       const cargoData = {
         nome_cargo: user.nome_cargo.value || null,
-        ambiente_setor: user.ambiente_setor.value || null,
+        descricao: user.descricao.value || null,
         func_masc: user.func_masc.value || null,
         func_fem: user.func_fem.value || null,
         func_menor: user.func_menor.value || null,
@@ -87,8 +88,8 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
     }
 
     user.nome_cargo.value = "";
-    user.ambiente_setor.value = "";
-    user.fuc_masc.value = "";
+    user.descricao.value = "";
+    user.func_masc.value = "";
     user.func_fem.value = "";
     user.func_menor.value = "";
     setOnEdit(null);
@@ -102,7 +103,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
     // Limpa todos os campos do formulário
     const user = ref.current;
     user.nome_cargo.value = "";
-    user.ambiente_setor.value = "";
+    user.descricao.value = "";
     user.fuc_masc.value = "";
     user.func_fem.value = "";
     user.func_menor.value = "";
@@ -117,11 +118,11 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
   //Função para fechar o Modal
   const closeModal = () => setShowModal(false);
 
-  // Função para atualizar o Id Contato
-  const handleSetorSelect = (contactId, contactName) => {
+  // Função para atualizar o Id Setor
+  const handleSetorSelect = (SetorId, SetorName) => {
     closeModal();
-    setSetorId(contactId)
-    setSetorNome(contactName)
+    setSetorId(SetorId)
+    setSetorNome(SetorName)
   };
 
   const handleClearSetor = () => {
@@ -130,57 +131,57 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
   };
 
   return (
-    <div class="flex justify-center mt-10">
-      <form class="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-        <div class="flex flex-wrap -mx-3 mb-6">
-          <div class="w-full md:w-2/5 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+    <div className="flex justify-center mt-10">
+      <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <div className="w-full md:w-2/5 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Nome do Cargo
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="nome_cargo"
               placeholder="Nome do Cargo"
             />
           </div>
-          <div class="w-full md:w-1/5 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/5 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Quantidade de Funcionários
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="number"
               name="func_masc"
               placeholder="Masculinos"
             />
           </div>
-          <div class="w-full md:w-1/5 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/5 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-7 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-7 leading-tight focus:outline-gray-100 focus:bg-white"
               type="number"
-              name="func-fem"
+              name="func_fem"
               placeholder="Femininos"
             />
           </div>
-          <div class="w-full md:w-1/5 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/5 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-7 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-7 leading-tight focus:outline-gray-100 focus:bg-white"
               type="number"
               name="func_menor"
               placeholder="Menores de Idade"
             />
           </div>
-          <div class="w-full md:w-2/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-2/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Descrição
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded h-20 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded h-20 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="descricao"
               placeholder="Descrição do Setor"
@@ -188,7 +189,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
           </div>
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-              Contato:
+              Setor:
             </label>
             <div className="flex items-center w-full">
               {setorNome ? (
@@ -201,7 +202,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
                       Setor:
                     </p>
                     <p className="font-bold">
-                      {setSetorNome}
+                      {setorNome}
                     </p>
                   </button>
                   <button className="ml-4" onClick={handleClearSetor}>
@@ -214,7 +215,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
                   onClick={openModal}
                 >
                   <p className="px-2 text-sm font-medium">
-                    Nenhum Contato Selecionado
+                    Nenhum Setor Selecionado
                   </p>
                 </button>
               )}
@@ -234,14 +235,14 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, setores }) {
               onContactSelect={handleSetorSelect}
             />
           </div>
-          <div class="w-full px-3 pl-8 flex justify-end">
+          <div className="w-full px-3 pl-8 flex justify-end">
             <div>
-              <button onClick={handleClear} class="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
                 Limpar
               </button>
             </div>
-            <div class="px-3 pl-8">
-              <button class="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+            <div className="px-3 pl-8">
+              <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                 Cadastrar
               </button>
             </div>

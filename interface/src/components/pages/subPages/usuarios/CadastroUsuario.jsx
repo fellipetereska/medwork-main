@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios';
 import { supabase } from "../../../../services/api";
 
 import FrmCadastroUsuario from './frmCadastroUsuario'
@@ -8,80 +7,43 @@ import GridUsuarios from './gridUsuarios';
 
 function CadastroUsuario() {
 
-    // Instanciando e Definindo como vazio
-    const [data, setData] = useState(null);
-    const [usuario, setUsuario] = useState([]);
-    const [onEdit, setOnEdit] = useState(null);
-    const [formData, setFormData] = useState({
-        nome_usuario: '',
-        cpf_usuario: '',
-        email_usuario: '',
-        usuario: '',
-        senha: '',
-        permissap_usuario: ''
-    });
+  // Instanciando e Definindo como vazio
+  const [usuario, setUsuario] = useState([]);
+  const [onEdit, setOnEdit] = useState(null);
 
-    //Instanciando Modal
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editData, setEditData] = useState(null);
-
-    const openModal = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data)
-    };
-    
-
-    const handleSave = () => {
-        console.log("Dados Salvos", formData);
-    };
-
-    // Pegando os dados do banco
-    const getUsuario = async () => {
-        try {
-            const { data } = await supabase.from("usuarios").select();
-            setUsuario(data)
-            // const res = await axios.get("http://localhost:8800/usuarios");
-            // setUsuario(res.data.sort((a, b) => (a.id_usuario > b.id_usuario ? 1 : -1)));
-        } catch (error) {
-            toast.error(error);
-        }
-    };
-
-    useEffect(() => {
-        getUsuario();
-    }, []); // Chama apenas uma vez quando o componente é montado
-
-    //Funções do Modal
-    const handleEditModalOpen = (data) => {
-            setIsEditModalOpen(true);
-            setEditData(data);
-    };
-
-    const handleCancelEdit = () => {
-        setEditData(null);
-        setIsEditModalOpen(false);
+  // Pegando os dados do banco
+  const getUsuario = async () => {
+    try {
+      const { data } = await supabase.from("usuarios").select();
+      setUsuario(data)
+    } catch (error) {
+      toast.error(error);
     }
+  };
 
-    const handleEdit = (selectedEmpresa) => {
-        setOnEdit(selectedEmpresa)
-    };
+  useEffect(() => {
+    getUsuario();
+  }, []);
+
+  const handleEdit = (selectedUser) => {
+    setOnEdit(selectedUser)
+  };
 
 
-    return (
+  return (
+    <div>
+      <div className="tab-content mt-14 mb-32">
         <div>
-            <div className="tab-content mt-14 mb-32">
-                    <div>
-                        <FrmCadastroUsuario onEdit={onEdit} setOnEdit={setOnEdit} getUsuario={getUsuario} />
+          <FrmCadastroUsuario onEdit={onEdit} setOnEdit={setOnEdit} getUsuario={getUsuario} />
 
-                        <GridUsuarios 
-                            usuario={usuario}
-                            setOnEdit={handleEdit}
-                            handleEditModalOpen={() => handleEditModalOpen(data)}
-                        />
-                    </div>
-            </div>
+          <GridUsuarios
+            usuario={usuario}
+            setOnEdit={handleEdit}
+          />
         </div>
-    )
+      </div>
+    </div>
+  )
 }
 
 export default CadastroUsuario;
