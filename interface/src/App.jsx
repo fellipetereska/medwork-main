@@ -26,23 +26,6 @@ import Footer from './components/layout/Footer';
 
 //Função Principal
 function App() {
-  const { signout } = useAuth();
-
-  const Private = ({ Item }) => {
-    const { signed } = useAuth();
-
-    return signed ? <Item /> : <Login />;
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signout;
-
-    } catch (error) {
-      console.log("Erro ao fazer logout:", error)
-    }
-  };
-
 
   return (
     <>
@@ -50,26 +33,26 @@ function App() {
 
         <Router>
           {/* Menu */}
-          <Navbar handleLogout={handleLogout} />
+          <Navbar/>
           {/* Definindo quais serão as rotas */}
           <Routes>
             {/* Linkando as rotas as paginas */}
             {/* Menu */}
             <Route path='/' element={<Login />} />
-            <Route path='/home' element={<Private Item={Home} />} />
-            <Route path='/gestao' element={<Private Item={Gestao} />} />
-            <Route path='/cadastros' element={<Private Item={Cadastros} />} />
-            <Route path='/inventario' element={<Private Item={Inventario} />} />
-            <Route path='/plano' element={<Private Item={Plano} />} />
-            <Route path='/laudos' element={<Private Item={Laudos} />} />
+            <Route path='/home' element={<Home />} />
+            <Route path='/gestao' element={<Gestao />} />
+            <Route path='/cadastros' element={<Cadastros />} />
+            <Route path='/inventario' element={<Inventario />} />
+            <Route path='/plano' element={<Plano />} />
+            <Route path='/laudos' element={<Laudos />} />
 
             {/* Cadastros */}
-            <Route path='/cadastro_empresa' element={<Private Item={Empresa} />} />
-            <Route path='/cadastro_unidade' element={<Private Item={Unidade} />} />
-            <Route path='/cadastro_setor' element={<Private Item={Setor} />} />
-            <Route path='/cadastro_cargo' element={<Private Item={Cargo} />} />
-            <Route path='/cadastro_contato' element={<Private Item={Contato} />} />
-            <Route path='/cadastro_usuario' element={<Private Item={Usuario} />} />
+            <Route path='/cadastro_empresa' element={<Empresa />}/>
+            <Route path='/cadastro_unidade' element={<Unidade />} />
+            <Route path='/cadastro_setor' element={<Setor />} />
+            <Route path='/cadastro_cargo' element={<Cargo />} />
+            <Route path='/cadastro_contato' element={<Contato />} />
+            <Route path='/cadastro_usuario' element={<Usuario />} />
 
           </Routes>
           {/* Rodapé */}
