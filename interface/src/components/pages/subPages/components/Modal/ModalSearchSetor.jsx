@@ -1,9 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
+import { supabase } from '../../../../../services/api';
 
 const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [unidade, setUnidade] = useState(null);
+
+  const getUnidade = async () => {
+    const { data } = await supabase.from("unidade").select();
+    setUnidade(data)
+  }
+
+  useEffect(() => {
+    getUnidade();
+  })
+
+  const findUnidade = (fkUnidadeId) => {
+    if (!unidade) {
+      return 'N/A';
+    }
+
+    const unidades = unidade.find((c) => c.id_unidade === fkUnidadeId);
+    return unidades ? unidades.nome_unidade : 'N/A';
+  }
 
   if (!isOpen) {
     return null;
@@ -33,38 +53,39 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
         <div className='border-b border-gray-200'></div>
         <div className='flex justify-center items-center py-2'>
           <p className='text-sm text-gray-500 text-center'>
-            Selecione o Setor para qual esse cargo pertence
+            Escolha o setor ao qual este cargo está associado.
           </p>
         </div>
         <div className="flex justify-center w-full mt-2 mb-2">
           <div className="w-5/6">
-            <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
+            <SearchInput onSearch={handleSearch} placeholder="Buscar Setor..." />
           </div>
         </div>
         <ul className='space-y-3 py-3'>
           {children
-            .filter((empresa) =>
-              empresa.nome_setor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              empresa.ambiente_setor.toLowerCase().includes(searchTerm.toLowerCase())
+            .filter((setor) =>
+              setor.nome_setor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              setor.ambiente_setor.toLowerCase().includes(searchTerm.toLowerCase())
             )
-            .map((empresa, i) => (
+            .map((item, i) => (
               <li
                 key={i}
-                className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
-                onClick={() => onContactSelect(empresa.id_setor, empresa.nome_setor)}
+                className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md grid grid-cols-2 gap-4"
+                onClick={() => onContactSelect(item.id_setor, item.nome_setor)}
               >
-                <div className="flex items-center gap-12">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700">
-                      {empresa.nome_setor}
-                    </p>
-                    <p className="text-sm text-gray-500 truncate">
-                      {empresa.ambiente_setor}
-                    </p>
-                  </div>
-                  <div className="inline-flex items-center text-base font-semibold text-gray-900">
-                    
-                  </div>
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium text-gray-700">
+                    {item.nome_setor}
+                  </p>
+                  <p className="text-sm text-gray-500 truncate">
+                    {item.ambiente_setor}
+                  </p>
+                </div>
+                <div className='flex flex-col items-start'>
+                  <p className='text-xs text-gray-500 truncate'>Unidade:</p>
+                  <p className='text-base font-semibold text-gray-900'>
+                    {findUnidade(item.fk_unidade_id)}
+                  </p>
                 </div>
               </li>
             ))}

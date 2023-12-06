@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom'
+import { supabase } from "../../../../services/api";
 
-import Back from '../../../layout/Back'
-import SearchInput from "../components/SearchInput";
 import FrmCadastroCargo from "./frmCadastroCargo";
 import GridCadastroCargo from "./gridCadastroCargo";
-import { supabase } from "../../../../services/api";
+import SearchInput from "../components/SearchInput";
+import Back from '../../../layout/Back'
 
 function CadastroCargo() {
 
   // Instanciando e Definindo como vazio
   const [cargo, setCargo] = useState([]);
   const [setor, setSetor] = useState([]);
-  const [setorFind, setSetorFind] = useState([]);
   const [setorNome, setSetorNome] = useState(null);
   const [onEdit, setOnEdit] = useState(null);
 
@@ -61,11 +60,11 @@ function CadastroCargo() {
     return setores ? setores.nome_setor : 'N/A';
   }
 
-  const handleEdit = (selectedSetor) => {
-    setOnEdit(selectedSetor)
+  const handleEdit = (selectedCargo) => {
+    setOnEdit(selectedCargo)
 
-    if (selectedSetor.fk_setor_id) {
-      const setorInfo = setor.find((c) => c.id_setor === selectedSetor.fk_setor_id)
+    if (selectedCargo.fk_setor_id) {
+      const setorInfo = setor.find((c) => c.id_setor === selectedCargo.fk_setor_id)
       if (setorInfo) {
         setSetorNome(setorInfo.nome_setor);
       }
@@ -77,7 +76,6 @@ function CadastroCargo() {
     const filtered = cargo.filter((carg) => carg.nome_cargo.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredCargo(filtered);
   }, [searchTerm, cargo]);
-
 
   const handleSearch = (term) => {
     // Atualizar o estado do termo de pesquisa com o valor fornecido
@@ -102,6 +100,7 @@ function CadastroCargo() {
         setOnEdit={setOnEdit}
         getCargo={getCargo}
         set={setorNome}
+        getSetor={setor}
       />
 
       {/* Barra de pesquisa */}
