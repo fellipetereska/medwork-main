@@ -33,10 +33,6 @@ function GridHome({ empresas }) {
   };
 
   const handleOpenCompany = async (id) => {
-    if (!id) {
-      toast.warn("Selecione uma Empresa!");
-      return;
-    }
 
     try {
       await selectCompany(id);

@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import api from "../services/api";
 import { toast } from "react-toastify";
 import { supabase } from "../services/api";
 
@@ -9,14 +8,21 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [empresa, setEmpresa] = useState(null);
   const [usuarios, setUsuarios] = useState(null);
+  const [empresas, setEmpresas] = useState(null);
 
   const fetchUser = async () => {
     const { data } = await supabase.from("usuarios").select();
     setUsuarios(data);
   }
 
+  const fetchCompany = async () => {
+    const { data } = await supabase.from("empresa").select();
+    setEmpresas(data);
+  }
+
   useEffect(() => {
     fetchUser()
+    fetchCompany()
   }, [])
 
   const signIn = async (usuario, senha, setRedirect) => {
@@ -57,24 +63,20 @@ export const AuthProvider = ({ children }) => {
     return username? username.nome_usuario : "N/A"
   }
 
-  const selectCompany = async (id_empresa) => {
-    try {
-      const res = await api.post(`/selectCompany`, { id_empresa })
-      setEmpresa(res.data.company);
-      localStorage.setItem('empresa', JSON.stringify(res.data.company))
-    } catch (error) {
-      console.log(error)
+  const selectCompany = async (id) => {
+    if(!id) {
+      toast.warn("Selecione uma Empresa!")
     }
+
+    const company = empresas.find((c) => c.id_empresa === id)
+    setEmpresa(company ? company.nome_empresa : "N/A");
+
   };
 
   const signout = () => {
     setUser(null);
     setEmpresa(null);
-    localStorage.removeItem('token')
-    localStorage.removeItem('empresa')
   };
-
-
 
   return (
     <AuthContext.Provider
