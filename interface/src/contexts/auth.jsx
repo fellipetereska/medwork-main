@@ -1,63 +1,61 @@
 import { createContext, useState, useEffect } from "react";
 import api from "../services/api";
+import { toast } from "react-toastify";
+import { supabase } from "../services/api";
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [empresa, setEmpresa] = useState(null);
-  const [token, setToken] = useState(null);
+  const [usuarios, setUsuarios] = useState(null);
+
+  const fetchUser = async () => {
+    const { data } = await supabase.from("usuarios").select();
+    setUsuarios(data);
+  }
 
   useEffect(() => {
-    const loadingStoreData = async () => {
-      const storageToken = localStorage.getItem('token');
+    fetchUser()
+  }, [])
 
-      if (storageToken) {
-        setToken(storageToken);
+  const signIn = async (usuario, senha, setRedirect) => {
+    if (!usuario || !senha) {
+      toast.warn("Preencha todos os campos!");
+      return;
+    }
 
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        const storedEmpresa = JSON.parse(localStorage.getItem('empresa'));
-
-        if (storedUser) {
-          setUser(storedUser);
-        } else {
-          try {
-            const res = await api.post(`validate`, null, {
-              headers: { Authorization: storageToken },
-            });
-
-            setUser(res.data.user);
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-          } catch (error) {
-            console.error('Erro ao validar o token:', error);
-            signout();
-          }
-        }
-
-        if (storedEmpresa) {
-          setEmpresa(storedEmpresa);
-          console.log('Empresa loaded from localStorage:', storedEmpresa);
-        }
-      }
-    };
-
-    loadingStoreData();
-  }, []);
-
-
-  const signin = async (usuario, senha) => {
     try {
-      const res = await api.post(`/login`, { usuario, senha })
-      if (res.data.user) {
-        setUser(res.data.user)
-        setToken(res.data.token)
-        localStorage.setItem('token', res.data.token)
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+      const { error } = await supabase.auth.signInWithPassword({
+        email: usuario,
+        password: senha
+      })
+
+      if (error) {
+        toast.error("Erro ao fazer login. Verifique suas credenciais.");
+        console.error("Erro de autenticação:", error);
+        return;
       }
+
+      toast.success(`Login bem-sucedido! Bem-vindo, ${usuario}!`);
+      setRedirect(true);
+      const userselect = selectUser(usuario);
+      setUser(userselect)
     } catch (error) {
-      console.log(error)
+      console.error("Erro ao fazer login:", error);
+      toast.error("Erro ao fazer login. Verifique o console para mais detalhes.");
     }
   };
+
+  const selectUser = (usermail) => {
+    if (!usuarios) {
+      toast.warn("Selecione um usuário!")
+    }
+
+    const username = usuarios.find((c) => c.email_usuario === usermail)
+
+    return username? username.nome_usuario : "N/A"
+  }
 
   const selectCompany = async (id_empresa) => {
     try {
@@ -84,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         user,
         empresa,
         signed: !!user,
-        signin,
+        signin: signIn,
         signout,
         selectCompany
       }}>
