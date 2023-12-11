@@ -1,45 +1,37 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { supabase } from '../../services/api';
+import { IoEyeSharp } from "react-icons/io5";
+import { BsEyeSlashFill } from "react-icons/bs";
+import useAuth from '../../hooks/useAuth'
 
 function Login() {
+
+    const { signin } = useAuth();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [redirect, setRedirect] = useState(false);
+    const [showpasd, setShowpasd] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!username || !password) {
-            toast.warn("Preencha todos os campos!");
-            return;
-        }
-
-        try {
-
-            const { error } = await supabase.auth.signInWithPassword({
-                email: username,
-                password: password
-            })
-
-
-            if (error) {
-                toast.error("Erro ao fazer login. Verifique suas credenciais.");
-                console.error("Erro de autenticação:", error);
-                return;
-            }
-
-            toast.success(`Login bem-sucedido! Bem-vindo, ${username}!`);
-            setRedirect(true);
-        } catch (error) {
-            console.error("Erro ao fazer login:", error);
-            toast.error("Erro ao fazer login. Verifique o console para mais detalhes.");
-        }
+        signin(username, password, setRedirect);
     };
 
     if (redirect == true) {
         return <Navigate to="/home" />
+    }
+
+    const ShowPassword = (e) => {
+        e.preventDefault();
+
+        setShowpasd(!showpasd);
+    }
+
+    const forgotpasd = () => {
+        toast.warn("Fale com um adminitrador!")
     }
 
 
@@ -70,13 +62,25 @@ function Login() {
                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="senha">
                                 Senha
                             </label>
-                            <input
-                                className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                                name='senha'
-                                value={password}
-                                type="password"
-                                placeholder="••••••••"
-                                onChange={(e) => setPassword(e.target.value)}></input>
+                            <div className='relative'>
+                                <input
+                                    className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                                    name='senha'
+                                    value={password}
+                                    type={showpasd ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    onChange={(e) => setPassword(e.target.value)} />
+                                <button
+                                    className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400"
+                                    onClick={ShowPassword}
+                                >
+                                    {showpasd ? (
+                                        <BsEyeSlashFill />
+                                    ) : (
+                                        <IoEyeSharp />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                         <div className="flex items-start">
                             <div className="flex items-center h-5">
@@ -96,6 +100,11 @@ function Login() {
                             Entrar
                         </button>
                     </form>
+                    <div className="text-right cursor-pointer">
+                        <a onClick={forgotpasd}>
+                            <p className='text-sm text-gray-500'>Esqueceu sua senha?</p>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

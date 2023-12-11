@@ -6,16 +6,17 @@ import { FiMenu } from "react-icons/fi";
 import { BiLogIn } from 'react-icons/bi'
 import logo from '../media/logo_menu.png'
 
-function Navbar({ handleLogout }) {
+function Navbar() {
 
     //Instanciando as variaveis
     const { user, signed, empresa, signout, selectCompany } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
+    console.log(user)
+
     //Criando as Funções
-    const handleLogoutClick = async () => {
-        await handleLogout();
+    const handleLogoutClick = () => {
         signout(true);
         navigate("/")
         setIsMenuOpen(false)
@@ -53,7 +54,7 @@ function Navbar({ handleLogout }) {
                                 <div className='flex items-center gap-2'>
                                     <p className='font- text-sm text-zinc-600'>Usuário:</p>
                                     <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
-                                        <p className='text-gray-600 font-bold text-base'>{user.nome_usuario}</p>
+                                        <p className='text-gray-600 font-bold text-base'>{user}</p>
                                     </div>
                                 </div>
                             ) : null}
