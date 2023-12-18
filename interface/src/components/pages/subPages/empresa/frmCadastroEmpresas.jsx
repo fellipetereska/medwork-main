@@ -1,5 +1,5 @@
 //Importando Ferramentas
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
 import InputMask from 'react-input-mask';
@@ -26,12 +26,19 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
   useEffect(() => {
     if (onEdit) {
       const user = ref.current;
+      const { nome_empresa, razao_social, cnpj_empresa, inscricao_estadual_empresa, inscricao_municipal_empresa } = user;
 
-      user.nome_empresa.value = onEdit.nome_empresa || "";
-      user.razao_social.value = onEdit.razao_social || "";
-      user.cnpj_empresa.value = onEdit.cnpj_empresa || "";
-      user.inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
-      user.inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
+      nome_empresa.value = onEdit.nome_empresa || "";
+      razao_social.value = onEdit.razao_social || "";
+      setCnpj(onEdit.cnpj_empresa || "");
+      if (onEdit.inscricao_estadual_empresa === null || "") {
+        setCheckedEstadual(true);
+      }
+      if (onEdit.inscricao_municipal_empresa === null || "") {
+        setCheckedMunicipal(true);
+      }
+      inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
+      inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
 
       if (contact && onEdit.fk_contato_id) {
         setContactName(contact);
@@ -41,7 +48,10 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
         setContactId(null);
       }
     }
+    console.log(onEdit)
   }, [onEdit, contact]);
+
+
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -137,7 +147,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
 
   useEffect(() => {
     fetchContato();
-  }, [])
+  })
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -146,19 +156,24 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
   const closeModal = () => setShowModal(false);
 
   // Função para atualizar o Id Contato
-  const handleContactSelect = (contactId, contactName) => {
+  const handleContactSelect = useCallback((contactId, contactName) => {
     closeModal();
-    setContactId(contactId)
-    setContactName(contactName)
-  };
+    setContactId(contactId);
+    setContactName(contactName);
+  }, [closeModal]);
+
 
   //Funções CheckBox
   const checkboxEstadual = () => {
     setCheckedEstadual(!checkedEstadual);
+    const user = ref.current;
+    user.inscricao_estadual_empresa.value = ""
   }
 
   const checkboxMunicipal = () => {
     setCheckedMunicipal(!checkedMunicipal);
+    const user = ref.current;
+    user.inscricao_municipal_empresa.value = ""
   }
 
   //Função para limpar o campo Contato
@@ -180,7 +195,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
     const formattedCnpj = handleFormatCnpj(truncatedValue);
     setCnpj(formattedCnpj);
   };
-  
+
 
   return (
     <div className="flex justify-center mt-10">
@@ -229,7 +244,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
             </label>
             <input
               className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedEstadual ? 'bg-gray-300' : 'bg-gray-100'}`}
-              type="text"
+              type="number"
               name="inscricao_estadual_empresa"
               placeholder="Inscrição Estadual"
               disabled={checkedEstadual}
@@ -251,7 +266,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
             </label>
             <input
               className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'bg-gray-300' : 'bg-gray-100'}`}
-              type="text"
+              type="number"
               name="inscricao_municipal_empresa"
               placeholder="Inscrição Municipal"
               disabled={checkedMunicipal}
