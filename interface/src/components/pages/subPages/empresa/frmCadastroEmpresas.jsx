@@ -33,12 +33,16 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
       setCnpj(onEdit.cnpj_empresa || "");
       if (onEdit.inscricao_estadual_empresa === null || "") {
         setCheckedEstadual(true);
+      } else {
+        inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
+        setCheckedEstadual(false);
       }
       if (onEdit.inscricao_municipal_empresa === null || "") {
         setCheckedMunicipal(true);
+      } else {
+        inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
+        setCheckedMunicipal(false);
       }
-      inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
-      inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
 
       if (contact && onEdit.fk_contato_id) {
         setContactName(contact);
