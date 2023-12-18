@@ -10,7 +10,7 @@ function SearchInput({ onSearch, placeholder }) {
       <div className="relative w-full">
 
         <input
-          type="search"
+          type="text"
           id="default-search"
           className="w-full p-4 ps-10 text-sm text-gray-900 rounded-full bg-gray-50"
           placeholder={placeholder}

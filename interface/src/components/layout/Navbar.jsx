@@ -9,11 +9,9 @@ import logo from '../media/logo_menu.png'
 function Navbar() {
 
     //Instanciando as variaveis
-    const { user, signed, empresa, signout, selectCompany } = useAuth();
+    const { user, empresa, signout } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
-
-    console.log(user)
 
     //Criando as Funções
     const handleLogoutClick = () => {
@@ -64,7 +62,7 @@ function Navbar() {
                                 <div className='flex items-center gap-2'>
                                     <p className='font- text-sm text-zinc-600'>Empresa:</p>
                                     <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
-                                        <p className='text-gray-600 font-bold text-base'>{empresa.nome_empresa}</p>
+                                        <p className='text-gray-600 font-bold text-base'>{empresa}</p>
                                     </div>
                                 </div>
                             ) : null}
