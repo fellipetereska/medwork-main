@@ -9,6 +9,10 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
   //Instanciando Variáveis
   const [contato, setContato] = useState([]);
 
+  const handleEditClick = (empresa) => () => {
+    handleEdit(empresa);
+  };
+
   //Função para editar Item
   const handleEdit = (empresa) => {
     setOnEdit(empresa);
@@ -119,7 +123,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
               </th>
               <td className="py-4 gap-4">
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
-                  <BsFillPencilFill onClick={() => handleEdit(item)} />
+                  <BsFillPencilFill onClick={handleEditClick(item)} />
                 </a>
               </td>
               <td className="py-4 gap-4 text-right">
