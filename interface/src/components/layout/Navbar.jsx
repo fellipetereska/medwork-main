@@ -13,8 +13,6 @@ function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
-    console.log(user)
-
     //Criando as Funções
     const handleLogoutClick = () => {
         signout(true);

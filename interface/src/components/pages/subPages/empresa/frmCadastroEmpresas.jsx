@@ -20,15 +20,16 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
   const [contactName, setContactName] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
   const [checkedEstadual, setCheckedEstadual] = useState(false); //Armazena o estado do checkbox da Inscrição Estadual
   const [checkedMunicipal, setCheckedMunicipal] = useState(false); //Armazena o estado do checkbox da Inscrição Municipal
+  const [cnpj, setCnpj] = useState(""); //Armazena o CNPJ
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
     if (onEdit) {
       const user = ref.current;
 
-      user.nome_empresa.value = onEdit.nome_empresa;
-      user.razao_social.value = onEdit.razao_social;
-      user.cnpj_empresa.value = onEdit.cnpj_empresa;
+      user.nome_empresa.value = onEdit.nome_empresa || "";
+      user.razao_social.value = onEdit.razao_social || "";
+      user.cnpj_empresa.value = onEdit.cnpj_empresa || "";
       user.inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
       user.inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
 
@@ -96,9 +97,9 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
     //Limpa os campos e reseta o estaodo de edição
     user.nome_empresa.value = "";
     user.razao_social.value = "";
-    user.cnpj_empresa.value = "";
     user.inscricao_estadual_empresa.value = "";
     user.inscricao_municipal_empresa.value = "";
+    setCnpj("");
     setOnEdit(null);
     setContactId(null);
     setContactName(null);
@@ -115,9 +116,9 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
     const user = ref.current;
     user.nome_empresa.value = "";
     user.razao_social.value = "";
-    user.cnpj_empresa.value = "";
     user.inscricao_estadual_empresa.value = "";
     user.inscricao_municipal_empresa.value = "";
+    setCnpj("");
     setContactId(null);
     setContactName(null);
     setCheckedEstadual(null);
@@ -166,6 +167,21 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
     setContactName(null);
   };
 
+
+  //Funções para formatação do CNPJ
+  const handleFormatCnpj = (value) => {
+    return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  }
+
+  const handleCnpjChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    const truncatedValue = numericValue.slice(0, 14);
+    const formattedCnpj = handleFormatCnpj(truncatedValue);
+    setCnpj(formattedCnpj);
+  };
+  
+
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
@@ -196,11 +212,13 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
               CNPJ:
             </label>
-            <InputMask
+            <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="cnpj_empresa"
-              mask="99.999.999/9999-99"
+              value={cnpj}
+              onChange={handleCnpjChange}
+              maxLength={14}
               placeholder="00.000.000/0000-00"
             />
           </div>

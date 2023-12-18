@@ -43,15 +43,18 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      toast.success(`Login bem-sucedido! Bem-vindo, ${usuario}!`);
+      await fetchUser();
       setRedirect(true);
       const userselect = selectUser(usuario);
-      setUser(userselect)
+      setUser(userselect);
+
+      toast.success(`Login bem-sucedido! Bem-vindo, ${usuario}!`);
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       toast.error("Erro ao fazer login. Verifique o console para mais detalhes.");
     }
   };
+
 
   const selectUser = (usermail) => {
     if (!usuarios) {
@@ -60,11 +63,11 @@ export const AuthProvider = ({ children }) => {
 
     const username = usuarios.find((c) => c.email_usuario === usermail)
 
-    return username? username.nome_usuario : "N/A"
+    return username ? username.nome_usuario : "N/A"
   }
 
   const selectCompany = async (id) => {
-    if(!id) {
+    if (!id) {
       toast.warn("Selecione uma Empresa!")
     }
 
