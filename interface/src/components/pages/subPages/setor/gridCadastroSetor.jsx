@@ -98,8 +98,8 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
                 {finUnidade(item.fk_unidade_id)}
               </th>
               <td className="px-5 py-4 gap-4 flex justify-start">
-                <a className="font-medium text-blue-600 hover:text-blue-800" onClick={() => handleEdit(item)}>
-                  <BsFillPencilFill />
+                <a className="font-medium text-blue-600 hover:text-blue-800">
+                  <BsFillPencilFill onClick={() => handleEdit(item)}/>
                 </a>
                 <label
                   className="relative flex items-center rounded-full cursor-pointer"

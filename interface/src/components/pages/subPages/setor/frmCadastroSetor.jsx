@@ -27,8 +27,8 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
       user.ambiente_setor.value = onEdit.ambiente_setor;
       user.observacao_setor.value = onEdit.observacao_setor;
 
-      if (unidade && onEdit.fk_unidade_id) {
-        setNomeUnidade(unidade);
+      if (unidades && onEdit.fk_unidade_id) {
+        setNomeUnidade(unidades);
         setUnidadeId(onEdit.fk_unidade_id);
       } else {
         setNomeUnidade(null);
