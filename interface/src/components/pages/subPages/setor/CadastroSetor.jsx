@@ -64,16 +64,27 @@ function CadastroSetor() {
 		if (selectedSetor.fk_unidade_id) {
 			const unidadeInfo = unidade.find((c) => c.id_unidade === selectedSetor.fk_unidade_id);
 			if (unidadeInfo) {
-				setNomeUnidade(unidade.nome_unidade)
+				setNomeUnidade(unidadeInfo.nome_unidade)
 			}
 		}
 	};
 
 	//Função para Pesquisa
 	useEffect(() => {
-		const filtered = setor.filter((set) => set.nome_setor.toLowerCase().includes(searchTerm.toLowerCase()));
+		const filtered = setor.filter((set) => {
+			const nomeSetorLowerCase = set.nome_setor && set.nome_setor.toLowerCase();
+			const ambienteSetorLowerCase = set.ambiente_setor && set.ambiente_setor.toLowerCase();
+			const descricaoSetorLowerCase = set.observacao_setor && set.observacao_setor.toLowerCase();
+
+			return (
+				(nomeSetorLowerCase && nomeSetorLowerCase.includes(searchTerm.toLowerCase())) ||
+				(ambienteSetorLowerCase && ambienteSetorLowerCase.includes(searchTerm.toLowerCase())) ||
+				(descricaoSetorLowerCase && descricaoSetorLowerCase.includes(searchTerm.toLowerCase()))
+			);
+		});
+
 		setFilteredSetor(filtered);
-	}, [searchTerm, setor]);
+	}, [searchTerm, setor, nomeUnidade]);
 
 	//Função para Busca
 	const handleSearch = (term) => {
