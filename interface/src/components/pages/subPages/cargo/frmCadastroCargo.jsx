@@ -31,9 +31,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
       user.func_fem.value = onEdit.func_fem || '';
       user.func_menor.value = onEdit.func_menor || '';
 
-      if (setor && onEdit.fk_setor_id) {
+      if (set && onEdit.fk_setor_id) {
         setSetorId(onEdit.fk_setor_id);
-        setSetorNome(setor);
+        setSetorNome(set);
       } else {
         setSetorId(null);
         setSetorNome(null);
@@ -104,7 +104,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
     const user = ref.current;
     user.nome_cargo.value = "";
     user.descricao.value = "";
-    user.fuc_masc.value = "";
+    user.func_masc.value = "";
     user.func_fem.value = "";
     user.func_menor.value = "";
     setOnEdit(null);
@@ -128,6 +128,12 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
   const handleClearSetor = () => {
     setSetorId(null);
     setSetorNome(null);
+  };
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    e.target.value = numericValue;
   };
 
   return (
@@ -154,6 +160,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
               type="number"
               name="func_masc"
               placeholder="Masculinos"
+              onInput={handleInputChange}
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
@@ -164,6 +171,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
               type="number"
               name="func_fem"
               placeholder="Femininos"
+              onInput={handleInputChange}
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
@@ -174,6 +182,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
               type="number"
               name="func_menor"
               placeholder="Menores de Idade"
+              onInput={handleInputChange}
             />
           </div>
           <div className="w-full md:w-2/3 px-3">
