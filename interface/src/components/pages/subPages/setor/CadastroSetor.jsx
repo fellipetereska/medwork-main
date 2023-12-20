@@ -95,10 +95,15 @@ function CadastroSetor() {
 
 	return (
 		<div className="p-6">
-			{/* Botão para voltar */}
-			<Link to="/cadastros">
-				<Back />
-			</Link>
+			<div className="flex justify-center items-center mb-10 mt-10">
+          {/* Botão para voltar */}
+          <div className="absolute left-0">
+            <Link to="/cadastros">
+              <Back />
+            </Link>
+          </div>
+          <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Setor</h1>
+        </div>
 
 			{/* Formulário de Cadastro */}
 			<FrmCadastroSetor
