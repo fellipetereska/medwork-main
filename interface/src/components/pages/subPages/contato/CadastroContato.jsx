@@ -1,86 +1,87 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios';
 import { Link } from "react-router-dom";
 import { supabase } from '../../../../services/api'
 
 import Back from '../../../layout/Back'
 import FrmCadastroContato from "./frmCadastroContato";
 import GridCadastroContato from './gridCadastroContato'
+import SearchInput from '../components/SearchInput'
 
 function CadastroSetor() {
 
-    // Instanciando e Definindo como vazio
-    const [data, setData] = useState(null);
-    const [contato, setContato] = useState([]);
-    const [onEdit, setOnEdit] = useState(null);
-    const [formData, setFormData] = useState({
-        nome_contato: '',
-        telefone_contato: '',
-        email_contato: '',
-        email_secundario_contato: '',
-    });
+  // Instanciando e Definindo como vazio
+  const [contato, setContato] = useState([]);
+  const [onEdit, setOnEdit] = useState(null);
 
-    //Instanciando Modal
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editData, setEditData] = useState(null);
+  //Instanciando o Search
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredContato, setFilteredContato] = useState([]);
 
 
-    const handleSave = () => {
-        console.log("Dados Salvos", formData);
-    };
-
-    // Pegando os dados do banco
-    const getContato = async () => {
-        try {
-            const { data } = await supabase.from("contato").select();
-            setContato(data)
-        } catch (error) {
-            toast.error(error);
-        }
-    };
-
-    useEffect(() => {
-        getContato();
-    }, []); // Chama apenas uma vez quando o componente é montado
-
-    //Funções do Modal
-    const handleEditModalOpen = (data) => {
-        setIsEditModalOpen(true);
-        setEditData(data);
-    };
-
-    const handleCancelEdit = () => {
-        setEditData(null);
-        setIsEditModalOpen(false);
+  // Pegando os dados do banco
+  const getContato = async () => {
+    try {
+      const { data } = await supabase.from("contato").select();
+      setContato(data)
+    } catch (error) {
+      toast.error(error);
     }
+  };
 
-    const handleEdit = (selectedEmpresa) => {
-        setOnEdit(selectedEmpresa)
-    };
+  const handleEdit = (selectedContato) => {
+    setOnEdit(selectedContato)
+  };
+
+  //Função para Pesquisa
+  useEffect(() => {
+    const filtered = contato.filter((emp) => emp.nome_contato.toLowerCase().includes(searchTerm.toLowerCase()));
+    setFilteredContato(filtered);
+
+    getContato();
+  }, [searchTerm, contato]);
 
 
-    return (
-        <div>
-            <div className="tab-content mt-14 mb-32">
-                <div>
+  const handleSearch = (term) => {
+    // Atualizar o estado do termo de pesquisa com o valor fornecido
+    setSearchTerm(term);
+  }
 
-                    <Link to="/cadastros">
-                        <Back />
-                    </Link>
-
-                    <FrmCadastroContato onEdit={onEdit} setOnEdit={setOnEdit} getContato={getContato} />
-
-                    <GridCadastroContato
-                        contato={contato}
-                        setContato={setContato}
-                        setOnEdit={handleEdit}
-                        handleEditModalOpen={() => handleEditModalOpen(data)}
-                    />
-                </div>
-            </div>
+  return (
+    <div>
+      <div className="tab-content mt-14">
+        <div className="flex justify-center items-center">
+          {/* Botão para voltar */}
+          <div className="absolute left-0">
+            <Link to="/cadastros">
+              <Back />
+            </Link>
+          </div>
+          <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Contato</h1>
         </div>
-    )
+
+        {/* Formulário */}
+        <div className="mb-3">
+          <FrmCadastroContato onEdit={onEdit} setOnEdit={setOnEdit} getContato={getContato} />
+        </div>
+
+        {/* Barra de pesquisa */}
+        <div className="flex justify-center w-full mb-3">
+          <div className="w-3/6">
+            <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
+          </div>
+        </div>
+
+
+        {/* Tabela */}
+        <GridCadastroContato
+          contato={filteredContato}
+          setContato={setContato}
+          setOnEdit={handleEdit}
+        />
+      </div>
+    </div>
+  )
 }
 
 export default CadastroSetor;

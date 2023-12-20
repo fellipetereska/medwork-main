@@ -1,28 +1,43 @@
-import { BsFillTrash3Fill, BsFillPencilFill } from 'react-icons/bs';
-import axios from 'axios';
+import { BsFillPencilFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
+import { supabase } from '../../../../services/api';
 
 function GridCadastroContato({ contato, setContato, setOnEdit }) {
 
+  const handleEditClick = (empresa) => () => {
+    handleEdit(empresa);
+  };
   const handleEdit = (item) => {
     setOnEdit(item);
   };
 
-  // const handleDelete = async (id) => {
-  //   console.log(id)
-  //   await axios
-  //     .delete(`http://localhost:8800/contato/${id}`)
-  //     .then(({ data }) => {
-  //       const newArray = contato.filter((item) => item.id !== id);
+  const handleDesactivation = async (id, ativo) => {
+    try {
+      // Inverte o estado ativo localmente
+      const novoContato = contato.map(item =>
+        item.id_contato === id ? { ...item, ativo: !ativo } : item
+      );
+      setContato(novoContato);
 
-  //       setContato(newArray);
-  //       toast.success(data);
-  //     })
-  //     .catch(({ data }) => toast.error(data))
-  //   console.log(id)
+      // Atualiza o estado no banco de dados
+      const { error } = await supabase
+        .from("contato")
+        .upsert([{ id_contato: id, ativo: !ativo }]);
 
-  //   setOnEdit(null);
-  // }
+      if (error) {
+        // Se houver um erro na atualização do banco de dados, reverte o estado local
+        setContato(contato.map(item =>
+          item.id_contato === id ? { ...item, ativo } : item
+        ));
+        throw new Error(error.message);
+      }
+
+      toast.success(`Contato ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
+    } catch (error) {
+      console.log("Erro ao atualizar status do contato", error);
+      toast.error("Erro ao atualizar status do contato, verifique o console");
+    }
+  };
 
   return (
     <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
@@ -44,14 +59,17 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
             <th scope="col" className="px-6 py-3">
               Email Secundario
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 text-center">
               Ações
+            </th>
+            <th scope="col" className="px-6 py-3 text-center">
+              Inativo?
             </th>
           </tr>
         </thead>
         <tbody>
           {contato.map((item, i) => (
-            <tr key={i} className="bg-white border-b">
+            <tr key={i} className={`border-b bg-white ${!item.ativo ? 'opacity-25' : ''}`}>
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_contato}
               </th>
@@ -67,14 +85,39 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
               <td className="px-6 py-4">
                 {item.email_secundario_contato}
               </td>
-              {/* <td className="px-5 py-4 gap-4 flex justify-start">
-                <a className="font-medium text-blue-600 hover:text-blue-800" onClick={() => handleEdit(item)}>
-                  <BsFillPencilFill />
+              <td className="py-4 gap-4">
+                <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
+                  <BsFillPencilFill onClick={handleEditClick(item)} />
                 </a>
-                <a className="font-medium text-red-600 hover:text-red-800" onClick={() => handleDelete(item.id)}>
-                  <BsFillTrash3Fill />
-                </a>
-              </td> */}
+              </td>
+              <td className="py-4 gap-4 text-right">
+                <label
+                  className="relative flex items-center justify-center rounded-full cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={!item.ativo}
+                    className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
+                    onChange={() => handleDesactivation(item.id_contato, item.ativo)}
+                  />
+                  <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3.5 w-3.5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+                </label>
+              </td>
             </tr>
           ))}
         </tbody>
