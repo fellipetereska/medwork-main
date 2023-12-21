@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { toast, ToastContainer } from 'react-toastify';
 import { AuthProvider } from './contexts/auth';
 import useAuth from './hooks/useAuth';
-import PrivateRoute from './components/pages/subPages/components/PrivateRoute';
+// import PrivateRoute from './components/pages/subPages/components/PrivateRoute';
+import "react-toastify/dist/ReactToastify.css";
 
 // Importante as Paginas
 import Home from './components/pages/Home';
@@ -18,6 +19,10 @@ import Cargo from './components/pages/subPages/cargo/CadastroCargo';
 import Contato from './components/pages/subPages/contato/CadastroContato';
 import Usuario from './components/pages/subPages/usuarios/CadastroUsuario';
 import Login from './components/pages/Login';
+import Processos from './components/pages/subPages/Processos/Processos';
+import Riscos from './components/pages/subPages/Riscos/Riscos';
+import Grupos from './components/pages/subPages/Grupos/Grupos';
+import Medidas from './components/pages/subPages/Medidas/Medidas';
 
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
@@ -48,6 +53,10 @@ function App() {
           <Route path='/cadastro_cargo' element={<Cargo />} />
           <Route path='/cadastro_contato' element={<Contato />} />
           <Route path='/cadastro_usuario' element={<Usuario />} />
+          <Route path='/cadastro_processo' element={<Processos />} />
+          <Route path='/cadastro_risco' element={<Riscos />} />
+          <Route path='/cadastro_grupo' element={<Grupos />} />
+          <Route path='/cadastro_medida' element={<Medidas />} />
           <Route path='*' element={<Navigate to='/' />} />
         </Routes>
         {/* Rodapé */}
@@ -55,7 +64,10 @@ function App() {
       </Router>
 
       {/* Mensagem */}
-      <ToastContainer autoClose={3000} position={toast.POSITION.TOP_RIGHT} />
+      <ToastContainer
+        autoClose={3000}
+        position={toast.POSITION.TOP_RIGHT}        
+      />
     </AuthProvider>
   );
 }

@@ -52,7 +52,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
         setContactId(null);
       }
     }
-    console.log(onEdit)
   }, [onEdit, contact]);
 
 

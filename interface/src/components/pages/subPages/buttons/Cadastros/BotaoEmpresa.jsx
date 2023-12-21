@@ -1,5 +1,4 @@
-import { BsFillBuildingsFill } from 'react-icons/bs'
-import icon_empresa from '../../../media/icon_empresa.svg'
+import icon_empresa from '../../../../media/icon_empresa.svg'
 
 function BotaoEmpresa({ openEmpresaModal }) {
     return (

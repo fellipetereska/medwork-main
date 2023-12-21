@@ -50,7 +50,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
         item.id_setor === id ? { ...item, ativo: !ativo } : item
       );
       setSetor(novoSetor)
-      toast.success(`Setor ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
+      toast.info(`Setor ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
     } catch (error) {
       console.error("Erro ao atualizar status do setor:", error);
       toast.error("Erro ao atualizar status do setor, verifique o console!");

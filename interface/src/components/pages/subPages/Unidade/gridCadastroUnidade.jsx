@@ -74,7 +74,7 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit }) {
         throw new Error(error.message);
       }
 
-      toast.success(`Unidade ${!ativo ? 'ativada' : 'inativada'} com sucesso!`)
+      toast.info(`Unidade ${!ativo ? 'ativada' : 'inativada'} com sucesso!`)
 
     } catch (error) {
       console.log("Erro ao atualizar status da unidade", error);

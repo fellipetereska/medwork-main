@@ -29,7 +29,7 @@ function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
         throw new Error(error.message);
       }
 
-      toast.success(`Cargo ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
+      toast.info(`Cargo ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
     } catch (error) {
       console.log("Erro ao atualizar status do cargo", error);
       toast.error("Erro ao atualizar status do cargo, verifique o console");
