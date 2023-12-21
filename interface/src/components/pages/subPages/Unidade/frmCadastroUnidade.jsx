@@ -21,20 +21,29 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
   const [nomeEmpresa, setNomeEmpresa] = useState(null);
   const [contatoId, setContatoId] = useState(null);
   const [nomeContato, setNomeContato] = useState(null);
+  const [cnpj, setCnpj] = useState(""); //Armazena o CNPJ
+  const [cep, setCep] = useState(""); //Armazena o CNPJ
+  const [estado, setEstado] = useState(null);
+  const [cidade, setCidade] = useState(null);
+  const [logradouro, setLogradouro] = useState(null);
+  const [bairro, setBairro] = useState(null);
+  const [numero, setNumero] = useState(null);
+
+  const user = ref.current
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
     if (onEdit) {
-      const user = ref.current
 
       //Passando o dado do input para a props
       user.nome_unidade.value = onEdit.nome_unidade;
-      user.cnpj_unidade.value = onEdit.cnpj_unidade;
-      user.cep_unidade.value = onEdit.cep_unidade;
-      user.endereco_unidade.value = onEdit.endereco_unidade;
-      user.bairro_unidade.value = onEdit.bairro_unidade;
-      user.cidade_unidade.value = onEdit.cidade_unidade;
-      user.uf_unidade.value = onEdit.uf_unidade;
+      setCnpj(onEdit.cnpj_unidade || "");
+      setCep(onEdit.cep_unidade || "");
+      setEstado(onEdit.uf_unidade || "");
+      setBairro(onEdit.bairro_unidade || "");
+      setCidade(onEdit.cidade_unidade || "");
+      setLogradouro(onEdit.endereco_unidade || "");
+      setNumero(onEdit.numero_unidade || "");
 
       if (contact && onEdit.fk_contato_id) {
         setNomeContato(contact);
@@ -58,16 +67,12 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const user = ref.current;
-
     //Verificandose todos os campos foram preenchidos
     if (
       !user.nome_unidade.value ||
       !user.cnpj_unidade.value ||
       !user.cep_unidade.value ||
-      !user.endereco_unidade.value ||
-      !user.bairro_unidade.value ||
-      !user.cidade_unidade.value) {
+      !user.numero_unidade.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
@@ -76,11 +81,12 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
         cnpj_unidade: user.cnpj_unidade.value || null,
         cep_unidade: user.cep_unidade.value || null,
         endereco_unidade: user.endereco_unidade.value || null,
+        numero_unidade: user.numero_unidade.value || null,
         bairro_unidade: user.bairro_unidade.value || null,
         cidade_unidade: user.cidade_unidade.value || null,
         uf_unidade: user.uf_unidade.value || null,
         fk_contato_id: contatoId || null,
-        fk_empresa_id: empresaId || null,
+        fk_empresa_id: empresaId || null
       };
 
       if (onEdit) {
@@ -96,7 +102,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
         toast.success(`Unidade: ${onEdit.nome_unidade} atualizada com sucesso!`)
       } else {
         //Caso não tiver o cadastro ele cadastra
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("unidade").upsert([unidadeData]);
 
         if (error) {
@@ -112,12 +118,13 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
     }
 
     user.nome_unidade.value = "";
-    user.cnpj_unidade.value = "";
-    user.cep_unidade.value = "";
-    user.endereco_unidade.value = "";
-    user.bairro_unidade.value = "";
-    user.cidade_unidade.value = "";
-    user.uf_unidade.value = "";
+    setNumero("");
+    setBairro("");
+    setLogradouro("")
+    setCidade("")
+    setEstado("");
+    setCnpj("");
+    setCep("");
     setOnEdit(null);
     setContatoId(null);
     setNomeContato(null);
@@ -131,14 +138,14 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
   //Função para limpar os campos
   const handleClear = () => {
     // Limpa todos os campos do formulário
-    const user = ref.current;
     user.nome_unidade.value = "";
-    user.cnpj_unidade.value = "";
-    user.cep_unidade.value = "";
-    user.endereco_unidade.value = "";
-    user.bairro_unidade.value = "";
-    user.cidade_unidade.value = "";
-    user.uf_unidade.value = "";
+    setNumero("");
+    setBairro("");
+    setLogradouro("");
+    setCidade("")
+    setEstado("");
+    setCnpj("");
+    setCep("");
     setContatoId(null);
     setNomeContato(null);
     setEmpresaId(null);
@@ -204,6 +211,76 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
     setNomeEmpresa(null);
   };
 
+  //Formatando o CNPJ
+  const handleFormatCnpj = (value) => {
+    return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  }
+
+  const handleCnpjChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    const truncatedValue = numericValue.slice(0, 14);
+    const formattedCnpj = handleFormatCnpj(truncatedValue);
+    setCnpj(formattedCnpj);
+  };
+
+  //Formatando o CEP
+  const handleFormatCep = (value) => {
+    return value.replace(/\D/g, '').replace(/^(\d{5})(\d{3})$/, '$1-$2');
+  }
+
+  const handleCepChange = async (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    const truncatedValue = numericValue.slice(0, 9);
+    const formattedCep = handleFormatCep(truncatedValue);
+    setCep(formattedCep);
+
+    if (truncatedValue.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${truncatedValue}/json/`);
+        const data = await response.json();
+
+        // Verifica se há um erro na resposta
+        if (data.erro) {
+          console.error("Erro ao obter informações do CEP");
+          return;
+        }
+
+        // Atualiza o estado com a UF do CEP
+        setEstado(data.uf);
+        setCidade(data.localidade);
+        setBairro(data.bairro);
+        setLogradouro(data.logradouro);
+      } catch (error) {
+        console.error("Erro ao obter informações do CEP:", error);
+      }
+    }
+  };
+
+  // Função para formatar e atualizar o estado (UF)
+  const handleUfChange = (e) => {
+    const inputValue = e.target.value.trim().toUpperCase();
+
+    // Verifica se o valor tem no máximo 2 letras
+    if (/^[a-zA-Z]{0,2}$/.test(inputValue)) {
+      setEstado(inputValue);
+    } else {
+      toast.warn("UF inválido. Digite no máximo 2 letras.");
+      // Pode optar por não limpar o estado aqui
+    }
+  };
+
+  //Função para Validar numero(endereço)
+  const handleNumChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    setNumero(numericValue)
+  }
+
+
+
+
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
@@ -220,39 +297,59 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
               CNPJ:
-            </label>
-            <InputMask
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
-              name="cnpj_unidade"
-              mask="99.999.999/9999-99"
-              placeholder="CNPJ da Unidade"
-            />
-          </div>
-          <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-              CEP:
-            </label>
-            <InputMask
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
-              name="cep_unidade"
-              mask="99999-999"
-              placeholder="00000-000"
-            />
-          </div>
-          <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-              Endereço:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
-              name="endereco_unidade"
-              placeholder="Endereço da Unidade"
+              name="cnpj_unidade"
+              value={cnpj}
+              onChange={handleCnpjChange}
+              maxLength={14}
+              placeholder="00.000.000/0000-00"
             />
+          </div>
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+              CEP:
+            </label>
+            <input
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              type="text"
+              name="cep_unidade"
+              value={cep}
+              onChange={handleCepChange}
+              maxLength={9}
+              placeholder="00000-000"
+            />
+          </div>
+          <div className="flex w-full md:w-1/3 px-3 gap-4">
+            <div className="w-full">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                Endereço:
+              </label>
+              <input
+                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                type="text"
+                name="endereco_unidade"
+                placeholder="Endereço da Unidade"
+                value={logradouro}
+              />
+            </div>
+            <div className="w-1/3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2 ml-1" htmlFor="grid-nome_empresa">
+                Nº:
+              </label>
+              <input
+                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                type="text"
+                name="numero_unidade"
+                placeholder="Nº"
+                value={numero}
+                onChange={handleNumChange}
+              />
+            </div>
           </div>
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -263,6 +360,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
               type="text"
               name="bairro_unidade"
               placeholder="Bairro da Unidade"
+              value={bairro}
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
@@ -274,17 +372,20 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
               type="text"
               name="cidade_unidade"
               placeholder="Cidade da Unidade"
+              value={cidade}
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-              UF:
+              Selecione um Estado:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="uf_unidade"
               placeholder="UF da Unidade"
+              value={estado}
+              onChange={handleUfChange}
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
