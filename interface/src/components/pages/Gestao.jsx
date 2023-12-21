@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import BotaoUsuario from "./subPages/buttons/BotaoUsuarios";
+import BotaoUsuario from "./subPages/buttons/Gestao/BotaoUsuarios";
 
 function Gestao () {
     return (

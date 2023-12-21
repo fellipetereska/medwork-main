@@ -64,7 +64,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
         throw new Error(error.message);
       }
 
-      toast.success(`Empresa ${!ativo ? 'ativada' : 'inativada'} com sucesso`);
+      toast.info(`Empresa ${!ativo ? 'ativada' : 'inativada'} com sucesso`);
     } catch (error) {
       console.log("Erro ao atualizar status da empresa", error);
       toast.error("Erro ao atualizar status da empresa, verifique o console");

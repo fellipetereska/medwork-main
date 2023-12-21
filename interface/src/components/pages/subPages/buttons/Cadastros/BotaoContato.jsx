@@ -1,5 +1,5 @@
 import { BsFillPersonPlusFill } from 'react-icons/bs'
-import icon_contato from '../../../media/icon_contato.svg'
+import icon_contato from '../../../../media/icon_contato.svg'
 
 function BotaoContato () {
     return(

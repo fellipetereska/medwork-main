@@ -32,7 +32,7 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
         throw new Error(error.message);
       }
 
-      toast.success(`Contato ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
+      toast.info(`Contato ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
     } catch (error) {
       console.log("Erro ao atualizar status do contato", error);
       toast.error("Erro ao atualizar status do contato, verifique o console");
