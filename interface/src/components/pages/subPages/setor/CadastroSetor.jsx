@@ -12,9 +12,7 @@ import SearchInput from "../components/SearchInput";
 
 
 function CadastroSetor({ location }) {
-
-	console.log(location)
-
+	
 	// Instanciando e Definindo como vazio
 	const [setor, setSetor] = useState([]);
 	const [onEdit, setOnEdit] = useState(null);
