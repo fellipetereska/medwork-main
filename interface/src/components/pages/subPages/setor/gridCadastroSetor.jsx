@@ -3,11 +3,17 @@ import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
+import icon_processo from '../../../media/icon_processos.svg'
+import ModalProcesso from '../components/Modal/ModalProcesso'
 
 function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
 
   //Instanciando variavel e definindo o estado como null
   const [unidade, setUnidade] = useState(null);
+
+  const [showModal, setShowModal] = useState(null);
+  const [setorName, setSetorName] = useState(null);
+  const [setorId, setSetorId] = useState(null);
 
   //Função para editar item
   const handleEdit = (item) => {
@@ -57,6 +63,19 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
     }
   }
 
+  //Funções do Modal
+  //Função para abrir o Modal
+  const openModal = () => setShowModal(true);
+  //Função para fechar o Modal
+  const closeModal = () => setShowModal(false);
+
+  const handleSetorSelect = (item) => {
+    console.log(item)
+    setSetorName(item.nome_setor)
+    setSetorId(item.id_setor)
+    openModal();
+  }
+
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
@@ -81,6 +100,9 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
             <th scope="col" className="px-6 py-3">
               Ações
             </th>
+            <th scope="col" className="px-6 py-3">
+              Vínculos
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -99,7 +121,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
               </th>
               <td className="px-5 py-4 gap-4 flex justify-start">
                 <a className="font-medium text-blue-600 hover:text-blue-800">
-                  <BsFillPencilFill onClick={() => handleEdit(item)}/>
+                  <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
                 <label
                   className="relative flex items-center rounded-full cursor-pointer"
@@ -128,11 +150,24 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
                   </div>
                 </label>
               </td>
+              <td className="px-6 py-4 items-center">
+                <a className='cursor-pointer' onClick={() => handleSetorSelect(item)}>
+                  <img src={icon_processo} className='h-6' />
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <ModalProcesso
+        isOpen={showModal}
+        onCancel={closeModal}
+        setorName={setorName}
+        setorId={setorId}
+        setor={setor}
+      />
     </div>
+
   );
 }
 
