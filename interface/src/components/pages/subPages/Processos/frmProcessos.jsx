@@ -125,7 +125,7 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
     const sortData = filteredData.sort();
     setSetor(sortData);
   }
-  
+
 
   const fetchCargo = async () => {
     try {
@@ -189,115 +189,17 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
                 placeholder="Nome do Processo"
               />
             </div>
-            {/* Select Setor */}
-            <div className="w-full md:w-1/3 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                Setor:
+            <div className="w-full px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Descrição do Processo
               </label>
-              <div className="flex items-center w-full">
-                {setorName ? (
-                  <>
-                    <button
-                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                      onClick={openModalSetor}
-                    >
-                      <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
-                        Setor:
-                      </p>
-                      <p className="font-bold">
-                        {setorName}
-                      </p>
-                    </button>
-                    <button className="ml-4" onClick={handleClearSetor}>
-                      <img src={icon_sair} alt="" className="h-9" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModalSetor}
-                  >
-                    <p className="px-2 text-sm font-medium">
-                      Vincular esse processo a um setor
-                    </p>
-                  </button>
-                )}
-              </div>
-              <ModalSetor
-                isOpen={showModalSetor}
-                onCancel={closeModalSetor}
-                children={setor}
-                onContactSelect={handleSetorSelect}
+              <textarea
+                className="resize-none appearence-none block w-full bg-gray-100 h-20 min-h-20 max-h-20 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                type="text"
+                name="descricao_processo"
+                placeholder="Descreva o processo"
               />
             </div>
-            <div className="w-full md:w-1/3 px-3">
-              {setorId ? (
-                <>
-                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                    Cargo:
-                  </label>
-                  <div className="flex items-center w-full">
-                    {cargoName ? (
-                      <>
-                        <button
-                          className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                          onClick={openModalCargo}
-                        >
-                          <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
-                            Cargo:
-                          </p>
-                          <p className="font-bold">
-                            {cargoName}
-                          </p>
-                        </button>
-                        <button className="ml-4" onClick={handleClearCargo}>
-                          <img src={icon_sair} alt="" className="h-9" />
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                        onClick={openModalCargo}
-                      >
-                        <p className="px-2 text-sm font-medium">
-                          Nenhum Cargo Selecionado
-                        </p>
-                      </button>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={openModalCargo}
-                      className={`flex cursor-pointer ml-4`}
-                    >
-                      <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-                    </button>
-                  </div>
-                  <ModalCargo
-                    isOpen={showModalCargo}
-                    onCancel={closeModalCargo}
-                    setorId={setorId}
-                    cargos={cargo}
-                    onContactSelect={handleCargoSelect}
-                  />
-                </>
-              ) : (
-                <>
-
-                </>
-              )}
-            </div>
-          </div>
-          <div className="w-full px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-              Descrição do Processo
-            </label>
-            <textarea
-              className="resize-none appearence-none block w-full bg-gray-100 h-20 min-h-20 max-h-20 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
-              name="descricao_processo"
-              placeholder="Descreva o processo"
-            />
           </div>
 
           {/* Botões Formulário */}
