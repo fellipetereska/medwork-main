@@ -11,6 +11,7 @@ import Back from '../../../layout/Back'
 function Riscos() {
 
   const [riscos, setRiscos] = useState([]);
+  const [processo, setProcesso] = useState([])
   const [onEdit, setOnEdit] = useState(null);
 
   //Instanciando o Search
@@ -29,8 +30,14 @@ function Riscos() {
     }
   }
 
+  const getProcessos = async () => {
+    const { data } = await supabase.from("processo").select();
+    setProcesso(data);
+  }
+
   useEffect(() => {
     getRiscos();
+    getProcessos();
   }, [])
 
   const handleEdit = (selectedRisco) => {
@@ -60,7 +67,7 @@ function Riscos() {
             </Link>
           </div>
 
-          <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Empresa</h1>
+          <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Risco</h1>
         </div>
 
         {/* Formulário de Cadastro */}
@@ -69,6 +76,7 @@ function Riscos() {
           setOnEdit={setOnEdit}
           getRiscos={getRiscos}
           riscos={riscos}
+          processo={processo}
         />
 
         {/* Barra de pesquisa */}

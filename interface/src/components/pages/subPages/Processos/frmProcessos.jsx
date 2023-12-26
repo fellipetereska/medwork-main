@@ -119,14 +119,13 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
     setSetorName(null);
   };
 
-  const fetchSetor = async () => {
-    try {
-      const { data } = await supabase.from("setor").select();
-      setSetor(data);
-    } catch (error) {
-      console.log("Erro ao buscar setores", error);
-    }
+  const getSetor = async () => {
+    const { data } = await supabase.from("setor").select();
+    const filteredData = data.filter((item) => item.ativo);
+    const sortData = filteredData.sort();
+    setSetor(sortData);
   }
+  
 
   const fetchCargo = async () => {
     try {
@@ -138,7 +137,7 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
   }
 
   useEffect(() => {
-    fetchSetor();
+    getSetor();
     fetchCargo();
   }, [])
 
@@ -219,18 +218,10 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
                     onClick={openModalSetor}
                   >
                     <p className="px-2 text-sm font-medium">
-                      Nenhum Setor Selecionado
+                      Vincular esse processo a um setor
                     </p>
                   </button>
                 )}
-
-                <button
-                  type="button"
-                  onClick={openModalSetor}
-                  className={`flex cursor-pointer ml-4`}
-                >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-                </button>
               </div>
               <ModalSetor
                 isOpen={showModalSetor}

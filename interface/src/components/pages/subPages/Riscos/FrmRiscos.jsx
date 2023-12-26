@@ -3,14 +3,19 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from 'react-toastify';
 import { supabase } from '../../../../services/api';
 
+import ModalSearchProcesso from '../components/Modal/ModalProcesso'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
-function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
+function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
 
   const [pgr, setPgr] = useState(false);
   const [ltcat, setLtcat] = useState(false);
   const [lip, setLip] = useState(false);
+  const [processoId, setProcessId] = useState(null);
+  const [processName, setProcessName] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
 
   const ref = useRef(null);
 
@@ -156,6 +161,24 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
 
   const checkedLip = () => {
     setLip(!lip);
+  }
+
+  //Funções do Modal
+  //Função para abrir o Modal
+  const openModal = () => setShowModal(true);
+  //Função para fechar o Modal
+  const closeModal = () => setShowModal(false);
+
+  // Função para atualizar o Id Contato
+  const handleProcessSelect = useCallback((processId, processName) => {
+    closeModal();
+    setProcessId(processId);
+    setProcessName(processName);
+  }, [closeModal]);
+
+  const handleClearProcesso = () => {
+    setProcessId(null);
+    setProcessName(null);
   }
 
 
@@ -336,26 +359,46 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               Processos:
             </label>
             <div className="flex items-center w-full">
-              <button
-                className="flex appearance-none w-full hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-
-              >
-                <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
-                  Processo:
-                </p>
-                <p className="font-bold">
-                  Processo
-                </p>
-              </button>
-
-              <button
-                type="button"
-                className={`flex cursor-pointer ml-4`}
-              >
-                <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-              </button>
+              {processName ? (
+                <>
+                  <button
+                    className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModal}
+                  >
+                    <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
+                      Processo:
+                    </p>
+                    <p className="font-bold">
+                      {processName}
+                    </p>
+                  </button>
+                  <button className="ml-4" onClick={handleClearProcesso}>
+                    <img src={icon_sair} className="h-9" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModal}
+                  >
+                    <p className="px-2 text-sm font-medium">
+                      Nenhum processo selecionado
+                    </p>
+                  </button>
+                  <button className="ml-4" onClick={openModal}>
+                    <img src={icon_lupa} className="h-9" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
+          <ModalSearchProcesso
+            isOpen={showModal}
+            onCancel={closeModal}
+            children={processo}
+            onProcessSelect={handleProcessSelect}
+          />
           <div className="w-full md:w-1/2 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               EPI:
