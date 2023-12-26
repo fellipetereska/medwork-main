@@ -82,7 +82,7 @@ function Riscos() {
         <GridRiscos
           riscos={filteredRiscos}
           setRiscos={setRiscos}
-          setOnEdit={setOnEdit}
+          setOnEdit={handleEdit}
         />
       </div>
     </>
