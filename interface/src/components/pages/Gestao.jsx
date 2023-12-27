@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import BotaoUsuario from "./subPages/buttons/Gestao/BotaoUsuarios";
+import BotaoCadastroAparelho from "./subPages/buttons/Cadastros/BotaoCadastroAparelho";
 
 function Gestao () {
     return (
@@ -9,6 +10,11 @@ function Gestao () {
                     <figure class="flex flex-col justify-center">
                         <Link to="/cadastro_usuario">
                             <BotaoUsuario />
+                        </Link>
+                    </figure>
+                    <figure class="flex flex-col justify-center">
+                        <Link to="/cadastro_aparelhos">
+                            <BotaoCadastroAparelho />
                         </Link>
                     </figure>
                 </div>

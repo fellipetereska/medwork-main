@@ -7,7 +7,7 @@ import BotaoCargo from "./subPages/buttons/Cadastros/BotaoCargo";
 import BotaoContato from "./subPages/buttons/Cadastros/BotaoContato";
 import BotaoProcessos from './subPages/buttons/Cadastros/BotaoProcessos';
 import BotaoRiscos from './subPages/buttons/Cadastros/BotaoRiscos';
-import BotaoGrupoDeRiscos from "./subPages/buttons/Cadastros/BotaoGrupoDeRiscos";
+import BotaoCadastroEpi from "./subPages/buttons/Cadastros/CadastroEpi";
 import BotaoMedidasDeProtecao from "./subPages/buttons/Cadastros/BotaoMedidasDeProtecao";
 
 function Cadastros() {
@@ -55,8 +55,8 @@ function Cadastros() {
             </Link>
           </figure>
           <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_grupo">
-              <BotaoGrupoDeRiscos />
+            <Link to="/cadastro_epi">
+              <BotaoCadastroEpi />
             </Link>
           </figure>
           <figure className="flex flex-col justify-center">
