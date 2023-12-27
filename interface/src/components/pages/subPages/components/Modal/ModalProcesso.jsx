@@ -80,6 +80,7 @@ const ModalProcesso = ({ onCancel, isOpen, setorName, setorId, setor }) => {
         }
       ]);
       closeModal();
+      fetchSetorProcesso();
       toast.success("Processo vinculado com sucesso!");
     } catch (error) {
       console.log("Erro ao vincular processo no setor", error);
