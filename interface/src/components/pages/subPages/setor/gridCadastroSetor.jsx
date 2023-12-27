@@ -120,7 +120,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
                 {finUnidade(item.fk_unidade_id)}
               </th>
               <td className="px-5 py-4 gap-4 flex justify-start">
-                <a className="font-medium text-blue-600 hover:text-blue-800">
+                <a className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
                 <label
@@ -150,8 +150,8 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
                   </div>
                 </label>
               </td>
-              <td className="px-6 py-4 items-center">
-                <a className='cursor-pointer' onClick={() => handleSetorSelect(item)}>
+              <td className="px-6 py-4">
+                <a className='cursor-pointer flex justify-center' onClick={() => handleSetorSelect(item)}>
                   <img src={icon_processo} className='h-6' />
                 </a>
               </td>
