@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
 
 const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {

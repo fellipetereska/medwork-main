@@ -14,7 +14,7 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
 
   useEffect(() => {
     getUnidade();
-  })
+  },[])
 
   const findUnidade = (fkUnidadeId) => {
     if (!unidade) {
@@ -62,7 +62,7 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
           </div>
         </div>
         <ul className='space-y-3 py-3'>
-          {children
+          {children && children
             .filter((setor) =>
               setor.nome_setor.toLowerCase().includes(searchTerm.toLowerCase()) ||
               setor.ambiente_setor.toLowerCase().includes(searchTerm.toLowerCase())
