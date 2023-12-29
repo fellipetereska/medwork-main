@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
 import icon_processo from '../../../media/icon_processos.svg'
 import ModalProcesso from '../components/Modal/ModalProcesso'
+import { FiLink } from "react-icons/fi";
 
 function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
 
@@ -79,7 +80,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
-      <table className="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
+      <table className="w-full xl:w-5/6 shadow-md text-sm mt-4 text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-3">
@@ -119,8 +120,8 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
               <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {finUnidade(item.fk_unidade_id)}
               </th>
-              <td className="px-5 py-4 gap-4 flex justify-start">
-                <a className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
+              <td className={`px-5 py-4 gap-4 flex justify-start `}>
+                <a className={`font-medium text-blue-600 hover:text-blue-800 cursor-pointer ${!item.ativo ? 'cursor-not-allowed' : '' }`}>
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
                 <label
@@ -151,8 +152,8 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
                 </label>
               </td>
               <td className="px-6 py-4">
-                <a className='cursor-pointer flex justify-center' onClick={() => handleSetorSelect(item)}>
-                  <img src={icon_processo} className='h-6' />
+                <a className={`cursor-pointer text-yellow-500 text-lg flex justify-center ${!item.ativo ? 'cursor-not-allowed' : '' }`} onClick={() => handleSetorSelect(item)}>
+                  <FiLink />
                 </a>
               </td>
             </tr>

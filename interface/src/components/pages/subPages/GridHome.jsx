@@ -91,7 +91,7 @@ function GridHome({ empresas }) {
                 {findContactName(item.fk_contato_id)}
               </th>
               <td className="py-4 flex justify-center">
-                <a className={`font-medium text-blue-600 hover:text-blue-800 ${item.ativo ? 'cursor-pointer' : ''}`}>
+                <a className={`font-medium text-blue-600 hover:text-blue-800 ${item.ativo ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
                   <BsBoxArrowDown onClick={() => item.ativo && handleOpenCompany(item.id_empresa)} />
                 </a>
               </td>

@@ -6,18 +6,20 @@ import { supabase } from "../../../../services/api"; //Conexão com o banco de d
 
 //Importando componentes da tela
 import Back from '../../../layout/Back'
-import FrmCadastroSetor from "./frmCadastroSetor";
 import GridCadastroSetor from "./gridCadastroSetor";
 import SearchInput from "../components/SearchInput";
+import { MdOutlineAddHomeWork } from "react-icons/md";
+import ModalSetor from './ModalSetor'
 
 
-function CadastroSetor({ location }) {
-	
+function CadastroSetor({ }) {
+
 	// Instanciando e Definindo como vazio
 	const [setor, setSetor] = useState([]);
 	const [onEdit, setOnEdit] = useState(null);
 	const [unidade, setUnidade] = useState(null);
 	const [nomeUnidade, setNomeUnidade] = useState(null);
+	const [showModal, setShowModal] = useState(false);
 
 	//Instanciando o Search
 	const [searchTerm, setSearchTerm] = useState('');
@@ -57,23 +59,8 @@ function CadastroSetor({ location }) {
 	useEffect(() => {
 		getSetor();
 		gettUnidade();
+	}, []);
 
-		if (location && location.state && location.state.onEdit) {
-			setOnEdit(location.state.onEdit);
-		}
-	}, [location]);
-
-	//Função para edição
-	const handleEdit = (selectedSetor) => {
-		setOnEdit(selectedSetor)
-
-		if (selectedSetor.fk_unidade_id) {
-			const unidadeInfo = unidade.find((c) => c.id_unidade === selectedSetor.fk_unidade_id);
-			if (unidadeInfo) {
-				setNomeUnidade(unidadeInfo.nome_unidade)
-			}
-		}
-	};
 
 	//Função para Pesquisa
 	useEffect(() => {
@@ -98,6 +85,30 @@ function CadastroSetor({ location }) {
 		setSearchTerm(term);
 	}
 
+	//Funções do Modal
+	//Função para abrir o Modal
+	const openModal = () => setShowModal(true);
+	//Função para fechar o Modal
+	const closeModal = () => setShowModal(false);
+
+	//Função para edição
+	const handleEdit = (selectedSetor) => {
+		setOnEdit(selectedSetor)
+
+		if (selectedSetor.fk_unidade_id) {
+			const unidadeInfo = unidade.find((c) => c.id_unidade === selectedSetor.fk_unidade_id);
+			if (unidadeInfo) {
+				setNomeUnidade(unidadeInfo.nome_unidade)
+			}
+		}
+	};
+
+	useEffect(() => {
+		if (onEdit) {
+			openModal()
+		}
+	}, [onEdit]);
+
 
 	return (
 		<div className="p-6">
@@ -112,19 +123,39 @@ function CadastroSetor({ location }) {
 			</div>
 
 			{/* Formulário de Cadastro */}
-			<FrmCadastroSetor
+			{/* <FrmCadastroSetor
 				onEdit={onEdit}
 				setOnEdit={setOnEdit}
 				getSetor={getSetor}
 				unidades={nomeUnidade}
-			/>
+			/> */}
 
 			{/* Barra de pesquisa */}
 			<div className="flex justify-center w-full mt-6">
 				<div className="w-3/6">
-					<SearchInput onSearch={handleSearch} placeholder="Buscar Setor..." />
+					<SearchInput
+						onSearch={handleSearch}
+						placeholder="Buscar Setor..." />
 				</div>
 			</div>
+
+			<div className="flex justify-end w-11/12 mt-6">
+				<button
+					type="button"
+					onClick={openModal}
+					class="text-white bg-sky-600 hover:bg-sky-700 font-medium rounded-lg text-xl px-5 py-2">
+					<MdOutlineAddHomeWork />
+				</button>
+			</div>
+
+			<ModalSetor
+				isOpen={showModal}
+				onCancel={closeModal}
+				onEdit={onEdit}
+				setOnEdit={setOnEdit}
+				getSetor={getSetor}
+				unidades={unidade}
+			/>
 
 			{/* Tabela Setor */}
 			<GridCadastroSetor

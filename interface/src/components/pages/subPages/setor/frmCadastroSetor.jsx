@@ -8,7 +8,7 @@ import icon_lupa from '../../../media/icon_lupa.svg'
 import ModalSearchSetor from "../components/Modal/ModalSearchUnidade";
 
 
-function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
+function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
 
   //Instanciando Variaveis
   // Instanciando a variavel que vai referenciar o formulario
@@ -35,7 +35,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
         setUnidadeId(null);
       }
     }
-  }, [onEdit, unidade]);
+  }, [onEdit, unidades]);
 
   //Função para adicionar ou atualizar dado
   const handleSubmit = async (e) => {
@@ -96,6 +96,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
 
     // Atualiza os dados
     getSetor();
+    onCancel();
   };
 
   //Função para limpar o formulário
@@ -145,7 +146,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
 
   return (
     <div className="flex justify-center">
-      <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+      <form className="w-full" ref={ref} onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_setor">
@@ -157,7 +158,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
               placeholder="Nome do Setor"
             />
           </div>
-          <div className="w-full md:w-1/3 px-3">
+          {/* <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
               Unidade:
             </label>
@@ -203,7 +204,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades }) {
               children={unidade}
               onContactSelect={handleUnidadeSelect}
             />
-          </div>
+          </div> */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-observacao_setor">
               Observação
