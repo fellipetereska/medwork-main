@@ -1,8 +1,10 @@
 import mysql from "mysql";
 
-export const db = mysql.createConnection({
-    host: 'db4free.net', port: 3306,
-    user: 'medworkldn',
-    password: 'mdaiik123',
-    database: 'bd_medwork'
-})
+export const pool = mysql.createPool({
+    host: '50.116.112.129', port: 3306,
+    user: 'asse3972_medworkldn',
+    password: 'mdk@#ldn!$',
+    database: 'asse3972_db_medwork',
+    multipleStatements: true,
+    connectionLimit: 10,
+});

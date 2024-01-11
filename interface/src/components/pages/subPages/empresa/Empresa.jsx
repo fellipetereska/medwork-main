@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco
+import { connect } from "../../../../services/api"; //Conexão com o banco
 
 //Importando componentes
 import CadastroEmpresa from "./frmCadastroEmpresas";
@@ -25,18 +25,14 @@ function Empresa() {
   // Pegando os dados da tabela Empresa
   const getEmpresa = async () => {
     try {
-      const { data } = await supabase.from("empresa").select();
-      const sortData = data.sort((a, b) => {
-        //Ordenar pro status (ativo ou inativo)
-        if (a.ativo !== b.ativo) {
-          return a.ativo ? -1 : 1;
-        }
+      const response = await fetch(`${connect}/empresas`);
 
-        //Ordenar por ordem alfabética
-        return a.nome_empresa.localeCompare(b.nome_empresa);
-      })
+      if(!response.ok){
+        throw new Error(`Erro ao buscar Empresa. Status: ${response.status}`)
+      }
 
-      setEmpresa(sortData)
+      const data = await response.json();
+      setEmpresa(data)
     } catch (error) {
       console.log("Erro ao buscar empresas: ", error);
     }
@@ -44,7 +40,7 @@ function Empresa() {
 
   const getContato = async () => {
     try {
-      const { data } = await supabase.from("contato").select();
+      const { data } = await connect.from("contato").select();
       const sortData = data.sort((a, b) => {
         //Ordenar por status (ativo ou inativo)
         if (a.ativo !== b.ativo) {

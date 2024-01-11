@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco
+import { connect } from "../../../../services/api"; //Conexão com o banco
 
 //Importando componentes
 import CadastroAparelhos from "./FrmAparelhos";
@@ -23,13 +23,19 @@ function Aparelhos() {
   // Pegando os dados da tabela Empresa
   const getAparelhos = async () => {
     try {
-      const { data } = await supabase.from("aparelhos").select();
-      setAparelhos(data)
+      const response = await fetch(`${connect}/aparelhos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Aparelhos. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setAparelhos(data);
     } catch (error) {
-      console.log("Erro ao buscar Aparelhos: ", error);
+      console.log("Erro ao buscar Aparelhos: ", error.message);
     }
   };
-
+  
   useEffect(() => {
     getAparelhos();
   }, []);

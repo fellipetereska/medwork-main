@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
-import InputMask from 'react-input-mask';
+import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 import ModalSearchUnidadeContato from '../components/Modal/ModalSearchContato'
 import ModalSearchUnidadeEmpresa from '../components/Modal/ModalSearchEmpresa'
@@ -15,8 +15,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
 
   const [showModalContato, setShowModalContato] = useState(false); //Controlar o Modal Contato
   const [showModalEmpresa, setShowModalEmpresa] = useState(false); //Controlar o Modal Empresa
-  const [contato, setContato] = useState(null);
-  const [empresa, setEmpresa] = useState(null);
+  const [contato, setContato] = useState("");
+  const [empresa, setEmpresa] = useState("");
   const [empresaId, setEmpresaId] = useState(null);
   const [nomeEmpresa, setNomeEmpresa] = useState(null);
   const [contatoId, setContatoId] = useState(null);
@@ -61,7 +61,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
         setEmpresaId(null);
       }
     }
-  }, [onEdit, contact, company]);
+  }, [onEdit, contact, company, user]);
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -76,7 +76,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
-      const unidadeData = {
+      const unidadesData = {
         nome_unidade: user.nome_unidade.value || null,
         cnpj_unidade: user.cnpj_unidade.value || null,
         cep_unidade: user.cep_unidade.value || null,
@@ -89,30 +89,28 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
         fk_empresa_id: empresaId || null
       };
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("unidade")
-          .upsert([
-            {
-              id_unidade: onEdit.id_unidade,
-              ...unidadeData,
-            },
-          ]);
-        toast.success(`Unidade: ${onEdit.nome_unidade} atualizada com sucesso!`)
-      } else {
-        //Caso não tiver o cadastro ele cadastra
-        const { error } = await supabase
-          .from("unidade").upsert([unidadeData]);
+      const url = onEdit
+      ? `${connect}/unidades/${onEdit.id_unidade}`
+      : `${connect}/unidades`
 
-        if (error) {
-          toast.error("Erro ao inserir Unidade, verifique o console!");
-          console.log("Erro ao inserir Unidade! Erro: ", error)
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST';
 
-        toast.success("Unidade inserida com sucesso!")
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify(unidadesData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/Editar unidade. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
+
     } catch (error) {
       console.log("Erro ao cadastrar ou atualizar Unidade", error)
     }

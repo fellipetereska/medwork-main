@@ -40,9 +40,9 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
   };
 
   return (
-    <div class="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
-      <table class="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+    <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
+      <table className="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-3">
               ID
