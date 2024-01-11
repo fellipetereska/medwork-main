@@ -60,7 +60,7 @@ function GridCadastroEmpresa({ children, set, setOnEdit }) {
                 {item.modelo_aparelho}
               </td>
               <td className="px-4 py-4">
-                {item.data_calibracao}
+                {item.data_calibracao_aparelho}
               </td>
               <td className="py-4 gap-4">
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">

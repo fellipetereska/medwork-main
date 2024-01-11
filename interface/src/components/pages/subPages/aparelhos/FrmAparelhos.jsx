@@ -1,7 +1,7 @@
 //Importando Ferramentas
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
 function CadastroMedidas({ onEdit, setOnEdit, get }) {
@@ -13,71 +13,125 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
   useEffect(() => {
     if (onEdit) {
       const user = ref.current;
-      const { nome_aparelho, marca_aparelho, modelo_aparelho, data_calibracao } = user;
+      const { nome_aparelho, marca_aparelho, modelo_aparelho, data_calibracao_aparelho } = user;
 
       nome_aparelho.value = onEdit.nome_aparelho || "";
       marca_aparelho.value = onEdit.marca_aparelho || "";
       modelo_aparelho.value = onEdit.modelo_aparelho || "";
-      data_calibracao.value = onEdit.data_calibracao || "";
+      data_calibracao_aparelho.value = onEdit.data_calibracao_aparelho || "";
     }
   }, [onEdit]);
 
 
 
   //Função para adicionar ou atualizar dados
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const user = ref.current;
+
+  //   //Verificandose todos os campos foram preenchidos
+  //   if (
+  //     !user.nome_aparelho.value) {
+  //     return toast.warn("Preencha Todos os Campos!")
+  //   }
+  //   try {
+  //     const aparelhoData = {
+  //       nome_aparelho: user.nome_aparelho.value || null,
+  //       marca_aparelho: user.marca_aparelho.value || null,
+  //       modelo_aparelho: user.modelo_aparelho.value || null,
+  //       data_calibracao_aparelho: user.data_calibracao_aparelho.value || null,
+  //     };
+
+  //     if (onEdit) {
+  //       //Caso já tiver o cadastro ele vai colocar as opções para editar
+  //       await supabase
+  //         .from("aparelhos")
+  //         .upsert([
+  //           {
+  //             id_aparelho: onEdit.id_aparelho,
+  //             ...aparelhoData,
+  //           },
+  //         ]);
+  //       toast.success(`Aparelho: ${onEdit.nome_aparelho} atualizado com sucesso`)
+  //     } else {
+  //       //Caso contrario é uma inserção
+  //       const { error } = await supabase
+  //         .from("aparelhos").upsert([aparelhoData]);
+
+  //       if (error) {
+  //         toast.error("Erro ao inserir aparelho, verifique o console!");
+  //         console.log("Erro ao inserir aparelho! Erro: ", error)
+  //         throw error;
+  //       }
+
+  //       toast.success("Aparelho inserido com sucesso!")
+  //     }
+  //   } catch (error) {
+  //     console.log("Erro ao cadastrar ou editar aparelho: ", error);
+  //   }
+
+  //   //Limpa os campos e reseta o estaodo de edição
+  //   user.nome_aparelho.value = "";
+  //   user.marca_aparelho.value = "";
+  //   user.modelo_aparelho.value = "";
+  //   user.data_calibracao_aparelho.value = "";
+
+  //   //Atualiza os dados
+  //   get();
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const user = ref.current;
 
-    //Verificandose todos os campos foram preenchidos
-    if (
-      !user.nome_aparelho.value) {
-      return toast.warn("Preencha Todos os Campos!")
+    // Verificando se todos os campos foram preenchidos
+    if (!user.nome_aparelho.value) {
+      return toast.warn("Preencha Todos os Campos!");
     }
+
     try {
       const aparelhoData = {
         nome_aparelho: user.nome_aparelho.value || null,
         marca_aparelho: user.marca_aparelho.value || null,
         modelo_aparelho: user.modelo_aparelho.value || null,
-        data_calibracao: user.data_calibracao.value || null,
+        data_calibracao_aparelho: user.data_calibracao_aparelho.value || null,
       };
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("aparelhos")
-          .upsert([
-            {
-              id_aparelho: onEdit.id_aparelho,
-              ...aparelhoData,
-            },
-          ]);
-        toast.success(`Aparelho: ${onEdit.nome_aparelho} atualizado com sucesso`)
-      } else {
-        //Caso contrario é uma inserção
-        const { error } = await supabase
-          .from("aparelhos").upsert([aparelhoData]);
+      const url = onEdit
+        ? `${connect}/aparelhos/${onEdit.id_aparelho}`
+        : `${connect}/aparelhos`;
 
-        if (error) {
-          toast.error("Erro ao inserir aparelho, verifique o console!");
-          console.log("Erro ao inserir aparelho! Erro: ", error)
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST';
 
-        toast.success("Aparelho inserido com sucesso!")
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(aparelhoData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/editar aparelho. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData); // Assumindo que sua API retorna uma mensagem de sucesso
     } catch (error) {
       console.log("Erro ao cadastrar ou editar aparelho: ", error);
+      toast.error("Erro ao cadastrar ou editar aparelho. Verifique o console!");
     }
 
-    //Limpa os campos e reseta o estaodo de edição
+    // Limpa os campos e reseta o estado de edição
     user.nome_aparelho.value = "";
     user.marca_aparelho.value = "";
     user.modelo_aparelho.value = "";
-    user.data_calibracao.value = "";
+    user.data_calibracao_aparelho.value = "";
 
-    //Atualiza os dados
+    // Atualiza os dados
     get();
   };
 
@@ -88,7 +142,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
     user.nome_aparelho.value = "";
     user.marca_aparelho.value = "";
     user.modelo_aparelho.value = "";
-    user.data_calibracao.value = "";
+    user.data_calibracao_aparelho.value = "";
   };
 
 
@@ -136,7 +190,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="date"
-              name="data_calibracao"
+              name="data_calibracao_aparelho"
             />
           </div>
           <div className="w-full px-3 pl-8 flex justify-end">

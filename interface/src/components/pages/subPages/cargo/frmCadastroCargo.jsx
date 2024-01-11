@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { supabase } from '../../../../services/api' //Conexão com o banco de dados
+import { connect, supabase } from '../../../../services/api' //Conexão com o banco de dados
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 import ModalSearchSetor from '../components/Modal/ModalSearchSetor'
@@ -60,32 +60,31 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
         fk_setor_id: setorId || null,
       }
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("cargo")
-          .upsert([
-            {
-              id_cargo: onEdit.id_cargo,
-              ...cargoData,
-            }
-          ]);
-        toast.success(`Cargo ${onEdit.nome_cargo} atualizado com sucesso!`);
-      } else {
-        const { error } = await supabase
-          .from("cargo").upsert([cargoData]);
+      const url = onEdit
+        ? `${connect}/cargos/${onEdit.id_cargo}`
+        : `${connect}/cargos`;
 
-        if (error) {
-          toast.error("Erro ao inserir Cargo, veifique o console!");
-          console.log("Erro ao verificar Cargo: ", error);
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST';
 
-        toast.success("Cargo inserido com sucesso!");
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cargoData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/editar cargo. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
     } catch (error) {
       console.log(error)
     }
+
 
     user.nome_cargo.value = "";
     user.descricao.value = "";

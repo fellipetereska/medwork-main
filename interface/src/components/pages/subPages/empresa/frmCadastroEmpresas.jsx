@@ -1,8 +1,8 @@
 //Importando Ferramentas
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
+import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
-import InputMask from 'react-input-mask';
 
 import ModalSearchEmpresa from "../components/Modal/ModalSearchContato";
 import icon_lupa from '../../../media/icon_lupa.svg'
@@ -79,32 +79,31 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
         fk_contato_id: contactId || null,
       };
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("empresa")
-          .upsert([
-            {
-              id_empresa: onEdit.id_empresa,
-              ...empresaData,
-            },
-          ]);
-        toast.success(`Empresa: ${onEdit.nome_empresa} atualizada com sucesso`)
-      } else {
-        //Caso contrario é uma inserção
-        const { data, error } = await supabase
-          .from("empresa").upsert([empresaData]);
+      const url = onEdit
+      ? `${connect}/empresas/${onEdit.id_empresa}`
+      : `${connect}/empresas`;
 
-        if (error) {
-          toast.error("Erro ao inserir empresa, verifique o console!");
-          console.log("Erro ao inserir empresa! Erro: ", error)
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST';
 
-        toast.success("Empresa inserida com sucesso!")
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(empresaData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/Editar Empresa. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
+
     } catch (error) {
       console.log("Erro ao cadastrar ou editar empresa: ", error);
+      toast.error("Erro ao inserir Empresa. Verificar console!")
     }
 
     //Limpa os campos e reseta o estaodo de edição

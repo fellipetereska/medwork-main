@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from 'axios'
-import { supabase } from "../../../../services/api";
+import { connect } from "../../../../services/api";
 
 
 function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
@@ -47,30 +46,31 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
         email_secundario_contato: user.email_secundario_contato.value
       }
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("contato").upsert([
-            {
-              id_contato: onEdit.id_contato,
-              ...contatoData
-            }
-          ]);
-        toast.success(`Contato: ${onEdit.nome_contato} atualizado com sucesso!`);
-      } else {
-        const { error } = await supabase
-          .from("contato").upsert([contatoData]);
+      const url = onEdit
+      ? `${connect}/contatos/${onEdit.id_contato}`
+      : `${connect}/contatos`;
 
-        if (error) {
-          toast.error("Erro ao inserir contato, verifique o console!");
-          console.log("Erro ao inserir contato! Erro: ", error);
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST';
 
-        toast.success("Contato inserido com sucesso!");
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contatoData),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/editar contato. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
+
     } catch (error) {
-      console.log("Erro ao inserir ou atualizar contato!", error)
+      console.log("Erro ao inserir ou atualizar contato!", error);
+      toast.error("Erro ao inserir ou editar o contato. Verifique o console!");
     }
 
 
@@ -126,38 +126,38 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
   }
 
   return (
-    <div class="flex justify-center mt-10">
-      <form class="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-        <div class="flex flex-wrap -mx-3 mb-6">
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+    <div className="flex justify-center mt-10">
+      <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Nome
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="nome_contato"
               placeholder="Nome do Contato"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Telefone
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="telefone_contato"
               onInput={handleInputChangePhone}
               placeholder="Telefone para Contato"
             />
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Email
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="email_contato"
               onBlur={handleInputChangeMail1}
@@ -165,12 +165,12 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
             />
             <p className={`${mailCompleted1 ? "hidden" : "text-xs font-medium text-red-600 mb-3 px-1 mt-1"}`}>*Email Incompleto</p>
           </div>
-          <div class="w-full md:w-1/3 px-3">
-            <label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+          <div className="w-full md:w-1/3 px-3">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Email Secunário
             </label>
             <input
-              class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="email_secundario_contato"
               onBlur={handleInputChangeMail2}
@@ -178,14 +178,14 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
             />
             <p className={`${mailCompleted2 ? "hidden" : "text-xs font-medium text-red-600 px-1 mt-1"}`}>*Email Incompleto</p>
           </div>
-          <div class="w-full px-3 pl-8 flex justify-end">
+          <div className="w-full px-3 pl-8 flex justify-end">
             <div>
-              <button onClick={handleClear} class="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
                 Limpar
               </button>
             </div>
-            <div class="px-3 pl-8">
-              <button class="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+            <div className="px-3 pl-8">
+              <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                 Cadastrar
               </button>
             </div>

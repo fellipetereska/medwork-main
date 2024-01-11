@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { supabase } from '../../../../services/api'
+import { connect } from '../../../../services/api'
 
 import Back from '../../../layout/Back'
 import FrmCadastroContato from "./frmCadastroContato";
@@ -22,7 +22,13 @@ function CadastroSetor() {
   // Pegando os dados do banco
   const getContato = async () => {
     try {
-      const { data } = await supabase.from("contato").select();
+      const response = await fetch(`${connect}/contatos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Contatos. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
       setContato(data)
     } catch (error) {
       toast.error(error);

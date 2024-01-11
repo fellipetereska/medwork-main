@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom'
-import { supabase } from "../../../../services/api";
+import { connect, supabase } from "../../../../services/api";
 
 import FrmCadastroCargo from "./frmCadastroCargo";
 import GridCadastroCargo from "./gridCadastroCargo";
@@ -23,15 +23,15 @@ function CadastroCargo() {
   // Pegando os dados do banco
   const getCargo = async () => {
     try {
-      const { data } = await supabase.from("cargo").select();
-      const sortData = data.sort((a, b) => {
-        if (a.ativo !== b.ativo) {
-          return a.ativo ? -1 : 1;
-        }
 
-        return a.nome_cargo.localeCompare(b.nome_cargo);
-      })
-      setCargo(sortData);
+      const response = await fetch(`${connect}/cargos`);
+
+      if(!response.ok) {
+        throw new Error(`Erro ao buscar cargos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setCargo(data);
     } catch (error) {
       toast.error(error);
     }

@@ -10,12 +10,15 @@ const app = express();
 app.use(express.json());
 
 // Middleware para permitir solicitações CORS
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Substitua pelo endereço real do seu frontend
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 app.use(bodyParser.json());
 
 // Usar as rotas definidas em userRoutes no caminho "/"
 app.use("/", userRoutes);
-// app.use("/setor_empresa", userRoutes)
 
 // Port
 app.listen(8800, () => {
