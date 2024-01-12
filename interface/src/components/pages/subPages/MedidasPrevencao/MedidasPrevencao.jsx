@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco
+import { connect, supabase } from "../../../../services/api"; //Conexão com o banco
 
 //Importando componentes
 import CadastroMedidas from "./frmMedidasProtecao";
@@ -23,7 +23,13 @@ function MedidasProtecao() {
   // Pegando os dados da tabela Empresa
   const getMedidasProtecao = async () => {
     try {
-      const { data } = await supabase.from("medidas_protecao").select();
+      const response = await fetch(`${connect}/medidas_protecao`);
+
+      if(!response.ok) {
+        throw new Error(`Erro ao buscar medidas de proteção. Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
       setMedidasProtecao(data)
     } catch (error) {
       console.log("Erro ao buscar Medidas: ", error);
@@ -40,7 +46,7 @@ function MedidasProtecao() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = medidasProtecao.filter((mp) => mp.nome_medidas.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = medidasProtecao.filter((mp) => mp.nome_medida.toLowerCase().includes(searchTerm.toLowerCase()));
     setFiltered(filtered);
   }, [searchTerm, medidasProtecao]);
 

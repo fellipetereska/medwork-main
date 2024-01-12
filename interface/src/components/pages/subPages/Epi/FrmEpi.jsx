@@ -1,7 +1,7 @@
 //Importando Ferramentas
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
 
 
 function CadastroEpi({ onEdit, setOnEdit, get }) {
@@ -46,26 +46,28 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
         fabricante_epi: user.fabricante_epi.value || "",
       };
 
-      if (onEdit) {
-        await supabase.from("epi").upsert([
-          {
-            id_epi: onEdit.id_epi,
-            ...epiData,
-          }
-        ]);
+      const url = onEdit
+      ? `${connect}/epis/${onEdit.id_epi}`
+      : `${connect}/epis`
 
-        toast.success(`EPI ${onEdit.nome_epi} autalizado com sucesso!`);
-      } else {
-        const { error } = await supabase.from("epi").upsert([epiData]);
+      const method = onEdit ? 'PUT' : 'POST';
 
-        if (error) {
-          toast.error("Erro ao inserir EPI!");
-          console.log("Erro ao inserir EPI: ", error);
-          throw error;
-        }
+      const response = await fetch(url, {
+        method,
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(epiData),
+      })
 
-        toast.success("EPI inserido com sucesso!");
+      if(!response.ok) {
+        toast.error("Erro ao inserir/atualizar o EPI");
+        throw new Error(`Erro ao inserir/atualizar o EPI. Status ${response.status}`);
       }
+      
+      const responseData = await response.json();
+
+      toast.success(responseData)
     } catch (error) {
       console.log("Erro ao inserir EPI: ", error)
     }

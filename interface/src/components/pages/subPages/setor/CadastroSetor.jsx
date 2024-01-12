@@ -2,14 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
 
 //Importando componentes da tela
 import Back from '../../../layout/Back'
+import FrmCadastroSetor from "./frmCadastroSetor";
 import GridCadastroSetor from "./gridCadastroSetor";
 import SearchInput from "../components/SearchInput";
-import { MdOutlineAddHomeWork } from "react-icons/md";
-import ModalSetor from './ModalSetor'
 
 
 function CadastroSetor({ }) {
@@ -28,19 +27,14 @@ function CadastroSetor({ }) {
 	// Pegando os dados da tabela Setor
 	const getSetor = async () => {
 		try {
-			const { data } = await supabase.from("setor").select();
-			const sortedData = data.sort((a, b) => {
-				// Ordenar por status do checkbox (ativo ou inativo)
-				if (a.ativo !== b.ativo) {
-					return a.ativo ? -1 : 1;
-				}
+			const response = await fetch(`${connect}/setores`)
 
-				// Ordenar por ordem alfabética
-				return a.nome_setor.localeCompare(b.nome_setor);
-			});
-			setSetor(sortedData);
+			if(!response.ok) {
+				throw new Error (`Erro ao buscar setores. Status: ${response.status}`)
+			}
 
-
+			const data = await response.json();
+			setSetor(data);
 		} catch (error) {
 			toast.error(error);
 		}
@@ -123,39 +117,21 @@ function CadastroSetor({ }) {
 			</div>
 
 			{/* Formulário de Cadastro */}
-			{/* <FrmCadastroSetor
+			<FrmCadastroSetor
 				onEdit={onEdit}
 				setOnEdit={setOnEdit}
 				getSetor={getSetor}
 				unidades={nomeUnidade}
-			/> */}
+			/>
 
 			{/* Barra de pesquisa */}
-			<div className="flex justify-center w-full mt-6">
+			<div className="flex justify-center w-full mt-6 mb-4">
 				<div className="w-3/6">
 					<SearchInput
 						onSearch={handleSearch}
 						placeholder="Buscar Setor..." />
 				</div>
 			</div>
-
-			<div className="flex justify-end w-11/12 mt-6">
-				<button
-					type="button"
-					onClick={openModal}
-					class="text-white bg-sky-600 hover:bg-sky-700 font-medium rounded-lg text-xl px-5 py-2">
-					<MdOutlineAddHomeWork />
-				</button>
-			</div>
-
-			<ModalSetor
-				isOpen={showModal}
-				onCancel={closeModal}
-				onEdit={onEdit}
-				setOnEdit={setOnEdit}
-				getSetor={getSetor}
-				unidades={unidade}
-			/>
 
 			{/* Tabela Setor */}
 			<GridCadastroSetor

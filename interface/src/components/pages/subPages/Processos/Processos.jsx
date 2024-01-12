@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../../../services/api';
+import { connect, supabase } from '../../../../services/api';
 import { Link } from 'react-router-dom';
 
 import Back from '../../../layout/Back';
@@ -22,14 +22,14 @@ function Processos() {
 
   const getProcesso = async () => {
     try {
-      const { data } = await supabase.from("processo").select();
-      const sortData = data.sort((a, b) => {
+      const response = await fetch(`${connect}/processos`);
 
-        //Ordenar por ordem alfabética
-        return a.nome_processo.localeCompare(b.nome_processo);
-      })
+      if(!response.ok) {
+        throw new Error (`Erro ao buscar Processos. Status: ${response.status}`);
+      }
 
-      setProcesso(sortData)
+      const data = await response.json();
+      setProcesso(data);
     } catch (error) {
       console.log("Erro ao buscar processo: ", error);
     }

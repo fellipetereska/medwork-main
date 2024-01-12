@@ -1,12 +1,13 @@
 import { createContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../services/api";
+import { connect, supabase } from "../services/api";
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [empresa, setEmpresa] = useState(null);
+  const [company, setCompany] = useState(null);
   const [usuarios, setUsuarios] = useState(null);
   const [empresas, setEmpresas] = useState(null);
 
@@ -18,6 +19,17 @@ export const AuthProvider = ({ children }) => {
   const fetchCompany = async () => {
     const { data } = await supabase.from("empresa").select();
     setEmpresas(data);
+  }
+
+  const fetchEmpresa = async () => {
+    const response = await fetch(`${connect}/empresas`);
+
+    if (!response.ok) {
+      throw new Error (`Erro ao buscar empresa. Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setCompany(data);
   }
 
   useEffect(() => {
@@ -86,6 +98,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         empresa,
+        fetchEmpresa,
         signed: !!user,
         signin: signIn,
         signout,

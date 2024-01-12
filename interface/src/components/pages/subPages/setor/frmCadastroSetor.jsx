@@ -1,11 +1,11 @@
 //Importando ferramentas
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { supabase } from '../../../../services/api' //Conexão com o banco de dados
+import { connect, supabase } from '../../../../services/api' //Conexão com o banco de dados
 
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
-import ModalSearchSetor from "../components/Modal/ModalSearchUnidade";
+import ModalSearchUnidade from "../components/Modal/ModalSearchUnidade";
 
 
 function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
@@ -52,35 +52,33 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
     try {
       const setorData = {
         nome_setor: user.nome_setor.value || null,
-        ambiente_setor: user.ambiente_setor.value || null,
-        observacao_setor: user.observacao_setor.value || null,
         fk_unidade_id: unidadeId || null,
+        observacao_setor: user.observacao_setor.value || null,
+        ambiente_setor: user.ambiente_setor.value || null,
       };
-      if (onEdit) {
-        // Se `onEdit` estiver definido, trata-se de uma edição
-        await supabase
-          .from("setor")
-          .upsert([
-            {
-              id_setor: onEdit.id_setor,
-              ...setorData
-            }
-          ]);
-        toast.success(`Setor: ${onEdit.nome_setor} atualizado com sucesso!`);
-      } else {
-        // Caso contrário, é uma inserção
-        const { data, error } = await supabase
-          .from("setor")
-          .upsert([setorData]);
 
-        if (error) {
-          toast.error("Erro ao inserir setor, verifique o console!");
-          console.log("Ero ao inserir setor! Erro: ", error)
-          throw error;
-        }
+      const url = onEdit
+        ? `${connect}/setores/${onEdit.id_setor}`
+        : `${connect}/setores`;
 
-        toast.success(`Setor inserido com sucesso!`);
+      const method = onEdit ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(setorData),
+      });
+
+      if (!response.ok) {
+        toast.error("Erro ao cadastrar ou editar setor!")
+        throw new Error(`Erro ao cadastrar/editar Setor. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
     } catch (error) {
       toast.error("Erro ao salvar o registro");
       console.error(error);
@@ -96,7 +94,6 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
 
     // Atualiza os dados
     getSetor();
-    onCancel();
   };
 
   //Função para limpar o formulário
@@ -145,9 +142,9 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
 
 
   return (
-    <div className="flex justify-center">
-      <form className="w-full" ref={ref} onSubmit={handleSubmit}>
-        <div className="flex flex-wrap -mx-3 mb-6">
+    <div className="flex justify-center mt-10">
+      <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+        <div className="flex flex-wrap -mx-3 mb-6 p-3">
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_setor">
               Nome do Setor
@@ -158,7 +155,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
               placeholder="Nome do Setor"
             />
           </div>
-          {/* <div className="w-full md:w-1/3 px-3">
+          <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
               Unidade:
             </label>
@@ -198,13 +195,13 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
                 <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
               </button>
             </div>
-            <ModalSearchSetor
+            <ModalSearchUnidade
               isOpen={showModal}
               onCancel={closeModal}
               children={unidade}
               onContactSelect={handleUnidadeSelect}
             />
-          </div> */}
+          </div>
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-observacao_setor">
               Observação

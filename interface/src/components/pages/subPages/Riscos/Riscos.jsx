@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api";
+import { connect, supabase } from "../../../../services/api";
 
 import SearchInput from '../components/SearchInput'
 import FrmRiscos from './FrmRiscos'
@@ -20,11 +20,14 @@ function Riscos() {
 
   const getRiscos = async () => {
     try {
-      const { data } = await supabase.from("risco").select();
-      const sortData = data.sort((a, b) => {
-        return a.nome_risco.localeCompare(b.nome_risco);
-      })
-      setRiscos(sortData);
+      const response = await fetch(`${connect}/riscos`);
+
+      if(!response.ok) {
+        throw new Error(`Erro ao buscar riscos. Status: ${response.status}`)
+      }
+      
+      const data = await response.json();
+      setRiscos(data);
     } catch (error) {
       console.log("Erro ao buscar riscos: ", error)
     }
