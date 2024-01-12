@@ -42,13 +42,13 @@ function GridCadastroEmpresa({ children, set, setOnEdit }) {
               className={`border-b bg-white`}
             >
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.id_medidas}
+                {item.id_medida}
               </th>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.nome_medidas}
+                {item.nome_medida}
               </th>
               <td className="px-4 py-4">
-                {item.descricao_medidas}
+                {item.descricao}
               </td>
               <td className="py-4 gap-4">
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">

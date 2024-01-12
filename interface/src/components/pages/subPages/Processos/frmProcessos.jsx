@@ -1,7 +1,7 @@
 //Importando Ferramentas
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
 
 import ModalSetor from '../components/Modal/ModalSearchSetor'
 import ModalCargo from "../components/Modal/ModalCargo";
@@ -27,10 +27,10 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
     const user = ref.current;
 
     if (onEdit) {
-      const { nome_processo, descricao_processo } = user;
+      const { nome_processo, descricao } = user;
 
       nome_processo.value = onEdit.nome_processo || "";
-      descricao_processo.value = onEdit.descricao_processo || "";
+      descricao.value = onEdit.descricao || "";
 
       if (nomeSetor && onEdit.fk_setor_id) {
         setSetorName(nomeSetor);
@@ -59,48 +59,46 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
     //Verificandose todos os campos foram preenchidos
     if (
       !user.nome_processo.value ||
-      !user.descricao_processo.value) {
+      !user.descricao.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
       const processoData = {
         nome_processo: user.nome_processo.value || null,
-        descricao_processo: user.descricao_processo.value || null,
+        descricao: user.descricao.value || null,
         fk_setor_id: setorId || null,
         fk_cargo_id: cargoId || null,
       };
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("processo")
-          .upsert([
-            {
-              id_processo: onEdit.id_processo,
-              ...processoData,
-            },
-          ]);
-        toast.success(`Processo: ${onEdit.nome_processo} atualizado com sucesso!`)
-      } else {
-        //Caso contrario é uma inserção
-        const { error } = await supabase
-          .from("processo").upsert([processoData]);
+      const url = onEdit
+      ? `${connect}/processos/${onEdit.id_processo}`
+      : `${connect}/processos`
 
-        if (error) {
-          toast.error("Erro ao inserir processo, verifique o console!");
-          console.log("Erro ao inserir processo! Erro: ", error)
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST'
 
-        toast.success("Processo inserida com sucesso!")
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(processoData),
+      });
+      
+      if(!response.ok) {
+        throw new Error (`Erro ao cadastrar/Editar processo. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+      
+      toast.success(responseData);
     } catch (error) {
+      toast.error("Erro ao cadastrar ou editar processo!")
       console.log("Erro ao cadastrar ou editar processo: ", error);
     }
 
     //Limpa os campos e reseta o estaodo de edição
     user.nome_processo.value = "";
-    user.descricao_processo.value = "";
+    user.descricao.value = "";
     setCargoName(null);
     setSetorName(null);
 
@@ -114,7 +112,7 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
 
     // Limpa todos os campos do formulário
     user.nome_processo.value = "";
-    user.descricao_processo.value = "";
+    user.descricao.value = "";
     setCargoName(null);
     setSetorName(null);
   };
@@ -196,7 +194,7 @@ function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCarg
               <textarea
                 className="resize-none appearence-none block w-full bg-gray-100 h-20 min-h-20 max-h-20 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                 type="text"
-                name="descricao_processo"
+                name="descricao"
                 placeholder="Descreva o processo"
               />
             </div>

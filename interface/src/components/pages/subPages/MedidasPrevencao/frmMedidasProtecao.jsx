@@ -1,7 +1,7 @@
 //Importando Ferramentas
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
 
 
 function CadastroMedidas({ onEdit, setOnEdit, get }) {
@@ -13,10 +13,10 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
   useEffect(() => {
     if (onEdit) {
       const user = ref.current;
-      const { nome_medidas, descricao_medidas } = user;
+      const { nome_medida, descricao } = user;
 
-      nome_medidas.value = onEdit.nome_medidas || "";
-      descricao_medidas.value = onEdit.descricao_medidas || "";
+      nome_medida.value = onEdit.nome_medida || "";
+      descricao.value = onEdit.descricao || "";
     }
   }, [onEdit]);
 
@@ -30,47 +30,45 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
 
     //Verificandose todos os campos foram preenchidos
     if (
-      !user.nome_medidas.value ||
-      !user.descricao_medidas.value) {
+      !user.nome_medida.value ||
+      !user.descricao.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
       const medidasData = {
-        nome_medidas: user.nome_medidas.value || null,
-        descricao_medidas: user.descricao_medidas.value || null,
+        nome_medida: user.nome_medida.value || null,
+        descricao: user.descricao.value || null,
       };
 
-      if (onEdit) {
-        //Caso já tiver o cadastro ele vai colocar as opções para editar
-        await supabase
-          .from("medidas_protecao")
-          .upsert([
-            {
-              id_medidas: onEdit.id_medidas,
-              ...medidasData,
-            },
-          ]);
-        toast.success(`Medida de Protação: ${onEdit.nome_medidas} atualizada com sucesso`)
-      } else {
-        //Caso contrario é uma inserção
-        const { error } = await supabase
-          .from("medidas_protecao").upsert([medidasData]);
+      const url = onEdit
+        ? `${connect}/medidas_protecao/${onEdit.id_medida}`
+        : `${connect}/medidas_protecao`;
 
-        if (error) {
-          toast.error("Erro ao inserir medida de protação, verifique o console!");
-          console.log("Erro ao inserir medida de proteção! Erro: ", error)
-          throw error;
-        }
+      const method = onEdit ? 'PUT' : 'POST';
 
-        toast.success("Medida de Proteção inserida com sucesso!")
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(medidasData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/editar medida de proteção. Status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
     } catch (error) {
+      toast.error("Erro ao cadastrar ou editar medida de proteção")
       console.log("Erro ao cadastrar ou editar medida de proteção: ", error);
     }
 
     //Limpa os campos e reseta o estaodo de edição
-    user.nome_medidas.value = "";
-    user.descricao_medidas.value = "";
+    user.nome_medida.value = "";
+    user.descricao.value = "";
 
     //Atualiza os dados
     get();
@@ -80,8 +78,8 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
   const handleClear = () => {
     // Limpa todos os campos do formulário
     const user = ref.current;
-    user.nome_medidas.value = "";
-    user.descricao_medidas.value = "";
+    user.nome_medida.value = "";
+    user.descricao.value = "";
   };
 
 
@@ -96,7 +94,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
-              name="nome_medidas"
+              name="nome_medida"
               placeholder="Nome da Medida de Proteção"
             />
           </div>
@@ -107,7 +105,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
-              name="descricao_medidas"
+              name="descricao"
               placeholder="Descrição da Medida de Proteção"
             />
           </div>

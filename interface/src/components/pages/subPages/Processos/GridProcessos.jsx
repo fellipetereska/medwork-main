@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BsFillPencilFill } from 'react-icons/bs';
 
 function GridProcesso({ processos, setProcesso, setOnEdit, setor, cargo}) {
@@ -61,7 +60,7 @@ function GridProcesso({ processos, setProcesso, setOnEdit, setor, cargo}) {
                 {item.nome_processo}
               </th>
               <td className="px-4 py-4">
-                {item.descricao_processo}
+                {item.descricao}
               </td>
               <td className="px-4 py-4">
                 {findSetor(item.fk_setor_id)}

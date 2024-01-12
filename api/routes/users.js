@@ -3,7 +3,6 @@ import { pool } from "../db.js";
 // import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
-
 const router = express.Router();
 
 const SECRET = 'medworkldn'
@@ -112,20 +111,21 @@ router.put("/empresas/:id_empresa", (req, res) => {
 // });
 
 
+
 //Tabela Unidade
 //Get table
 router.get("/unidades", (req, res) => {
     const q = `SELECT * FROM unidades`;
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, (err, data) => {
             if (err) return res.status(500).json(err);
-    
+
             return res.status(200).json(data);
         });
-        
+
         con.release();
     })
 
@@ -138,14 +138,14 @@ router.post("/unidades", (req, res) => {
     const q = "INSERT INTO unidades SET ?"
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, data, (err, result) => {
             if (err) {
                 console.error("Erro ao inserir Unidade na tabela", err);
                 return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
             }
-    
+
             return res.status(200).json(`Unidade cadastrada com sucesso!`);
         });
 
@@ -181,14 +181,14 @@ router.put("/unidades/:id_unidade", (req, res) => {
     ];
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, values, (err) => {
             if (err) {
                 console.error("Erro ao atualizar unidade na tabela", err);
                 return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
             }
-    
+
             return res.status(200).json("Unidade atualizada com sucesso!");
         });
 
@@ -210,20 +210,116 @@ router.put("/unidades/:id_unidade", (req, res) => {
 // });
 
 
+
+//Tabela Setores
+//Get table
+router.get("/setores", (req, res) => {
+    const q = `SELECT * FROM setores`;
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            return res.status(200).json(data);
+        });
+
+        con.release();
+    })
+
+});
+
+//Add rows in table
+router.post("/setores", (req, res) => {
+    const data = req.body;
+
+    const q = "INSERT INTO setores SET ?"
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, data, (err, result) => {
+            if (err) {
+                console.error("Erro ao inserir setor na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json(`Setor cadastrada com sucesso!`);
+        });
+
+        con.release();
+    })
+
+});
+
+//Update row in table
+router.put("/setores/:id_setor", (req, res) => {
+    const id_setor = req.params.id_setor; // Obtém o ID da empresa da URL
+    const { nome_setor, fk_unidade_id, observacao_setor, ambiente_setor } = req.body;
+
+    const q = `
+    UPDATE setores
+    SET nome_setor = ?,
+    fk_unidade_id = ?,
+    observacao_setor = ?,
+    ambiente_setor = ?
+    WHERE id_setor = ?
+    `;
+
+    const values = [
+        nome_setor,
+        fk_unidade_id,
+        observacao_setor,
+        ambiente_setor,
+        id_setor
+    ];
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, values, (err) => {
+            if (err) {
+                console.error("Erro ao atualizar setor na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json("Setor atualizada com sucesso!");
+        });
+
+        con.release();
+    })
+
+});
+
+//Delete row in table
+// router.delete("/unidade/:id_setor", (req, res) => {
+//     const q = `DELETE FROM unidade WHERE id = ?`;
+
+//     db.query(q, [req.params.id_unidade], (err) => {
+//         console.error("Erro ao deletar unidade na tabela", err);
+//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+//     });
+
+//     return res.status(200).json(`Unidade excluída com sucesso!`);
+// });
+
+
+
 //Tabela Cargo
 //Get table
 router.get("/cargos", (req, res) => {
     const q = `SELECT * FROM cargos`;
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, (err, data) => {
             if (err) return res.status(500).json(err);
-    
+
             return res.status(200).json(data);
         });
-        
+
         con.release();
     })
 
@@ -236,14 +332,14 @@ router.post("/cargos", (req, res) => {
     const q = "INSERT INTO cargos SET ?"
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, data, (err, result) => {
             if (err) {
                 console.error("Erro ao inserir Cargo na tabela", err);
                 return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
             }
-    
+
             return res.status(200).json(`Cargo cadastrada com sucesso!`);
         });
 
@@ -255,14 +351,14 @@ router.post("/cargos", (req, res) => {
 //Update row in table
 router.put("/cargos/:id_cargo", (req, res) => {
     const id_cargo = req.params.id_cargo; // Obtém o ID da empresa da URL
-    const { nome_cargo, descricao, fun_masc, fun_fem, func_menor } = req.body;
+    const { nome_cargo, descricao, func_masc, func_fem, func_menor } = req.body;
 
     const q = `
-    UPDATE unidades
+    UPDATE cargos
     SET nome_cargo = ?,
     descricao = ?,
-    fun_masc = ?,
-    fun_fem = ?,
+    func_masc = ?,
+    func_fem = ?,
     func_menor = ?
     WHERE id_cargo = ?
     `;
@@ -270,21 +366,21 @@ router.put("/cargos/:id_cargo", (req, res) => {
     const values = [
         nome_cargo,
         descricao,
-        fun_masc,
-        fun_fem,
+        func_masc,
+        func_fem,
         func_menor,
-        id_cargo
+        id_cargo,
     ];
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, values, (err) => {
             if (err) {
                 console.error("Erro ao atualizar cargo na tabela", err);
                 return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
             }
-    
+
             return res.status(200).json("Cargo atualizada com sucesso!");
         });
 
@@ -313,11 +409,11 @@ router.get("/contatos", (req, res) => {
     const q = `SELECT * FROM contatos`;
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, (err, data) => {
             if (err) return res.status(500).json(err);
-    
+
             return res.status(200).json(data);
         });
 
@@ -333,14 +429,14 @@ router.post("/contatos", (req, res) => {
     const q = "INSERT INTO contatos SET ?"
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
-        
+        if (err) return next(err);
+
         con.query(q, data, (err, result) => {
             if (err) {
                 console.error("Erro ao inserir contato na tabela", err);
                 return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
             }
-    
+
             return res.status(200).json(`Contato cadastrado com sucesso!`);
         });
 
@@ -372,14 +468,14 @@ router.put("/contatos/:id_contato", (req, res) => {
     ];
 
     pool.getConnection((err, con) => {
-        if(err) return next(err);
+        if (err) return next(err);
 
         con.query(q, values, (err) => {
             if (err) {
                 console.error("Erro ao atualizar contato na tabela", err);
                 return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
             }
-    
+
             return res.status(200).json("Contato atualizado com sucesso!");
         });
 
@@ -389,16 +485,456 @@ router.put("/contatos/:id_contato", (req, res) => {
 });
 
 //Delete row in table
-router.delete("/contato/:id_contato", (req, res) => {
-    const q = `DELETE FROM contato WHERE id = ?`;
+// router.delete("/contato/:id_contato", (req, res) => {
+//     const q = `DELETE FROM contato WHERE id = ?`;
 
-    db.query(q, [req.params.id_contato], (err) => {
-        console.error("Erro ao deletar contato na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-    });
+//     db.query(q, [req.params.id_contato], (err) => {
+//         console.error("Erro ao deletar contato na tabela", err);
+//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+//     });
 
-    return res.status(200).json(`Contato excluído com sucesso!`);
+//     return res.status(200).json(`Contato excluído com sucesso!`);
+// });
+
+
+
+//Tabela Processos
+//Get table
+router.get("/processos", (req, res) => {
+    const q = `SELECT * FROM processos`;
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            return res.status(200).json(data);
+        });
+
+        con.release();
+    })
+
 });
+
+//Add rows in table
+router.post("/processos", (req, res) => {
+    const data = req.body;
+
+    const q = "INSERT INTO processos SET ?"
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, data, (err, result) => {
+            if (err) {
+                console.error("Erro ao inserir processo na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json(`Processo cadastrado com sucesso!`);
+        });
+
+        con.release();
+    })
+
+});
+
+//Update row int table
+router.put("/processos/:id_processo", (req, res) => {
+    const id_processo = req.params.id_processo; // Obtém o ID da empresa da URL
+    const { nome_processo, descricao, fk_setor_id, fk_cargo_id } = req.body;
+
+    const q = `
+    UPDATE processos
+    SET nome_processo = ?,
+    descricao = ?,
+    fk_setor_id = ?,
+    fk_cargo_id = ?
+    WHERE id_processo = ?
+    `;
+
+    const values = [
+        nome_processo,
+        descricao,
+        fk_setor_id,
+        fk_cargo_id,
+        id_processo
+    ];
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, values, (err) => {
+            if (err) {
+                console.error("Erro ao atualizar processo na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json("Processo atualizado com sucesso!");
+        });
+
+        con.release();
+    })
+
+});
+
+//Delete row in table
+// router.delete("/contato/:id_contato", (req, res) => {
+//     const q = `DELETE FROM contato WHERE id = ?`;
+
+//     db.query(q, [req.params.id_contato], (err) => {
+//         console.error("Erro ao deletar contato na tabela", err);
+//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+//     });
+
+//     return res.status(200).json(`Contato excluído com sucesso!`);
+// });
+
+//Tabela Usuarios
+//Get table
+router.get("/usuarios", (req, res) => {
+    const q = `SELECT * FROM usuarios`;
+
+    db.query(q, (err, data) => {
+        if (err) return res.status(500).json(err);
+
+        return res.status(200).json(data);
+    });
+});
+
+
+
+//Tabela Riscos
+//Get table
+router.get("/riscos", (req, res) => {
+    const q = `SELECT * FROM riscos`;
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            return res.status(200).json(data);
+        });
+
+        con.release();
+    })
+
+});
+
+//Add rows in table
+router.post("/riscos", (req, res) => {
+    const data = req.body;
+
+    const q = "INSERT INTO riscos SET ?"
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, data, (err, result) => {
+            if (err) {
+                console.error("Erro ao inserir risco na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json(`Risco cadastrado com sucesso!`);
+        });
+
+        con.release();
+    })
+
+});
+
+//Update row int table
+router.put("/riscos/:id_risco", (req, res) => {
+    const id_risco = req.params.id_risco; // Obtém o ID da empresa da URL
+    const { 
+        nome_risco,
+        grupo_risco,
+        codigo_esocial_risco,
+        meio_propagacao_risco,
+        unidade_medida_risco,
+        classificacao_risco,
+        nivel_acao_risco,
+        limite_tolerancia_risco,
+        danos_saude_risco,
+        metodologia_risco,
+        severidade_risco,
+        pgr_risco,
+        ltcat_risco,
+        lip_risco,
+        fk_processo_id
+    } = req.body;
+
+    const q = `
+    UPDATE riscos
+    SET nome_risco = ?,
+    grupo_risco = ?,
+    codigo_esocial_risco = ?,
+    meio_propagacao_risco = ?,
+    unidade_medida_risco = ?,
+    classificacao_risco = ?,
+    nivel_acao_risco = ?,
+    limite_tolerancia_risco = ?,
+    danos_saude_risco = ?,
+    metodologia_risco = ?,
+    severidade_risco = ?,
+    pgr_risco = ?,
+    ltcat_risco = ?,
+    lip_risco = ?,
+    fk_processo_id = ?
+    WHERE id_risco = ?
+    `;
+
+    const values = [
+        nome_risco,
+        grupo_risco,
+        codigo_esocial_risco,
+        meio_propagacao_risco,
+        unidade_medida_risco,
+        classificacao_risco,
+        nivel_acao_risco,
+        limite_tolerancia_risco,
+        danos_saude_risco,
+        metodologia_risco,
+        severidade_risco,
+        pgr_risco,
+        ltcat_risco,
+        lip_risco,
+        fk_processo_id,
+        id_risco
+    ];
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, values, (err) => {
+            if (err) {
+                console.error("Erro ao atualizar risco na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json("Risco atualizado com sucesso!");
+        });
+
+        con.release();
+    })
+
+});
+
+//Delete row in table
+// router.delete("/contato/:id_contato", (req, res) => {
+//     const q = `DELETE FROM contato WHERE id = ?`;
+
+//     db.query(q, [req.params.id_contato], (err) => {
+//         console.error("Erro ao deletar contato na tabela", err);
+//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+//     });
+
+//     return res.status(200).json(`Contato excluído com sucesso!`);
+// });
+
+
+
+//Tabela EPI's
+//Get table
+router.get("/epis", (req, res) => {
+    const q = `SELECT * FROM epis`;
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            return res.status(200).json(data);
+        });
+
+        con.release();
+    })
+
+});
+
+//Add rows in table
+router.post("/epis", (req, res) => {
+    const data = req.body;
+
+    const q = "INSERT INTO epis SET ?"
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, data, (err, result) => {
+            if (err) {
+                console.error("Erro ao inserir EPI na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json(`EPI cadastrado com sucesso!`);
+        });
+
+        con.release();
+    })
+
+});
+
+//Update row int table
+router.put("/epis/:id_epi", (req, res) => {
+    const id_epi = req.params.id_epi; // Obtém o ID da empresa da URL
+    const { 
+        nome_epi,
+        certificado_epi,
+        fator_reducao_epi,
+        vencimento_certificado_epi,
+        fabricante_epi
+    } = req.body;
+
+    const q = `
+    UPDATE epis
+    SET nome_epi = ?,
+    certificado_epi = ?,
+    fator_reducao_epi = ?,
+    vencimento_certificado_epi = ?,
+    fabricante_epi = ?
+    WHERE id_epi = ?
+    `;
+
+    const values = [
+        nome_epi,
+        certificado_epi,
+        fator_reducao_epi,
+        vencimento_certificado_epi,
+        fabricante_epi,
+        id_epi
+    ];
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, values, (err) => {
+            if (err) {
+                console.error("Erro ao atualizar EPI na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json("EPI atualizado com sucesso!");
+        });
+
+        con.release();
+    })
+
+});
+
+//Delete row in table
+// router.delete("/contato/:id_contato", (req, res) => {
+//     const q = `DELETE FROM contato WHERE id = ?`;
+
+//     db.query(q, [req.params.id_contato], (err) => {
+//         console.error("Erro ao deletar contato na tabela", err);
+//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+//     });
+
+//     return res.status(200).json(`Contato excluído com sucesso!`);
+// });
+
+
+
+//Tabela EPI's
+//Get table
+router.get("/medidas_protecao", (req, res) => {
+    const q = `SELECT * FROM medidas_protecao`;
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            return res.status(200).json(data);
+        });
+
+        con.release();
+    })
+
+});
+
+//Add rows in table
+router.post("/medidas_protecao", (req, res) => {
+    const data = req.body;
+
+    const q = "INSERT INTO medidas_protecao SET ?"
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, data, (err, result) => {
+            if (err) {
+                console.error("Erro ao inserir medida de proteção na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json(`Medida de Proteção cadastrado com sucesso!`);
+        });
+
+        con.release();
+    })
+
+});
+
+//Update row int table
+router.put("/medidas_protecao/:id_medida", (req, res) => {
+    const id_medida = req.params.id_medida; // Obtém o ID da empresa da URL
+    const { 
+        nome_medida,
+        descricao,
+    } = req.body;
+
+    const q = `
+    UPDATE medidas_protecao
+    SET nome_medida = ?,
+    descricao = ?
+    WHERE id_medida = ?
+    `;
+
+    const values = [
+        nome_medida,
+        descricao,
+        id_medida
+    ];
+
+    pool.getConnection((err, con) => {
+        if (err) return next(err);
+
+        con.query(q, values, (err) => {
+            if (err) {
+                console.error("Erro ao atualizar medida de proteção na tabela", err);
+                return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+            }
+
+            return res.status(200).json("Medida de Proteção atualizado com sucesso!");
+        });
+
+        con.release();
+    })
+
+});
+
+//Delete row in table
+// router.delete("/contato/:id_contato", (req, res) => {
+//     const q = `DELETE FROM contato WHERE id = ?`;
+
+//     db.query(q, [req.params.id_contato], (err) => {
+//         console.error("Erro ao deletar contato na tabela", err);
+//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+//     });
+
+//     return res.status(200).json(`Contato excluído com sucesso!`);
+// });
+
+
+//Gestão
 
 
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco
+import { connect } from "../../../../services/api"; //Conexão com o banco
 
 import Back from '../../../layout/Back'
 import FrmEpi from './FrmEpi'
@@ -19,11 +19,15 @@ function Epi() {
 
   const fetchEpi = async () => {
     try {
-      const { data } = await supabase.from("epi").select();
-      const sortData = data.sort((a, b) => {
-        return a.nome_epi.localeCompare(b.nome_epi);
-      })
-      setEpi(sortData);
+      const response = await fetch(`${connect}/epis`);
+
+      if(!response.ok) {
+        toast.error("Erro ao buscar EPI's");
+        throw new Error(`Erro ao buscar EPI's. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setEpi(data);
     } catch (error) {
       toast.warn("Erro ao buscar EPI's. Verificar Console!")
       console.log("Erro ao buscar EPI's", error)

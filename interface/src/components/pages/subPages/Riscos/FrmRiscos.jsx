@@ -1,7 +1,7 @@
 import React from "react";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api';
+import { connect, supabase } from '../../../../services/api';
 
 import ModalSearchProcesso from '../components/Modal/ModalProcesso'
 import icon_lupa from '../../../media/icon_lupa.svg'
@@ -82,29 +82,30 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
         pgr_risco: pgr,
         ltcat_risco: ltcat,
         lip_risco: lip,
-
       };
 
-      if (onEdit) {
-        await supabase.from("risco").upsert([
-          {
-            id_risco: onEdit.id_risco,
-            ...riscoData,
-          }
-        ]);
+      const url = onEdit
+        ? `${connect}/riscos/${onEdit.id_risco}`
+        : `${connect}/riscos`
 
-        toast.success(`Risco ${onEdit.nome_risco} autalizado com sucesso!`);
-      } else {
-        const { error } = await supabase.from("risco").upsert([riscoData]);
+      const method = onEdit ? 'PUT' : 'POST';
 
-        if (error) {
-          toast.error("Erro ao inserir risco!");
-          console.log("Erro ao inserir risco: ", error);
-          throw error;
-        }
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(riscoData),
+      });
 
-        toast.success("Risco inserido com sucesso!");
+      if (!response.ok) {
+        toast.error("Erro ao cadastrar/editar risco!")
+        throw new Error(`Erro ao cadastrar/editar risco. Status: ${response.status}`)
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
     } catch (error) {
       console.log("Erro ao inserir risco: ", error)
     }
@@ -351,80 +352,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
             <label className="text-sm font-medium ms-2 text-gray-900">LIP <span className="font-light">(Laudo de Insalubridade e Periculosidade)</span></label>
           </div>
         </div>
-        <div className="border-b bg-gray-200"></div>
-        <h3 className="flex justify-center text-sky-700 text-2xl font-bold mt-4">Processos/EPI's</h3>
-        <div className="flex -mx-3 mb-6 p-3">
-          <div className="w-full md:w-1/2 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-              Processos:
-            </label>
-            <div className="flex items-center w-full">
-              {processName ? (
-                <>
-                  <button
-                    className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModal}
-                  >
-                    <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
-                      Processo:
-                    </p>
-                    <p className="font-bold">
-                      {processName}
-                    </p>
-                  </button>
-                  <button className="ml-4" onClick={handleClearProcesso}>
-                    <img src={icon_sair} className="h-9" />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModal}
-                  >
-                    <p className="px-2 text-sm font-medium">
-                      Nenhum processo selecionado
-                    </p>
-                  </button>
-                  <button className="ml-4" onClick={openModal}>
-                    <img src={icon_lupa} className="h-9" />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-          <ModalSearchProcesso
-            isOpen={showModal}
-            onCancel={closeModal}
-            children={processo}
-            onProcessSelect={handleProcessSelect}
-          />
-          <div className="w-full md:w-1/2 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
-              EPI:
-            </label>
-            <div className="flex items-center w-full">
-              <button
-                className="flex appearance-none w-full hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-
-              >
-                <p name="fk_contato_id" className="px-2 text-sm font-sm text-gray-600">
-                  EPI:
-                </p>
-                <p className="font-bold">
-                  EPI
-                </p>
-              </button>
-
-              <button
-                type="button"
-                className={`flex cursor-pointer ml-4`}
-              >
-                <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-              </button>
-            </div>
-          </div>
-        </div>
+        
         <div className="w-full px-3 pl-8 flex justify-end mb-6">
           <div>
             <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
