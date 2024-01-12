@@ -10,11 +10,14 @@ const app = express();
 app.use(express.json());
 
 // Middleware para permitir solicitações CORS
-app.use(cors({
-  origin: 'medwork-main-git-tereska-fellipetereska.vercel.app',
+const corsConfig = {
+  origin: 'https://medwork-main-git-tereska-fellipetereska.vercel.app',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-}));
+};
+
+app.use(cors(corsConfig));
+
 app.use(bodyParser.json());
 
 // Usar as rotas definidas em userRoutes no caminho "/"
