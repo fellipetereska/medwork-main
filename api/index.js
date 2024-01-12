@@ -11,7 +11,7 @@ app.use(express.json());
 
 // Middleware para permitir solicitações CORS
 app.use(cors({
-  origin: 'medwork-main.vercel.app',
+  origin: 'medwork-main-git-tereska-fellipetereska.vercel.app',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
