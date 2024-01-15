@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 //Importando componentes da tela
 import Back from '../../../layout/Back'
@@ -36,16 +36,22 @@ function CadastroSetor({ }) {
 			const data = await response.json();
 			setSetor(data);
 		} catch (error) {
-			toast.error(error);
+			toast.error("Erro ao buscar setores", error);
 		}
 	};
 
 	const gettUnidade = async () => {
 		try {
-			const { data } = await supabase.from("unidade").select();
-			setUnidade(data);
+			const response = await fetch(`${connect}/unidades`)
+
+			if(!response.ok) {
+				throw new Error (`Erro ao buscar unidades. Status: ${response.status}`)
+			}
+
+			const data = await response.json();
+			setSetor(data);
 		} catch (error) {
-			toast.error(error);
+			toast.error("Erro ao buscar unidades", error);
 		}
 	};
 
@@ -122,6 +128,7 @@ function CadastroSetor({ }) {
 				setOnEdit={setOnEdit}
 				getSetor={getSetor}
 				unidades={nomeUnidade}
+				setor={setor}
 			/>
 
 			{/* Barra de pesquisa */}
@@ -138,6 +145,7 @@ function CadastroSetor({ }) {
 				setor={filteredSetor}
 				setSetor={setSetor}
 				setOnEdit={handleEdit}
+				unidade={unidade}
 			/>
 		</div>
 	)

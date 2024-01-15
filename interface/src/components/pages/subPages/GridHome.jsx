@@ -2,34 +2,17 @@ import { BsBoxArrowDown } from 'react-icons/bs';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
-import { supabase } from '../../../services/api';
 import { toast } from 'react-toastify';
 
-function GridHome({ empresas }) {
+function GridHome({ empresas, contato }) {
 
-  //Instanciando o id da Empresa
-  const [contatos, setContatos] = useState([]);
   const { selectCompany } = useAuth();
-
   const navigate = useNavigate();
   const { empresa } = useAuth();
 
-  useEffect(() => {
-    const fetchContatos = async () => {
-      try {
-        const { data } = await supabase.from("contato").select();
-        setContatos(data);
-      } catch (error) {
-        console.error('Erro ao buscar contatos:', error);
-      }
-    };
-
-    fetchContatos();
-  }, []);
-
   const findContactName = (fkContatoId) => {
-    const contato = contatos.find((c) => c.id_contato === fkContatoId);
-    return contato ? contato.nome_contato : 'N/A';
+    const contatos = contato.find((c) => c.id_contato === fkContatoId);
+    return contatos ? contatos.nome_contato : 'N/A';
   };
 
   const handleOpenCompany = async (id) => {

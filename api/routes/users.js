@@ -157,7 +157,16 @@ router.post("/unidades", (req, res) => {
 //Update row in table
 router.put("/unidades/:id_unidade", (req, res) => {
     const id_unidade = req.params.id_unidade; // Obtém o ID da empresa da URL
-    const { nome_unidade, cnpj_unidade, cep_unidade, endereco_unidade, bairro_unidade, uf_unidade } = req.body;
+    const { 
+        nome_unidade, 
+        cnpj_unidade, 
+        cep_unidade, 
+        endereco_unidade, 
+        bairro_unidade, 
+        uf_unidade,
+        fk_contato_id,
+        fk_empresa_id,
+     } = req.body;
 
     const q = `
     UPDATE unidades
@@ -166,7 +175,9 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cep_unidade = ?,
     endereco_unidade = ?,
     bairro_unidade = ?,
-    uf_unidade = ?
+    uf_unidade = ?,
+    fk_contato_id = ?,
+    fk_empresa_id = ?
     WHERE id_unidade = ?
     `;
 
@@ -177,7 +188,9 @@ router.put("/unidades/:id_unidade", (req, res) => {
         endereco_unidade,
         bairro_unidade,
         uf_unidade,
-        id_unidade
+        id_unidade,
+        fk_contato_id,
+        fk_empresa_id,
     ];
 
     pool.getConnection((err, con) => {

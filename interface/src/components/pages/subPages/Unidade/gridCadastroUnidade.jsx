@@ -1,43 +1,14 @@
-import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
+import { connect } from '../../../../services/api'; //Conexão com o banco de dados
 
 import { BsFillPencilFill } from 'react-icons/bs';
 
-function GridCadastroUnidade({ unidade, setUnidade, setOnEdit }) {
-
-  //Instanciando o id da Empresa
-  const [contato, setContato] = useState([]);
-  const [empresa, setEmpresa] = useState([]);
+function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa }) {
 
   //Função para editar os campos
   const handleEdit = (unidade) => {
     setOnEdit(unidade);
   };
-
-  //Funções para buscar Contato e empresa
-  useEffect(() => {
-    const fetchContatos = async () => {
-      try {
-        const { data } = await supabase.from("contato").select();
-        setContato(data);
-      } catch (error) {
-        console.error('Erro ao buscar contatos:', error);
-      }
-    };
-
-    const fetchEmpresa = async () => {
-      try {
-        const { data } = await supabase.from("empresa").select();
-        setEmpresa(data);
-      } catch (error) {
-        console.error('Erro ao buscar empresas:', error);
-      }
-    };
-
-    fetchContatos();
-    fetchEmpresa();
-  }, []);
 
   //Função para encontrar o nome do contato
   const findContactName = (fkContatoId) => {
@@ -55,32 +26,32 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit }) {
     return company ? company.nome_empresa : 'N/A';
   };
 
-  //Função para inativar uma empresa
-  const handleDesactivation = async (id, ativo) => {
-    try {
-      const novaUnidade = unidade.map(item =>
-        item.id_unidade === id ? { ...item, ativo: !ativo } : item
-      );
-      setUnidade(novaUnidade);
+  // //Função para inativar uma empresa
+  // const handleDesactivation = async (id, ativo) => {
+  //   try {
+  //     const novaUnidade = unidade.map(item =>
+  //       item.id_unidade === id ? { ...item, ativo: !ativo } : item
+  //     );
+  //     setUnidade(novaUnidade);
 
-      const { error } = await supabase
-        .from("unidade")
-        .upsert([{ id_unidade: id, ativo: !ativo }]);
+  //     const { error } = await supabase
+  //       .from("unidade")
+  //       .upsert([{ id_unidade: id, ativo: !ativo }]);
 
-      if (error) {
-        setUnidade(unidade.map(item =>
-          item.id_unidade === id ? { ...item, ativo } : item
-        ));
-        throw new Error(error.message);
-      }
+  //     if (error) {
+  //       setUnidade(unidade.map(item =>
+  //         item.id_unidade === id ? { ...item, ativo } : item
+  //       ));
+  //       throw new Error(error.message);
+  //     }
 
-      toast.info(`Unidade ${!ativo ? 'ativada' : 'inativada'} com sucesso!`)
+  //     toast.info(`Unidade ${!ativo ? 'ativada' : 'inativada'} com sucesso!`)
 
-    } catch (error) {
-      console.log("Erro ao atualizar status da unidade", error);
-      toast.error("Erro ao atualizar status da unidade, verifique o console");
-    }
-  };
+  //   } catch (error) {
+  //     console.log("Erro ao atualizar status da unidade", error);
+  //     toast.error("Erro ao atualizar status da unidade, verifique o console");
+  //   }
+  // };
 
 
   return (
@@ -151,7 +122,7 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit }) {
                     type="checkbox"
                     checked={!item.ativo}
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    onChange={() => handleDesactivation(item.id_unidade, item.ativo)}
+                    // onChange={() => handleDesactivation(item.id_unidade, item.ativo)}
                   />
                   <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <svg

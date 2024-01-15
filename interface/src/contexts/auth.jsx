@@ -17,20 +17,20 @@ export const AuthProvider = ({ children }) => {
   }
 
   const fetchCompany = async () => {
-    const { data } = await supabase.from("empresa").select();
-    setEmpresas(data);
-  }
+    try {
+      const response = await fetch(`${connect}/empresas`);
 
-  const fetchEmpresa = async () => {
-    const response = await fetch(`${connect}/empresas`);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar empresa. Status: ${response.status}`);
+      }
 
-    if (!response.ok) {
-      throw new Error (`Erro ao buscar empresa. Status: ${response.status}`);
+      const data = await response.json();
+      setCompany(data); 
+    } catch (error) {
+      console.log("Erro ao buscar empresas: ", error);
     }
-
-    const data = await response.json();
-    setCompany(data);
   }
+
 
   useEffect(() => {
     fetchUser()
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         empresa,
-        fetchEmpresa,
+        company,
         signed: !!user,
         signin: signIn,
         signout,

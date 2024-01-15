@@ -3,7 +3,6 @@ import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
-import icon_processo from '../../../media/icon_processos.svg'
 import ModalProcesso from '../components/Modal/ModalProcesso'
 import { FiLink } from "react-icons/fi";
 

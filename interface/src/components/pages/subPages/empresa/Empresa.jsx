@@ -40,19 +40,16 @@ function Empresa() {
 
   const getContato = async () => {
     try {
-      const { data } = await connect.from("contato").select();
-      const sortData = data.sort((a, b) => {
-        //Ordenar por status (ativo ou inativo)
-        if (a.ativo !== b.ativo) {
-          return a.ativo ? -1 : 1;
-        }
+      const response = await fetch(`${connect}/contatos`);
 
-        //Ordenar por ordem alfabética
-        return a.nome_contato.localeCompare(b.nome_contato);
-      })
-      setContato(sortData)
+      if(!response.ok){
+        throw new Error(`Erro ao buscar contatos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setContato(data)
     } catch (error) {
-      toast.error(error);
+      console.log("Erro ao buscar contatos: ", error);
     }
   };
 
@@ -104,6 +101,7 @@ function Empresa() {
         setOnEdit={setOnEdit} 
         getEmpresa={getEmpresa}
         contact={contactName}
+        contatos={contato}
         />
 
       {/* Barra de pesquisa */}
@@ -118,6 +116,7 @@ function Empresa() {
         empresa={filteredEmpresas}
         setEmpresa={setEmpresa}
         setOnEdit={handleEdit}
+        contato={contato}
       />
     </div>
   )
