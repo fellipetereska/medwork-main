@@ -1,13 +1,9 @@
 //Importando ferramentas
 import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
-import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
+import { connect } from '../../../../services/api'; //Conexão com o banco de dados
 
-function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
-
-  //Instanciando Variáveis
-  const [contato, setContato] = useState([]);
+function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato }) {
 
   const handleEditClick = (empresa) => () => {
     handleEdit(empresa);
@@ -17,20 +13,6 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
   const handleEdit = (empresa) => {
     setOnEdit(empresa);
   };
-
-  //Função para buscar os contatos do select
-  const fetchContatos = async () => {
-    try {
-      const { data } = await supabase.from("contato").select();
-      setContato(data);
-    } catch (error) {
-      console.error('Erro ao buscar contatos:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchContatos();
-  }, []);
 
   //Função para verificar o contato
   const findContato = (fkContatoId) => {
@@ -45,29 +27,26 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
 
   const handleDesactivation = async (id, ativo) => {
     try {
-      // Inverte o estado ativo localmente
+      const response = await fetch(`${connect}/empresas/activate/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ativo: ativo === 1 ? 0 : 1 }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar status da empresa.');
+      }
+
       const novaEmpresa = empresa.map(item =>
         item.id_empresa === id ? { ...item, ativo: !ativo } : item
       );
       setEmpresa(novaEmpresa);
-
-      // Atualiza o estado no banco de dados
-      const { error } = await supabase
-        .from("empresa")
-        .upsert([{ id_empresa: id, ativo: !ativo }]);
-
-      if (error) {
-        // Se houver um erro na atualização do banco de dados, reverte o estado local
-        setEmpresa(empresa.map(item =>
-          item.id_empresa === id ? { ...item, ativo } : item
-        ));
-        throw new Error(error.message);
-      }
-
-      toast.info(`Empresa ${!ativo ? 'ativada' : 'inativada'} com sucesso`);
+      toast.info(`Empresa ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
     } catch (error) {
-      console.log("Erro ao atualizar status da empresa", error);
-      toast.error("Erro ao atualizar status da empresa, verifique o console");
+      console.error('Erro ao atualizar status da empresa:', error);
+      toast.error('Erro ao atualizar status da empresa, verifique o console!');
     }
   };
 
@@ -134,7 +113,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit }) {
                     type="checkbox"
                     checked={!item.ativo}
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    onChange={() => handleDesactivation(item.id_empresa, item.ativo)}
+                  onChange={() => handleDesactivation(item.id_empresa, item.ativo)}
                   />
                   <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <svg

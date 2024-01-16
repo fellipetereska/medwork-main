@@ -8,12 +8,11 @@ import icon_lupa from '../../../media/icon_lupa.svg'
 import ModalSearchUnidade from "../components/Modal/ModalSearchUnidade";
 
 
-function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
+function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, unidade }) {
 
   //Instanciando Variaveis
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
-  const [unidade, setUnidade] = useState(null);
   const [showModal, setShowModal] = useState(false); //Controlar o Modal
   const [unidadeId, setUnidadeId] = useState(null); //Armazenar o Id do Contato recebido do Modal
   const [nomeUnidade, setNomeUnidade] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
@@ -106,20 +105,6 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel }) {
     setUnidadeId(null);
     setNomeUnidade(null);
   };
-
-  //Buscando as unidades para o select
-  const fetchUnidade = async () => {
-    try {
-      const { data } = await supabase.from("unidade").select();
-      setUnidade(data);
-    } catch (error) {
-      console.error("Erro ao buscar unidade:", error);
-    }
-  }
-
-  useEffect(() => {
-    fetchUnidade();
-  }, [])
 
   //Funções do Modal
   //Função para abrir o Modal

@@ -6,19 +6,13 @@ import icon_sair from '../../../media/icon_sair.svg'
 import ModalSearchSetor from '../components/Modal/ModalSearchSetor'
 
 
-function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, getSetor }) {
+function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
-  const [setor, setSetor] = useState(null);
   const [setorId, setSetorId] = useState(null);
   const [setorNome, setSetorNome] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    //Adicionando o setor recebido do CadastroCargo.jsx na variavel setor
-    setSetor(getSetor);
-  })
 
   useEffect(() => {
     if (onEdit) {

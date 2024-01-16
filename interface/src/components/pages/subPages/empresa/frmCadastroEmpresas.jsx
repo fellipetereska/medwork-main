@@ -2,19 +2,16 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
 
 import ModalSearchEmpresa from "../components/Modal/ModalSearchContato";
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
 
-
-function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
+function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
-  const [contato, setContato] = useState(null); //Armazenar o Contato
   const [showModal, setShowModal] = useState(false); //Controlar o Modal
   const [contactId, setContactId] = useState(null); //Armazenar o Id do Contato recebido do Modal
   const [contactName, setContactName] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
@@ -136,20 +133,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
     setCheckedEstadual(null);
     setCheckedMunicipal(null);
   };
-
-  //Busca os contatos para colocar no select
-  const fetchContato = async () => {
-    try {
-      const { data } = await supabase.from("contato").select();
-      setContato(data);
-    } catch (error) {
-      console.error("Erro ao buscar contato:", error);
-    }
-  }
-
-  useEffect(() => {
-    fetchContato();
-  })
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -327,7 +310,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact }) {
             <ModalSearchEmpresa
               isOpen={showModal}
               onCancel={closeModal}
-              children={contato}
+              children={contatos}
               onContactSelect={handleContactSelect}
             />
           </div>

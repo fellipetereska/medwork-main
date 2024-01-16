@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
+import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 //Importando componentes da tela
 import Back from '../../../layout/Back'
@@ -29,23 +29,29 @@ function CadastroSetor({ }) {
 		try {
 			const response = await fetch(`${connect}/setores`)
 
-			if(!response.ok) {
-				throw new Error (`Erro ao buscar setores. Status: ${response.status}`)
+			if (!response.ok) {
+				throw new Error(`Erro ao buscar setores. Status: ${response.status}`)
 			}
 
 			const data = await response.json();
 			setSetor(data);
 		} catch (error) {
-			toast.error(error);
+			toast.error("Erro ao buscar setores", error);
 		}
 	};
 
 	const gettUnidade = async () => {
 		try {
-			const { data } = await supabase.from("unidade").select();
+			const response = await fetch(`${connect}/unidades`)
+
+			if (!response.ok) {
+				throw new Error(`Erro ao buscar unidades. Status: ${response.status}`)
+			}
+
+			const data = await response.json();
 			setUnidade(data);
 		} catch (error) {
-			toast.error(error);
+			toast.error("Erro ao buscar unidades", error);
 		}
 	};
 
@@ -58,20 +64,9 @@ function CadastroSetor({ }) {
 
 	//Função para Pesquisa
 	useEffect(() => {
-		const filtered = setor.filter((set) => {
-			const nomeSetorLowerCase = set.nome_setor && set.nome_setor.toLowerCase();
-			const ambienteSetorLowerCase = set.ambiente_setor && set.ambiente_setor.toLowerCase();
-			const descricaoSetorLowerCase = set.observacao_setor && set.observacao_setor.toLowerCase();
-
-			return (
-				(nomeSetorLowerCase && nomeSetorLowerCase.includes(searchTerm.toLowerCase())) ||
-				(ambienteSetorLowerCase && ambienteSetorLowerCase.includes(searchTerm.toLowerCase())) ||
-				(descricaoSetorLowerCase && descricaoSetorLowerCase.includes(searchTerm.toLowerCase()))
-			);
-		});
-
-		setFilteredSetor(filtered);
-	}, [searchTerm, setor, nomeUnidade]);
+		const filtred = setor.filter((set) => set.nome_setor.toLowerCase().includes(searchTerm.toLocaleLowerCase()));
+		setFilteredSetor(filtred);
+	}, [searchTerm, setor]);
 
 	//Função para Busca
 	const handleSearch = (term) => {
@@ -122,6 +117,8 @@ function CadastroSetor({ }) {
 				setOnEdit={setOnEdit}
 				getSetor={getSetor}
 				unidades={nomeUnidade}
+				setor={setor}
+				unidade={unidade}
 			/>
 
 			{/* Barra de pesquisa */}
@@ -138,6 +135,7 @@ function CadastroSetor({ }) {
 				setor={filteredSetor}
 				setSetor={setSetor}
 				setOnEdit={handleEdit}
+				unidade={unidade}
 			/>
 		</div>
 	)

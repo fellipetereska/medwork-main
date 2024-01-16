@@ -10,6 +10,7 @@ function Home() {
     //Instanciando o id da Empresa
     const [nome_empresa, setNomeEmpresa] = useState(null);
     const [empresas, setEmpresa] = useState([]);
+    const [contato, setContato] = useState([]);
 
 
     //Recebendo o id do banco de dados e armazenando em idEmpresa
@@ -36,6 +37,21 @@ function Home() {
             console.log("Erro ao buscar empresas: ", error);
         }
     };
+
+    const getContato = async () => {
+        try {
+            const response = await fetch(`${connect}/contatos`);
+
+            if (!response.ok) {
+                throw new Error(`Erro ao buscar contatos! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            setContato(responseData);
+        } catch (error) {
+            console.log("Erro ao buscar contatos!", error)
+        }
+    }
 
     useEffect(() => {
         getEmpresa();
@@ -64,6 +80,7 @@ function Home() {
 
             <GridHome
                 empresas={filteredEmpresas}
+                contato={contato}
                 setEmpresa={setEmpresa}
                 fetchNomeEmpresa={fetchNomeEmpresa}
 

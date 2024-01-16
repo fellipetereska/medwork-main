@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom'
-import { connect, supabase } from "../../../../services/api";
+import { connect } from "../../../../services/api";
 
 import FrmCadastroCargo from "./frmCadastroCargo";
 import GridCadastroCargo from "./gridCadastroCargo";
@@ -23,7 +23,6 @@ function CadastroCargo() {
   // Pegando os dados do banco
   const getCargo = async () => {
     try {
-
       const response = await fetch(`${connect}/cargos`);
 
       if(!response.ok) {
@@ -39,10 +38,16 @@ function CadastroCargo() {
 
   const getSetor = async () => {
     try {
-      const { data } = await supabase.from("setor").select();
+      const response = await fetch(`${connect}/setores`);
+
+      if(!response.ok) {
+        throw new Error(`Erro ao buscar setores. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
       setSetor(data);
     } catch (error) {
-      toast.error(error);
+      toast.error("Erro ao buscar setores", error);
     }
   };
 
@@ -100,7 +105,7 @@ function CadastroCargo() {
         setOnEdit={setOnEdit}
         getCargo={getCargo}
         set={setorNome}
-        getSetor={setor}
+        setor={setor}
       />
 
       {/* Barra de pesquisa */}
@@ -116,6 +121,7 @@ function CadastroCargo() {
         setCargo={setCargo}
         setOnEdit={handleEdit}
         find={findSetor}
+        setor={setor}
       />
     </div>
   )

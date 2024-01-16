@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import SearchInput from '../SearchInput';
-import { supabase } from '../../../../../services/api';
+import { connect, supabase } from '../../../../../services/api';
 import { IoAddCircle } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
@@ -8,31 +7,37 @@ import ModalSearchProcesso from '../Modal/ModalSearchProcesso'
 
 const ModalProcesso = ({ onCancel, isOpen, setorName, setorId, setor }) => {
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [setorProcesso, setSetorProcesso] = useState([]);
   const [processo, setProcesso] = useState([]);
-  const [showModal, setShowModal] = useState(false); //Controlar o Modal
-
-
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-  }
+  const [showModal, setShowModal] = useState(false);
 
   const fetchSetorProcesso = async () => {
     try {
-      const { data } = await supabase.from("setor_processo").select();
-      setSetorProcesso(data);
+      const response = await fetch(`${connect}/setores_processos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar setores e processos. Status: ${response.status}`)
+      }
+
+      const responseData = await response.json();
+      setSetorProcesso(responseData);
     } catch (error) {
-      console.log(error)
+      console.log("Erro ao buscar setores e processos!", error)
     }
   }
 
   const fetchProcesso = async () => {
     try {
-      const { data } = await supabase.from("processo").select();
-      setProcesso(data);
+      const response = await fetch(`${connect}/processos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar processos. Status: ${response.status}`)
+      }
+
+      const responseData = await response.json();
+      setProcesso(responseData);
     } catch (error) {
-      console.log(error)
+      console.log("Erro ao buscar processos!", error)
     }
   }
 
@@ -72,16 +77,26 @@ const ModalProcesso = ({ onCancel, isOpen, setorName, setorId, setor }) => {
 
   const selectedSetor = async (item) => {
     try {
-      await supabase.from("setor_processo")
-      .upsert([
-        {
+      const response = await fetch(`${connect}/setores_processos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify([{
           fk_processo_id: item,
           fk_setor_id: setorId
-        }
-      ]);
+        }])
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/Editar Empresa. Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+
       closeModal();
       fetchSetorProcesso();
-      toast.success("Processo vinculado com sucesso!");
+      toast.success(responseData);
     } catch (error) {
       console.log("Erro ao vincular processo no setor", error);
       toast.warn("Erro ao vincular processo")

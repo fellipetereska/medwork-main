@@ -2,16 +2,13 @@
 import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
-import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
-import icon_processo from '../../../media/icon_processos.svg'
+import { connect, supabase } from '../../../../services/api'; //Conexão com o banco de dados
 import ModalProcesso from '../components/Modal/ModalProcesso'
 import { FiLink } from "react-icons/fi";
 
-function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
+function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
 
   //Instanciando variavel e definindo o estado como null
-  const [unidade, setUnidade] = useState(null);
-
   const [showModal, setShowModal] = useState(null);
   const [setorName, setSetorName] = useState(null);
   const [setorId, setSetorId] = useState(null);
@@ -20,20 +17,6 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
   const handleEdit = (item) => {
     setOnEdit(item);
   };
-
-  //Função para buscar as unidades do select
-  const fetchUnidade = async () => {
-    try {
-      const { data } = await supabase.from("unidade").select();
-      setUnidade(data);
-    } catch (error) {
-      console.error("Erro ao buscar unidade:", error);
-    }
-  }
-
-  useEffect(() => {
-    fetchUnidade();
-  }, [])
 
   //Função para verificar a unidade
   const finUnidade = (fkUnidadeId) => {
@@ -45,24 +28,30 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
     return unidades ? unidades.nome_unidade : 'N/A';
   };
 
-  //Função para desativar o setor
   const handleDesactivation = async (id, ativo) => {
     try {
-      await supabase
-        .from("setor")
-        .update({ ativo: !ativo })
-        .eq("id_setor", id)
+      const response = await fetch(`${connect}/setores/activate/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ativo: ativo === 1 ? 0 : 1 }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar status do setor.');
+      }
 
       const novoSetor = setor.map(item =>
         item.id_setor === id ? { ...item, ativo: !ativo } : item
       );
-      setSetor(novoSetor)
+      setSetor(novoSetor);
       toast.info(`Setor ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
     } catch (error) {
-      console.error("Erro ao atualizar status do setor:", error);
-      toast.error("Erro ao atualizar status do setor, verifique o console!");
+      console.error('Erro ao atualizar status do setor:', error);
+      toast.error('Erro ao atualizar status do setor, verifique o console!');
     }
-  }
+  };
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -98,11 +87,8 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
             <th scope="col" className="px-6 py-3">
               Unidade
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 flex justify-center">
               Ações
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Vínculos
             </th>
           </tr>
         </thead>
@@ -120,12 +106,18 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
               <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {finUnidade(item.fk_unidade_id)}
               </th>
-              <td className={`px-5 py-4 gap-4 flex justify-start `}>
-                <a className={`font-medium text-blue-600 hover:text-blue-800 cursor-pointer ${!item.ativo ? 'cursor-not-allowed' : '' }`}>
+              <td className={`px-5 py-4 gap-4 flex justify-center `}>
+                {/* Editar */}
+                <a className={`font-medium text-blue-600 hover:text-blue-800 cursor-pointer ${!item.ativo ? 'cursor-not-allowed' : ''}`}>
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
+                {/* Vinculos */}
+                <a className={`cursor-pointer text-yellow-500 text-lg ${!item.ativo ? 'cursor-not-allowed' : ''}`} onClick={() => handleSetorSelect(item)}>
+                  <FiLink />
+                </a>
+                {/* Inativo */}
                 <label
-                  className="relative flex items-center rounded-full cursor-pointer"
+                  className="relative rounded-full cursor-pointer"
                 >
                   <input
                     type="checkbox"
@@ -150,11 +142,6 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit }) {
                     </svg>
                   </div>
                 </label>
-              </td>
-              <td className="px-6 py-4">
-                <a className={`cursor-pointer text-yellow-500 text-lg flex justify-center ${!item.ativo ? 'cursor-not-allowed' : '' }`} onClick={() => handleSetorSelect(item)}>
-                  <FiLink />
-                </a>
               </td>
             </tr>
           ))}

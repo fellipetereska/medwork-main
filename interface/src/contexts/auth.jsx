@@ -16,25 +16,8 @@ export const AuthProvider = ({ children }) => {
     setUsuarios(data);
   }
 
-  const fetchCompany = async () => {
-    const { data } = await supabase.from("empresa").select();
-    setEmpresas(data);
-  }
-
-  const fetchEmpresa = async () => {
-    const response = await fetch(`${connect}/empresas`);
-
-    if (!response.ok) {
-      throw new Error (`Erro ao buscar empresa. Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    setCompany(data);
-  }
-
   useEffect(() => {
     fetchUser()
-    fetchCompany()
   }, [])
 
   const signIn = async (usuario, senha, setRedirect) => {
@@ -78,15 +61,6 @@ export const AuthProvider = ({ children }) => {
     return username ? username.nome_usuario : "N/A"
   }
 
-  const selectCompany = async (id) => {
-    if (!id) {
-      toast.warn("Selecione uma Empresa!")
-    }
-
-    const company = empresas.find((c) => c.id_empresa === id)
-    setEmpresa(company ? company.nome_empresa : "N/A");
-
-  };
 
   const signout = () => {
     setUser(null);
@@ -98,11 +72,10 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         empresa,
-        fetchEmpresa,
+        company,
         signed: !!user,
         signin: signIn,
         signout,
-        selectCompany
       }}>
       {children}
     </AuthContext.Provider>

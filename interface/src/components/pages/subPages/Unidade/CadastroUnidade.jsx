@@ -36,25 +36,37 @@ function CadastroUnidade() {
       const data = await response.json();
       setUnidade(data);
     } catch (error) {
-      console.log(error);
+      console.log("Erro ao buscar unidades!", error);
     }
   };
 
   const getContato = async () => {
     try {
-      const { data } = await supabase.from("contato").select();
-      setContato(data)
+      const response = await fetch(`${connect}/contatos`);
+
+      if(!response.ok) {
+        throw new Error(`Erro ao buscar contato. Status ${response.status}`)
+      }
+
+      const data = await response.json();
+      setContato(data);
     } catch (error) {
-      toast.error(error);
+      console.log("Erro ao buscar contatos!", error);
     }
   };
 
   const getEmpresa = async () => {
     try {
-      const { data } = await supabase.from("empresa").select();
-      setEmpresa(data)
+      const response = await fetch(`${connect}/empresas`);
+
+      if(!response.ok) {
+        throw new Error(`Erro ao buscar empresas. Status ${response.status}`)
+      }
+
+      const data = await response.json();
+      setEmpresa(data);
     } catch (error) {
-      toast.error(error);
+      console.log("Erro ao buscar empresas!", error);
     }
   };
 
@@ -112,6 +124,8 @@ function CadastroUnidade() {
         setOnEdit={setOnEdit}
         getUnidade={getUnidade}
         contact={contactName}
+        contato={contato}
+        empresa={empresa}
         company={companyName}
       />
 
@@ -127,6 +141,8 @@ function CadastroUnidade() {
         unidade={filteredUnidade}
         setUnidade={setUnidade}
         setOnEdit={handleEdit}
+        contato={contato}
+        empresa={empresa}
       />
     </div>
   )

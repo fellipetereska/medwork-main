@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api"; //Conexão com o banco de dados
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 import ModalSearchUnidadeContato from '../components/Modal/ModalSearchContato'
@@ -8,15 +7,13 @@ import ModalSearchUnidadeEmpresa from '../components/Modal/ModalSearchEmpresa'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
-function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company }) {
+function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, contato, empresa }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
 
   const [showModalContato, setShowModalContato] = useState(false); //Controlar o Modal Contato
   const [showModalEmpresa, setShowModalEmpresa] = useState(false); //Controlar o Modal Empresa
-  const [contato, setContato] = useState("");
-  const [empresa, setEmpresa] = useState("");
   const [empresaId, setEmpresaId] = useState(null);
   const [nomeEmpresa, setNomeEmpresa] = useState(null);
   const [contatoId, setContatoId] = useState(null);
@@ -150,31 +147,6 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
     setNomeEmpresa(null);
   };
 
-  //Busca os contatos para colocar no select
-  const fetchContato = async () => {
-    try {
-      const { data } = await supabase.from("contato").select();
-      setContato(data);
-    } catch (error) {
-      console.error("Erro ao buscar contato:", error);
-    }
-  }
-
-  //Buscar as empresas para colocar no select
-  const fetchEmpresa = async () => {
-    try {
-      const { data } = await supabase.from("empresa").select();
-      setEmpresa(data)
-    } catch (error) {
-      console.log("Erro ao buscar Empresa: ", error)
-    }
-  };
-
-  useEffect(() => {
-    fetchContato();
-    fetchEmpresa();
-  }, [])
-
   //Funções do Modal
   //Função para abrir o Modal Contato
   const openModalContato = () => setShowModalContato(true);
@@ -186,15 +158,15 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company })
   // Função para atualizar o Id Contato
   const handleContactSelect = (contactId, contactName) => {
     closeModalContato();
-    setContatoId(contactId)
-    setNomeContato(contactName)
+    setContatoId(contactId);
+    setNomeContato(contactName);
   };
 
   // Função para atualizar o Id Empresa
-  const handleEmpresaSelect = (contactId, contactName) => {
+  const handleEmpresaSelect = (empresaId, empresaName) => {
     closeModalEmpresa();
-    setEmpresaId(contactId)
-    setNomeEmpresa(contactName)
+    setEmpresaId(empresaId);
+    setNomeEmpresa(empresaName);
   };
 
   //Função para limpar o campo Contato

@@ -1,6 +1,6 @@
 import { BsFillPencilFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api';
+import { connect } from '../../../../services/api';
 
 function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
 
@@ -8,33 +8,33 @@ function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
     setOnEdit(item);
   };
 
-  const handleDesactivation = async (id, ativo) => {
-    try {
-      // Inverte o estado ativo localmente
-      const novoCargo = cargos.map(item =>
-        item.id_cargo === id ? { ...item, ativo: !ativo } : item
-      );
-      setCargo(novoCargo);
+  // const handleDesactivation = async (id, ativo) => {
+  //   try {
+  //     // Inverte o estado ativo localmente
+  //     const novoCargo = cargos.map(item =>
+  //       item.id_cargo === id ? { ...item, ativo: !ativo } : item
+  //     );
+  //     setCargo(novoCargo);
 
-      // Atualiza o estado no banco de dados
-      const { error } = await supabase
-        .from("cargo")
-        .upsert([{ id_cargo: id, ativo: !ativo }]);
+  //     // Atualiza o estado no banco de dados
+  //     const { error } = await supabase
+  //       .from("cargo")
+  //       .upsert([{ id_cargo: id, ativo: !ativo }]);
 
-      if (error) {
-        // Se houver um erro na atualização do banco de dados, reverte o estado local
-        setCargo(cargos.map(item =>
-          item.id_cargo === id ? { ...item, ativo } : item
-        ));
-        throw new Error(error.message);
-      }
+  //     if (error) {
+  //       // Se houver um erro na atualização do banco de dados, reverte o estado local
+  //       setCargo(cargos.map(item =>
+  //         item.id_cargo === id ? { ...item, ativo } : item
+  //       ));
+  //       throw new Error(error.message);
+  //     }
 
-      toast.info(`Cargo ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
-    } catch (error) {
-      console.log("Erro ao atualizar status do cargo", error);
-      toast.error("Erro ao atualizar status do cargo, verifique o console");
-    }
-  };
+  //     toast.info(`Cargo ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
+  //   } catch (error) {
+  //     console.log("Erro ao atualizar status do cargo", error);
+  //     toast.error("Erro ao atualizar status do cargo, verifique o console");
+  //   }
+  // };
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
@@ -97,7 +97,7 @@ function GridCadastroCargo({ cargos, setCargo, setOnEdit, find }) {
                     type="checkbox"
                     checked={!item.ativo}
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    onChange={() => handleDesactivation(item.id_cargo, item.ativo)}
+                    // onChange={() => handleDesactivation(item.id_cargo, item.ativo)}
                   />
                   <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <svg
