@@ -9,7 +9,7 @@ import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
 
 
-function CadastroProcesso({ onEdit, setOnEdit, getProcessos, nomeSetor, nomeCargo }) {
+function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario

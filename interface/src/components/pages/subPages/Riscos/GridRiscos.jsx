@@ -27,7 +27,7 @@ function GridRiscos({ riscos, setRiscos, setOnEdit }) {
               Grupo
             </th>
             <th scope="col" className="px-4 py-3">
-              E=social
+              E-social
             </th>
             <th scope="col" className="px-4 py-3 text-center">
               Nivel de Ação
@@ -37,9 +37,6 @@ function GridRiscos({ riscos, setRiscos, setOnEdit }) {
             </th>
             <th scope="col" className="px-4 py-3 text-center">
               Severidade
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Processo
             </th>
             <th scope="col" className="px-4 py-3 text-center">
               Ações
@@ -76,10 +73,6 @@ function GridRiscos({ riscos, setRiscos, setOnEdit }) {
               <td className="px-4 py-4 text-center">
                 {item.severidade_risco}
               </td>
-              <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {/* {findContato(item.fk_contato_id)} */}
-                Operador de Máquinas
-              </th>
               <td className="py-4 gap-4">
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
                   <BsFillPencilFill onClick={() => handleEditClick(item)} />

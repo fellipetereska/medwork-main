@@ -2,7 +2,7 @@
 import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api'; //Conexão com o banco de dados
+import { connect } from '../../../../services/api'; //Conexão com o banco de dados
 
 function GridCadastroEmpresa({ children, set, setOnEdit }) {
 

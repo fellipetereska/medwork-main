@@ -29,8 +29,8 @@ function CadastroSetor({ }) {
 		try {
 			const response = await fetch(`${connect}/setores`)
 
-			if(!response.ok) {
-				throw new Error (`Erro ao buscar setores. Status: ${response.status}`)
+			if (!response.ok) {
+				throw new Error(`Erro ao buscar setores. Status: ${response.status}`)
 			}
 
 			const data = await response.json();
@@ -44,12 +44,12 @@ function CadastroSetor({ }) {
 		try {
 			const response = await fetch(`${connect}/unidades`)
 
-			if(!response.ok) {
-				throw new Error (`Erro ao buscar unidades. Status: ${response.status}`)
+			if (!response.ok) {
+				throw new Error(`Erro ao buscar unidades. Status: ${response.status}`)
 			}
 
 			const data = await response.json();
-			setSetor(data);
+			setUnidade(data);
 		} catch (error) {
 			toast.error("Erro ao buscar unidades", error);
 		}
@@ -64,20 +64,9 @@ function CadastroSetor({ }) {
 
 	//Função para Pesquisa
 	useEffect(() => {
-		const filtered = setor.filter((set) => {
-			const nomeSetorLowerCase = set.nome_setor && set.nome_setor.toLowerCase();
-			const ambienteSetorLowerCase = set.ambiente_setor && set.ambiente_setor.toLowerCase();
-			const descricaoSetorLowerCase = set.observacao_setor && set.observacao_setor.toLowerCase();
-
-			return (
-				(nomeSetorLowerCase && nomeSetorLowerCase.includes(searchTerm.toLowerCase())) ||
-				(ambienteSetorLowerCase && ambienteSetorLowerCase.includes(searchTerm.toLowerCase())) ||
-				(descricaoSetorLowerCase && descricaoSetorLowerCase.includes(searchTerm.toLowerCase()))
-			);
-		});
-
-		setFilteredSetor(filtered);
-	}, [searchTerm, setor, nomeUnidade]);
+		const filtred = setor.filter((set) => set.nome_setor.toLowerCase().includes(searchTerm.toLocaleLowerCase()));
+		setFilteredSetor(filtred);
+	}, [searchTerm, setor]);
 
 	//Função para Busca
 	const handleSearch = (term) => {
@@ -129,6 +118,7 @@ function CadastroSetor({ }) {
 				getSetor={getSetor}
 				unidades={nomeUnidade}
 				setor={setor}
+				unidade={unidade}
 			/>
 
 			{/* Barra de pesquisa */}

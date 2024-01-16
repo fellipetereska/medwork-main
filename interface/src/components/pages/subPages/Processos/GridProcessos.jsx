@@ -1,6 +1,6 @@
 import { BsFillPencilFill } from 'react-icons/bs';
 
-function GridProcesso({ processos, setProcesso, setOnEdit, setor, cargo}) {
+function GridProcesso({ processos, setOnEdit, setor, cargo}) {
 
   const handleEdit = (item) => {
     setOnEdit(item);
