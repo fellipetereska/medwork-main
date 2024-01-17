@@ -6,6 +6,7 @@ import { connect, supabase } from "../../../../services/api"; //Conexão com o b
 
 //Importando componentes
 import CadastroMedidas from "./frmMedidasProtecao";
+import FrmEpi from '../Epi/FrmEpi'
 import GridMedidas from './GridMedidasProtecao';
 import SearchInput from "../components/SearchInput";
 import Back from '../../../layout/Back'
@@ -23,12 +24,12 @@ function MedidasProtecao() {
   // Pegando os dados da tabela Empresa
   const getMedidasProtecao = async () => {
     try {
-      const response = await fetch(`${connect}/medidas_protecao`);
+      const response = await fetch(`${connect}/medidas_adm`);
 
-      if(!response.ok) {
-        throw new Error(`Erro ao buscar medidas de proteção. Status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar medidas. Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setMedidasProtecao(data)
     } catch (error) {
@@ -46,7 +47,7 @@ function MedidasProtecao() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = medidasProtecao.filter((mp) => mp.nome_medida.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = medidasProtecao.filter((mp) => mp.descricao_medida.toLowerCase().includes(searchTerm.toLowerCase()));
     setFiltered(filtered);
   }, [searchTerm, medidasProtecao]);
 
@@ -58,18 +59,7 @@ function MedidasProtecao() {
 
   return (
     <div className="tab-content mt-14 mb-32">
-      <div className="flex justify-center items-center">
-        {/* Botão para voltar */}
-        <div className="absolute left-0">
-          <Link to="/cadastros">
-            <Back />
-          </Link>
-        </div>
 
-        <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Medidas de Proteção</h1>
-      </div>
-
-      {/* Formulário de cadastro */}
       <CadastroMedidas
         onEdit={onEdit}
         setOnEdit={setOnEdit}

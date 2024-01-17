@@ -3,7 +3,7 @@ import { connect, supabase } from '../../../../../services/api';
 import { IoAddCircle } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
-import ModalSearchProcesso from '../Modal/ModalSearchProcesso'
+import ModalSearchProcesso from './ModalSearchProcesso'
 
 const ModalProcesso = ({ onCancel, isOpen, setorName, setorId, setor }) => {
 

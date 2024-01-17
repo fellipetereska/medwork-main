@@ -42,7 +42,7 @@ function Cadastros() {
             </Link>
           </figure>
         </div>
-        <div className="border-b border-gray-300 mt-8 mb-8"></div>
+        <div className="border-b border-gray-200 mt-8 mb-8"></div>
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_processo">
@@ -55,13 +55,13 @@ function Cadastros() {
             </Link>
           </figure>
           <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_epi">
-              <BotaoCadastroEpi />
+            <Link to="/cadastro_medida">
+              <BotaoMedidasDeProtecao />
             </Link>
           </figure>
           <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_medida">
-              <BotaoMedidasDeProtecao />
+            <Link to="/cadastro_epi">
+              <BotaoCadastroEpi />
             </Link>
           </figure>
         </div>

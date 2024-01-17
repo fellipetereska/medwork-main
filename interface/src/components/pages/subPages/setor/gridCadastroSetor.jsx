@@ -1,9 +1,9 @@
 //Importando ferramentas
 import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { toast } from 'react-toastify';
-import { useState, useEffect } from 'react';
-import { connect, supabase } from '../../../../services/api'; //Conexão com o banco de dados
-import ModalProcesso from '../components/Modal/ModalProcesso'
+import { useState } from 'react';
+import { connect } from '../../../../services/api'; //Conexão com o banco de dados
+import ModalProcesso from '../components/Modal/ModalSetorProcesso'
 import { FiLink } from "react-icons/fi";
 
 function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
@@ -60,7 +60,6 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
   const closeModal = () => setShowModal(false);
 
   const handleSetorSelect = (item) => {
-    console.log(item)
     setSetorName(item.nome_setor)
     setSetorId(item.id_setor)
     openModal();
