@@ -22,7 +22,7 @@ import Login from './components/pages/Login';
 import Processos from './components/pages/subPages/Processos/Processos';
 import Riscos from './components/pages/subPages/Riscos/Riscos';
 import EPI from './components/pages/subPages/Epi/Epi';
-import Medidas from './components/pages/subPages/MedidasPrevencao/MedidasPrevencao';
+import Medidas from './components/pages/subPages/CadastroMedidas'
 import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
 
 // Importando os Componentes

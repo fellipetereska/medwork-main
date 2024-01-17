@@ -753,8 +753,8 @@ router.put("/riscos/:id_risco", (req, res) => {
 
 //Tabela EPI's
 //Get table
-router.get("/epis", (req, res) => {
-  const q = `SELECT * FROM epis`;
+router.get("/medidas", (req, res) => {
+  const q = `SELECT * FROM medidas`;
 
   pool.getConnection((err, con) => {
     if (err) return next(err);
@@ -771,21 +771,21 @@ router.get("/epis", (req, res) => {
 });
 
 //Add rows in table
-router.post("/epis", (req, res) => {
+router.post("/medidas", (req, res) => {
   const data = req.body;
 
-  const q = "INSERT INTO epis SET ?"
+  const q = "INSERT INTO medidas SET ?"
 
   pool.getConnection((err, con) => {
     if (err) return next(err);
 
     con.query(q, data, (err, result) => {
       if (err) {
-        console.error("Erro ao inserir EPI na tabela", err);
+        console.error("Erro ao inserir Medida na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      return res.status(200).json(`EPI cadastrado com sucesso!`);
+      return res.status(200).json(`Medida cadastrado com sucesso!`);
     });
 
     con.release();
@@ -794,126 +794,35 @@ router.post("/epis", (req, res) => {
 });
 
 //Update row int table
-router.put("/epis/:id_epi", (req, res) => {
-  const id_epi = req.params.id_epi; // Obtém o ID da empresa da URL
-  const {
-    nome_epi,
-    certificado_epi,
-    fator_reducao_epi,
-    vencimento_certificado_epi,
-    fabricante_epi
-  } = req.body;
-
-  const q = `
-    UPDATE epis
-    SET nome_epi = ?,
-    certificado_epi = ?,
-    fator_reducao_epi = ?,
-    vencimento_certificado_epi = ?,
-    fabricante_epi = ?
-    WHERE id_epi = ?
-    `;
-
-  const values = [
-    nome_epi,
-    certificado_epi,
-    fator_reducao_epi,
-    vencimento_certificado_epi,
-    fabricante_epi,
-    id_epi
-  ];
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, values, (err) => {
-      if (err) {
-        console.error("Erro ao atualizar EPI na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json("EPI atualizado com sucesso!");
-    });
-
-    con.release();
-  })
-
-});
-
-//Delete row in table
-// router.delete("/contato/:id_contato", (req, res) => {
-//     const q = `DELETE FROM contato WHERE id = ?`;
-
-//     db.query(q, [req.params.id_contato], (err) => {
-//         console.error("Erro ao deletar contato na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Contato excluído com sucesso!`);
-// });
-
-
-
-//Tabela EPI's
-//Get table
-router.get("/medidas_protecao", (req, res) => {
-  const q = `SELECT * FROM medidas_protecao`;
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, (err, data) => {
-      if (err) return res.status(500).json(err);
-
-      return res.status(200).json(data);
-    });
-
-    con.release();
-  })
-
-});
-
-//Add rows in table
-router.post("/medidas_protecao", (req, res) => {
-  const data = req.body;
-
-  const q = "INSERT INTO medidas_protecao SET ?"
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, data, (err, result) => {
-      if (err) {
-        console.error("Erro ao inserir medida de proteção na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json(`Medida de Proteção cadastrado com sucesso!`);
-    });
-
-    con.release();
-  })
-
-});
-
-//Update row int table
-router.put("/medidas_protecao/:id_medida", (req, res) => {
+router.put("/medidas/:id_medida", (req, res) => {
   const id_medida = req.params.id_medida; // Obtém o ID da empresa da URL
   const {
     nome_medida,
-    descricao,
+    descricao_medida,
+    certificado_medida,
+    fator_reducao_medida,
+    vencimento_certificado_medida,
+    fabricante_medida
   } = req.body;
 
   const q = `
-    UPDATE medidas_protecao
+    UPDATE medidas
     SET nome_medida = ?,
-    descricao = ?
+    descricao_medida = ?,
+    certificado_medida = ?,
+    fator_reducao_medida = ?,
+    vencimento_certificado_medida = ?,
+    fabricante_medida = ?
     WHERE id_medida = ?
     `;
 
   const values = [
     nome_medida,
-    descricao,
+    descricao_medida,
+    certificado_medida,
+    fator_reducao_medida,
+    vencimento_certificado_medida,
+    fabricante_medida,
     id_medida
   ];
 
@@ -922,17 +831,18 @@ router.put("/medidas_protecao/:id_medida", (req, res) => {
 
     con.query(q, values, (err) => {
       if (err) {
-        console.error("Erro ao atualizar medida de proteção na tabela", err);
+        console.error("Erro ao atualizar Medida na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      return res.status(200).json("Medida de Proteção atualizado com sucesso!");
+      return res.status(200).json("Medida atualizado com sucesso!");
     });
 
     con.release();
   })
 
 });
+
 
 //Delete row in table
 // router.delete("/contato/:id_contato", (req, res) => {
@@ -945,6 +855,51 @@ router.put("/medidas_protecao/:id_medida", (req, res) => {
 
 //     return res.status(200).json(`Contato excluído com sucesso!`);
 // });
+
+//Medidas Adminitrativas
+//Get Table
+router.get("/medidas_adm", (req, res) => {
+  const q = `SELECT * FROM medidas_adm`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+//Add rows in table
+router.post("/medidas_adm", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO medidas_adm SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir Medida na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Medida cadastrado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+
+
 
 
 
@@ -1186,6 +1141,8 @@ router.post('/validate', (req, res) => {
 
 
 // Vinculos
+//Vinculando processo aos setores
+//Get Table
 router.get("/setores_processos", (req, res) => {
   const q = `SELECT * FROM setores_processos`;
 
@@ -1253,6 +1210,170 @@ router.put("/setores_processos/:id_setor_processo", (req, res) => {
     con.query(q, values, (err) => {
       if (err) {
         console.error("Erro ao atualizar vinculo do processo ao setor", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Vinculo atualizado com sucesso!");
+    });
+
+    con.release();
+  })
+
+});
+
+
+
+//Vinculando riscos aos processos
+//Get Table
+router.get("/processos_riscos", (req, res) => {
+  const q = `SELECT * FROM processos_riscos`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+//Add rows in table
+router.post("/processos_riscos", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO processos_riscos SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao vincular risco ao processo", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Vinculado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update row int table
+router.put("/processos_riscos/:id_processo_risco", (req, res) => {
+  const id_processo_risco = req.params.id_processo_risco; // Obtém o ID da empresa da URL
+  const {
+    fk_processo_id,
+    fk_risco_id,
+  } = req.body;
+
+  const q = `
+    UPDATE processos_riscos
+    SET fk_risco_id = ?,
+    fk_processo_id = ?
+    WHERE id_processo_risco = ?
+    `;
+
+  const values = [
+    fk_processo_id,
+    fk_risco_id,
+    id_processo_risco
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar vinculo do risco ao processo", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Vinculo atualizado com sucesso!");
+    });
+
+    con.release();
+  })
+
+});
+
+
+
+//Vinculando riscos aos processos
+//Get Table
+router.get("/riscos_medidas", (req, res) => {
+  const q = `SELECT * FROM riscos_medidas`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+//Add rows in table
+router.post("/riscos_medidas", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO riscos_medidas SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao vincular Medida de proteção ao risco", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Vinculado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update row int table
+router.put("/riscos_medidas/:id_risco_medida", (req, res) => {
+  const id_risco_medida = req.params.id_risco_medida; // Obtém o ID da empresa da URL
+  const {
+    fk_risco_id,
+    fk_medida_id,
+  } = req.body;
+
+  const q = `
+    UPDATE riscos_medidas
+    SET fk_medida_id = ?,
+    fk_medida_id = ?
+    WHERE id_risco_medida = ?
+    `;
+
+  const values = [
+    fk_risco_id,
+    fk_risco_id,
+    id_risco_medida
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar vinculo da medida no risco", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 

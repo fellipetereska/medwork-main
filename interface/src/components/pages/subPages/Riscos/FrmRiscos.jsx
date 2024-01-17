@@ -3,7 +3,6 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from 'react-toastify';
 import { connect, supabase } from '../../../../services/api';
 
-import ModalSearchProcesso from '../components/Modal/ModalProcesso'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
@@ -210,6 +209,10 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
             >
               <option value="NULL">Selecione um Grupo de Risco</option>
               <option value="Fisico">Fisico</option>
+              <option value="Fisico">Quimico</option>
+              <option value="Fisico">Biologico</option>
+              <option value="Fisico">Ergonomico</option>
+              <option value="Fisico">Acidentes</option>
             </select>
           </div>
           <div className="w-full md:w-1/3 px-3">
