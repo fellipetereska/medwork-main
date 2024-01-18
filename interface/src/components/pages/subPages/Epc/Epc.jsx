@@ -3,39 +3,38 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco
 
-import Back from '../../../layout/Back'
-import FrmEpi from './FrmEpi'
-import GridEpi from './GridEpi'
+import FrmEpc from './FrmEpc'
+import GridEpc from './GridEpc'
 import SearchInput from '../components/SearchInput'
 
 function Epc() {
 
-  const [epi, setEpi] = useState([]);
+  const [epc, setEpc] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filtered, setFiltered] = useState([]);
 
-  const fetchEpi = async () => {
+  const fetchEpc = async () => {
     try {
-      const response = await fetch(`${connect}/epc`);
+      const response = await fetch(`${connect}/medidas_epc`);
 
       if(!response.ok) {
-        toast.error("Erro ao buscar EPI's");
-        throw new Error(`Erro ao buscar EPI's. Status: ${response.status}`);
+        toast.error("Erro ao buscar EPC's");
+        throw new Error(`Erro ao buscar EPC's. Status: ${response.status}`);
       }
 
       const data = await response.json();
-      setEpi(data);
+      setEpc(data);
     } catch (error) {
-      toast.warn("Erro ao buscar EPI's. Verificar Console!")
-      console.log("Erro ao buscar EPI's", error)
+      toast.warn("Erro ao buscar EPC's. Verificar Console!")
+      console.log("Erro ao buscar EPC's", error)
     }
   }
 
   useEffect(() => {
-    fetchEpi();
+    fetchEpc();
   }, [])
 
 
@@ -45,9 +44,9 @@ function Epc() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = epi.filter((emp) => emp.nome_epi.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = epc.filter((emp) => emp.descricao_medida.toLowerCase().includes(searchTerm.toLowerCase()));
     setFiltered(filtered);
-  }, [searchTerm, epi]);
+  }, [searchTerm, epc]);
 
 
   const handleSearch = (term) => {
@@ -58,21 +57,10 @@ function Epc() {
   return (
     <>
 
-      <div className="flex justify-center items-center mt-10">
-        {/* Botão para voltar */}
-        <div className="absolute left-0">
-          <Link to="/cadastros">
-            <Back />
-          </Link>
-        </div>
-
-        <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar EPI's</h1>
-      </div>
-
-      <FrmEpi
+      <FrmEpc
         onEdit={onEdit}
         setOnEdit={setOnEdit}
-        get={fetchEpi}
+        get={fetchEpc}
       />
 
       <div className="flex justify-center w-full">
@@ -81,9 +69,9 @@ function Epc() {
         </div>
       </div>
 
-      <GridEpi
-        epis={filtered}
-        setEpi={setEpi}
+      <GridEpc
+        children={filtered}
+        setEpi={setEpc}
         setOnEdit={handleEdit}
       />
     </>

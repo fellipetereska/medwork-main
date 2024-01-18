@@ -19,7 +19,7 @@ function Epi() {
 
   const fetchEpi = async () => {
     try {
-      const response = await fetch(`${connect}/epis`);
+      const response = await fetch(`${connect}/medidas_epi`);
 
       if(!response.ok) {
         toast.error("Erro ao buscar EPI's");
@@ -45,7 +45,7 @@ function Epi() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = epi.filter((emp) => emp.nome_epi.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = epi.filter((epi) => epi.nome_medida && epi.nome_medida.toLowerCase().includes(searchTerm.toLowerCase()));
     setFiltered(filtered);
   }, [searchTerm, epi]);
 
@@ -57,18 +57,6 @@ function Epi() {
 
   return (
     <>
-
-      <div className="flex justify-center items-center mt-10">
-        {/* Botão para voltar */}
-        <div className="absolute left-0">
-          <Link to="/cadastros">
-            <Back />
-          </Link>
-        </div>
-
-        <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar EPI's</h1>
-      </div>
-
       <FrmEpi
         onEdit={onEdit}
         setOnEdit={setOnEdit}

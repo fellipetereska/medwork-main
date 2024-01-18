@@ -3,11 +3,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import MedidasAdm from './MedidasPrevencao/MedidasPrevencao'
+import MedidaEpi from './Epi/Epi'
+import MedidaEpc from './Epc/Epc'
 import Back from '../../layout/Back'
 
 function CadastroMedidas() {
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
 
   const handleTabClick = (index) => {
     setActiveTab(index);
@@ -15,8 +17,6 @@ function CadastroMedidas() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 0:
-        return null;
       case 1:
         return (
           <MedidasAdm />
@@ -24,13 +24,13 @@ function CadastroMedidas() {
       case 2:
         return (
           <>
-            <p>Teste 2</p>
+            <MedidaEpi />
           </>
         );
       case 3:
         return (
           <>
-            {/* <CadastroUsuario /> */}
+            <MedidaEpc />
           </>
         );
       default:

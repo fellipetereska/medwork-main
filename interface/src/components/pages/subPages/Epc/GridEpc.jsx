@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { BsFillPencilFill } from 'react-icons/bs';
-import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api';
 
-function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
+function GridCadastroEpi({ children, setEpi, setOnEdit, find }) {
 
   const handleEdit = (item) => {
     setOnEdit(item);
@@ -12,7 +9,7 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
   // const handleDesactivation = async (id, ativo) => {
   //   try {
   //     // Inverte o estado ativo localmente
-  //     const novoCargo = epis.map(item =>
+  //     const novoCargo = children.map(item =>
   //       item.id_cargo === id ? { ...item, ativo: !ativo } : item
   //     );
   //     setCargo(novoCargo);
@@ -24,7 +21,7 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
 
   //     if (error) {
   //       // Se houver um erro na atualização do banco de dados, reverte o estado local
-  //       setCargo(epis.map(item =>
+  //       setCargo(children.map(item =>
   //         item.id_cargo === id ? { ...item, ativo } : item
   //       ));
   //       throw new Error(error.message);
@@ -46,57 +43,34 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
               ID
             </th>
             <th scope="col" className="px-4 py-3">
-              EPI
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Certificação
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Vencimento Certificado
-            </th>
-            <th scope="col" className="px-4 py-3">
-              Fabricante
+              Descrição
             </th>
             <th scope="col" className="px-4 py-3 text-center">
               Ações
             </th>
-            <th scope="col" className="px-4 py-3 text-center">
-              Status
-            </th>
           </tr>
         </thead>
         <tbody>
-          {epis.map((item, i) => (
+          {children.map((item, i) => (
             <tr key={i} className={`border-b bg-white`}>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.id_epi}
+                {item.id_medida}
               </th>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.nome_epi}
+                {item.descricao_medida}
               </th>
-              <td className="px-4 py-4">
-                {item.certificado_epi}
-              </td>
-              <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.vencimento_certificado_epi} (quantos dias falta para vencer)
-              </th>
-              <td className="px-4 py-4">
-                {item.fabricante_epi}
-              </td>
-              <td className="px-5 py-4 gap-4">
-                <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
+              <td className="flex justify-center px-5 py-4 gap-4">
+                <a className=" font-medium text-blue-400 hover:text-blue-800">
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
-              </td>
-              <td className="py-4 gap-4 text-right">
-                {/* <label
-                  className="relative flex items-center justify-center rounded-full cursor-pointer"
+                <label
+                  className="relative rounded-full cursor-pointer"
                 >
                   <input
                     type="checkbox"
                     checked={!item.ativo}
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    onChange={() => handleDesactivation(item.id_cargo, item.ativo)}
+                    // onChange={() => handleDesactivation(item.id_cargo, item.ativo)}
                   />
                   <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <svg
@@ -114,7 +88,7 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
                       ></path>
                     </svg>
                   </div>
-                </label> */}
+                </label>
               </td>
             </tr>
           ))}

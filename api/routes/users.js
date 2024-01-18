@@ -737,24 +737,13 @@ router.put("/riscos/:id_risco", (req, res) => {
 
 });
 
-//Delete row in table
-// router.delete("/contato/:id_contato", (req, res) => {
-//     const q = `DELETE FROM contato WHERE id = ?`;
-
-//     db.query(q, [req.params.id_contato], (err) => {
-//         console.error("Erro ao deletar contato na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Contato excluído com sucesso!`);
-// });
 
 
-
+//Medidas de Proteção
 //Tabela EPI's
 //Get table
-router.get("/medidas", (req, res) => {
-  const q = `SELECT * FROM medidas`;
+router.get("/medidas_epi", (req, res) => {
+  const q = `SELECT * FROM medidas_epi`;
 
   pool.getConnection((err, con) => {
     if (err) return next(err);
@@ -771,10 +760,10 @@ router.get("/medidas", (req, res) => {
 });
 
 //Add rows in table
-router.post("/medidas", (req, res) => {
+router.post("/medidas_epi", (req, res) => {
   const data = req.body;
 
-  const q = "INSERT INTO medidas SET ?"
+  const q = "INSERT INTO medidas_epi SET ?"
 
   pool.getConnection((err, con) => {
     if (err) return next(err);
@@ -793,68 +782,6 @@ router.post("/medidas", (req, res) => {
 
 });
 
-//Update row int table
-router.put("/medidas/:id_medida", (req, res) => {
-  const id_medida = req.params.id_medida; // Obtém o ID da empresa da URL
-  const {
-    nome_medida,
-    descricao_medida,
-    certificado_medida,
-    fator_reducao_medida,
-    vencimento_certificado_medida,
-    fabricante_medida
-  } = req.body;
-
-  const q = `
-    UPDATE medidas
-    SET nome_medida = ?,
-    descricao_medida = ?,
-    certificado_medida = ?,
-    fator_reducao_medida = ?,
-    vencimento_certificado_medida = ?,
-    fabricante_medida = ?
-    WHERE id_medida = ?
-    `;
-
-  const values = [
-    nome_medida,
-    descricao_medida,
-    certificado_medida,
-    fator_reducao_medida,
-    vencimento_certificado_medida,
-    fabricante_medida,
-    id_medida
-  ];
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, values, (err) => {
-      if (err) {
-        console.error("Erro ao atualizar Medida na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json("Medida atualizado com sucesso!");
-    });
-
-    con.release();
-  })
-
-});
-
-
-//Delete row in table
-// router.delete("/contato/:id_contato", (req, res) => {
-//     const q = `DELETE FROM contato WHERE id = ?`;
-
-//     db.query(q, [req.params.id_contato], (err) => {
-//         console.error("Erro ao deletar contato na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Contato excluído com sucesso!`);
-// });
 
 //Medidas Adminitrativas
 //Get Table
@@ -899,6 +826,47 @@ router.post("/medidas_adm", (req, res) => {
 });
 
 
+//Tabela EPC's
+//Get Table
+router.get("/medidas_epc", (req, res) => {
+  const q = `SELECT * FROM medidas_epc`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+//Add rows in table
+router.post("/medidas_epc", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO medidas_epc SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir Medida na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Medida cadastrado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
 
 
 
@@ -1305,7 +1273,7 @@ router.put("/processos_riscos/:id_processo_risco", (req, res) => {
 
 
 
-//Vinculando riscos aos processos
+//Vinculando medidas aos riscos
 //Get Table
 router.get("/riscos_medidas", (req, res) => {
   const q = `SELECT * FROM riscos_medidas`;
@@ -1384,6 +1352,7 @@ router.put("/riscos_medidas/:id_risco_medida", (req, res) => {
   })
 
 });
+
 
 
 

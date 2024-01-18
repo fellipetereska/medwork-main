@@ -69,19 +69,19 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
           {epis.map((item, i) => (
             <tr key={i} className={`border-b bg-white`}>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.id_epi}
+                {item.id_medida}
               </th>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.nome_epi}
+                {item.nome_medida}
               </th>
               <td className="px-4 py-4">
-                {item.certificado_epi}
+                {item.certificado_medida}
               </td>
               <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.vencimento_certificado_epi} (quantos dias falta para vencer)
+                {item.vencimento_certificado_medida} (quantos dias falta para vencer)
               </th>
               <td className="px-4 py-4">
-                {item.fabricante_epi}
+                {item.fabricante_medida}
               </td>
               <td className="px-5 py-4 gap-4">
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
