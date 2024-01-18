@@ -56,7 +56,6 @@ function App() {
           <Route path='/cadastro_usuario' element={<Usuario />} />
           <Route path='/cadastro_processo' element={<Processos />} />
           <Route path='/cadastro_risco' element={<Riscos />} />
-          <Route path='/cadastro_epi' element={<EPI />} />
           <Route path='/cadastro_medida' element={<Medidas />} />
           <Route path='cadastro_aparelhos' element={<Aparelhos />} />
           <Route path='*' element={<Navigate to='/' />} />

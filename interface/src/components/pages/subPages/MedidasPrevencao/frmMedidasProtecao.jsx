@@ -13,9 +13,9 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
   useEffect(() => {
     if (onEdit) {
       const user = ref.current;
-      const { descricao_medida } = user;
+      const { descricao_medida_adm } = user;
 
-      descricao_medida.value = onEdit.descricao_medida || "";
+      descricao_medida_adm.value = onEdit.descricao_medida_adm || "";
     }
   }, [onEdit]);
 
@@ -28,12 +28,12 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
     const user = ref.current;
 
     //Verificandose todos os campos foram preenchidos
-    if (!user.descricao_medida.value) {
+    if (!user.descricao_medida_adm.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
       const medidasData = {
-        descricao_medida: user.descricao_medida.value || null,
+        descricao_medida_adm: user.descricao_medida_adm.value || null,
       };
 
       const url = onEdit
@@ -63,7 +63,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
     }
 
     //Limpa os campos e reseta o estaodo de edição
-    user.descricao_medida.value = "";
+    user.descricao_medida_adm.value = "";
 
     //Atualiza os dados
     get();
@@ -73,7 +73,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
   const handleClear = () => {
     // Limpa todos os campos do formulário
     const user = ref.current;
-    user.descricao_medida.value = "";
+    user.descricao_medida_adm.value = "";
   };
 
 
@@ -88,8 +88,8 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
             <textarea
               className="resize-none appearence-none block w-full bg-gray-100 h-20 min-h-20 max-h-20 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
-              name="descricao_medida"
-              placeholder="Descreva a medida..."
+              name="descricao_medida_adm"
+              placeholder="Descreva a medida adminitrativa..."
             />
           </div>
           <div className="w-full px-3 pl-8 flex justify-end">

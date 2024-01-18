@@ -47,7 +47,7 @@ function MedidasProtecao() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = medidasProtecao.filter((mp) => mp.descricao_medida.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = medidasProtecao.filter((mp) => mp.descricao_medida_adm.toLowerCase().includes(searchTerm.toLowerCase()));
     setFiltered(filtered);
   }, [searchTerm, medidasProtecao]);
 

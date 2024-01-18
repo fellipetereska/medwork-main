@@ -59,11 +59,6 @@ function Cadastros() {
               <BotaoMedidasDeProtecao />
             </Link>
           </figure>
-          <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_epi">
-              <BotaoCadastroEpi />
-            </Link>
-          </figure>
         </div>
       </div>
     </>
