@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
-import { supabase } from '../../../../../services/api';
+import { connect, supabase } from '../../../../../services/api';
+import { json } from 'react-router-dom';
 
 const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
 
@@ -8,8 +9,16 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
   const [unidade, setUnidade] = useState(null);
 
   const getUnidade = async () => {
-    const { data } = await supabase.from("unidade").select();
-    setUnidade(data)
+
+    const response = await fetch(`${connect}/unidades`);
+
+    if(!response.ok) {
+      throw new Error(`Erro ao buscar unidades. Status: ${response.status}`)
+    }
+
+    const responseData = await response.json();
+    
+    setUnidade(responseData);
   }
 
   useEffect(() => {
