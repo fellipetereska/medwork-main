@@ -21,9 +21,10 @@ import Usuario from './components/pages/subPages/usuarios/CadastroUsuario';
 import Login from './components/pages/Login';
 import Processos from './components/pages/subPages/Processos/Processos';
 import Riscos from './components/pages/subPages/Riscos/Riscos';
-import EPI from './components/pages/subPages/Epi/Epi';
 import Medidas from './components/pages/subPages/CadastroMedidas'
 import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
+import ImportCsv from './components/pages/subPages/components/ImportCsv'
+import ImportXlsx from './components/pages/subPages/components/ImportXlsx';
 
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
@@ -57,7 +58,9 @@ function App() {
           <Route path='/cadastro_processo' element={<Processos />} />
           <Route path='/cadastro_risco' element={<Riscos />} />
           <Route path='/cadastro_medida' element={<Medidas />} />
-          <Route path='cadastro_aparelhos' element={<Aparelhos />} />
+          <Route path='/cadastro_aparelhos' element={<Aparelhos />} />
+          <Route path='/importcsv' element={<ImportCsv />} />
+          <Route path='/importxlsx' element={<ImportXlsx />} />
           <Route path='*' element={<Navigate to='/' />} />
         </Routes>
         {/* Rodapé */}

@@ -1,5 +1,4 @@
 import { BsBoxArrowDown } from 'react-icons/bs';
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import { toast } from 'react-toastify';
