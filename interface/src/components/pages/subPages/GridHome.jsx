@@ -1,27 +1,48 @@
 import { BsBoxArrowDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import { connect } from '../../../services/api';
+import { useState } from 'react';
 
 function GridHome({ empresas, contato }) {
 
-  const { selectCompany } = useAuth();
   const navigate = useNavigate();
-  const { empresa } = useAuth();
+  const [empresa, setEmpresa] = useState([])
 
   const findContactName = (fkContatoId) => {
     const contatos = contato.find((c) => c.id_contato === fkContatoId);
     return contatos ? contatos.nome_contato : 'N/A';
   };
 
-  const handleOpenCompany = async (id) => {
+  const handleOpenCompany = async (id, nameCompany) => {
+    const id_empresa = id;
+
+    if (!id_empresa) {
+      toast.warn("Erro ao selecionar empresa!");
+      throw new Error("Erro ao selecionar empresa!");
+    }
 
     try {
-      await selectCompany(id);
-      toast.success(`Empresa ${empresa.nome_empresa} Selecionada!`)
-      navigate('/cadastros')
+      const response = await fetch(`${connect}/selectCompany/${id_empresa}`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao selecionar empresa! Status: ${response.status}`);
+      }
+
+      const empresa = await response.json();
+      setEmpresa(empresa);
+      toast.success(`Empresa ${nameCompany} selecionada!`);
+
+      const selectedCompanyData = {
+        id_empresa: id_empresa,
+        nome_empresa: nameCompany
+      };
+      localStorage.removeItem('selectedCompanyData')
+      localStorage.setItem('selectedCompanyData', JSON.stringify(selectedCompanyData));
+      navigate('/cadastros');
+      window.location.reload();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -74,7 +95,9 @@ function GridHome({ empresas, contato }) {
               </th>
               <td className="py-4 flex justify-center">
                 <a className={`font-medium text-blue-600 hover:text-blue-800 ${item.ativo ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
-                  <BsBoxArrowDown onClick={() => item.ativo && handleOpenCompany(item.id_empresa)} />
+                  <BsBoxArrowDown
+                    onClick={() => item.ativo && handleOpenCompany(item.id_empresa, item.nome_empresa)}
+                  />
                 </a>
               </td>
             </tr>

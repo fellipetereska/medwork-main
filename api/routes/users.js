@@ -122,20 +122,6 @@ router.put("/empresas/activate/:id_empresa", (req, res) => {
 });
 
 
-// //Delete rou in table
-// router.delete("/empresa/:id_empresa", (req, res) => {
-//     const q = `DELETE FROM empresa WHERE id = ?`;
-
-//     db.query(q, [req.params.id_empresa], (err) => {
-//         console.error("Erro ao deletar contato na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Empresa excluída com sucesso!`);
-// });
-
-
-
 //Tabela Unidade
 //Get table
 router.get("/unidades", (req, res) => {
@@ -233,19 +219,6 @@ router.put("/unidades/:id_unidade", (req, res) => {
   })
 
 });
-
-//Delete row in table
-// router.delete("/unidade/:id_unidade", (req, res) => {
-//     const q = `DELETE FROM unidade WHERE id = ?`;
-
-//     db.query(q, [req.params.id_unidade], (err) => {
-//         console.error("Erro ao deletar unidade na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Unidade excluída com sucesso!`);
-// });
-
 
 
 //Tabela Setores
@@ -402,19 +375,6 @@ router.put("/cargos/:id_cargo", (req, res) => {
 
 });
 
-//Delete row in table
-// router.delete("/unidade/:id_unidade", (req, res) => {
-//     const q = `DELETE FROM unidade WHERE id = ?`;
-
-//     db.query(q, [req.params.id_unidade], (err) => {
-//         console.error("Erro ao deletar unidade na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Unidade excluída com sucesso!`);
-// });
-
-
 
 //Tabela Contato
 //Get table
@@ -496,19 +456,6 @@ router.put("/contatos/:id_contato", (req, res) => {
   })
 
 });
-
-//Delete row in table
-// router.delete("/contato/:id_contato", (req, res) => {
-//     const q = `DELETE FROM contato WHERE id = ?`;
-
-//     db.query(q, [req.params.id_contato], (err) => {
-//         console.error("Erro ao deletar contato na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Contato excluído com sucesso!`);
-// });
-
 
 
 //Tabela Processos
@@ -592,17 +539,6 @@ router.put("/processos/:id_processo", (req, res) => {
 
 });
 
-//Delete row in table
-// router.delete("/contato/:id_contato", (req, res) => {
-//     const q = `DELETE FROM contato WHERE id = ?`;
-
-//     db.query(q, [req.params.id_contato], (err) => {
-//         console.error("Erro ao deletar contato na tabela", err);
-//         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-//     });
-
-//     return res.status(200).json(`Contato excluído com sucesso!`);
-// });
 
 //Tabela Usuarios
 //Get table
@@ -826,49 +762,6 @@ router.post("/medidas_adm", (req, res) => {
 });
 
 
-//Tabela EPC's
-//Get Table
-router.get("/medidas_epc", (req, res) => {
-  const q = `SELECT * FROM medidas_epc`;
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, (err, data) => {
-      if (err) return res.status(500).json(err);
-
-      return res.status(200).json(data);
-    });
-
-    con.release();
-  })
-
-});
-
-//Add rows in table
-router.post("/medidas_epc", (req, res) => {
-  const data = req.body;
-
-  const q = "INSERT INTO medidas_epc SET ?"
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, data, (err, result) => {
-      if (err) {
-        console.error("Erro ao inserir Medida na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json(`Medida cadastrado com sucesso!`);
-    });
-
-    con.release();
-  })
-
-});
-
-
 
 
 //Gestão
@@ -934,19 +827,6 @@ router.put("/usuarios/:id_usuario", (req, res) => {
     return res.status(200).json("Usuário atualizado com sucesso!");
   });
 });
-
-//Delete row in table
-router.delete("/usuarios/:id_usuario", (req, res) => {
-  const q = `DELETE FROM usuarios WHERE id = ?`;
-
-  db.query(q, [req.params.id_usuario], (err) => {
-    console.error("Erro ao deletar usuário na tabela", err);
-    return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-  });
-
-  return res.status(200).json(`Usuário excluído com sucesso!`);
-});
-
 
 //Tabela Aparelhos
 //Get table
@@ -1062,13 +942,21 @@ router.post("/logout", async (req, res) => {
 })
 
 //Selecionar Empresa
-router.post('/selectCompany', async (req, res) => {
-  const { id_empresa } = req.body;
+// Adicione a seguinte rota para selecionar a empresa correspondente ao id
+router.get("/selectCompany/:id_empresa", (req, res) => {
+  const { id_empresa } = req.params;
 
-  try {
-    const query = 'SELECT * FROM empresa WHERE id_empresa = ?';
+  const q = 'SELECT * FROM empresas WHERE id_empresa = ?';
 
-    db.query(query, [id_empresa], async (err, results) => {
+  pool.getConnection((err, con) => {
+    if (err) {
+      console.error('Erro ao obter conexão do pool', err);
+      return res.status(500).json({ message: 'Erro interno do servidor' });
+    }
+
+    con.query(q, [id_empresa], (err, results) => {
+      con.release();
+
       if (err) {
         console.error('Erro ao selecionar Empresa', err);
         return res.status(500).json({ message: 'Erro interno do servidor' });
@@ -1077,16 +965,14 @@ router.post('/selectCompany', async (req, res) => {
       const company = results[0];
 
       if (company) {
-        res.status(200).json({ message: 'Autenticação bem-sucedida', company });
+        res.status(200).json({ message: 'Empresa encontrada com sucesso', company });
       } else {
-        res.status(401).json({ message: 'Selecione uma Empresa!' });
+        res.status(404).json({ message: 'Empresa não encontrada' });
       }
     });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Erro interno do servidor' });
-  }
+  });
 });
+
 
 
 //Validação do Token

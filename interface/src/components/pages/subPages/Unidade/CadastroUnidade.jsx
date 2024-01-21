@@ -19,22 +19,38 @@ function CadastroUnidade() {
   const [empresa, setEmpresa] = useState([]);
   const [companyName, setCompanyName] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
+  const [companyId, setCompanyId] = useState('');
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUnidade, setFilteredUnidades] = useState([]);
+
+  useEffect(() => {
+    // Função para recuperar o nome da empresa do localStorage
+    const selectedCompanyId = () => {
+      const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
+
+      if (selectedCompanyDataLocal) {
+        const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
+        setCompanyId(selectedCompanyData.id_empresa);
+      }
+    };
+
+    selectedCompanyId();
+  }, []);
 
   // Pegando os dados do banco
   const getUnidade = async () => {
     try {
       const response = await fetch(`${connect}/unidades`);
 
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error(`Erro ao buscar Unidades. Status ${response.status}`)
       }
 
       const data = await response.json();
-      setUnidade(data);
+      const filteredUnidades = data.filter((unidade) => unidade.fk_empresa_id === companyId);
+      setUnidade(filteredUnidades);
     } catch (error) {
       console.log("Erro ao buscar unidades!", error);
     }
@@ -44,7 +60,7 @@ function CadastroUnidade() {
     try {
       const response = await fetch(`${connect}/contatos`);
 
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error(`Erro ao buscar contato. Status ${response.status}`)
       }
 
@@ -59,7 +75,7 @@ function CadastroUnidade() {
     try {
       const response = await fetch(`${connect}/empresas`);
 
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error(`Erro ao buscar empresas. Status ${response.status}`)
       }
 
@@ -74,7 +90,7 @@ function CadastroUnidade() {
     getUnidade();
     getContato();
     getEmpresa();
-  }, []);
+  }, [companyId]);
 
   //Função para Editar
   const handleEdit = (selectUnidade) => {

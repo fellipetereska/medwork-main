@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import BotaoEmpresa from "./subPages/buttons/Cadastros/BotaoEmpresa";
@@ -7,10 +8,25 @@ import BotaoCargo from "./subPages/buttons/Cadastros/BotaoCargo";
 import BotaoContato from "./subPages/buttons/Cadastros/BotaoContato";
 import BotaoProcessos from './subPages/buttons/Cadastros/BotaoProcessos';
 import BotaoRiscos from './subPages/buttons/Cadastros/BotaoRiscos';
-import BotaoCadastroEpi from "./subPages/buttons/Cadastros/CadastroEpi";
 import BotaoMedidasDeProtecao from "./subPages/buttons/Cadastros/BotaoMedidasDeProtecao";
 
 function Cadastros() {
+
+  const [companyId, setCompanyId] = useState('')
+
+  useEffect(() => {
+    // Função para recuperar o nome da empresa do localStorage
+    const selectedCompanyName = () => {
+      const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
+
+      if (selectedCompanyDataLocal) {
+        const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
+        setCompanyId(selectedCompanyData.nome_empresa);
+      }
+    };
+
+    selectedCompanyName();
+  }, []);
 
   return (
     <>
@@ -21,21 +37,25 @@ function Cadastros() {
               <BotaoEmpresa />
             </Link>
           </figure>
-          <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_unidade">
-              <BotaoUnidade />
-            </Link>
-          </figure>
-          <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_setor">
-              <BotaoSetor />
-            </Link>
-          </figure>
-          <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_cargo">
-              <BotaoCargo />
-            </Link>
-          </figure>
+          {companyId ? (
+            <>
+              <figure className="flex flex-col justify-center">
+                <Link to="/cadastro_unidade">
+                  <BotaoUnidade />
+                </Link>
+              </figure>
+              <figure className="flex flex-col justify-center">
+                <Link to="/cadastro_setor">
+                  <BotaoSetor />
+                </Link>
+              </figure>
+              <figure className="flex flex-col justify-center">
+                <Link to="/cadastro_cargo">
+                  <BotaoCargo />
+                </Link>
+              </figure>
+            </>
+          ) : null}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_contato">
               <BotaoContato />
