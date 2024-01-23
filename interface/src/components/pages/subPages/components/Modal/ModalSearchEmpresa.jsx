@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SearchInput from '../SearchInput';
 
-const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
+const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect, companyId }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -12,6 +12,8 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
   const handleSearch = (term) => {
     setSearchTerm(term);
   }
+
+  const empresaAtiva = children.filter((i) => i.ativo)
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">

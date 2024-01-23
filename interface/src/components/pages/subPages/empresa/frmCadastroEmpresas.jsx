@@ -8,10 +8,10 @@ import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
 
-function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
+function CadastroEmpresa({ onEdit, setOnEdit, getEmpresas, contact, contatos }) {
 
   //Instanciando as Variáveis
-  const ref = useRef(null); // Referência do formulario
+  const ref = useRef(null);
   const [showModal, setShowModal] = useState(false); //Controlar o Modal
   const [contactId, setContactId] = useState(null); //Armazenar o Id do Contato recebido do Modal
   const [contactName, setContactName] = useState(null); //Armazenar o Nome do Contato Recebido do Modal
@@ -25,33 +25,32 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
       const user = ref.current;
       const { nome_empresa, razao_social, cnpj_empresa, inscricao_estadual_empresa, inscricao_municipal_empresa } = user;
 
-      nome_empresa.value = onEdit.nome_empresa || "";
-      razao_social.value = onEdit.razao_social || "";
-      setCnpj(onEdit.cnpj_empresa || "");
-      if (onEdit.inscricao_estadual_empresa === null || "") {
+      nome_empresa.value = onEdit?.nome_empresa || "";
+      razao_social.value = onEdit?.razao_social || "";
+      setCnpj(onEdit?.cnpj_empresa || "");
+      if (onEdit?.inscricao_estadual_empresa == 0 || "") {
         setCheckedEstadual(true);
       } else {
-        inscricao_estadual_empresa.value = onEdit.inscricao_estadual_empresa;
+        inscricao_estadual_empresa.value = onEdit?.inscricao_estadual_empresa;
         setCheckedEstadual(false);
       }
-      if (onEdit.inscricao_municipal_empresa === null || "") {
+      if (onEdit?.inscricao_municipal_empresa == 0 || "") {
         setCheckedMunicipal(true);
       } else {
-        inscricao_municipal_empresa.value = onEdit.inscricao_municipal_empresa;
+        inscricao_municipal_empresa.value = onEdit?.inscricao_municipal_empresa;
         setCheckedMunicipal(false);
       }
 
-      if (contact && onEdit.fk_contato_id) {
+      if (contact && onEdit?.fk_contato_id) {
         setContactName(contact);
-        setContactId(onEdit.fk_contato_id);
+        setContactId(onEdit?.fk_contato_id);
       } else {
         setContactName(null);
         setContactId(null);
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [onEdit, contact]);
-
-
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -71,21 +70,22 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
         nome_empresa: user.nome_empresa.value || null,
         razao_social: user.razao_social.value || null,
         cnpj_empresa: user.cnpj_empresa.value || null,
-        inscricao_estadual_empresa: user.inscricao_estadual_empresa.value || null,
-        inscricao_municipal_empresa: user.inscricao_municipal_empresa.value || null,
+        inscricao_estadual_empresa: checkedEstadual ? "0" : user.inscricao_estadual_empresa.value || null,
+        inscricao_municipal_empresa: checkedMunicipal ? "0" : user.inscricao_municipal_empresa.value || null,
         fk_contato_id: contactId || null,
+        ativo: 1,
       };
 
       const url = onEdit
-      ? `${connect}/empresas/${onEdit.id_empresa}`
-      : `${connect}/empresas`;
+        ? `${connect}/empresas/${onEdit.id_empresa}`
+        : `${connect}/empresas`;
 
       const method = onEdit ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type' : 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(empresaData)
       });
@@ -114,9 +114,10 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     setContactName(null);
     setCheckedEstadual(null);
     setCheckedMunicipal(null);
+    setOnEdit(null);
 
     //Atualiza os dados
-    getEmpresa();
+    getEmpresas();
   };
 
   //Função para limpar o formulário
@@ -132,6 +133,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     setContactName(null);
     setCheckedEstadual(null);
     setCheckedMunicipal(null);
+    setOnEdit(null);
   };
 
   //Funções do Modal
@@ -146,7 +148,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     setContactId(contactId);
     setContactName(contactName);
   }, [closeModal]);
-
 
   //Funções CheckBox
   const checkboxEstadual = () => {
@@ -167,20 +168,29 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     setContactName(null);
   };
 
-
   //Funções para formatação do CNPJ
   const handleFormatCnpj = (value) => {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
   }
+
+  const handlePasteCnpj = (event) => {
+    const inputCnpj = event.clipboardData.getData('text/plain');
+    const cnpjFormatado = handleFormatCnpj(inputCnpj);
+    setCnpj(cnpjFormatado);
+  };
 
   const handleCnpjChange = (e) => {
     const inputValue = e.target.value;
     const numericValue = inputValue.replace(/\D/g, '');
     const truncatedValue = numericValue.slice(0, 14);
     const formattedCnpj = handleFormatCnpj(truncatedValue);
-    setCnpj(formattedCnpj);
-  };
 
+    if (formattedCnpj === inputValue) {
+      setCnpj(inputValue);
+    } else {
+      setCnpj(formattedCnpj);
+    }
+  };
 
   return (
     <div className="flex justify-center mt-10">
@@ -218,17 +228,17 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               name="cnpj_empresa"
               value={cnpj}
               onChange={handleCnpjChange}
+              onPaste={handlePasteCnpj}
               maxLength={14}
               placeholder="00.000.000/0000-00"
             />
           </div>
-          {/* Colocar um select com a opção de isento */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-inscricao_estadual_empresa">
               Inscrição Estadual:
             </label>
             <input
-              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedEstadual ? 'bg-gray-300' : 'bg-gray-100'}`}
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedEstadual ? 'opacity-50' : 'bg-gray-100'}`}
               type="number"
               name="inscricao_estadual_empresa"
               placeholder="Inscrição Estadual"
@@ -237,20 +247,20 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
             <div className="flex items-center gap-2 mt-1 px-1">
               <input
                 type="checkbox"
+                id="estadualCheckbox"
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 checked={checkedEstadual}
                 onChange={checkboxEstadual}
               />
-              <label className="text-sm font-ligth text-gray-500">Isento</label>
+              <label className="text-sm font-ligth text-gray-500" htmlFor="estadualCheckbox">Isento</label>
             </div>
           </div>
-          {/* Colocar um checkbox com a opção de isento */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-inscricao_municipal_empresa">
               Inscrição Municipal:
             </label>
             <input
-              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'bg-gray-300' : 'bg-gray-100'}`}
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'opacity-50' : 'bg-gray-100'}`}
               type="number"
               name="inscricao_municipal_empresa"
               placeholder="Inscrição Municipal"
@@ -259,11 +269,12 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
             <div className="flex items-center gap-2 mt-1 px-1">
               <input
                 type="checkbox"
+                id="municipalCheckbox"
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 checked={checkedMunicipal}
                 onChange={checkboxMunicipal}
               />
-              <label className="text-sm font-ligth text-gray-500">Isento</label>
+              <label className="text-sm font-ligth text-gray-500" htmlFor="municipalCheckbox">Isento</label>
             </div>
           </div>
           <div className="w-full md:w-1/3 px-3">

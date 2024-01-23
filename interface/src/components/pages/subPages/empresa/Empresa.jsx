@@ -1,8 +1,7 @@
 //Importando Ferramentas
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { connect } from "../../../../services/api"; //Conexão com o banco
+import useAuth from '../../../../hooks/useAuth';
 
 //Importando componentes
 import CadastroEmpresa from "./frmCadastroEmpresas";
@@ -12,9 +11,15 @@ import Back from '../../../layout/Back'
 
 function Empresa() {
 
+  const {
+    getEmpresas, 
+    empresas,
+    setEmpresas,
+    getContatos,
+    contatos
+   } = useAuth(null);
+
   // Instanciando e Definindo como vazio
-  const [empresa, setEmpresa] = useState([]);
-  const [contato, setContato] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
   const [contactName, setContactName] = useState(null)
 
@@ -22,47 +27,16 @@ function Empresa() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredEmpresas, setFilteredEmpresas] = useState([]);
 
-  // Pegando os dados da tabela Empresa
-  const getEmpresa = async () => {
-    try {
-      const response = await fetch(`${connect}/empresas`);
-
-      if(!response.ok){
-        throw new Error(`Erro ao buscar Empresa. Status: ${response.status}`)
-      }
-
-      const data = await response.json();
-      setEmpresa(data)
-    } catch (error) {
-      console.log("Erro ao buscar empresas: ", error);
-    }
-  };
-
-  const getContato = async () => {
-    try {
-      const response = await fetch(`${connect}/contatos`);
-
-      if(!response.ok){
-        throw new Error(`Erro ao buscar contatos. Status: ${response.status}`)
-      }
-
-      const data = await response.json();
-      setContato(data)
-    } catch (error) {
-      console.log("Erro ao buscar contatos: ", error);
-    }
-  };
-
   useEffect(() => {
-    getEmpresa();
-    getContato();
+    getEmpresas();
+    getContatos();
   }, []);
 
   const handleEdit = (selectedEmpresa) => {
     setOnEdit(selectedEmpresa);
 
     if (selectedEmpresa.fk_contato_id) {
-      const contactInfo = contato.find((c) => c.id_contato === selectedEmpresa.fk_contato_id)
+      const contactInfo = contatos.find((c) => c.id_contato === selectedEmpresa.fk_contato_id)
       if (contactInfo) {
         setContactName(contactInfo.nome_contato)
       }
@@ -71,9 +45,9 @@ function Empresa() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = empresa.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = empresas.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredEmpresas(filtered);
-  }, [searchTerm, empresa]);
+  }, [searchTerm, empresas]);
 
 
   const handleSearch = (term) => {
@@ -96,13 +70,13 @@ function Empresa() {
       </div>
 
       {/* Formulário de cadastro */}
-      <CadastroEmpresa 
-        onEdit={onEdit} 
-        setOnEdit={setOnEdit} 
-        getEmpresa={getEmpresa}
+      <CadastroEmpresa
+        onEdit={onEdit}
+        setOnEdit={setOnEdit}
+        getEmpresa={getEmpresas}
         contact={contactName}
-        contatos={contato}
-        />
+        contatos={contatos}
+      />
 
       {/* Barra de pesquisa */}
       <div className="flex justify-center w-full">
@@ -114,9 +88,10 @@ function Empresa() {
       {/* Tabela Empresa */}
       <GridCadastroEmpresa
         empresa={filteredEmpresas}
-        setEmpresa={setEmpresa}
+        setEmpresa={setEmpresas}
         setOnEdit={handleEdit}
-        contato={contato}
+        getEmpresa={getEmpresas}
+        contato={contatos}
       />
     </div>
   )

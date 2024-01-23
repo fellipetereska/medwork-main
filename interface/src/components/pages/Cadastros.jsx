@@ -33,6 +33,11 @@ function Cadastros() {
       <div className="mt-16 px-12 mb-12">
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
           <figure className="flex flex-col justify-center">
+            <Link to="/cadastro_contato">
+              <BotaoContato />
+            </Link>
+          </figure>
+          <figure className="flex flex-col justify-center">
             <Link to="/cadastro_empresa">
               <BotaoEmpresa />
             </Link>
@@ -56,11 +61,6 @@ function Cadastros() {
               </figure>
             </>
           ) : null}
-          <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_contato">
-              <BotaoContato />
-            </Link>
-          </figure>
         </div>
         <div className="border-b border-gray-200 mt-8 mb-8"></div>
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">

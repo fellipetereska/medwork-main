@@ -172,6 +172,8 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cnpj_unidade,
     cep_unidade,
     endereco_unidade,
+    numero_unidade,
+    cidade_unidade,
     bairro_unidade,
     uf_unidade,
     fk_contato_id,
@@ -184,7 +186,9 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cnpj_unidade = ?,
     cep_unidade = ?,
     endereco_unidade = ?,
+    numero_unidade = ?,
     bairro_unidade = ?,
+    cidade_unidade = ?,
     uf_unidade = ?,
     fk_contato_id = ?,
     fk_empresa_id = ?
@@ -196,11 +200,13 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cnpj_unidade,
     cep_unidade,
     endereco_unidade,
+    numero_unidade,
+    cidade_unidade,
     bairro_unidade,
     uf_unidade,
-    id_unidade,
     fk_contato_id,
     fk_empresa_id,
+    id_unidade,
   ];
 
   pool.getConnection((err, con) => {
@@ -212,12 +218,36 @@ router.put("/unidades/:id_unidade", (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
+      console.log(`Unidade atualizada com sucesso! ${values}`)
       return res.status(200).json("Unidade atualizada com sucesso!");
     });
 
     con.release();
   })
 
+});
+
+router.put("/unidades/activate/:id_unidade", (req, res) => {
+  const id_unidade = req.params.id_unidade;
+  const { ativo } = req.body;
+
+  const q = 'UPDATE unidades SET ativo = ? WHERE id_unidade = ?';
+  const values = [ativo, id_unidade];
+
+  pool.getConnection((err, con) => {
+    if (err) return res.status(500).json({ error: 'Erro ao obter conexão.' });
+
+    con.query(q, values, (err) => {
+      con.release();
+
+      if (err) {
+        console.error('Erro ao atualizar status da unidade:', err);
+        return res.status(500).json({ error: 'Erro ao atualizar status da unidade.' });
+      }
+
+      res.status(200).json({ message: 'Status da unidade atualizado com sucesso.' });
+    });
+  });
 });
 
 

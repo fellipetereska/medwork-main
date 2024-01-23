@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom'
 import { connect } from "../../../../services/api";
+import useAuth from '../../../../hooks/useAuth'
 
 import FrmCadastroCargo from "./frmCadastroCargo";
 import GridCadastroCargo from "./gridCadastroCargo";
@@ -10,9 +11,9 @@ import Back from '../../../layout/Back'
 
 function CadastroCargo() {
 
+  const {cargos, setCargos, getCargos, getSetores, setores, companyId, handleSetCompanyId} = useAuth(null)
+
   // Instanciando e Definindo como vazio
-  const [cargo, setCargo] = useState([]);
-  const [setor, setSetor] = useState([]);
   const [setorNome, setSetorNome] = useState(null);
   const [onEdit, setOnEdit] = useState(null);
 
@@ -20,56 +21,29 @@ function CadastroCargo() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCargo, setFilteredCargo] = useState([]);
 
-  // Pegando os dados do banco
-  const getCargo = async () => {
-    try {
-      const response = await fetch(`${connect}/cargos`);
-
-      if(!response.ok) {
-        throw new Error(`Erro ao buscar cargos. Status: ${response.status}`)
-      }
-
-      const data = await response.json();
-      setCargo(data);
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
-  const getSetor = async () => {
-    try {
-      const response = await fetch(`${connect}/setores`);
-
-      if(!response.ok) {
-        throw new Error(`Erro ao buscar setores. Status: ${response.status}`)
-      }
-
-      const data = await response.json();
-      setSetor(data);
-    } catch (error) {
-      toast.error("Erro ao buscar setores", error);
-    }
-  };
+  useEffect(() => {
+    handleSetCompanyId();
+  },[])
 
   useEffect(() => {
-    getCargo();
-    getSetor();
-  }, []);
+    getCargos();
+    getSetores();
+  }, [companyId]);
 
   const findSetor = (fkSetorId) => {
-    if(!setor) {
+    if(!setores) {
       return 'N/A';
     }
 
-    const setores = setor.find((c) => c.id_setor === fkSetorId);
-    return setores ? setores.nome_setor : 'N/A';
+    const setor = setores.find((c) => c.id_setor === fkSetorId);
+    return setor ? setor.nome_setor : 'N/A';
   }
 
   const handleEdit = (selectedCargo) => {
     setOnEdit(selectedCargo)
 
     if (selectedCargo.fk_setor_id) {
-      const setorInfo = setor.find((c) => c.id_setor === selectedCargo.fk_setor_id)
+      const setorInfo = setores.find((c) => c.id_setor === selectedCargo.fk_setor_id)
       if (setorInfo) {
         setSetorNome(setorInfo.nome_setor);
       }
@@ -78,9 +52,9 @@ function CadastroCargo() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = cargo.filter((carg) => carg.nome_cargo.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = cargos.filter((carg) => carg.nome_cargo.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredCargo(filtered);
-  }, [searchTerm, cargo]);
+  }, [searchTerm, cargos]);
 
   const handleSearch = (term) => {
     // Atualizar o estado do termo de pesquisa com o valor fornecido
@@ -103,9 +77,9 @@ function CadastroCargo() {
       <FrmCadastroCargo
         onEdit={onEdit}
         setOnEdit={setOnEdit}
-        getCargo={getCargo}
+        getCargo={getCargos}
         set={setorNome}
-        setor={setor}
+        setor={setores}
       />
 
       {/* Barra de pesquisa */}
@@ -118,10 +92,10 @@ function CadastroCargo() {
       {/* Tabela Empresa */}
       <GridCadastroCargo
         cargos={filteredCargo}
-        setCargo={setCargo}
+        setCargo={setCargos}
         setOnEdit={handleEdit}
         find={findSetor}
-        setor={setor}
+        setor={setores}
       />
     </div>
   )

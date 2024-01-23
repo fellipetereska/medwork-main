@@ -8,7 +8,7 @@ import FrmCadastroContato from "./frmCadastroContato";
 import GridCadastroContato from './gridCadastroContato'
 import SearchInput from '../components/SearchInput'
 
-function CadastroSetor() {
+function CadastroContato() {
 
   // Instanciando e Definindo como vazio
   const [contato, setContato] = useState([]);
@@ -90,4 +90,4 @@ function CadastroSetor() {
   )
 }
 
-export default CadastroSetor;
+export default CadastroContato;

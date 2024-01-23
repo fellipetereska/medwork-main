@@ -10,10 +10,11 @@ import { IoClose } from "react-icons/io5";
 function Navbar() {
 
   //Instanciando as variaveis
-  const { user, signout } = useAuth();
+  const { user, signout, selectedCompany, handleClearLocalStorage } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const [nameCompany, setNameCompany] = useState('')
+
+  const empresa = selectedCompany[0]?.nome_empresa
 
   //Criando as Funções
   const handleLogoutClick = () => {
@@ -30,23 +31,9 @@ function Navbar() {
     setIsMenuOpen(false); // Fechar o menu ao clicar em um item de menu
   };
 
-  useEffect(() => {
-    // Função para recuperar o nome da empresa do localStorage
-    const selectedCompanyName = () => {
-      const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
-
-      if (selectedCompanyDataLocal) {
-        const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
-        setNameCompany(selectedCompanyData.nome_empresa);
-      }
-    };
-
-    selectedCompanyName();
-  }, []);
-
-  const handleClearLocalStorage = () => {
-    localStorage.removeItem('selectedCompanyData')
-    navigate('/cadastros')
+  const clearLocalSotrage = () => {
+    handleClearLocalStorage();
+    navigate("/home");
     window.location.reload();
   }
 
@@ -79,13 +66,13 @@ function Navbar() {
               ) : null}
 
               {/* Informa a empresa selecioanda */}
-              {nameCompany ? (
+              {selectedCompany && empresa ? (
                 <div className='flex items-center gap-2'>
                   <p className='font- text-sm text-zinc-600'>Empresa:</p>
                   <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
-                    <p className='text-sky-700 font-bold text-base'>{nameCompany}</p>
+                    <p className='text-sky-700 font-bold text-base'>{empresa}</p>
                   </div>
-                  <button onClick={handleClearLocalStorage}>
+                  <button onClick={clearLocalSotrage}>
                     <IoClose />
                   </button>
                 </div>

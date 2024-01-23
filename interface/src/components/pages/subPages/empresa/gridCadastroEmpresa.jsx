@@ -3,7 +3,7 @@ import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { toast } from 'react-toastify';
 import { connect } from '../../../../services/api'; //Conexão com o banco de dados
 
-function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato }) {
+function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato, getEmpresa }) {
 
   const handleEditClick = (empresa) => () => {
     handleEdit(empresa);
@@ -43,6 +43,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato }) {
         item.id_empresa === id ? { ...item, ativo: !ativo } : item
       );
       setEmpresa(novaEmpresa);
+      getEmpresa();
       toast.info(`Empresa ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
     } catch (error) {
       console.error('Erro ao atualizar status da empresa:', error);
@@ -74,9 +75,6 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato }) {
             <th scope="col" className="px-4 py-3 text-center">
               Ações
             </th>
-            <th scope="col" className="px-4 py-3 text-center">
-              Inativo?
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -100,12 +98,10 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato }) {
               <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {findContato(item.fk_contato_id)}
               </th>
-              <td className="py-4 gap-4">
+              <td className="py-4 gap-4 flex justify-center items-center">
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
                   <BsFillPencilFill onClick={handleEditClick(item)} />
                 </a>
-              </td>
-              <td className="py-4 gap-4 text-right">
                 <label
                   className="relative flex items-center justify-center rounded-full cursor-pointer"
                 >

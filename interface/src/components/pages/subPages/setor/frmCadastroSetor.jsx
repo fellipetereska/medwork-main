@@ -54,6 +54,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
         fk_unidade_id: unidadeId || null,
         observacao_setor: user.observacao_setor.value || null,
         ambiente_setor: user.ambiente_setor.value || null,
+        ativo: 1,
       };
 
       const url = onEdit

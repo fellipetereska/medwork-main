@@ -2,19 +2,18 @@ import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
-import ModalSearchUnidadeContato from '../components/Modal/ModalSearchContato'
-import ModalSearchUnidadeEmpresa from '../components/Modal/ModalSearchEmpresa'
+import ModalSearchContato from '../components/Modal/ModalSearchContato'
+import ModalSearchEmpresa from '../components/Modal/ModalSearchEmpresa'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
-function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, contato, empresa }) {
+function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, contato, empresa, companyId }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
 
   const [showModalContato, setShowModalContato] = useState(false); //Controlar o Modal Contato
   const [showModalEmpresa, setShowModalEmpresa] = useState(false); //Controlar o Modal Empresa
-  const [empresaId, setEmpresaId] = useState(null);
   const [nomeEmpresa, setNomeEmpresa] = useState(null);
   const [contatoId, setContatoId] = useState(null);
   const [nomeContato, setNomeContato] = useState(null);
@@ -49,14 +48,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
         setNomeContato(null)
         setContatoId(null);
       }
-
-      if (company && onEdit.fk_empresa_id) {
-        setNomeEmpresa(company);
-        setEmpresaId(onEdit.fk_empresa_id);
-      } else {
-        setNomeEmpresa(null);
-        setEmpresaId(null);
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [onEdit, contact, company, user]);
 
@@ -79,23 +71,24 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
         cep_unidade: user.cep_unidade.value || null,
         endereco_unidade: user.endereco_unidade.value || null,
         numero_unidade: user.numero_unidade.value || null,
-        bairro_unidade: user.bairro_unidade.value || null,
         cidade_unidade: user.cidade_unidade.value || null,
+        bairro_unidade: user.bairro_unidade.value || null,
         uf_unidade: user.uf_unidade.value || null,
         fk_contato_id: contatoId || null,
-        fk_empresa_id: empresaId || null
+        fk_empresa_id: companyId || null,
+        ativo: 1,
       };
 
       const url = onEdit
-      ? `${connect}/unidades/${onEdit.id_unidade}`
-      : `${connect}/unidades`
+        ? `${connect}/unidades/${onEdit.id_unidade}`
+        : `${connect}/unidades`
 
       const method = onEdit ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type' : 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(unidadesData),
       });
@@ -123,11 +116,11 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
     setOnEdit(null);
     setContatoId(null);
     setNomeContato(null);
-    setEmpresaId(null);
     setNomeEmpresa(null);
+    setOnEdit(null);
 
     //Atualiza os dados
-    getUnidade();
+    getUnidades();
   }
 
   //Função para limpar os campos
@@ -143,8 +136,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
     setCep("");
     setContatoId(null);
     setNomeContato(null);
-    setEmpresaId(null);
     setNomeEmpresa(null);
+    setOnEdit(null);
   };
 
   //Funções do Modal
@@ -162,68 +155,98 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
     setNomeContato(contactName);
   };
 
-  // Função para atualizar o Id Empresa
-  const handleEmpresaSelect = (empresaId, empresaName) => {
-    closeModalEmpresa();
-    setEmpresaId(empresaId);
-    setNomeEmpresa(empresaName);
-  };
-
   //Função para limpar o campo Contato
   const handleClearContato = () => {
     setContatoId(null);
     setNomeContato(null);
   };
 
-  //Função para limpar o campo Contato
-  const handleClearEmpresa = () => {
-    setEmpresaId(null);
-    setNomeEmpresa(null);
-  };
-
-  //Formatando o CNPJ
+  //Funções para formatação do CNPJ
   const handleFormatCnpj = (value) => {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
   }
+
+  const handlePasteCnpj = (event) => {
+    const inputCnpj = event.clipboardData.getData('text/plain');
+    const cnpjFormatado = handleFormatCnpj(inputCnpj);
+    setCnpj(cnpjFormatado);
+  };
 
   const handleCnpjChange = (e) => {
     const inputValue = e.target.value;
     const numericValue = inputValue.replace(/\D/g, '');
     const truncatedValue = numericValue.slice(0, 14);
     const formattedCnpj = handleFormatCnpj(truncatedValue);
-    setCnpj(formattedCnpj);
+
+    if (formattedCnpj === inputValue) {
+      setCnpj(inputValue);
+    } else {
+      setCnpj(formattedCnpj);
+    }
   };
 
   //Formatando o CEP
   const handleFormatCep = (value) => {
     return value.replace(/\D/g, '').replace(/^(\d{5})(\d{3})$/, '$1-$2');
-  }
+  };
+
+  const obterInformacoesCep = async (cep) => {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      // Verifica se há um erro na resposta
+      if (data.erro) {
+        console.error("Erro ao obter informações do CEP");
+        return null;
+      }
+
+      return {
+        estado: data.uf,
+        cidade: data.localidade,
+        bairro: data.bairro,
+        logradouro: data.logradouro
+      };
+    } catch (error) {
+      console.error("Erro ao obter informações do CEP:", error);
+      return null;
+    }
+  };
 
   const handleCepChange = async (e) => {
     const inputValue = e.target.value;
     const numericValue = inputValue.replace(/\D/g, '');
-    const truncatedValue = numericValue.slice(0, 9);
+    const truncatedValue = numericValue.slice(0, 8); // Ajusta para 8 caracteres
     const formattedCep = handleFormatCep(truncatedValue);
     setCep(formattedCep);
 
     if (truncatedValue.length === 8) {
-      try {
-        const response = await fetch(`https://viacep.com.br/ws/${truncatedValue}/json/`);
-        const data = await response.json();
+      const cepInfo = await obterInformacoesCep(truncatedValue);
 
-        // Verifica se há um erro na resposta
-        if (data.erro) {
-          console.error("Erro ao obter informações do CEP");
-          return;
-        }
+      if (cepInfo) {
+        setEstado(cepInfo.estado);
+        setCidade(cepInfo.cidade);
+        setBairro(cepInfo.bairro);
+        setLogradouro(cepInfo.logradouro);
+      }
+    }
+  };
 
-        // Atualiza o estado com a UF do CEP
-        setEstado(data.uf);
-        setCidade(data.localidade);
-        setBairro(data.bairro);
-        setLogradouro(data.logradouro);
-      } catch (error) {
-        console.error("Erro ao obter informações do CEP:", error);
+  const handlePasteCep = async (event) => {
+    const inputCep = event.clipboardData.getData('text/plain');
+    const numericCep = inputCep.replace(/\D/g, '');
+    const truncatedCep = numericCep.slice(0, 8); // Ajusta para 8 caracteres
+    const formattedCep = handleFormatCep(truncatedCep);
+    setCep(formattedCep);
+
+    if (truncatedCep.length === 8) {
+      const cepInfo = await obterInformacoesCep(truncatedCep);
+
+      if (cepInfo) {
+        setEstado(cepInfo.estado);
+        setCidade(cepInfo.cidade);
+        setBairro(cepInfo.bairro);
+        setLogradouro(cepInfo.logradouro);
       }
     }
   };
@@ -247,9 +270,6 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
     const numericValue = inputValue.replace(/\D/g, '');
     setNumero(numericValue)
   }
-
-
-
 
   return (
     <div className="flex justify-center mt-10">
@@ -276,6 +296,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
               name="cnpj_unidade"
               value={cnpj}
               onChange={handleCnpjChange}
+              onPaste={handlePasteCnpj}
               maxLength={14}
               placeholder="00.000.000/0000-00"
             />
@@ -290,6 +311,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
               name="cep_unidade"
               value={cep}
               onChange={handleCepChange}
+              onPaste={handlePasteCep}
               maxLength={9}
               placeholder="00000-000"
             />
@@ -398,7 +420,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
                 <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
               </button>
             </div>
-            <ModalSearchUnidadeContato
+            <ModalSearchContato
               isOpen={showModalContato}
               onCancel={closeModalContato}
               children={contato}
@@ -406,54 +428,6 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidade, contact, company, c
             />
           </div>
 
-
-          <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-              Empresa:
-            </label>
-            <div className="flex items-center w-full">
-              {nomeEmpresa ? (
-                <>
-                  <button
-                    className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModalEmpresa}
-                  >
-                    <p className="px-2 text-sm font-sm text-gray-600">
-                      Empresa:
-                    </p>
-                    <p className="font-bold">
-                      {nomeEmpresa}
-                    </p>
-                  </button>
-                  <button className="ml-4" onClick={handleClearEmpresa}>
-                    <img src={icon_sair} alt="" className="h-9" />
-                  </button>
-                </>
-              ) : (
-                <div
-                  className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                  onClick={openModalEmpresa}
-                >
-                  <p className="px-2 text-sm font-medium">
-                    Nenhuma Empresa Selecionado
-                  </p>
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={openModalEmpresa}
-                className={`flex cursor-pointer ml-4`}
-              >
-                <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-              </button>
-            </div>
-            <ModalSearchUnidadeEmpresa
-              isOpen={showModalEmpresa}
-              onCancel={closeModalEmpresa}
-              children={empresa}
-              onContactSelect={handleEmpresaSelect}
-            />
-          </div>
           <div className="w-full px-3 pl-8 flex justify-end">
             <div>
               <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">

@@ -3,7 +3,7 @@ import { connect } from '../../../../services/api'; //Conexão com o banco de da
 
 import { BsFillPencilFill } from 'react-icons/bs';
 
-function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa }) {
+function GridCadastroUnidade({ unidade, setUnidades, getUnidades, setOnEdit, contato, empresa }) {
 
   //Função para editar os campos
   const handleEdit = (unidade) => {
@@ -26,32 +26,31 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa 
     return company ? company.nome_empresa : 'N/A';
   };
 
-  // //Função para inativar uma empresa
-  // const handleDesactivation = async (id, ativo) => {
-  //   try {
-  //     const novaUnidade = unidade.map(item =>
-  //       item.id_unidade === id ? { ...item, ativo: !ativo } : item
-  //     );
-  //     setUnidade(novaUnidade);
+  const handleDesactivation = async (id, ativo) => {
+    try {
+      const response = await fetch(`${connect}/unidades/activate/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ativo: ativo === 1 ? 0 : 1 }),
+      });
 
-  //     const { error } = await supabase
-  //       .from("unidade")
-  //       .upsert([{ id_unidade: id, ativo: !ativo }]);
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar status da unidade.');
+      }
 
-  //     if (error) {
-  //       setUnidade(unidade.map(item =>
-  //         item.id_unidade === id ? { ...item, ativo } : item
-  //       ));
-  //       throw new Error(error.message);
-  //     }
-
-  //     toast.info(`Unidade ${!ativo ? 'ativada' : 'inativada'} com sucesso!`)
-
-  //   } catch (error) {
-  //     console.log("Erro ao atualizar status da unidade", error);
-  //     toast.error("Erro ao atualizar status da unidade, verifique o console");
-  //   }
-  // };
+      const novaUnidade = unidade.map(item =>
+        item.id_unidade === id ? { ...item, ativo: !ativo } : item
+      );
+      setUnidades(novaUnidade);
+      getUnidades();
+      toast.info(`Unidade ${!ativo ? 'ativada' : 'inativada'} com sucesso!`);
+    } catch (error) {
+      console.error('Erro ao atualizar status da unidade:', error);
+      toast.error('Erro ao atualizar status da unidade, verifique o console!');
+    }
+  };
 
 
   return (
@@ -80,9 +79,6 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa 
             <th scope="col" className="px-4 py-3 text-center">
               Ações
             </th>
-            <th scope="col" className="px-4 py-3 text-center">
-              Inativa?
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -101,7 +97,7 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa 
                 {item.cnpj_unidade}
               </td>
               <td className="px-4 py-4">
-                {item.endereco_unidade}
+                  {item.endereco_unidade}, {item.numero_unidade} - {item.bairro_unidade} - {item.cidade_unidade}/{item.uf_unidade}
               </td>
               <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {findContactName(item.fk_contato_id)}
@@ -109,12 +105,10 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa 
               <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {findEmpresaName(item.fk_empresa_id)}
               </th>
-              <td className="py-4 gap-4">
-                <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
-                  <BsFillPencilFill onClick={() => handleEdit(item)} />
+              <td className="py-4 gap-4 flex justify-center items-center">
+                <a className={`font-medium text-blue-400 hover:text-blue-800 ${item.ativo ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+                  <BsFillPencilFill onClick={() => item.ativo ? handleEdit(item) : toast.info("Unidade desativada, para editar é necessário ativar a unidade antes!")} />
                 </a>
-              </td>
-              <td className="py-4 gap-4 text-right">
                 <label
                   className="relative flex items-center justify-center rounded-full cursor-pointer"
                 >
@@ -122,7 +116,7 @@ function GridCadastroUnidade({ unidade, setUnidade, setOnEdit, contato, empresa 
                     type="checkbox"
                     checked={!item.ativo}
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    // onChange={() => handleDesactivation(item.id_unidade, item.ativo)}
+                    onChange={() => handleDesactivation(item.id_unidade, item.ativo)}
                   />
                   <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <svg

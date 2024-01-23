@@ -12,7 +12,7 @@ function SearchInput({ onSearch, placeholder }) {
         <input
           type="text"
           id="default-search"
-          className="w-full p-4 ps-10 text-sm text-gray-900 rounded-full bg-gray-50"
+          className="w-full p-4 ps-10 text-sm text-gray-900 rounded-full bg-gray-100 shadow-sm"
           placeholder={placeholder}
           onChange={handleInputChange}
           required

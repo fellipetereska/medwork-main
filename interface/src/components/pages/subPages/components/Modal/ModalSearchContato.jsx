@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import SearchInput from '../SearchInput';
 
+import ContatoModal from '../../contato/ContatoModal';
+
 const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [showModal, setShowModal] = useState(false)
 
   if (!isOpen) {
     return null;
@@ -13,10 +16,13 @@ const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => 
     setSearchTerm(term);
   }
 
+  const openModal = () => setShowModal(!showModal)
+  const closeModal = () => setShowModal(false)
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal-overlay absolute inset-0 backdrop-blur-[1px] bg-black bg-opacity-10" onClick={onCancel}></div>
-      <div className="modal-container max-w-lg bg-white mx-auto rounded-xl z-50 overflow-y-auto px-8 py-4 max-h-[80vh]">
+      <div className="modal-container md:w-6/12 bg-white mx-auto rounded-xl z-50 overflow-y-auto px-8 py-4 max-h-[80vh]">
         <div className='flex justify-between items-center py-2'>
           <h1 className='text-xl font-bold text-sky-800'>Selecione um contato</h1>
           <div className="flex justify-end">
@@ -37,10 +43,18 @@ const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => 
           </p>
         </div>
         <div className="flex justify-center w-full mt-4 mb-4">
-          <div className="w-5/6">
+          <div className="w-5/6 flex gap-4">
             <SearchInput onSearch={handleSearch} placeholder="Buscar Contato..." />
+            <button
+              className='bg-sky-700 text-white font-bold py-2 px-4 rounded-md shadow-sm'
+              onClick={openModal}
+            >Cadastrar</button>
           </div>
         </div>
+        <ContatoModal
+          isOpen={showModal}
+          onCancel={closeModal}
+        />
         <ul className='space-y-3 py-3'>
           {children
             .filter((contato) =>

@@ -7,86 +7,86 @@ import SearchInput from "./subPages/components/SearchInput";
 
 function Home() {
 
-    //Instanciando o id da Empresa
-    const [nome_empresa, setNomeEmpresa] = useState(null);
-    const [empresas, setEmpresa] = useState([]);
-    const [contato, setContato] = useState([]);
+  //Instanciando o id da Empresa
+  const [empresas, setEmpresa] = useState([]);
+  const [contato, setContato] = useState([]);
 
+  //Instanciando o Search
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredEmpresas, setFilteredEmpresas] = useState([]);
 
-    //Recebendo o id do banco de dados e armazenando em idEmpresa
-    const fetchNomeEmpresa = (nomeEmpresa) => {
-        setNomeEmpresa(nomeEmpresa);
-    };
+  // Pegando os dados do banco
+  const getEmpresa = async () => {
+    try {
+      const response = await fetch(`${connect}/empresas`);
 
-    //Instanciando o Search
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredEmpresas, setFilteredEmpresas] = useState([]);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar empresa. Status: ${response.status}`);
+      }
 
-    // Pegando os dados do banco
-    const getEmpresa = async () => {
-        try {
-            const response = await fetch(`${connect}/empresas`);
+      const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(`Erro ao buscar empresa. Status: ${response.status}`);
-            }
+      data.sort((a, b) => {
+        if (a.ativo < b.ativo) return 1;
+        if (a.ativo > b.ativo) return -1;
 
-            const data = await response.json();
-            setEmpresa(data);
-        } catch (error) {
-            console.log("Erro ao buscar empresas: ", error);
-        }
-    };
+        return a.nome_empresa.localeCompare(b.nome_empresa);
+      });
 
-    const getContato = async () => {
-        try {
-            const response = await fetch(`${connect}/contatos`);
-
-            if (!response.ok) {
-                throw new Error(`Erro ao buscar contatos! Status: ${response.status}`);
-            }
-
-            const responseData = await response.json();
-            setContato(responseData);
-        } catch (error) {
-            console.log("Erro ao buscar contatos!", error)
-        }
+      setEmpresa(data);
+    } catch (error) {
+      console.log("Erro ao buscar empresas: ", error);
     }
-
-    useEffect(() => {
-        getEmpresa();
-    }, []);
+  };
 
 
-    //Função para Pesquisa
-    useEffect(() => {
-        const filtered = empresas.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
-        setFilteredEmpresas(filtered);
-    }, [searchTerm, empresas]);
+  const getContato = async () => {
+    try {
+      const response = await fetch(`${connect}/contatos`);
 
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar contatos! Status: ${response.status}`);
+      }
 
-    const handleSearch = (term) => {
-        // Atualizar o estado do termo de pesquisa com o valor fornecido
-        setSearchTerm(term);
+      const responseData = await response.json();
+      setContato(responseData);
+    } catch (error) {
+      console.log("Erro ao buscar contatos!", error)
     }
+  }
 
-    return (
-        <div>
-            <div className="flex justify-center w-full mt-6">
-                <div className="w-3/6">
-                    <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
-                </div>
-            </div>
+  useEffect(() => {
+    getEmpresa();
+  }, []);
 
-            <GridHome
-                empresas={filteredEmpresas}
-                contato={contato}
-                setEmpresa={setEmpresa}
-                fetchNomeEmpresa={fetchNomeEmpresa}
 
-            />
+  //Função para Pesquisa
+  useEffect(() => {
+    const filtered = empresas.filter((emp) => emp.nome_empresa.toLowerCase().includes(searchTerm.toLowerCase()));
+    setFilteredEmpresas(filtered);
+  }, [searchTerm, empresas]);
+
+
+  const handleSearch = (term) => {
+    // Atualizar o estado do termo de pesquisa com o valor fornecido
+    setSearchTerm(term);
+  }
+
+  return (
+    <div>
+      <div className="flex justify-center w-full mt-6">
+        <div className="w-3/6">
+          <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
         </div>
-    )
+      </div>
+
+      <GridHome
+        empresas={filteredEmpresas}
+        contato={contato}
+
+      />
+    </div>
+  )
 }
 
 export default Home;
