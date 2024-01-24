@@ -3,18 +3,15 @@ import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 import ModalSearchContato from '../components/Modal/ModalSearchContato'
-import ModalSearchEmpresa from '../components/Modal/ModalSearchEmpresa'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
-function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, contato, empresa, companyId }) {
+function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, contato, companyId }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
 
   const [showModalContato, setShowModalContato] = useState(false); //Controlar o Modal Contato
-  const [showModalEmpresa, setShowModalEmpresa] = useState(false); //Controlar o Modal Empresa
-  const [nomeEmpresa, setNomeEmpresa] = useState(null);
   const [contatoId, setContatoId] = useState(null);
   const [nomeContato, setNomeContato] = useState(null);
   const [cnpj, setCnpj] = useState(""); //Armazena o CNPJ
@@ -60,8 +57,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     if (
       !user.nome_unidade.value ||
       !user.cnpj_unidade.value ||
-      !user.cep_unidade.value ||
-      !user.numero_unidade.value) {
+      !user.cep_unidade.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
@@ -116,7 +112,6 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     setOnEdit(null);
     setContatoId(null);
     setNomeContato(null);
-    setNomeEmpresa(null);
     setOnEdit(null);
 
     //Atualiza os dados
@@ -136,17 +131,14 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     setCep("");
     setContatoId(null);
     setNomeContato(null);
-    setNomeEmpresa(null);
     setOnEdit(null);
   };
 
   //Funções do Modal
   //Função para abrir o Modal Contato
   const openModalContato = () => setShowModalContato(true);
-  const openModalEmpresa = () => setShowModalEmpresa(true);
   //Função para fechar o Modal Empresa
   const closeModalContato = () => setShowModalContato(false);
-  const closeModalEmpresa = () => setShowModalEmpresa(false);
 
   // Função para atualizar o Id Contato
   const handleContactSelect = (contactId, contactName) => {

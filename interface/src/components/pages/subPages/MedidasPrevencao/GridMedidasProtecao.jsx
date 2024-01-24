@@ -1,7 +1,7 @@
 //Importando ferramentas
 import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 
-function GridCadastroEmpresa({ children, set, setOnEdit }) {
+function GridCadastroEmpresa({ children, setOnEdit }) {
 
   const handleEditClick = (empresa) => () => {
     handleEdit(empresa);
@@ -22,7 +22,7 @@ function GridCadastroEmpresa({ children, set, setOnEdit }) {
               ID
             </th>
             <th scope="col" className="px-4 py-3">
-              Medida de Proteção
+              Medida de Proteção Adminitrativas
             </th>
             <th scope="col" className="px-4 py-3 text-center">
               Ações

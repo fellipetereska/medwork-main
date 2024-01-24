@@ -47,7 +47,6 @@ function CadastroContato() {
     getContato();
   }, [searchTerm, contato]);
 
-
   const handleSearch = (term) => {
     // Atualizar o estado do termo de pesquisa com o valor fornecido
     setSearchTerm(term);
@@ -71,22 +70,18 @@ function CadastroContato() {
           <FrmCadastroContato onEdit={onEdit} setOnEdit={setOnEdit} getContato={getContato} />
         </div>
 
-        {/* Barra de pesquisa */}
-        <div className="flex justify-center w-full mb-3">
+        < div className="flex justify-center w-full mb-3">
           <div className="w-3/6">
             <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
           </div>
         </div>
-
-
-        {/* Tabela */}
-        <GridCadastroContato
+        < GridCadastroContato
           contato={filteredContato}
           setContato={setContato}
           setOnEdit={handleEdit}
         />
       </div>
-    </div>
+    </div >
   )
 }
 

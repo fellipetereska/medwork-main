@@ -6,7 +6,7 @@ import { connect } from '../../../../services/api'; //Conexão com o banco de da
 import ModalProcesso from '../components/Modal/ModalSetorProcesso'
 import { FiLink } from "react-icons/fi";
 
-function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
+function GridCadastroSetor({ setor, getSetores, setSetor, setOnEdit, unidade }) {
 
   //Instanciando variavel e definindo o estado como null
   const [showModal, setShowModal] = useState(null);
@@ -46,6 +46,7 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
         item.id_setor === id ? { ...item, ativo: !ativo } : item
       );
       setSetor(novoSetor);
+      getSetores();
       toast.info(`Setor ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
     } catch (error) {
       console.error('Erro ao atualizar status do setor:', error);
@@ -81,9 +82,6 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
               Descrição
             </th>
             <th scope="col" className="px-6 py-3">
-              Observação
-            </th>
-            <th scope="col" className="px-6 py-3">
               Unidade
             </th>
             <th scope="col" className="px-6 py-3 flex justify-center">
@@ -101,17 +99,16 @@ function GridCadastroSetor({ setor, setSetor, setOnEdit, unidade }) {
                 {item.nome_setor}
               </th>
               <td className="px-6 py-4">{item.ambiente_setor}</td>
-              <td className="px-6 py-4">{item.observacao_setor}</td>
               <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {finUnidade(item.fk_unidade_id)}
               </th>
               <td className={`px-5 py-4 gap-4 flex justify-center `}>
                 {/* Editar */}
-                <a className={`font-medium text-blue-600 hover:text-blue-800 cursor-pointer ${!item.ativo ? 'cursor-not-allowed' : ''}`}>
-                  <BsFillPencilFill onClick={() => handleEdit(item)} />
+                <a className={`font-medium text-blue-600 hover:text-blue-800 ${item.ativo ? 'cursor-pointer' : 'cursor-not-allowed'} `} onClick={() => item.ativo && handleEdit(item)}>
+                  <BsFillPencilFill />
                 </a>
                 {/* Vinculos */}
-                <a className={`cursor-pointer text-yellow-500 text-lg ${!item.ativo ? 'cursor-not-allowed' : ''}`} onClick={() => handleSetorSelect(item)}>
+                <a className={`text-yellow-500 text-lg ${item.ativo ? 'cursor-pointer' : 'cursor-not-allowed'}`} onClick={() => item.ativo && handleSetorSelect(item)}>
                   <FiLink />
                 </a>
                 {/* Inativo */}

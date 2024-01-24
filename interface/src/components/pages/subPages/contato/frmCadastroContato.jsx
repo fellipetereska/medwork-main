@@ -32,8 +32,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
     if (
       !user.nome_contato.value ||
       !user.telefone_contato.value ||
-      !user.email_contato.value ||
-      !user.email_secundario_contato.value) {
+      !user.email_contato.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
 
@@ -47,8 +46,8 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
       }
 
       const url = onEdit
-      ? `${connect}/contatos/${onEdit.id_contato}`
-      : `${connect}/contatos`;
+        ? `${connect}/contatos/${onEdit.id_contato}`
+        : `${connect}/contatos`;
 
       const method = onEdit ? 'PUT' : 'POST';
 
@@ -127,7 +126,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
 
   return (
     <div className="flex justify-center mt-10">
-      <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+      <form className="w-full max-w-5xl" ref={ref} onSubmit={(e) => handleSubmit(e)}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -180,7 +179,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
           </div>
           <div className="w-full px-3 pl-8 flex justify-end">
             <div>
-              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                 Limpar
               </button>
             </div>

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco
 
-import Back from '../../../layout/Back'
 import FrmEpi from './FrmEpi'
 import GridEpi from './GridEpi'
 import SearchInput from '../components/SearchInput'

@@ -1,41 +1,57 @@
-import { useState } from 'react';
 import { BsFillPencilFill } from 'react-icons/bs';
-import { toast } from 'react-toastify';
-import { supabase } from '../../../../services/api';
 
-function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
+function GridCadastroEpi({ epis, setOnEdit }) {
 
   const handleEdit = (item) => {
     setOnEdit(item);
   };
 
-  // const handleDesactivation = async (id, ativo) => {
-  //   try {
-  //     // Inverte o estado ativo localmente
-  //     const novoCargo = epis.map(item =>
-  //       item.id_cargo === id ? { ...item, ativo: !ativo } : item
-  //     );
-  //     setCargo(novoCargo);
+  const formatarData = (data) => {
+    if (!data || data === '0000/00/00') {
+      return 'N/A';
+    }
 
-  //     // Atualiza o estado no banco de dados
-  //     const { error } = await supabase
-  //       .from("cargo")
-  //       .upsert([{ id_cargo: id, ativo: !ativo }]);
+    const dataFormatada = new Date(data);
+    return isNaN(dataFormatada.getTime()) ? 'N/A' : dataFormatada.toLocaleDateString();
+  }
 
-  //     if (error) {
-  //       // Se houver um erro na atualização do banco de dados, reverte o estado local
-  //       setCargo(epis.map(item =>
-  //         item.id_cargo === id ? { ...item, ativo } : item
-  //       ));
-  //       throw new Error(error.message);
-  //     }
+  const diasRestantesCertificado = (dataExpiracao) => {
+    if (!dataExpiracao || dataExpiracao === '0000/00/00') {
+      return 'N/A';
+    }
 
-  //     toast.success(`Cargo ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
-  //   } catch (error) {
-  //     console.log("Erro ao atualizar status do cargo", error);
-  //     toast.error("Erro ao atualizar status do cargo, verifique o console");
-  //   }
-  // };
+    const dataExpiracaoDate = new Date(dataExpiracao);
+    if (isNaN(dataExpiracaoDate.getTime())) {
+      return 'N/A';
+    }
+
+    const hoje = new Date();
+    const diferencaMilissegundos = dataExpiracaoDate - hoje;
+    const umDia = 24 * 60 * 60 * 1000; // 1 dia em milissegundos
+    const diasRestantes = Math.floor(diferencaMilissegundos / umDia);
+
+    if (diasRestantes < 0) {
+      return 'Vencido';
+    }
+
+    const anos = Math.floor(diasRestantes / 365);
+    const meses = Math.floor((diasRestantes % 365) / 30);
+    const dias = diasRestantes % 30;
+
+    let resultado = '';
+    if (anos > 0) {
+      resultado += `${anos} ${anos === 1 ? 'ano' : 'anos'}`;
+    }
+    if (meses > 0) {
+      resultado += ` ${resultado.length > 0 ? ', ' : ''}${meses} ${meses === 1 ? 'mês' : 'meses'}`;
+    }
+    if (dias > 0) {
+      resultado += ` ${resultado.length > 0 ? 'e ' : ''}${dias} ${dias === 1 ? 'dia' : 'dias'}`;
+    }
+
+    return resultado.length > 0 ? resultado : 'Vence hoje';
+  }
+
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
@@ -52,16 +68,16 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
               Certificação
             </th>
             <th scope="col" className="px-4 py-3">
-              Vencimento Certificado
+              Data
+            </th>
+            <th scope="col" className="px-4 py-3">
+              Vencimento
             </th>
             <th scope="col" className="px-4 py-3">
               Fabricante
             </th>
             <th scope="col" className="px-4 py-3 text-center">
               Ações
-            </th>
-            <th scope="col" className="px-4 py-3 text-center">
-              Status
             </th>
           </tr>
         </thead>
@@ -78,7 +94,10 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
                 {item.certificado_medida}
               </td>
               <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {item.vencimento_certificado_medida} (quantos dias falta para vencer)
+                {formatarData(item.vencimento_certificado_medida)}
+              </th>
+              <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
+                {diasRestantesCertificado(item.vencimento_certificado_medida)}
               </th>
               <td className="px-4 py-4">
                 {item.fabricante_medida}
@@ -87,34 +106,6 @@ function GridCadastroEpi({ epis, setEpi, setOnEdit, find }) {
                 <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
-              </td>
-              <td className="py-4 gap-4 text-right">
-                {/* <label
-                  className="relative flex items-center justify-center rounded-full cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={!item.ativo}
-                    className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    onChange={() => handleDesactivation(item.id_cargo, item.ativo)}
-                  />
-                  <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3.5 w-3.5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeWidth="1"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </div>
-                </label> */}
               </td>
             </tr>
           ))}

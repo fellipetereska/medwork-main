@@ -33,8 +33,6 @@ function CadastroSetor({ }) {
 		}
 }, [companyId]);
 
-
-
 	//Função para Pesquisa
 	useEffect(() => {
 		const filtred = setores.filter((set) => set.nome_setor.toLowerCase().includes(searchTerm.toLocaleLowerCase()));
@@ -94,6 +92,7 @@ function CadastroSetor({ }) {
 			<GridCadastroSetor
 				setor={filteredSetor}
 				setSetor={setSetores}
+				getSetores={getSetores}
 				setOnEdit={handleEdit}
 				unidade={unidades}
 			/>

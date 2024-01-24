@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
-import ModalSearchEmpresa from "../components/Modal/ModalSearchContato";
+import ModarSearchContato from "../components/Modal/ModalSearchContato";
 import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
@@ -318,7 +318,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresas, contact, contatos }) 
                 <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
               </button>
             </div>
-            <ModalSearchEmpresa
+            <ModarSearchContato
               isOpen={showModal}
               onCancel={closeModal}
               children={contatos}

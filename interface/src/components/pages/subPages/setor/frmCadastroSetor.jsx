@@ -33,6 +33,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
         setNomeUnidade(null);
         setUnidadeId(null);
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [onEdit, unidades]);
 
@@ -58,7 +59,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
       };
 
       const url = onEdit
-        ? `${connect}/setores/${onEdit.id_setor}`
+        ? `${connect}/setores/${onEdit.id_setor || ''}`
         : `${connect}/setores`;
 
       const method = onEdit ? 'PUT' : 'POST';
@@ -105,6 +106,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
     user.observacao_setor.value = "";
     setUnidadeId(null);
     setNomeUnidade(null);
+    setOnEdit(null);
   };
 
   //Funções do Modal

@@ -21,9 +21,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
       //Passando o dado do input para a props
       user.nome_cargo.value = onEdit.nome_cargo || '';
       user.descricao.value = onEdit.descricao || '';
-      user.func_masc.value = onEdit.func_masc || '';
-      user.func_fem.value = onEdit.func_fem || '';
-      user.func_menor.value = onEdit.func_menor || '';
+      user.func_masc.value = onEdit.func_masc || 0;
+      user.func_fem.value = onEdit.func_fem || 0;
+      user.func_menor.value = onEdit.func_menor || 0;
 
       if (set && onEdit.fk_setor_id) {
         setSetorId(onEdit.fk_setor_id);
@@ -32,6 +32,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
         setSetorId(null);
         setSetorNome(null);
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [onEdit, setor]);
 
@@ -48,9 +49,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
       const cargoData = {
         nome_cargo: user.nome_cargo.value || null,
         descricao: user.descricao.value || null,
-        func_masc: user.func_masc.value || null,
-        func_fem: user.func_fem.value || null,
-        func_menor: user.func_menor.value || null,
+        func_masc: user.func_masc.value || 0,
+        func_fem: user.func_fem.value || 0,
+        func_menor: user.func_menor.value || 0,
         fk_setor_id: setorId || null,
         ativo: 1,
       }

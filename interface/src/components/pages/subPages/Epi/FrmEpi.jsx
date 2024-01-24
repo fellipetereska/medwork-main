@@ -17,18 +17,26 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
         certificado_medida,
         fator_reducao_medida,
         vencimento_certificado_medida,
-        fabricante_medida,
-        descricao_medida
+        fabricante_medida
       } = user;
 
       nome_medida.value = onEdit.nome_medida || "";
-      certificado_medida.value = onEdit.certificado_medida
+      certificado_medida.value = onEdit.certificado_medida || "";
       fator_reducao_medida.value = onEdit.fator_reducao_medida || "";
-      vencimento_certificado_medida.value = onEdit.vencimento_certificado_medida || "";
+
+      try {
+        // Formate a data para o formato 'YYYY-MM-DD' antes de atribuir ao campo
+        vencimento_certificado_medida.value = onEdit.vencimento_certificado_medida
+          ? new Date(onEdit.vencimento_certificado_medida).toISOString().split('T')[0]
+          : "";
+      } catch (error) {
+        console.log("Erro ao formatar data para input.", error)
+      }
+
       fabricante_medida.value = onEdit.fabricante_medida || "";
-      descricao_medida.value = onEdit.descricao_medida || "";
     }
   }, [onEdit]);
+
 
 
   const handleSubmit = async (e) => {
@@ -44,7 +52,6 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
     try {
       const epiData = {
         nome_medida: user.nome_medida.value || "",
-        descricao_medida: user.fabricante_medida.value || "",
         certificado_medida: user.certificado_medida.value || "",
         fator_reducao_medida: user.fator_reducao_medida.value || "",
         vencimento_certificado_medida: user.vencimento_certificado_medida.value || "",

@@ -6,10 +6,8 @@ import { connect, supabase } from "../../../../services/api"; //Conexão com o b
 
 //Importando componentes
 import CadastroMedidas from "./frmMedidasProtecao";
-import FrmEpi from '../Epi/FrmEpi'
 import GridMedidas from './GridMedidasProtecao';
 import SearchInput from "../components/SearchInput";
-import Back from '../../../layout/Back'
 
 function MedidasProtecao() {
 
@@ -51,11 +49,9 @@ function MedidasProtecao() {
     setFiltered(filtered);
   }, [searchTerm, medidasProtecao]);
 
-
   const handleSearch = (term) => {
     setSearchTerm(term);
   }
-
 
   return (
     <div className="tab-content mt-14 mb-32">

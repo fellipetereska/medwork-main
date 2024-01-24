@@ -218,7 +218,6 @@ router.put("/unidades/:id_unidade", (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      console.log(`Unidade atualizada com sucesso! ${values}`)
       return res.status(200).json("Unidade atualizada com sucesso!");
     });
 
@@ -286,6 +285,45 @@ router.post("/setores", (req, res) => {
       }
 
       return res.status(200).json(`Setor cadastrada com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update row in table
+router.put("/setores/:id_setor", (req, res) => {
+  const id_setor = req.params.id_setor; // Obtém o ID da empresa da URL
+  const { nome_setor, ambiente_setor, observacao_setor, fk_unidade_id } = req.body;
+
+  const q = `
+    UPDATE setores
+    SET nome_setor = ?,
+    ambiente_setor = ?,
+    observacao_setor = ?,
+    fk_unidade_id = ?
+    WHERE id_setor = ?
+    `;
+
+  const values = [
+    nome_setor,
+    ambiente_setor,
+    observacao_setor,
+    fk_unidade_id,
+    id_setor,
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar setor na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Setor atualizada com sucesso!");
     });
 
     con.release();
@@ -404,6 +442,30 @@ router.put("/cargos/:id_cargo", (req, res) => {
   })
 
 });
+
+router.put("/cargos/activate/:id_cargo", (req, res) => {
+  const id_cargo = req.params.id_cargo;
+  const { ativo } = req.body;
+
+  const q = 'UPDATE cargos SET ativo = ? WHERE id_cargo = ?';
+  const values = [ativo, id_cargo];
+
+  pool.getConnection((err, con) => {
+    if (err) return res.status(500).json({ error: 'Erro ao obter conexão.' });
+
+    con.query(q, values, (err) => {
+      con.release();
+
+      if (err) {
+        console.error('Erro ao atualizar status do cargo:', err);
+        return res.status(500).json({ error: 'Erro ao atualizar status do cargo.' });
+      }
+
+      res.status(200).json({ message: 'Status do cargo atualizado com sucesso.' });
+    });
+  });
+});
+
 
 
 //Tabela Contato
@@ -748,6 +810,52 @@ router.post("/medidas_epi", (req, res) => {
 
 });
 
+router.put("/medidas_epi/:id_medida", (req, res) => {
+  const id_medida = req.params.id_medida;
+  const {
+    nome_medida,
+    certificado_medida,
+    fator_reducao_medida,
+    vencimento_certificado_medida,
+    fabricante_medida,
+  } = req.body;
+
+  const q = `
+    UPDATE medidas_epi
+    SET nome_medida = ?,
+    certificado_medida = ?,
+    fator_reducao_medida = ?,
+    vencimento_certificado_medida = ?,
+    fabricante_medida = ?
+    WHERE id_medida = ?
+    `;
+
+  const values = [
+    nome_medida,
+    certificado_medida,
+    fator_reducao_medida,
+    vencimento_certificado_medida,
+    fabricante_medida,
+    id_medida
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar medida na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Medida atualizado com sucesso!");
+    });
+
+    con.release();
+  })
+
+});
+
 
 //Medidas Adminitrativas
 //Get Table
@@ -790,6 +898,110 @@ router.post("/medidas_adm", (req, res) => {
   })
 
 });
+
+router.put("/medidas_adm/:id_medida_adm", (req, res) => {
+  const id_medida_adm = req.params.id_medida_adm;
+  const {
+    descricao_medida_adm,
+  } = req.body;
+
+  const q = `UPDATE medidas_adm SET descricao_medida_adm = ? WHERE id_medida_adm = ?`;
+
+  const values = [
+    descricao_medida_adm,
+    id_medida_adm,
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar medida na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Medida atualizado com sucesso!");
+    });
+
+    con.release();
+  })
+
+});
+
+
+//Medidas EPC's
+//Get Table
+router.get("/medidas_epc", (req, res) => {
+  const q = `SELECT * FROM medidas_epc`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+//Add rows in table
+router.post("/medidas_epc", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO medidas_epc SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir Medida na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Medida cadastrado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+router.put("/medidas_epc/:id_medida", (req, res) => {
+  const id_medida = req.params.id_medida;
+  const {
+    descricao_medida
+  } = req.body;
+
+  const q = `UPDATE medidas_epc SET descricao_medida = ? WHERE id_medida = ?`;
+
+  const values = [
+    descricao_medida,
+    id_medida
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar medida na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Medida atualizado com sucesso!");
+    });
+
+    con.release();
+  })
+
+});
+
 
 
 

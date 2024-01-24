@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import SearchInput from '../SearchInput';
 
-import ContatoModal from '../../contato/ContatoModal';
-
 const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [showModal, setShowModal] = useState(false)
-
   if (!isOpen) {
     return null;
   }
@@ -15,9 +11,6 @@ const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => 
   const handleSearch = (term) => {
     setSearchTerm(term);
   }
-
-  const openModal = () => setShowModal(!showModal)
-  const closeModal = () => setShowModal(false)
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -31,7 +24,7 @@ const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => 
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
               onClick={onCancel}>
               <svg className="flex m-auto w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
               </svg>
             </button>
           </div>
@@ -45,16 +38,8 @@ const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => 
         <div className="flex justify-center w-full mt-4 mb-4">
           <div className="w-5/6 flex gap-4">
             <SearchInput onSearch={handleSearch} placeholder="Buscar Contato..." />
-            <button
-              className='bg-sky-700 text-white font-bold py-2 px-4 rounded-md shadow-sm'
-              onClick={openModal}
-            >Cadastrar</button>
           </div>
         </div>
-        <ContatoModal
-          isOpen={showModal}
-          onCancel={closeModal}
-        />
         <ul className='space-y-3 py-3'>
           {children
             .filter((contato) =>
@@ -68,16 +53,16 @@ const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => 
                 className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
                 onClick={() => onContactSelect(contato.id_contato, contato.nome_contato)}
               >
-                <div class="flex items-center gap-12">
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-700">
+                <div className="flex items-center gap-12">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-700">
                       {contato.nome_contato}
                     </p>
-                    <p class="text-sm text-gray-500 truncate">
+                    <p className="text-sm text-gray-500 truncate">
                       {contato.email_contato}
                     </p>
                   </div>
-                  <div class="inline-flex items-center text-base font-semibold text-gray-900">
+                  <div className="inline-flex items-center text-base font-semibold text-gray-900">
                     {contato.telefone_contato}
                   </div>
                 </div>

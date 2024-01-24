@@ -9,6 +9,7 @@ import BotaoContato from "./subPages/buttons/Cadastros/BotaoContato";
 import BotaoProcessos from './subPages/buttons/Cadastros/BotaoProcessos';
 import BotaoRiscos from './subPages/buttons/Cadastros/BotaoRiscos';
 import BotaoMedidasDeProtecao from "./subPages/buttons/Cadastros/BotaoMedidasDeProtecao";
+import BotaoVinculos from "./subPages/buttons/Cadastros/BotaoVinculos";
 
 function Cadastros() {
 
@@ -21,7 +22,7 @@ function Cadastros() {
 
       if (selectedCompanyDataLocal) {
         const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
-        setCompanyId(selectedCompanyData.nome_empresa);
+        setCompanyId(selectedCompanyData.id_empresa);
       }
     };
 
@@ -79,6 +80,15 @@ function Cadastros() {
               <BotaoMedidasDeProtecao />
             </Link>
           </figure>
+          {companyId ? (
+            <>
+              <figure className="flex flex-col justify-center">
+                <Link to="/vinculos">
+                  <BotaoVinculos />
+                </Link>
+              </figure>
+            </>
+          ) : null}
         </div>
       </div>
     </>

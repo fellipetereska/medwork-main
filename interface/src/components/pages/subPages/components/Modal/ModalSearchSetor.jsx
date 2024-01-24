@@ -3,7 +3,7 @@ import SearchInput from '../SearchInput';
 import { connect, supabase } from '../../../../../services/api';
 import { json } from 'react-router-dom';
 
-const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
+const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [unidade, setUnidade] = useState(null);
@@ -12,18 +12,18 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
 
     const response = await fetch(`${connect}/unidades`);
 
-    if(!response.ok) {
+    if (!response.ok) {
       throw new Error(`Erro ao buscar unidades. Status: ${response.status}`)
     }
 
     const responseData = await response.json();
-    
+
     setUnidade(responseData);
   }
 
   useEffect(() => {
     getUnidade();
-  },[])
+  }, [])
 
   const findUnidade = (fkUnidadeId) => {
     if (!unidade) {
@@ -45,7 +45,7 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal-overlay absolute inset-0 backdrop-blur-[1px] bg-black bg-opacity-10" onClick={onCancel}></div>
-      <div className="modal-container max-w-lg bg-white mx-auto rounded-xl z-50 overflow-y-auto px-8 py-4 max-h-[80vh]">
+      <div className="modal-container md:w-4/12 bg-white mx-auto rounded-xl z-50 overflow-y-auto px-8 py-4 max-h-[80vh]">
         <div className='flex justify-between items-center py-2'>
           <h1 className='text-xl font-bold text-sky-800'>Selecione um Setor</h1>
           <div className="flex justify-end">
@@ -79,22 +79,25 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
             .map((item, i) => (
               <li
                 key={i}
-                className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md grid grid-cols-2 gap-4"
+                className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
                 onClick={() => onContactSelect(item.id_setor, item.nome_setor)}
               >
-                <div className="flex flex-col">
-                  <p className="text-sm font-medium text-gray-700">
-                    {item.nome_setor}
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">
-                    {item.ambiente_setor}
-                  </p>
-                </div>
-                <div className='flex flex-col items-start'>
-                  <p className='text-xs text-gray-500 truncate'>Unidade:</p>
-                  <p className='text-base font-semibold text-gray-900'>
-                    {findUnidade(item.fk_unidade_id)}
-                  </p>
+                <div className='grid grid-cols-3'>
+                  <div className="col-span-2">
+                    <p className="text-base font-bold text-gray-800">
+                      {item.nome_setor}
+                    </p>
+                    <div className='border-gray-200 border-b w-1/2 mb-2'></div>
+                    <p className="text-sm font-light text-gray-500 truncate">
+                      Descrição: <span className='text-gray-700 font-normal'>{item.ambiente_setor}</span>
+                    </p>
+                  </div>
+                  <div className=''>
+                    <p className='text-xs text-gray-500 truncate'>Unidade:</p>
+                    <p className='text-base font-bold text-gray-700'>
+                      {findUnidade(item.fk_unidade_id)}
+                    </p>
+                  </div>
                 </div>
               </li>
             ))}
@@ -105,4 +108,4 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onContactSelect
 };
 
 
-export default ModalSearchUnidadeEmpresa;
+export default ModalSearchSetor;

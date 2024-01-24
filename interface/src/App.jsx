@@ -25,6 +25,7 @@ import Medidas from './components/pages/subPages/CadastroMedidas'
 import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
 import ImportCsv from './components/pages/subPages/components/ImportCsv'
 import ImportXlsx from './components/pages/subPages/components/ImportXlsx';
+import Vinculos from './components/pages/subPages/vinculos/Vinculos';
 
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
@@ -61,6 +62,7 @@ function App() {
           <Route path='/cadastro_aparelhos' element={<Aparelhos />} />
           <Route path='/importcsv' element={<ImportCsv />} />
           <Route path='/importxlsx' element={<ImportXlsx />} />
+          <Route path='/vinculos' element={<Vinculos />} />
           <Route path='*' element={<Navigate to='/' />} />
         </Routes>
         {/* Rodapé */}
@@ -70,7 +72,7 @@ function App() {
       {/* Mensagem */}
       <ToastContainer
         autoClose={3000}
-        position={toast.POSITION.TOP_RIGHT}        
+        position={toast.POSITION.TOP_RIGHT}
       />
     </AuthProvider>
   );

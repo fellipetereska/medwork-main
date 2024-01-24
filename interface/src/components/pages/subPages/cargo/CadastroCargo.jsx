@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { Link } from 'react-router-dom'
-import { connect } from "../../../../services/api";
 import useAuth from '../../../../hooks/useAuth'
 
 import FrmCadastroCargo from "./frmCadastroCargo";
@@ -11,7 +9,7 @@ import Back from '../../../layout/Back'
 
 function CadastroCargo() {
 
-  const {cargos, setCargos, getCargos, getSetores, setores, companyId, handleSetCompanyId} = useAuth(null)
+  const {cargos, setCargos, getCargos, getSetores, setores, companyId, handleSetCompanyId, unidades, getUnidades} = useAuth(null)
 
   // Instanciando e Definindo como vazio
   const [setorNome, setSetorNome] = useState(null);
@@ -28,6 +26,7 @@ function CadastroCargo() {
   useEffect(() => {
     getCargos();
     getSetores();
+    getUnidades();
   }, [companyId]);
 
   const findSetor = (fkSetorId) => {
@@ -37,6 +36,18 @@ function CadastroCargo() {
 
     const setor = setores.find((c) => c.id_setor === fkSetorId);
     return setor ? setor.nome_setor : 'N/A';
+  }
+
+  const findUnidades = (fkSetorId) => {
+    try {
+      const setor = setores.find((i) => i.id_setor === fkSetorId);
+      const setorId = setor ? setor.fk_unidade_id : 'N/A'
+  
+      const unidade = unidades.find((i) => i.id_unidade === setorId);
+      return unidade ? unidade.nome_unidade : 'N/A'
+    } catch (error) {
+      console.log("Erro ao buscar unidades da tabela cargo!", error)
+    }
   }
 
   const handleEdit = (selectedCargo) => {
@@ -93,9 +104,12 @@ function CadastroCargo() {
       <GridCadastroCargo
         cargos={filteredCargo}
         setCargo={setCargos}
+        getCargo={getCargos}
         setOnEdit={handleEdit}
         find={findSetor}
         setor={setores}
+        unidades={unidades}
+        findUnidades={findUnidades}
       />
     </div>
   )

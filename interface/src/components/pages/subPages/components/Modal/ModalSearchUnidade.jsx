@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
+import useAuth from '../../../../../hooks/useAuth';
 
 const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+
+  const { contatos, getContatos } = useAuth(null);
+
+  useEffect(() => {
+    getContatos();
+  }, [])
 
   if (!isOpen) {
     return null;
@@ -13,10 +20,16 @@ const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
     setSearchTerm(term);
   }
 
+
+  const findContato = (fkContatoId) => {
+    const contacts = contatos.find((i) => i.id_contato === fkContatoId);
+    return contacts ? contacts.nome_contato : 'N/A'
+  }
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal-overlay absolute inset-0 backdrop-blur-[1px] bg-black bg-opacity-10" onClick={onCancel}></div>
-      <div className="modal-container max-w-lg bg-white mx-auto rounded-xl z-50 overflow-y-auto px-8 py-4 max-h-[80vh]">
+      <div className="modal-container md:w-4/12 bg-white mx-auto rounded-xl z-50 overflow-y-auto px-8 py-4 max-h-[80vh]">
         <div className='flex justify-between items-center py-2'>
           <h1 className='text-xl font-bold text-sky-800'>Selecione uma Unidade</h1>
           <div className="flex justify-end">
@@ -54,17 +67,35 @@ const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
                 className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
                 onClick={() => onContactSelect(unidade.id_unidade, unidade.nome_unidade)}
               >
-                <div className="flex items-center gap-12">
+                <div className="flex items-center text-sm font-light text-gray-500">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700">
-                      {unidade.nome_unidade}
-                    </p>
-                    <p className="text-sm text-gray-500 truncate">
-                      {unidade.cidade_unidade}
-                    </p>
-                  </div>
-                  <div className="inline-flex items-center text-base font-semibold text-gray-900">
-                    {unidade.cnpj_unidade}
+                    <div className='flex justify-between text-lg font-bold text-gray-800'>
+                      <p>
+                        {unidade.nome_unidade}
+                      </p>
+                      <p>
+                        {unidade.cnpj_unidade}
+                      </p>
+                    </div>
+                    <div className='border-b border-gray-200 mb-2 mt-1'></div>
+                    <div className='grid grid-cols-12 mt-2 justify-between'>
+                      <div className='col-span-7'>
+                        <p>
+                          <span className='text-sm font-normal text-gray-700'>{unidade.endereco_unidade}, {unidade.numero_unidade}</span>
+                        </p>
+                        <p className='text-sm text-gray-500 truncate'>
+                          <span className='text-sm font-normal text-gray-700'>{unidade.cep_unidade} - {unidade.cidade_unidade}/{unidade.uf_unidade}</span>
+                        </p>
+                      </div>
+                      <div className='col-span-5'>
+                        <p className='text-sm text-gray-500'>
+                          Contato:
+                        </p>
+                        <div>
+                          <p className='text-base font-medium text-gray-800'>{findContato(unidade.fk_contato_id)}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </li>

@@ -1,4 +1,3 @@
-//Importando Ferramentas
 import { useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
@@ -20,7 +19,6 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
   }, [onEdit]);
 
 
-
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +35,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
       };
 
       const url = onEdit
-        ? `${connect}/medidas_adm/${onEdit.id_medida}`
+        ? `${connect}/medidas_adm/${onEdit.id_medida_adm}`
         : `${connect}/medidas_adm`;
 
       const method = onEdit ? 'PUT' : 'POST';
@@ -64,6 +62,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
 
     //Limpa os campos e reseta o estaodo de edição
     user.descricao_medida_adm.value = "";
+    setOnEdit(null)
 
     //Atualiza os dados
     get();
@@ -74,6 +73,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
     // Limpa todos os campos do formulário
     const user = ref.current;
     user.descricao_medida_adm.value = "";
+    setOnEdit(null)
   };
 
 
