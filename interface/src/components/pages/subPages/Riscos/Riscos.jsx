@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { connect, supabase } from "../../../../services/api";
+import useAuth from '../../../../hooks/useAuth'
 
 import SearchInput from '../components/SearchInput'
 import FrmRiscos from './FrmRiscos'
@@ -10,38 +9,22 @@ import Back from '../../../layout/Back'
 
 function Riscos() {
 
-  const [riscos, setRiscos] = useState([]);
-  const [processo, setProcesso] = useState([])
   const [onEdit, setOnEdit] = useState(null);
+
+  const { riscos, setRiscos, getRiscos, handleSetCompanyId, companyId } = useAuth(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRiscos, setFilteredRiscos] = useState([]);
 
-  const getRiscos = async () => {
-    try {
-      const response = await fetch(`${connect}/riscos`);
 
-      if(!response.ok) {
-        throw new Error(`Erro ao buscar riscos. Status: ${response.status}`)
-      }
-      
-      const data = await response.json();
-      setRiscos(data);
-    } catch (error) {
-      console.log("Erro ao buscar riscos: ", error)
-    }
-  }
-
-  const getProcessos = async () => {
-    const { data } = await supabase.from("processo").select();
-    setProcesso(data);
-  }
+  useEffect(() => {
+    handleSetCompanyId();
+  }, [])
 
   useEffect(() => {
     getRiscos();
-    getProcessos();
-  }, [])
+  }, [companyId])
 
   const handleEdit = (selectedRisco) => {
     setOnEdit(selectedRisco);
@@ -79,7 +62,6 @@ function Riscos() {
           setOnEdit={setOnEdit}
           getRiscos={getRiscos}
           riscos={riscos}
-          processo={processo}
         />
 
         {/* Barra de pesquisa */}

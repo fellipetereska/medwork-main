@@ -1,40 +1,30 @@
 import { useEffect, useState } from 'react';
-import { connect } from '../../../../services/api';
 import { Link } from 'react-router-dom';
 
 import Back from '../../../layout/Back';
 import SearchInput from '../components/SearchInput';
 import FrmProcessos from './frmProcessos'
 import GridProcesso from './GridProcessos'
+import useAuth from '../../../../hooks/useAuth'
 
 function Processos() {
 
-  const [processo, setProcesso] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
+
+  const { processos, setProcessos, getProcessos, handleSetCompanyId, companyId } = useAuth(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProcessos, setFilteredProcessos] = useState([]);
 
-  const getProcesso = async () => {
-    try {
-      const response = await fetch(`${connect}/processos`);
-
-      if(!response.ok) {
-        throw new Error (`Erro ao buscar Processos. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setProcesso(data);
-    } catch (error) {
-      console.log("Erro ao buscar processo: ", error);
-    }
-  }
+  useEffect(() => {
+    handleSetCompanyId();
+  }, [])
 
 
   useEffect(() => {
-    getProcesso();
-  },[])
+    getProcessos();
+  },[companyId])
 
   const handleEdit = (selectedProcesso) => {
     setOnEdit(selectedProcesso);
@@ -42,9 +32,9 @@ function Processos() {
 
   // Função para pesquisa
   useEffect(() => {
-    const filtered = processo.filter((proc) => proc.nome_processo.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = processos.filter((proc) => proc.nome_processo.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredProcessos(filtered);
-  }, [searchTerm, processo]);
+  }, [searchTerm, processos]);
 
 
   const handleSearch = (term) => {
@@ -69,7 +59,7 @@ function Processos() {
       <FrmProcessos
         onEdit={onEdit}
         setOnEdit={setOnEdit}
-        getProcessos={getProcesso}
+        getProcessos={getProcessos}
       />
 
       {/* Barra de pesquisa */}
@@ -82,7 +72,7 @@ function Processos() {
       {/* Tabela Empresa */}
       <GridProcesso
         processos={filteredProcessos}
-        setEmpresa={setProcesso}
+        setEmpresa={setProcessos}
         setOnEdit={handleEdit}
       />
     </div>

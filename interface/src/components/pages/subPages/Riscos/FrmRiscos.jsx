@@ -1,20 +1,15 @@
 import React from "react";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
-import { connect, supabase } from '../../../../services/api';
+import { connect } from '../../../../services/api';
 
-import icon_lupa from '../../../media/icon_lupa.svg'
-import icon_sair from '../../../media/icon_sair.svg'
 
-function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
+function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
 
   const [pgr, setPgr] = useState(false);
   const [ltcat, setLtcat] = useState(false);
   const [lip, setLip] = useState(false);
-  const [processoId, setProcessId] = useState(null);
-  const [processName, setProcessName] = useState(null);
-
-  const [showModal, setShowModal] = useState(false);
+  const [classificacao, setClassificacao] = useState(false);
 
   const ref = useRef(null);
 
@@ -50,12 +45,9 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
       setLtcat(onEdit.ltcat_risco || false)
       setLip(onEdit.lip_risco || false)
 
-      // Restante do seu código...
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [onEdit, setPgr, setLtcat, setLip]);
-
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,6 +116,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
     setPgr(false);
     setLtcat(false);
     setLip(false);
+    setOnEdit(null);
 
     getRiscos();
   }
@@ -147,12 +140,11 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
     setPgr(false);
     setLtcat(false);
     setLip(false);
-
+    setOnEdit(null);
   }
 
   const checkedPgr = () => {
     setPgr(!pgr);
-
   }
 
   const checkedLtcat = () => {
@@ -163,25 +155,19 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
     setLip(!lip);
   }
 
-  //Funções do Modal
-  //Função para abrir o Modal
-  const openModal = () => setShowModal(true);
-  //Função para fechar o Modal
-  const closeModal = () => setShowModal(false);
+  const setClassificacaoChange = (event) => {
+    const data = event.target.value;
 
-  // Função para atualizar o Id Contato
-  const handleProcessSelect = useCallback((processId, processName) => {
-    closeModal();
-    setProcessId(processId);
-    setProcessName(processName);
-  }, [closeModal]);
-
-  const handleClearProcesso = () => {
-    setProcessId(null);
-    setProcessName(null);
+    if (data !== "Quantitativo") {
+      setClassificacao(true);
+    } else {
+      setClassificacao(false);
+    }
   }
 
+  const handleFormatCodigo = () => {
 
+  }
 
   return (
     <div className="flex justify-center mt-10">
@@ -208,10 +194,10 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
               name="grupo_risco"
             >
               <option value="NULL">Selecione um Grupo de Risco</option>
-              <option value="Fisico">Fisico</option>
-              <option value="Fisico">Quimico</option>
-              <option value="Fisico">Biologico</option>
-              <option value="Fisico">Ergonomico</option>
+              <option value="Fisico">Físico</option>
+              <option value="Fisico">Químico</option>
+              <option value="Fisico">Biológico</option>
+              <option value="Fisico">Ergonômico</option>
               <option value="Fisico">Acidentes</option>
             </select>
           </div>
@@ -224,28 +210,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
               type="text"
               name="codigo_esocial_risco"
               placeholder="Código E-social"
-            />
-          </div>
-          <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
-              Meio de Propagação:
-            </label>
-            <input
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
-              name="meio_propagacao_risco"
-              placeholder="Meio de Propagação"
-            />
-          </div>
-          <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
-              Unidade de Medida:
-            </label>
-            <input
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
-              name="unidade_medida_risco"
-              placeholder="Unidade de Medida"
+              onChange={handleFormatCodigo}
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
@@ -256,57 +221,85 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="classificacao_risco"
+              onChange={setClassificacaoChange}
             >
               <option value="NULL">Selecione uma classificação</option>
               <option value="Qualitativo">Qualitativo</option>
               <option value="Quantitativo">Quantitativo</option>
             </select>
           </div>
-          <div className="w-full md:w-1/3 px-3">
+          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
+              Meio de Propagação:
+            </label>
+            <input
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+              type="text"
+              name="meio_propagacao_risco"
+              placeholder="Meio de Propagação"
+              disabled={classificacao}
+            />
+          </div>
+          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
+              Unidade de Medida:
+            </label>
+            <input
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+              type="text"
+              name="unidade_medida_risco"
+              placeholder="Unidade de Medida"
+              disabled={classificacao}
+            />
+          </div>
+          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Nível de Ação:
             </label>
             <input
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
               type="number"
               name="nivel_acao_risco"
               placeholder="Nivel de Ação"
+              disabled={classificacao}
             />
           </div>
-          <div className="w-full md:w-1/3 px-3">
+          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Limite de Tolerância:
             </label>
             <input
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
               type="number"
               name="limite_tolerancia_risco"
               placeholder="Limite de Tolerância"
+              disabled={classificacao}
             />
           </div>
-          <div className="w-full md:w-1/3 px-3">
+          <div className={`w-full md:w-1/3 px-3`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Danos a Saúde:
             </label>
             <input
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
               type="text"
               name="danos_saude_risco"
               placeholder="Danos a Saúde"
             />
           </div>
-          <div className="w-full md:w-1/3 px-3">
+          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Metodologia:
             </label>
             <input
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
               type="text"
               name="metodologia_risco"
               placeholder="Metodologia"
+              disabled={classificacao}
             />
           </div>
-          <div className="w-full md:w-1/3 px-3">
+          <div className={`w-full md:w-1/3 px-3`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Severidade
             </label>
@@ -355,7 +348,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, processo }) {
             <label className="text-sm font-medium ms-2 text-gray-900">LIP <span className="font-light">(Laudo de Insalubridade e Periculosidade)</span></label>
           </div>
         </div>
-        
+
         <div className="w-full px-3 pl-8 flex justify-end mb-6">
           <div>
             <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">

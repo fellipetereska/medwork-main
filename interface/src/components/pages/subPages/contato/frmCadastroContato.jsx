@@ -93,6 +93,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
     user.email_secundario_contato.value = "";
     setMailCompleted1(false);
     setMailCompleted2(false);
+    setOnEdit(null);
   };
 
   const handleInputChangePhone = (e) => {
@@ -166,7 +167,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
           </div>
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-              Email Secunário
+              Email Secundário
             </label>
             <input
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"

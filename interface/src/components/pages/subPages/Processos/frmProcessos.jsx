@@ -1,26 +1,13 @@
 //Importando Ferramentas
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import { toast } from "react-toastify";
-import { connect, supabase } from "../../../../services/api"; //Conexão com o banco de dados
-
-import ModalSetor from '../components/Modal/ModalSearchSetor'
-import ModalCargo from "../components/Modal/ModalCargo";
-import icon_sair from '../../../media/icon_sair.svg'
-import icon_lupa from '../../../media/icon_lupa.svg'
+import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
-function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
+function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
-  const [showModalSetor, setShowModalSetor] = useState(false); //Controlar o Modal
-  const [setor, setSetor] = useState(null); //Armazenando os dados para o Modal
-  const [setorId, setSetorId] = useState(null);
-  const [setorName, setSetorName] = useState(null);
-  const [showModalCargo, setShowModalCargo] = useState(false); //Controlar o Modal
-  const [cargo, setCargo] = useState(null); //Armazenando os dados para o Modal
-  const [cargoId, setCargoId] = useState(null);
-  const [cargoName, setCargoName] = useState(null);
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
@@ -32,23 +19,10 @@ function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
       nome_processo.value = onEdit.nome_processo || "";
       descricao.value = onEdit.descricao || "";
 
-      if (nomeSetor && onEdit.fk_setor_id) {
-        setSetorName(nomeSetor);
-        setSetorId(onEdit.fk_setor_id)
-      } else {
-        setSetorId(null);
-        setSetorName(null);
-      }
-
-      if (nomeCargo && onEdit.fk_cargo_id) {
-        setCargoName(nomeCargo);
-        setCargoId(onEdit.fk_cargo_id)
-      } else {
-        setCargoId(null);
-        setCargoName(null);
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [onEdit, setor, setCargoId]);
+
+  }, [onEdit]);
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -66,13 +40,11 @@ function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
       const processoData = {
         nome_processo: user.nome_processo.value || null,
         descricao: user.descricao.value || null,
-        fk_setor_id: setorId || null,
-        fk_cargo_id: cargoId || null,
       };
 
       const url = onEdit
-      ? `${connect}/processos/${onEdit.id_processo}`
-      : `${connect}/processos`
+        ? `${connect}/processos/${onEdit.id_processo}`
+        : `${connect}/processos`
 
       const method = onEdit ? 'PUT' : 'POST'
 
@@ -83,13 +55,13 @@ function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
         },
         body: JSON.stringify(processoData),
       });
-      
-      if(!response.ok) {
-        throw new Error (`Erro ao cadastrar/Editar processo. Status: ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao cadastrar/Editar processo. Status: ${response.status}`);
       }
 
       const responseData = await response.json();
-      
+
       toast.success(responseData);
     } catch (error) {
       toast.error("Erro ao cadastrar ou editar processo!")
@@ -99,9 +71,7 @@ function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
     //Limpa os campos e reseta o estaodo de edição
     user.nome_processo.value = "";
     user.descricao.value = "";
-    setCargoName(null);
-    setSetorName(null);
-
+    setOnEdit(null);
     //Atualiza os dados
     getProcessos();
   };
@@ -113,62 +83,9 @@ function CadastroProcesso({ onEdit, getProcessos, nomeSetor, nomeCargo }) {
     // Limpa todos os campos do formulário
     user.nome_processo.value = "";
     user.descricao.value = "";
-    setCargoName(null);
-    setSetorName(null);
+    setOnEdit(null);
   };
 
-  const getSetor = async () => {
-    const { data } = await supabase.from("setor").select();
-    const filteredData = data.filter((item) => item.ativo);
-    const sortData = filteredData.sort();
-    setSetor(sortData);
-  }
-
-
-  const fetchCargo = async () => {
-    try {
-      const { data } = await supabase.from("cargo").select();
-      setCargo(data);
-    } catch (error) {
-      console.log("Erro ao buscar cargos", error);
-    }
-  }
-
-  useEffect(() => {
-    getSetor();
-    fetchCargo();
-  }, [])
-
-
-  //Funções do Modal
-  //Função para abrir o Modal
-  const openModalSetor = () => setShowModalSetor(true);
-  const openModalCargo = () => setShowModalCargo(true);
-  //Função para fechar o Modal
-  const closeModalSetor = () => setShowModalSetor(false);
-  const closeModalCargo = () => setShowModalCargo(false);
-
-  const handleSetorSelect = useCallback((setorId, setorName) => {
-    closeModalSetor();
-    setSetorId(setorId);
-    setSetorName(setorName);
-  }, [closeModalSetor]);
-
-  const handleClearSetor = () => {
-    setSetorId(null);
-    setSetorName(null);
-  }
-
-  const handleCargoSelect = useCallback((cargoId, cargoName) => {
-    closeModalCargo();
-    setCargoId(cargoId);
-    setCargoName(cargoName);
-  }, [closeModalCargo]);
-
-  const handleClearCargo = () => {
-    setCargoId(null);
-    setCargoName(null);
-  }
 
   return (
     <div className="flex justify-center mt-10">

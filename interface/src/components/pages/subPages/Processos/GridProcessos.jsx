@@ -3,7 +3,7 @@ import { BsFillPencilFill } from 'react-icons/bs';
 import { FiLink } from "react-icons/fi";
 import ModalProcessoRisco from '../components/Modal/ModalProcessoRisco';
 
-function GridProcesso({ processos, setOnEdit, setor, cargo }) {
+function GridProcesso({ processos, setOnEdit }) {
 
   const [showModal, setShowModal] = useState(null);
   const [processName, setProcessName] = useState(null);

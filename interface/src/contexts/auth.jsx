@@ -12,6 +12,11 @@ export const AuthProvider = ({ children }) => {
   const [contatos, setContatos] = useState([]);
   const [setores, setSetores] = useState([]);
   const [cargos, setCargos] = useState([]);
+  const [processos, setProcessos] = useState([]);
+  const [riscos, setRiscos] = useState([]);
+  const [medidas_adm, setMedidas_adm] = useState([]);
+  const [medidas_epi, setMedidas_epi] = useState([]);
+  const [medidas_epc, setMedidas_epc] = useState([]);
   const [companyId, setCompanyId] = useState('')
 
   const handleSetCompanyId = () => {
@@ -102,7 +107,6 @@ export const AuthProvider = ({ children }) => {
       await getUnidades();
       await getSetores();
       await getCargos();
-      logLocalStorage();
 
       toast.success(`Empresa ${nameCompany} selecionada!`);
     } catch (error) {
@@ -226,6 +230,46 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getProcessos = async () => {
+    try {
+      const response = await fetch(`${connect}/processos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar processos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => {
+        return a.nome_processo.localeCompare(b.nome_processo);
+      });
+
+      setProcessos(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar processos");
+      console.log(`Erro ao buscar processos. ${error}`)
+    }
+  };
+
+  const getRiscos = async () => {
+    try {
+      const response = await fetch(`${connect}/riscos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar riscos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => {
+        return a.nome_risco.localeCompare(b.nome_risco);
+      });
+
+      setRiscos(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar riscos");
+      console.log(`Erro ao buscar riscos. ${error}`)
+    }
+  };
+
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
 
@@ -275,7 +319,6 @@ export const AuthProvider = ({ children }) => {
     if (!unidades.length || !setores.length || !cargos.length) {
       fetchData();
     }
-    logLocalStorage();
 
   }, [companyId]);
 
@@ -285,13 +328,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(`selectedCompany_${companyId}_setoresInfo`);
     localStorage.removeItem(`selectedCompany_${companyId}_cargosInfo`);
   }
-
-  const logLocalStorage = () => {
-    console.log("Empresa: ", localStorage.getItem("selectedCompanyData"))
-    console.log("Unidades: ", localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`))
-    console.log("Setores: ", localStorage.getItem(`selectedCompany_${companyId}_setoresInfo`))
-    console.log("Cargos: ", localStorage.getItem(`selectedCompany_${companyId}_cargosInfo`))
-  };
 
   return (
     <AuthContext.Provider
@@ -316,6 +352,12 @@ export const AuthProvider = ({ children }) => {
         getCargos,
         setCargos,
         cargos,
+        getProcessos,
+        setProcessos,
+        processos,
+        getRiscos,
+        setRiscos,
+        riscos,
       }}>
       {children}
     </AuthContext.Provider>

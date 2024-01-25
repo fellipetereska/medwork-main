@@ -1279,44 +1279,30 @@ router.post("/setores_processos", (req, res) => {
 
 });
 
-//Update row int table
-router.put("/setores_processos/:id_setor_processo", (req, res) => {
-  const id_setor_processo = req.params.id_setor_processo; // Obtém o ID da empresa da URL
-  const {
-    fk_processo_id,
-    fk_setor_id,
-  } = req.body;
+//Delete rows in table
+router.delete("/setores_processos/:id_setor_processo", (req, res) => {
+  const id_setor_processo = req.params.id_setor_processo;
 
-  const q = `
-    UPDATE setores_processos
-    fk_processo_id = ?
-    SET fk_setor_id = ?,
-    WHERE id_setor_processo = ?
-    `;
-
-  const values = [
-    fk_processo_id,
-    fk_setor_id,
-    id_setor_processo
-  ];
+  const sql = "DELETE FROM setores_processos WHERE id_setor_processo = ?";
 
   pool.getConnection((err, con) => {
-    if (err) return next(err);
+    if (err) {
+      console.error("Erro ao obter conexão do pool", err);
+      return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+    }
 
-    con.query(q, values, (err) => {
+    con.query(sql, [id_setor_processo], (err, result) => {
+      con.release();
+
       if (err) {
-        console.error("Erro ao atualizar vinculo do processo ao setor", err);
+        console.error("Erro ao deletar o vínculo", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      return res.status(200).json("Vinculo atualizado com sucesso!");
+      return res.status(200).json({ message: "Vínculo excluido com sucesso" });
     });
-
-    con.release();
-  })
-
+  });
 });
-
 
 
 //Vinculando riscos aos processos

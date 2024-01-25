@@ -1,92 +1,77 @@
 import React, { useState } from "react";
 import icon_setor from '../../../media/icon_setor.svg'
+import icon_medidas from '../../../media/icon_medidas.svg'
+import icon_riscos from '../../../media/icon_riscos.svg'
+import icon_processos from '../../../media/icon_processos.svg'
 import { toast } from "react-toastify";
 
 import useAuth from '../../../../hooks/useAuth'
-import ModalSearchSetor from "../components/Modal/ModalSearchSetor";
 import { IoClose } from "react-icons/io5";
 
-function LinkScreen() {
+import SetoresProcessos from "./setoresProcessos/SetoresProcessos";
 
-  const [showModalSetor, setShowModalSetor] = useState(false);
-  const [setorId, setSetorId] = useState(null);
-  const [setorNome, setSetorNome] = useState(null);
+function LinkScreen({ selected }) {
 
-  const { setores } = useAuth(null)
-
-  const openModal = () => setShowModalSetor(!showModalSetor);
-  const closeModal = () => {
-    setShowModalSetor(false)
-    handleClearSetor();
-  }
-
-  // Função para atualizar o Id Setor
-  const handleSetorSelect = (SetorId, SetorName) => {
-    closeModal();
-    setSetorId(SetorId)
-    setSetorNome(SetorName)
-  };
-
-  const handleClearSetor = () => {
-    setSetorId(null);
-    setSetorNome(null);
+  const renderContent = () => {
+    switch (selected) {
+      case 0:
+        return (
+          <>
+            <div className="mt-12 mb-24 px-8 max-w-5xl mx-auto">
+              <h1 className="mb-4 text-3xl text-center font-extrabold text-sky-700">Para selecionar o vínculo desejado, clique no menu acima e escolha a opção correspondente:</h1>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="p-6 hover:bg-gray-50 hover: rounded-md flex flex-col justify-center items-center">
+                  <div className="flex justify-center items-center flex-col">
+                    <span className="text-lg font-medium text-gray-800">Setores/Processos: </span>
+                    <p className="text-base text-gray-600">
+                      Vincular Processos aos setores
+                    </p>
+                  </div>
+                </div>
+                <div className="p-6 hover:bg-gray-50 hover: rounded-md flex flex-col justify-center items-center">
+                  <span className="text-lg font-medium text-gray-800">Processos/Riscos: </span>
+                  <p className="text-base text-gray-600">
+                    Vincular Riscos aos processos
+                  </p>
+                </div>
+                <div className="p-6 hover:bg-gray-50 hover: rounded-md flex flex-col justify-center items-center">
+                  <div className="flex justify-center items-center flex-col">
+                    <span className="text-lg font-medium text-gray-800">Riscos/Medidas: </span>
+                    <p className="text-base text-gray-600">
+                      Vincular Medidas a risco
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      case 1:
+        return (
+          <>
+            <SetoresProcessos />
+          </>
+        );
+      case 2:
+        return (
+          <>
+            Teste 2
+          </>
+        );
+      case 3:
+        return (
+          <>
+            Teste 3
+          </>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <>
-      <div className="flex justify-center mt-10">
-        <div className="w-full max-w-5xl">
-          <div className="grid grid-cols-4">
-            <div className="p-2">
-              <div className="flex justify-center mb-6">
-                <h3 className="text-2xl font-bold text-sky-700">Selecione o Setor</h3>
-              </div>
-              <div>
-                {setorNome ? (
-                  <div className="mb-6">
-                    <p>Setor selecionado:</p>
-                    <div className="flex gap-2 items-center">
-                      <div className="w-full bg-gray-100 shadow-md rounded-md px-2 justify-center flex py-2 text-sky-700 font-bold text-lg">
-                        <h3>{setorNome}</h3>
-                      </div>
-                      <IoClose className="text-2xl" onClick={handleClearSetor} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mb-6">
-                    <p>Setor selecionado:</p>
-                    <div className="w-full bg-gray-100 shadow-md rounded-md px-2 justify-center flex py-2 text-sky-700 font-bold text-base">
-                      <h3>Nenhum Setor Selecionado</h3>
-                    </div>
-                  </div>
-                )}
-                <div
-                  onClick={openModal}
-                  className="bg-gray-100 w-full cursor-pointer rounded-md shadow-md flex flex-col justify-center items-center py-2"
-                >
-                  <img src={icon_setor} />
-                  <p className="text-sm font-medium">Selecione um setor</p>
-                </div>
-              </div>
-              <ModalSearchSetor
-                isOpen={showModalSetor}
-                onCancel={closeModal}
-                children={setores}
-                onContactSelect={handleSetorSelect}
-              />
-            </div>
-            <div className="flex justify-center">
-              <h3>Teste</h3>
-            </div>
-            <div className="flex justify-center">
-              <h3>Teste</h3>
-            </div>
-            <div className="flex justify-center">
-              <h3>Teste</h3>
-            </div>
-          </div>
-        </div>
-      </div>
+      {renderContent()}
     </>
   )
 }
