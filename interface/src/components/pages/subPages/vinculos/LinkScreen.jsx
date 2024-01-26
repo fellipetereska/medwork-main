@@ -9,6 +9,8 @@ import useAuth from '../../../../hooks/useAuth'
 import { IoClose } from "react-icons/io5";
 
 import SetoresProcessos from "./setoresProcessos/SetoresProcessos";
+import ProcessosRiscos from './processosRiscos/ProcessosRiscos'
+import RiscosMedidas from "./riscosMedidas/RiscsoMedidas";
 
 function LinkScreen({ selected }) {
 
@@ -22,23 +24,23 @@ function LinkScreen({ selected }) {
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="p-6 hover:bg-gray-50 hover: rounded-md flex flex-col justify-center items-center">
                   <div className="flex justify-center items-center flex-col">
-                    <span className="text-lg font-medium text-gray-800">Setores/Processos: </span>
+                    <span className="text-lg font-medium text-gray-800">Processos em setores: </span>
                     <p className="text-base text-gray-600">
-                      Vincular Processos aos setores
+                      Vincular Processos ao setor
                     </p>
                   </div>
                 </div>
                 <div className="p-6 hover:bg-gray-50 hover: rounded-md flex flex-col justify-center items-center">
-                  <span className="text-lg font-medium text-gray-800">Processos/Riscos: </span>
+                  <span className="text-lg font-medium text-gray-800">Riscos em Processos: </span>
                   <p className="text-base text-gray-600">
-                    Vincular Riscos aos processos
+                    Vincular Riscos ao processo
                   </p>
                 </div>
                 <div className="p-6 hover:bg-gray-50 hover: rounded-md flex flex-col justify-center items-center">
                   <div className="flex justify-center items-center flex-col">
-                    <span className="text-lg font-medium text-gray-800">Riscos/Medidas: </span>
+                    <span className="text-lg font-medium text-gray-800">Medidas em Riscos: </span>
                     <p className="text-base text-gray-600">
-                      Vincular Medidas a risco
+                      Vincular Medidas ao risco
                     </p>
                   </div>
                 </div>
@@ -55,13 +57,13 @@ function LinkScreen({ selected }) {
       case 2:
         return (
           <>
-            Teste 2
+            <ProcessosRiscos />
           </>
         );
       case 3:
         return (
           <>
-            Teste 3
+            <RiscosMedidas />
           </>
         );
       default:

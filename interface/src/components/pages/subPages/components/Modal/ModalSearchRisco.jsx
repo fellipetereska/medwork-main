@@ -54,7 +54,7 @@ const ModalSearchRisco = ({ onCancel, isOpen, children, onSelect }) => {
               <li
                 key={i}
                 className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
-                onClick={() => onSelect(item.id_risco)}
+                onClick={() => onSelect(item.id_risco, item.nome_risco)}
               >
                 <div className="flex items-center text-sm font-light text-gray-500">
                   <div className="flex-1 min-w-0">

@@ -14,9 +14,9 @@ export const AuthProvider = ({ children }) => {
   const [cargos, setCargos] = useState([]);
   const [processos, setProcessos] = useState([]);
   const [riscos, setRiscos] = useState([]);
-  const [medidas_adm, setMedidas_adm] = useState([]);
-  const [medidas_epi, setMedidas_epi] = useState([]);
-  const [medidas_epc, setMedidas_epc] = useState([]);
+  const [medidasAdm, setMedidasAdm] = useState([]);
+  const [medidasEpi, setMedidasEpi] = useState([]);
+  const [medidasEpc, setMedidasEpc] = useState([]);
   const [companyId, setCompanyId] = useState('')
 
   const handleSetCompanyId = () => {
@@ -74,43 +74,47 @@ export const AuthProvider = ({ children }) => {
   }
 
   const handleSelectedCompany = async (id, nameCompany) => {
-    if (!id) {
-      toast.warn("Erro ao selecionar empresa!");
-      throw new Error("Erro ao selecionar empresa!");
-    }
-
     try {
-      const response = await fetch(`${connect}/selectCompany/${id}`);
-
-      if (!response.ok) {
-        throw new Error(`Erro ao selecionar empresa! Status: ${response.status}`);
+      if (!id) {
+        toast.warn("Erro ao selecionar empresa!");
+        throw new Error("Erro ao selecionar empresa!");
       }
 
-      const empresa = await response.json();
+      try {
+        const response = await fetch(`${connect}/selectCompany/${id}`);
 
-      const newSelectedCompany = {
-        id_empresa: id,
-        nome_empresa: nameCompany,
-      };
+        if (!response.ok) {
+          throw new Error(`Erro ao selecionar empresa! Status: ${response.status}`);
+        }
 
-      // Define companyId no estado
-      setCompanyId(newSelectedCompany.id_empresa);
+        const empresa = await response.json();
 
-      // Adiciona as informações da empresa ao localStorage
-      localStorage.removeItem('selectedCompanyData');
-      localStorage.setItem('selectedCompanyData', JSON.stringify(newSelectedCompany));
+        const newSelectedCompany = {
+          id_empresa: id,
+          nome_empresa: nameCompany,
+        };
 
-      setSelectedCompany([]);
-      setSelectedCompany((prevCompanies) => [...prevCompanies, newSelectedCompany]);
+        // Define companyId no estado
+        setCompanyId(newSelectedCompany.id_empresa);
 
-      // Chama funções para carregar unidades, setores, cargos, etc.
-      await getUnidades();
-      await getSetores();
-      await getCargos();
+        // Adiciona as informações da empresa ao localStorage
+        localStorage.removeItem('selectedCompanyData');
+        localStorage.setItem('selectedCompanyData', JSON.stringify(newSelectedCompany));
 
-      toast.success(`Empresa ${nameCompany} selecionada!`);
+        setSelectedCompany([]);
+        setSelectedCompany((prevCompanies) => [...prevCompanies, newSelectedCompany]);
+
+        // Chama funções para carregar unidades, setores, cargos, etc.
+        await getUnidades();
+        await getSetores();
+        await getCargos();
+
+        toast.success(`Empresa ${nameCompany} selecionada!`);
+      } catch (error) {
+        console.error(error);
+      }
     } catch (error) {
-      console.error(error);
+      console.log("Erro ao selecionar empresa", error)
     }
   };
 
@@ -270,6 +274,66 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getMedidasAdm = async () => {
+    try {
+      const response = await fetch(`${connect}/medidas_adm`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar medidas adminitrativas. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => {
+        return a.descricao_medida_adm.localeCompare(b.descricao_medida_adm);
+      });
+
+      setMedidasAdm(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar medidas adminitrativas");
+      console.log(`Erro ao buscar medidas adminitrativas. ${error}`)
+    }
+  }
+
+  const getMedidasEpi = async () => {
+    try {
+      const response = await fetch(`${connect}/medidas_epi`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar epi's. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => {
+        return a.nome_medida.localeCompare(b.nome_medida);
+      });
+
+      setMedidasEpi(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar epi's");
+      console.log(`Erro ao buscar epi's. ${error}`)
+    }
+  }
+
+  const getMedidasEpc = async () => {
+    try {
+      const response = await fetch(`${connect}/medidas_epc`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar epc's. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => {
+        return a.descricao_medida.localeCompare(b.descricao_medida);
+      });
+
+      setMedidasEpc(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar epc's");
+      console.log(`Erro ao buscar epc's. ${error}`)
+    }
+  }
+
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
 
@@ -358,6 +422,15 @@ export const AuthProvider = ({ children }) => {
         getRiscos,
         setRiscos,
         riscos,
+        getMedidasAdm,
+        setMedidasAdm,
+        medidasAdm,
+        getMedidasEpi,
+        setMedidasEpi,
+        medidasEpi,
+        getMedidasEpc,
+        setMedidasEpc,
+        medidasEpc,
       }}>
       {children}
     </AuthContext.Provider>

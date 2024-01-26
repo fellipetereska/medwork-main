@@ -1347,42 +1347,29 @@ router.post("/processos_riscos", (req, res) => {
 
 });
 
-//Update row int table
-router.put("/processos_riscos/:id_processo_risco", (req, res) => {
-  const id_processo_risco = req.params.id_processo_risco; // Obtém o ID da empresa da URL
-  const {
-    fk_processo_id,
-    fk_risco_id,
-  } = req.body;
+//Delete rows in table
+router.delete("/processos_riscos/:id_processo_risco", (req, res) => {
+  const id_processo_risco = req.params.id_processo_risco;
 
-  const q = `
-    UPDATE processos_riscos
-    SET fk_risco_id = ?,
-    fk_processo_id = ?
-    WHERE id_processo_risco = ?
-    `;
-
-  const values = [
-    fk_processo_id,
-    fk_risco_id,
-    id_processo_risco
-  ];
+  const sql = "DELETE FROM processos_riscos WHERE id_processo_risco = ?";
 
   pool.getConnection((err, con) => {
-    if (err) return next(err);
+    if (err) {
+      console.error("Erro ao obter conexão do pool", err);
+      return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+    }
 
-    con.query(q, values, (err) => {
+    con.query(sql, [id_processo_risco], (err, result) => {
+      con.release();
+
       if (err) {
-        console.error("Erro ao atualizar vinculo do risco ao processo", err);
+        console.error("Erro ao deletar o vínculo", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      return res.status(200).json("Vinculo atualizado com sucesso!");
+      return res.status(200).json({ message: "Vínculo excluido com sucesso" });
     });
-
-    con.release();
-  })
-
+  });
 });
 
 
@@ -1429,45 +1416,29 @@ router.post("/riscos_medidas", (req, res) => {
 
 });
 
-//Update row int table
-router.put("/riscos_medidas/:id_risco_medida", (req, res) => {
-  const id_risco_medida = req.params.id_risco_medida; // Obtém o ID da empresa da URL
-  const {
-    fk_risco_id,
-    fk_medida_id,
-  } = req.body;
+router.delete("/riscos_medidas/:id_risco_medida", (req, res) => {
+  const id_risco_medida = req.params.id_risco_medida;
 
-  const q = `
-    UPDATE riscos_medidas
-    SET fk_medida_id = ?,
-    fk_medida_id = ?
-    WHERE id_risco_medida = ?
-    `;
-
-  const values = [
-    fk_risco_id,
-    fk_risco_id,
-    id_risco_medida
-  ];
+  const sql = "DELETE FROM riscos_medidas WHERE id_risco_medida = ?";
 
   pool.getConnection((err, con) => {
-    if (err) return next(err);
+    if (err) {
+      console.error("Erro ao obter conexão do pool", err);
+      return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+    }
 
-    con.query(q, values, (err) => {
+    con.query(sql, [id_risco_medida], (err, result) => {
+      con.release();
+
       if (err) {
-        console.error("Erro ao atualizar vinculo da medida no risco", err);
+        console.error("Erro ao deletar o vínculo", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      return res.status(200).json("Vinculo atualizado com sucesso!");
+      return res.status(200).json({ message: "Vínculo excluido com sucesso" });
     });
-
-    con.release();
-  })
-
+  });
 });
-
-
 
 
 

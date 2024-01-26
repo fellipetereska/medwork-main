@@ -51,7 +51,7 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onSetorSelect, 
               <li
                 key={i}
                 className="py-3 hover:bg-gray-100 hover:shadow-sm shadow-sm bg-gray-50 cursor-pointer px-4 rounded-md"
-                onClick={() => onSetorSelect(child.id_processo)}
+                onClick={() => onSetorSelect(child.id_processo, child.nome_processo)}
               >
                 <div className="flex items-center gap-12">
                   <div className="flex-1 min-w-0">

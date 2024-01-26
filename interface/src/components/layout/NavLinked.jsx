@@ -1,6 +1,10 @@
 import React from "react";
 
-
+import icon_setor from '../media/icon_setor.svg'
+import icon_processo from '../media/icon_processos.svg'
+import icon_riscos from '../media/icon_riscos.svg'
+import icon_medida from '../media/icon_medidas.svg'
+import icon_seta from '../media/icon_seta.png'
 
 function NavLinked({ select }) {
 
@@ -13,21 +17,33 @@ function NavLinked({ select }) {
             className="inline-flex flex-col items-center justify-center px-5 rounded-l-full hover:bg-gray-50 text-base"
             onClick={() => select(1)}
           >
-            Setores/Processos
+            <div className="flex gap-2 items-center flex-col md:flex-row">
+              <img className="h-8" src={icon_processo} alt="" />
+              <img className="h-4" src={icon_seta} />
+              <img className="h-8" src={icon_setor} />
+            </div>
           </button>
           <button
             type="button"
             className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 text-base"
             onClick={() => select(2)}
           >
-            Processos/Riscos
+            <div className="flex gap-2 items-center flex-col md:flex-row">
+              <img className="h-8" src={icon_riscos} />
+              <img className="h-4" src={icon_seta} />
+              <img className="h-8" src={icon_processo} alt="" />
+            </div>
           </button>
           <button
             type="button"
             className="inline-flex flex-col items-center justify-center px-5 rounded-r-full hover:bg-gray-50 text-base"
             onClick={() => select(3)}
           >
-            Riscos/Medidas
+            <div className="flex gap-2 items-center flex-col md:flex-row">
+              <img className="h-8" src={icon_medida} />
+              <img className="h-4" src={icon_seta} />
+              <img className="h-8" src={icon_riscos} alt="" />
+            </div>
           </button>
         </div>
       </div>
