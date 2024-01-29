@@ -17,7 +17,10 @@ export const AuthProvider = ({ children }) => {
   const [medidasAdm, setMedidasAdm] = useState([]);
   const [medidasEpi, setMedidasEpi] = useState([]);
   const [medidasEpc, setMedidasEpc] = useState([]);
-  const [companyId, setCompanyId] = useState('')
+  const [setoresProcessos, setSetoresProcessos] = useState([]);
+  const [processosRiscos, setProcessosRiscos] = useState([]);
+  const [riscosMedidas, setRiscosMedidas] = useState([]);
+  const [companyId, setCompanyId] = useState('');
 
   const handleSetCompanyId = () => {
     try {
@@ -334,6 +337,38 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const getSetoresProcessos = async () => {
+    try {
+      const response = await fetch(`${connect}/setores_processos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Processos dos setores. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setSetoresProcessos(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar Setores Processos");
+      console.log(`Erro ao buscar Setores Processos. ${error}`)
+    }
+  }
+
+  const getProcessosRiscos = async () => {
+    try {
+      const response = await fetch(`${connect}/processos_riscos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Riscos dos processos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setProcessosRiscos(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar Processos Riscos");
+      console.log(`Erro ao buscar Processos Riscos. ${error}`)
+    }
+  }
+
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
 
@@ -431,6 +466,12 @@ export const AuthProvider = ({ children }) => {
         getMedidasEpc,
         setMedidasEpc,
         medidasEpc,
+        getSetoresProcessos,
+        setSetoresProcessos,
+        setoresProcessos,
+        getProcessosRiscos,
+        setProcessosRiscos,
+        processosRiscos,
       }}>
       {children}
     </AuthContext.Provider>

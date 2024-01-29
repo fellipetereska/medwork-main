@@ -9,11 +9,13 @@ function Inventario() {
     const {
         handleSetCompanyId, companyId, selectedCompany,
         getUnidades, unidades,
-        getSetores, setores,
+        getSetores, setores, setSetores,
         getCargos, cargos,
         getProcessos, processos,
         getRiscos, riscos,
         getMedidasAdm, medidasAdm, getMedidasEpi, medidasEpi, getMedidasEpc, medidasEpc,
+        getSetoresProcessos, setSetoresProcessos, setoresProcessos,
+        getProcessosRiscos, setProcessosRiscos, processosRiscos
     } = useAuth(null);
 
     const [nameCompany, setNameCompany] = useState(null);
@@ -25,6 +27,13 @@ function Inventario() {
 
     useEffect(() => {
         setNameCompany(selectedCompany[0]?.nome_empresa)
+        getUnidades();
+        getCargos();
+        getSetores();
+        getProcessos();
+        getRiscos();
+        getSetoresProcessos();
+        getProcessosRiscos();
     }, [companyId])
 
     return (
@@ -33,9 +42,16 @@ function Inventario() {
                 <h1 className="text-3xl font-extrabold text-sky-700">Inventário de Riscos</h1>
             </div>
 
-            {/* <FrmInventario
-                nameCompany={nameCompany}
-            /> */}
+            <FrmInventario
+                unidades={unidades}
+                cargos={cargos}
+                setores={setores}
+                setSetores={setSetores}
+                processos={processos}
+                riscos={riscos}
+                setoresProcessos={setoresProcessos}
+                processosRiscos={processosRiscos}
+            />
 
             <GridInventario />
         </>
