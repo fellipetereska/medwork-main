@@ -9,7 +9,9 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
   const ref = useRef(null);
 
   const [mailCompleted1, setMailCompleted1] = useState(false);
+  const [showMailError1, setShowMailError1] = useState(false);
   const [mailCompleted2, setMailCompleted2] = useState(false);
+  const [showMailError2, setShowMailError2] = useState(false);
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
@@ -42,7 +44,8 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
         nome_contato: user.nome_contato.value,
         telefone_contato: user.telefone_contato.value,
         email_contato: user.email_contato.value,
-        email_secundario_contato: user.email_secundario_contato.value
+        email_secundario_contato: user.email_secundario_contato.value,
+        ativo: 1,
       }
 
       const url = onEdit
@@ -114,7 +117,13 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
     }
   }
 
-  const handleInputChangeMail2 = (e) => {
+  const handleClickMail1 = () => {
+    if (!mailCompleted2) {
+      setShowMailError2(true);
+    }
+  }
+
+  const handleBlurMail2 = (e) => {
     const inputValue = e.target.value;
     if (inputValue.trim() === "") {
       setMailCompleted2(false);
@@ -124,6 +133,14 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
       setMailCompleted2(true);
     }
   }
+
+  const handleClickMail2 = () => {
+    if (!mailCompleted2) {
+      setShowMailError2(true);
+    }
+  }
+
+
 
   return (
     <div className="flex justify-center mt-10">
@@ -161,9 +178,10 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
               type="text"
               name="email_contato"
               onBlur={handleInputChangeMail1}
+              onClick={handleClickMail1}
               placeholder="Email para Contato"
             />
-            <p className={`${mailCompleted1 ? "hidden" : "text-xs font-medium text-red-600 mb-3 px-1 mt-1"}`}>*Email Incompleto</p>
+            <p className={`${showMailError1 ? "text-xs font-medium text-red-600 px-1 mt-1" : "hidden"}`}>*Email Incompleto</p>
           </div>
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -173,10 +191,11 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="email_secundario_contato"
-              onBlur={handleInputChangeMail2}
+              onBlur={handleBlurMail2}
+              onClick={handleClickMail2}
               placeholder="Email para Contato"
             />
-            <p className={`${mailCompleted2 ? "hidden" : "text-xs font-medium text-red-600 px-1 mt-1"}`}>*Email Incompleto</p>
+            <p className={`${showMailError2 ? "text-xs font-medium text-red-600 px-1 mt-1" : "hidden"}`}>*Email Incompleto</p>
           </div>
           <div className="w-full px-3 pl-8 flex justify-end">
             <div>

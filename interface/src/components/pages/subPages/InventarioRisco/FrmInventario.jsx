@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { connect } from "../../../../services/api";
+import { toast } from "react-toastify";
 
+import LoadingScreen from "../components/LoadingScreen";
 import ModalSearchUnidade from "../components/Modal/ModalSearchUnidade";
 import ModalSearchSetor from "../components/Modal/ModalSearchSetor";
 import ModalSearchProcesso from '../components/Modal/ModalSearchProcesso';
@@ -8,36 +11,54 @@ import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
 
-function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos, processos, processosRiscos, riscos }) {
+function FrmInventario({
+  unidades,
+  cargos,
+  setores,
+  setoresProcessos,
+  processos,
+  processosRiscos,
+  riscos,
+  onEdit,
+  companyId,
+  getInventario,
+}) {
 
   const user = useRef();
 
-  const [filteredSetores, setFilteredetores] = useState([])
+  const [loading, setLoading] = useState(false);
+
+  const [filteredSetores, setFilteredSetores] = useState([])
   const [filteredProcessos, setFilteredProcessos] = useState([])
+  const [filteredRiscos, setFilteredRiscos] = useState([]);
 
   const [showModalUnidade, setShowModalUnidade] = useState(false);
-  const [unidadeId, setUnidadeId] = useState('');
-  const [nomeUnidade, setNomeUnidade] = useState('');
-  const [setorId, setSetorId] = useState('');
-  const [setorNome, setSetorNome] = useState('');
   const [showModalSetor, setShowModalSetor] = useState(false);
-  const [processoId, setProcessoId] = useState('');
-  const [processoNome, setProcessoNome] = useState('');
   const [showModalProcesso, setShowModalProcesso] = useState(false);
-  const [riscoId, setRiscoId] = useState('');
-  const [riscoNome, setRiscoNome] = useState('');
-  const [filteredRiscos, setFilteredRiscos] = useState([])
   const [showModalRisco, setShowModalRisco] = useState(false);
+  const [unidadeId, setUnidadeId] = useState('');
+  const [setorId, setSetorId] = useState('');
+  const [processoId, setProcessoId] = useState('');
+  const [riscoId, setRiscoId] = useState('');
+  const [nomeUnidade, setNomeUnidade] = useState('');
+  const [setorNome, setSetorNome] = useState('');
+  const [processoNome, setProcessoNome] = useState('');
+  const [riscoNome, setRiscoNome] = useState('');
 
   //Inputs Form
-  const [pessoasExpostas, setPessoasExpostas] = useState('');
-  const [avaliacao, setAvaliacao] = useState('');
-  const [limiteTolerancia, setLimiteTolerancia] = useState('');
-  const [metodologia, setMetodologia] = useState('');
-  const [severidade, setSeveridade] = useState('');
   const [consequencia, setConsequencia] = useState('');
-  const [nivel, setNivel] = useState('');
+  const [avaliacao, setAvaliacao] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [pessoasExpostas, setPessoasExpostas] = useState('');
+  const [limiteTolerancia, setLimiteTolerancia] = useState('');
+  const [medicao, setMedicao] = useState('');
+  const [checkMedicao, setCheckMedicao] = useState(false);
   const [probabilidade, setProbabilidade] = useState('');
+  const [severidade, setSeveridade] = useState('');
+  const [nivel, setNivel] = useState('');
+  const [metodologia, setMetodologia] = useState('');
+  const [comentarios, setComentarios] = useState('')
+  const [medidas, setMedidas] = useState([]);
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -51,11 +72,10 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
   const closeModalProcesso = () => setShowModalProcesso(false);
   const closeModalRisco = () => setShowModalRisco(false);
 
-  // Filtrando os modais
   useEffect(() => {
     if (showModalSetor && unidadeId) {
       const filtered = setores.filter((i) => i.fk_unidade_id === unidadeId);
-      setFilteredetores(filtered);
+      setFilteredSetores(filtered);
     }
   }, [showModalSetor, unidadeId, setores]);
 
@@ -64,14 +84,17 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
     closeModalUnidade();
     setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
+    handleClearSetor();
   };
 
   const handleClearUnidade = () => {
+    setLoading(true);
     setUnidadeId(null);
     setNomeUnidade(null);
     handleClearProcesso();
     handleClearRisco();
     handleClearSetor();
+    setFilteredSetores([]);
   };
 
   // Função para atualizar o Setor
@@ -79,6 +102,8 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
     closeModalSetor();
     setSetorId(SetorId);
     setSetorNome(SetorName);
+    handleClearProcesso();
+    setPessoasExpostas('');
 
     const filteredProcessosSetores = setoresProcessos.filter((i) => i.fk_setor_id === SetorId);
     const IdsProcesso = filteredProcessosSetores.map((item) => item.fk_processo_id);
@@ -103,6 +128,7 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
   };
 
   const handleClearSetor = () => {
+    setLoading(true);
     setSetorId(null);
     setSetorNome(null);
     setPessoasExpostas('');
@@ -115,16 +141,17 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
     closeModalProcesso();
     setProcessoId(ProcessoId);
     setProcessoNome(ProcessoNome);
+    handleClearRisco();
 
     const filteredProcessosRiscos = processosRiscos.filter((i) => i.fk_processo_id === ProcessoId);
     const idsRiscos = filteredProcessosRiscos.map((item) => item.fk_risco_id);
     const filteredRiscos = riscos.filter((i) => idsRiscos.includes(i.id_risco));
 
     setFilteredRiscos(filteredRiscos);
-
   };
 
   const handleClearProcesso = () => {
+    setLoading(true);
     setProcessoId(null);
     setProcessoNome(null);
     handleClearRisco();
@@ -144,23 +171,35 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
   };
 
   const handleClearRisco = () => {
-    setRiscoId(null);
-    setRiscoNome(null);
-    setFilteredRiscos('');
-    setAvaliacao('');
-    setLimiteTolerancia('');
-    setConsequencia('');
-    setMetodologia('');
-    setSeveridade('');
+    setLoading(true);
+    setRiscoId('');
+    setRiscoNome('');
+    setRiscosInput('');
   }
 
   const setRiscosInput = (risco) => {
-    setAvaliacao(risco.classificacao_risco || 'N/A');
-    setLimiteTolerancia(risco.limite_tolerancia_risco || 'N/A');
-    setConsequencia(risco.danos_saude_risco || 'N/A');
-    setMetodologia(risco.metodologia_risco || 'N/A');
-    setSeveridade(risco.severidade_risco || 'N/A')
-  }
+    if (!risco) {
+      setAvaliacao('');
+      setLimiteTolerancia('');
+      setConsequencia('');
+      setMetodologia('');
+      setSeveridade('');
+      setMedicao('');
+    } else {
+      setAvaliacao(risco.classificacao_risco || 'N/A');
+      setLimiteTolerancia(risco.limite_tolerancia_risco || 'N/A');
+      setConsequencia(risco.danos_saude_risco || 'N/A');
+      setMetodologia(risco.metodologia_risco || 'N/A');
+      setSeveridade(risco.severidade_risco || 'N/A');
+
+      if (risco.classificacao_risco === "Qualitativo") {
+        setMedicao("N/A");
+      } else {
+        setMedicao('');
+      }
+    }
+    setLoading(true);
+  };
 
   const handleProbabilidadeChange = (event) => {
     const selectedProbabilidade = parseInt(event.target.value, 10);
@@ -184,10 +223,94 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
     }
   };
 
+  const handleMedicaoCheck = () => {
+    setCheckMedicao(!checkMedicao);
+  }
+
+  useEffect(() => {
+    if (onEdit) {
+      setUnidadeId(onEdit.fk_unidade_id || '');
+      setSetorId(onEdit.fk_setor_id || '');
+      setPessoasExpostas(onEdit.pessoas_expostas || '');
+      setProcessoId(onEdit.fk_processo_id || '');
+      setRiscoId(onEdit.fk_risco_id || '');
+      setConsequencia(onEdit.fontes || '');
+      setMedicao(onEdit.medicao || '');
+      setMedidas(onEdit.medidas || '');
+      setProbabilidade(onEdit.probabilidade || '');
+      setNivel(onEdit.nivel || '');
+      setComentarios(onEdit.comentarios || '');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [onEdit]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome) {
+      toast.warn("Preencha todos os campos!");
+    }
+    try {
+      const inventarioData = {
+        fk_empresa_id: companyId || '',
+        fk_unidade_id: unidadeId || '',
+        fk_setor_id: setorId || '',
+        pessoas_expostas: pessoasExpostas || '',
+        fk_processo_id: processoId || '',
+        fk_risco_id: riscoId || '',
+        fontes: consequencia || '',
+        medicao: medicao || '',
+        medidas: medidas || '',
+        probabilidade: probabilidade || '',
+        nivel: nivel || '',
+        comentarios: comentarios || ''
+      };
+
+      const url = onEdit
+        ? `${connect}/inventario/${onEdit.id_inventario}`
+        : `${connect}/inventario`
+
+      const method = onEdit ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(inventarioData),
+      });
+
+      if (!response.ok) {
+        toast.error("Erro ao adicionar inventário!")
+        throw new Error(`Erro ao adicionar inventário. Status: ${response.status}`)
+      }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
+    } catch (error) {
+      console.log("Erro ao inserir inventário: ", error)
+    }
+
+    handleClear();
+    getInventario();
+  }
+
+  const handleClear = () => {
+    handleClearUnidade();
+    setConsequencia('');
+    setComentarios('');
+    setMedicao('');
+    setProbabilidade('');
+    setNivel('');
+  }
+
   return (
     <>
+      {loading && <LoadingScreen />}
       <div className="flex justify-center mt-10">
-        <form className="w-full max-w-7xl" ref={user}>
+        <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
             {/* Unidade */}
             <div className="w-full md:w-1/4 px-3">
@@ -290,7 +413,7 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
                   <>
                     <button
                       className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                      onClick={openModalSetor}
+                      onClick={openModalProcesso}
                     >
                       <p className="font-bold">
                         {processoNome}
@@ -409,13 +532,12 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
                 Descrição das Fontes:
               </label>
               <textarea
-                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                 type="text"
                 name="descricao_fontes"
                 placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
               />
             </div>
-
 
             {/* Pessoas Expostas */}
             <div className="w-full md:w-2/12 px-3">
@@ -451,19 +573,24 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
                 Medição:
               </label>
               <input
-                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${medicao === 'N/A' ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} ${checkMedicao ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
                 type="text"
                 name="medicao_risco"
                 placeholder="Medição"
+                value={medicao}
+                disabled={medicao === "N/A" || checkMedicao}
               />
-              <div className="flex items-center gap-2 px-1 mb-3 mt-1">
-              <input
-                type="checkbox"
-                id="municipalCheckbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label className="text-sm font-ligth text-gray-500" htmlFor="municipalCheckbox">Sem Medição</label>
-            </div>
+              <div className={`${medicao === 'N/A' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
+                <input
+                  type="checkbox"
+                  id="medica_risco"
+                  className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
+                  disabled={medicao === "N/A"}
+                  checked={checkMedicao}
+                  onChange={handleMedicaoCheck}
+                />
+                <label className="text-sm font-ligth text-gray-500" htmlFor="medica_risco">Sem Medição</label>
+              </div>
             </div>
             {/* Probabilidade */}
             <div className="w-full md:w-2/12 px-3">
@@ -476,6 +603,8 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
                 name="probabilidade_risco"
                 placeholder="Probabilidade"
                 onChange={handleProbabilidadeChange}
+                value={probabilidade}
+                disabled={probabilidade === "N/A"}
               >
                 <option value="0"> Selecione</option>
                 <option value="1">Muito Baixa</option>
@@ -498,11 +627,12 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
                 value={severidade}
                 disabled
               >
-                <option value="0">Selecione</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                <option value="0"> Selecione</option>
+                <option value="1">Muito Baixa</option>
+                <option value="2">Baixa</option>
+                <option value="3">Média</option>
+                <option value="4">Alta</option>
+                <option value="5">Muito Alta</option>
               </select>
             </div>
             {/* Nível */}
@@ -567,7 +697,7 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
                   Comentários:
                 </label>
                 <textarea
-                  className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                   type="text"
                   name="comentarios"
                   placeholder="Comentários..."
@@ -577,13 +707,13 @@ function FrmInventario({ unidades, cargos, setores, setSetores, setoresProcessos
 
             <div className="w-full px-3 pl-8 flex justify-end">
               <div>
-                <button className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+                <button onClick={() => handleClear()} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
                   Limpar
                 </button>
               </div>
               <div className="px-3 pl-8">
                 <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
-                  Cadastrar
+                  Adicionar
                 </button>
               </div>
             </div>

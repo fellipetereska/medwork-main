@@ -549,6 +549,31 @@ router.put("/contatos/:id_contato", (req, res) => {
 
 });
 
+router.put("/contatos/activate/:id_contato", (req, res) => {
+  const id_contato = req.params.id_contato;
+  const { ativo } = req.body;
+
+  const q = 'UPDATE contatos SET ativo = ? WHERE id_contato = ?';
+  const values = [ativo, id_contato];
+
+  pool.getConnection((err, con) => {
+    if (err) return res.status(500).json({ error: 'Erro ao obter conexão.' });
+
+    con.query(q, values, (err) => {
+      con.release();
+
+      if (err) {
+        console.error('Erro ao atualizar status do contato:', err);
+        return res.status(500).json({ error: 'Erro ao atualizar status do contato.' });
+      }
+
+      res.status(200).json({ message: 'Status do contato atualizado com sucesso.' });
+    });
+  });
+});
+
+
+
 
 //Tabela Processos
 //Get table
@@ -1439,6 +1464,119 @@ router.delete("/riscos_medidas/:id_risco_medida", (req, res) => {
     });
   });
 });
+
+
+
+//Inventário de Riscos
+//Get Table
+router.get("/inventario", (req, res) => {
+  const q = `SELECT * FROM inventario`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+//Add rows in table
+router.post("/inventario", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO inventario SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao cadastrar iventário", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Inventário adicionado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update row int table
+router.put("/inventario/:id_inventario", (req, res) => {
+  const id_inventario = req.params.id_inventario; // Obtém o ID da empresa da URL
+  const {
+    data,
+    fk_empresa_id,
+    fk_unidade_id,
+    fk_setor_id,
+    pessoas_expostas,
+    fk_processo_id,
+    fk_risco_id,
+    fontes,
+    medicao,
+    medidas,
+    probabilidade,
+    nivel,
+    comentarios
+  } = req.body;
+
+  const q = `
+    UPDATE inventario
+    SET data = ?,
+    fk_empresa_id = ?,
+    fk_unidade_id = ?,
+    fk_setor_id = ?,
+    pessoas_expostas = ?,
+    fk_processo_id = ?,
+    fk_risco_id = ?,
+    fontes = ?,
+    medicao = ?,
+    medidas = ?,
+    probabilidade = ?,
+    nivel = ?,
+    comentarios = ?
+    WHERE id_inventario = ?
+    `;
+
+  const values = [
+    data,
+    fk_empresa_id,
+    fk_unidade_id,
+    fk_setor_id,pessoas_expostas,
+    fk_processo_id,
+    fk_risco_id,
+    fontes,
+    medicao,
+    medidas,
+    probabilidade,
+    nivel,
+    comentarios,
+    id_inventario
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar Inventário", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Inventário atualizado com sucesso!");
+    });
+  })
+
+});
+
 
 
 

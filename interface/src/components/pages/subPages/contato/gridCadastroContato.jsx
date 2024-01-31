@@ -2,7 +2,7 @@ import { BsFillPencilFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { connect } from '../../../../services/api';
 
-function GridCadastroContato({ contato, setContato, setOnEdit }) {
+function GridCadastroContato({ contato, setContato, setOnEdit, getContato }) {
 
   const handleEditClick = (empresa) => () => {
     handleEdit(empresa);
@@ -11,33 +11,31 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
     setOnEdit(item);
   };
 
-  // const handleDesactivation = async (id, ativo) => {
-  //   try {
-  //     // Inverte o estado ativo localmente
-  //     const novoContato = contato.map(item =>
-  //       item.id_contato === id ? { ...item, ativo: !ativo } : item
-  //     );
-  //     setContato(novoContato);
+  const handleDesactivation = async (id, ativo) => {
+    try {
+      const response = await fetch(`${connect}/contatos/activate/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ativo: ativo === 1 ? 0 : 1 }),
+      });
 
-  //     // Atualiza o estado no banco de dados
-  //     const { error } = await supabase
-  //       .from("contato")
-  //       .upsert([{ id_contato: id, ativo: !ativo }]);
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar status do contato.');
+      }
 
-  //     if (error) {
-  //       // Se houver um erro na atualização do banco de dados, reverte o estado local
-  //       setContato(contato.map(item =>
-  //         item.id_contato === id ? { ...item, ativo } : item
-  //       ));
-  //       throw new Error(error.message);
-  //     }
-
-  //     toast.info(`Contato ${!ativo ? 'ativado' : 'inativado'} com sucesso`);
-  //   } catch (error) {
-  //     console.log("Erro ao atualizar status do contato", error);
-  //     toast.error("Erro ao atualizar status do contato, verifique o console");
-  //   }
-  // };
+      const novoContato = contato.map(item =>
+        item.id_contato === id ? { ...item, ativo: !ativo } : item
+      );
+      setContato(novoContato);
+      getContato();
+      toast.info(`Contato ${!ativo ? 'ativado' : 'inativado'} com sucesso!`);
+    } catch (error) {
+      console.error('Erro ao atualizar status do Contato:', error);
+      toast.error('Erro ao atualizar status do Contato, verifique o console!');
+    }
+  };
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
@@ -98,7 +96,7 @@ function GridCadastroContato({ contato, setContato, setOnEdit }) {
                     type="checkbox"
                     checked={!item.ativo}
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-amber-500 checked:bg-amber-500 checked:before:bg-amber-500 hover:before:opacity-10"
-                    // onChange={() => handleDesactivation(item.id_contato, item.ativo)}
+                  onChange={() => handleDesactivation(item.id_contato, item.ativo)}
                   />
                   <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <svg

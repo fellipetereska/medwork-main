@@ -2,11 +2,14 @@ import { BsBoxArrowDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useAuth from '../../../hooks/useAuth'
+import LoadingScreen from './components/LoadingScreen';
+import { useState } from 'react';
 
 function GridHome({ empresas, contato }) {
 
   const navigate = useNavigate();
   const { handleSelectedCompany } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const findContactName = (fkContatoId) => {
     const contatos = contato.find((c) => c.id_contato === fkContatoId);
@@ -15,8 +18,10 @@ function GridHome({ empresas, contato }) {
 
   const handleOpenCompany = async (id, nome_empresa) => {
     try {
+      setLoading(true);
       await handleSelectedCompany(id, nome_empresa);
-      navigate("/cadastros");
+      setLoading(false);
+      navigate("/home");
     } catch (error) {
       toast.warn("Erro ao selecionar empresa!")
       console.log("Erro ao selecionar empresa!", error)
@@ -28,6 +33,7 @@ function GridHome({ empresas, contato }) {
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
+      {loading && <LoadingScreen />}
       <table className="w-full xl:w-5/6 shadow-md text-sm m-8 text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>

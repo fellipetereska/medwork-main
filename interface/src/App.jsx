@@ -29,6 +29,7 @@ import Vinculos from './components/pages/subPages/vinculos/Vinculos';
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import LoadingScreen from './components/pages/subPages/components/LoadingScreen';
 
 // Função Principal
 function App() {
@@ -39,6 +40,8 @@ function App() {
       <Router>
         {/* Menu */}
         <Navbar />
+        {/* Loading */}
+        <LoadingScreen />
         {/* Definindo quais serão as rotas */}
         <Routes>
           {/* Linkando as rotas as paginas */}

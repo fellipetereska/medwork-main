@@ -15,15 +15,15 @@ function Inventario() {
         getRiscos, riscos,
         getMedidasAdm, medidasAdm, getMedidasEpi, medidasEpi, getMedidasEpc, medidasEpc,
         getSetoresProcessos, setSetoresProcessos, setoresProcessos,
-        getProcessosRiscos, setProcessosRiscos, processosRiscos
+        getProcessosRiscos, setProcessosRiscos, processosRiscos,
+        getInventario, setIventario, inventario,
     } = useAuth(null);
-
+    const [onEdit, setOnEdit] = useState(null);
     const [nameCompany, setNameCompany] = useState(null);
-
 
     useEffect(() => {
         handleSetCompanyId();
-    }, [])
+    }, []);
 
     useEffect(() => {
         setNameCompany(selectedCompany[0]?.nome_empresa)
@@ -34,7 +34,12 @@ function Inventario() {
         getRiscos();
         getSetoresProcessos();
         getProcessosRiscos();
-    }, [companyId])
+        getInventario();
+    }, [companyId]);
+
+    const handleEdit = (selectedInventario) => {
+        setOnEdit(selectedInventario);
+    };
 
     return (
         <>
@@ -51,9 +56,19 @@ function Inventario() {
                 riscos={riscos}
                 setoresProcessos={setoresProcessos}
                 processosRiscos={processosRiscos}
+                onEdit={onEdit}
+                companyId={companyId}
+                getInventario={getInventario}
             />
 
-            <GridInventario />
+            <GridInventario 
+                setOnEdit={setOnEdit}
+                inventario={inventario}
+                unidade={unidades}
+                setore={setores}
+                processo={processos}
+                risco={riscos}
+            />
         </>
     )
 }

@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [setoresProcessos, setSetoresProcessos] = useState([]);
   const [processosRiscos, setProcessosRiscos] = useState([]);
   const [riscosMedidas, setRiscosMedidas] = useState([]);
+  const [inventario, setInventario] = useState([]);
   const [companyId, setCompanyId] = useState('');
 
   const handleSetCompanyId = () => {
@@ -66,7 +67,7 @@ export const AuthProvider = ({ children }) => {
         if (a.ativo < b.ativo) return 1;
         if (a.ativo > b.ativo) return -1;
 
-        return a.nome_contato.localeCompare(b.nome_contato);
+        return b.id_contato - a.id_contato;
       });
 
       setContatos(data)
@@ -369,6 +370,38 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const getRiscosMedidas = async () => {
+    try {
+      const response = await fetch(`${connect}/riscos_medidas`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Medidas dos riscos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setRiscosMedidas(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar Medidas dos riscos");
+      console.log(`Erro ao buscar Medidas dos riscos. ${error}`)
+    }
+  }
+
+  const getInventario = async () => {
+    try {
+      const response = await fetch(`${connect}/inventario`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Inventário. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setInventario(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar Inventário");
+      console.log(`Erro ao buscar Inventário. ${error}`)
+    }
+  }
+
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
 
@@ -472,6 +505,11 @@ export const AuthProvider = ({ children }) => {
         getProcessosRiscos,
         setProcessosRiscos,
         processosRiscos,
+        getRiscosMedidas, setRiscosMedidas,
+        riscosMedidas,
+        getInventario,
+        setInventario,
+        inventario,
       }}>
       {children}
     </AuthContext.Provider>
