@@ -121,7 +121,7 @@ const ModalRiscoMedidas = ({ onCancel, isOpen, childName, childId, children }) =
       }
     });
 
-    const medidasFiltradas = medidas.filter((medida) => medida && medida.trim() !== ''); // Remova medidas vazias
+    const medidasFiltradas = medidas.filter((medida) => medida && medida.trim() !== '');
     return medidasFiltradas.length > 0 ? medidasFiltradas.join(', ') : 'N/A';
   };
 

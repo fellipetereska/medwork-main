@@ -21,11 +21,12 @@ export const AuthProvider = ({ children }) => {
   const [processosRiscos, setProcessosRiscos] = useState([]);
   const [riscosMedidas, setRiscosMedidas] = useState([]);
   const [inventario, setInventario] = useState([]);
+  const [globalSprm, setGlobalSprm] = useState([]);
   const [companyId, setCompanyId] = useState('');
 
   const handleSetCompanyId = () => {
     try {
-      setCompanyId(selectedCompany[0]?.id_empresa)
+      setCompanyId(selectedCompany[0]?.id_empresa);
     } catch (error) {
       console.log("Erro ao setar id da empresa.", error)
     }
@@ -395,12 +396,45 @@ export const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
+      // data.sort((a, b) => parseInt(b.nivel) - parseInt(a.nivel));
       setInventario(data)
     } catch (error) {
       toast.warn("Erro ao buscar Inventário");
       console.log(`Erro ao buscar Inventário. ${error}`)
     }
   }
+
+  const getGlobalSprm = async () => {
+    try {
+      const response = await fetch(`${connect}/global_sprm`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar medidas do setor. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setGlobalSprm(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar medidas do setor");
+      console.log(`Erro ao buscar medidas do setor. ${error}`)
+    }
+  }
+
+  const getGlobalSprmByRiscoId = async (fk_risco_id) => {
+    try {
+      const response = await fetch(`${connect}/global_sprm?fk_risco_id=${fk_risco_id}`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar medidas do setor. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGlobalSprm(data);
+    } catch (error) {
+      toast.warn("Erro ao buscar medidas do setor");
+      console.log(`Erro ao buscar medidas do setor. ${error}`);
+    }
+  };
 
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -508,8 +542,11 @@ export const AuthProvider = ({ children }) => {
         getRiscosMedidas, setRiscosMedidas,
         riscosMedidas,
         getInventario,
-        setInventario,
         inventario,
+        getGlobalSprm,
+        getGlobalSprmByRiscoId,
+        setGlobalSprm,
+        globalSprm,
       }}>
       {children}
     </AuthContext.Provider>

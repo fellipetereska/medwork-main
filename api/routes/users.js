@@ -1482,8 +1482,7 @@ router.get("/inventario", (req, res) => {
     });
 
     con.release();
-  })
-
+  });
 });
 
 //Add rows in table
@@ -1550,7 +1549,7 @@ router.put("/inventario/:id_inventario", (req, res) => {
     data,
     fk_empresa_id,
     fk_unidade_id,
-    fk_setor_id,pessoas_expostas,
+    fk_setor_id, pessoas_expostas,
     fk_processo_id,
     fk_risco_id,
     fontes,
@@ -1563,6 +1562,8 @@ router.put("/inventario/:id_inventario", (req, res) => {
   ];
 
   pool.getConnection((err, con) => {
+    con.release();
+
     if (err) return next(err);
 
     con.query(q, values, (err) => {
@@ -1577,6 +1578,106 @@ router.put("/inventario/:id_inventario", (req, res) => {
 
 });
 
+
+
+//Tabela Global SPRM
+//Get Table
+router.get("/global_sprm", (req, res) => {
+  const q = `SELECT * FROM global_sprm`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  });
+});
+
+// Verifica se a combinação existe na tabela global_sprm
+router.get("/verificar_sprm", async (req, res) => {
+  try {
+    const { fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida } = req.query;
+
+    // Verifique se fk_setor_id, fk_risco_id, fk_medida_id e tipo_medida foram fornecidos
+    if (!fk_setor_id || !fk_risco_id || !fk_medida_id || !tipo_medida) {
+      return res.status(400).json({ error: 'Parâmetros insuficientes' });
+    }
+
+    // Execute uma consulta SQL para verificar a existência
+    const q = `
+      SELECT * FROM global_sprm
+      WHERE fk_setor_id = ? AND fk_risco_id = ? AND fk_medida_id = ? AND tipo_medida = ?
+    `;
+
+    pool.query(q, [fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida], (err, data) => {
+      if (err) {
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      // Verifique se há uma correspondência
+      const existeCombinação = data.length > 0;
+
+      return res.status(200).json({ existeCombinação });
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+  }
+});
+
+//Add rows in table
+router.post("/global_sprm", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO global_sprm SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao cadastrar medidas no setor", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Medidas adicionadas com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update rowns in table
+router.put("/global_sprm/:id_global_sprm", (req, res) => {
+  const id_global_sprm = req.params.id_global_sprm;
+  const { status } = req.body;
+
+  const q = `
+    UPDATE global_sprm SET status = ? WHERE id_global_sprm = ?`;
+
+  const values = [status, id_global_sprm];
+
+  pool.getConnection((err, con) => {
+    con.release();
+
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar medidas no setor", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Medida atualizada com sucesso!");
+    });
+  })
+
+});
 
 
 

@@ -16,7 +16,9 @@ function Inventario() {
         getMedidasAdm, medidasAdm, getMedidasEpi, medidasEpi, getMedidasEpc, medidasEpc,
         getSetoresProcessos, setSetoresProcessos, setoresProcessos,
         getProcessosRiscos, setProcessosRiscos, processosRiscos,
-        getInventario, setIventario, inventario,
+        getRiscosMedidas, setRiscosMedidas, riscosMedidas,
+        getInventario, inventario,
+        getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId,
     } = useAuth(null);
     const [onEdit, setOnEdit] = useState(null);
     const [nameCompany, setNameCompany] = useState(null);
@@ -35,6 +37,10 @@ function Inventario() {
         getSetoresProcessos();
         getProcessosRiscos();
         getInventario();
+        getRiscosMedidas();
+        getMedidasAdm();
+        getMedidasEpi();
+        getMedidasEpc();
     }, [companyId]);
 
     const handleEdit = (selectedInventario) => {
@@ -58,16 +64,25 @@ function Inventario() {
                 processosRiscos={processosRiscos}
                 onEdit={onEdit}
                 companyId={companyId}
-                getInventario={getInventario}
+                setOnEdit={setOnEdit}
+                riscosMedidas={riscosMedidas}
+                medidasAdm={medidasAdm}
+                medidasEpi={medidasEpi}
+                medidasEpc={medidasEpc}
+                getGlobalSprm={getGlobalSprm}
+                setGlobalSprm={setGlobalSprm}
+                globalSprm={globalSprm}
+                getGlobalSprmByRiscoId={getGlobalSprmByRiscoId}
             />
 
-            <GridInventario 
+            <GridInventario
                 setOnEdit={setOnEdit}
                 inventario={inventario}
                 unidade={unidades}
-                setore={setores}
+                setor={setores}
                 processo={processos}
                 risco={riscos}
+                companyId={companyId}
             />
         </>
     )

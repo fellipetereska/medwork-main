@@ -21,7 +21,10 @@ function FrmInventario({
   riscos,
   onEdit,
   companyId,
-  getInventario,
+  setOnEdit,
+  riscosMedidas,
+  medidasAdm, medidasEpi, medidasEpc,
+  getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId
 }) {
 
   const user = useRef();
@@ -59,6 +62,9 @@ function FrmInventario({
   const [metodologia, setMetodologia] = useState('');
   const [comentarios, setComentarios] = useState('')
   const [medidas, setMedidas] = useState([]);
+  const [medidaId, setMedidaId] = useState('');
+  const [medidaTipo, setMedidaTipo] = useState('');
+  const [medidasInfo, setMedidasInfo] = useState([]);
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -120,7 +126,7 @@ function FrmInventario({
     if (selectFuncFem != undefined || selectFuncMasc != undefined || selectFuncMenor != undefined) {
       const sum = selectFuncFem + selectFuncMasc + selectFuncMenor;
       if (sum === 0) {
-        setPessoasExpostas('N/A')
+        setPessoasExpostas('0')
       } else {
         setPessoasExpostas(sum);
       }
@@ -134,6 +140,7 @@ function FrmInventario({
     setPessoasExpostas('');
     handleClearProcesso();
     handleClearRisco();
+    setFilteredProcessos([]);
   }
 
   // Função para atualizar o Processo
@@ -155,18 +162,62 @@ function FrmInventario({
     setProcessoId(null);
     setProcessoNome(null);
     handleClearRisco();
+    setFilteredRiscos([]);
   }
 
   // Função para atualizar o Risco
-  const handleRiscoSelect = (RiscoId, RiscoNome) => {
+  const handleRiscoSelect = async (RiscoId, RiscoNome) => {
     closeModalRisco();
     setRiscoId(RiscoId);
     setRiscoNome(RiscoNome);
 
+    const filteresRiscosMedidas = riscosMedidas.filter((i) => i.fk_risco_id === RiscoId);
     const riscoSelecionado = riscos.find((i) => i.id_risco === RiscoId);
 
     if (riscoSelecionado) {
       setRiscosInput(riscoSelecionado);
+    }
+
+    setLoading(true);
+
+    // Criar um array para armazenar as medidas e tipos
+    const medidasTipos = filteresRiscosMedidas.map((filteredRiscosMedidas) => ({
+      medidaId: filteredRiscosMedidas.fk_medida_id,
+      medidaTipo: filteredRiscosMedidas.tipo,
+    }));
+
+    await handleRiscoEscolhido(RiscoId, medidasTipos);
+  };
+
+  const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
+    try {
+      // Iterar sobre o array de medidas e tipos
+      for (const { medidaId, medidaTipo } of medidasTipos) {
+        const response = await fetch(`${connect}/global_sprm`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fk_setor_id: setorId,
+            fk_processo_id: processoId,
+            fk_risco_id: RiscoId,
+            fk_medida_id: medidaId,
+            tipo_medida: medidaTipo,
+            status: 'N/A',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro ao adicionar medida. Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        toast.success(responseData);
+        getGlobalSprm();
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar medidas", error);
     }
   };
 
@@ -175,6 +226,7 @@ function FrmInventario({
     setRiscoId('');
     setRiscoNome('');
     setRiscosInput('');
+    setDescricao('');
   }
 
   const setRiscosInput = (risco) => {
@@ -248,7 +300,7 @@ function FrmInventario({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome) {
+    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !medicao) {
       toast.warn("Preencha todos os campos!");
     }
     try {
@@ -259,11 +311,11 @@ function FrmInventario({
         pessoas_expostas: pessoasExpostas || '',
         fk_processo_id: processoId || '',
         fk_risco_id: riscoId || '',
-        fontes: consequencia || '',
-        medicao: medicao || '',
+        fontes: descricao || '',
+        medicao: medicao || '0',
         medidas: medidas || '',
         probabilidade: probabilidade || '',
-        nivel: nivel || '',
+        nivel: probabilidade * severidade || '',
         comentarios: comentarios || ''
       };
 
@@ -294,7 +346,6 @@ function FrmInventario({
     }
 
     handleClear();
-    getInventario();
   }
 
   const handleClear = () => {
@@ -304,7 +355,55 @@ function FrmInventario({
     setMedicao('');
     setProbabilidade('');
     setNivel('');
+    setDescricao('');
+    setOnEdit(null);
   }
+
+  const handleDescricaoFontesChange = (event) => {
+    setDescricao(event.target.value);
+  };
+
+  const handleComentariosChange = (event) => {
+    setComentarios(event.target.value);
+  };
+
+  const handleMedicaoChange = (event) => {
+    setMedicao(event.target.value);
+  };
+
+  const findMedidas = (item, tipo) => {
+    if (!item || !tipo || !riscosMedidas || !medidasAdm || !medidasEpi || !medidasEpc) {
+      return 'N/A'
+    }
+
+    switch (tipo) {
+      case 1:
+        const medidaAdm = medidasAdm.find((c) => c.id_medida_adm === item);
+        return medidaAdm ? medidaAdm.descricao_medida_adm : 'N/A';
+
+      case 2:
+        const epis = medidasEpi.find((c) => c.id_medida === item);
+        return epis ? epis.nome_medida : 'N/A';
+
+      case 3:
+        const epcs = medidasEpc.find((c) => c.id_medida === item);
+        return epcs ? epcs.descricao_medida : 'N/A';
+
+      default:
+        return 'N/A';
+    }
+  }
+
+  const findRisco = (item) => {
+    if (!item || !riscos) {
+      return 'N/A'
+    }
+
+    const riscosData = riscos.find((i) => i.id_risco === item);
+    return riscosData ? riscosData.nome_risco : 'N/A'
+  }
+
+  const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId)
 
   return (
     <>
@@ -535,7 +634,9 @@ function FrmInventario({
                 className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                 type="text"
                 name="descricao_fontes"
+                value={descricao}
                 placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
+                onChange={handleDescricaoFontesChange}
               />
             </div>
 
@@ -574,11 +675,12 @@ function FrmInventario({
               </label>
               <input
                 className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${medicao === 'N/A' ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} ${checkMedicao ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
-                type="text"
+                type="number"
                 name="medicao_risco"
                 placeholder="Medição"
                 value={medicao}
                 disabled={medicao === "N/A" || checkMedicao}
+                onChange={handleMedicaoChange}
               />
               <div className={`${medicao === 'N/A' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
                 <input
@@ -667,29 +769,30 @@ function FrmInventario({
 
             <div className="w-full flex">
               {/* Medidas de Controle */}
-              <div className="w-full md:w-1/4 px-3">
+              <div className="w-full md:w-2/4 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                   Medidas de Controle:
                 </label>
-                <p>Decidir como vai ser</p>
-              </div>
-              {/* Ações Adicionais */}
-              <div className="w-full md:w-1/4 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                  Ações Adicionais?
-                </label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="radio"
-                    name="acoes_adicionais?"
-                  />
-                  <p>Sim</p>
-                  <input
-                    type="radio"
-                    name="acoes_adicionais?"
-                  />
-                  <p>Não</p>
-                </div>
+                {filteredGlobalSprm && filteredGlobalSprm.map((item, i) => (
+                  <>
+                    <ul className="space-y-3 py-3" key={i}>
+                      <li className="bg-gray-50 py-2 px-4 rounded-md text-sm">
+                        <p className="text-gray-800 font-semibold">{findRisco(item.fk_risco_id)}</p>
+                        <div className="border-b border-gray-200 mt-1 mb-3"></div>
+                        <div className="grid grid-cols-3 items-center">
+                          <div className="col-span-2">
+                            <p className="">
+                              {findMedidas(item.fk_medida_id, item.tipo_medida)}
+                            </p>
+                          </div>
+                          <div className="col-span-1 text-right">
+                            <p className="text-gray-800 font-medium">{item.tipo_medida === 1 ? 'Adm' : item.tipo_medida === 2 ? 'EPI' : item.tipo_medida === 3 ? 'EPC' : 'N/A'}</p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </>
+                ))}
               </div>
               {/* Comentários */}
               <div className="w-full md:w-2/4 px-3">
@@ -701,6 +804,8 @@ function FrmInventario({
                   type="text"
                   name="comentarios"
                   placeholder="Comentários..."
+                  value={comentarios}
+                  onChange={handleComentariosChange}
                 />
               </div>
             </div>
