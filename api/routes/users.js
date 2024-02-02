@@ -1603,7 +1603,6 @@ router.get("/verificar_sprm", async (req, res) => {
   try {
     const { fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida } = req.query;
 
-    // Verifique se fk_setor_id, fk_risco_id, fk_medida_id e tipo_medida foram fornecidos
     if (!fk_setor_id || !fk_risco_id || !fk_medida_id || !tipo_medida) {
       return res.status(400).json({ error: 'Parâmetros insuficientes' });
     }
@@ -1676,7 +1675,6 @@ router.put("/global_sprm/:id_global_sprm", (req, res) => {
       return res.status(200).json("Medida atualizada com sucesso!");
     });
   })
-
 });
 
 

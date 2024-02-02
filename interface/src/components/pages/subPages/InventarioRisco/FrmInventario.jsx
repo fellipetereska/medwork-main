@@ -7,6 +7,7 @@ import ModalSearchUnidade from "../components/Modal/ModalSearchUnidade";
 import ModalSearchSetor from "../components/Modal/ModalSearchSetor";
 import ModalSearchProcesso from '../components/Modal/ModalSearchProcesso';
 import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
+import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
@@ -24,7 +25,9 @@ function FrmInventario({
   setOnEdit,
   riscosMedidas,
   medidasAdm, medidasEpi, medidasEpc,
-  getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId
+  getGlobalSprm, setGlobalSprm, globalSprm,
+  companyName,
+  getInventario,
 }) {
 
   const user = useRef();
@@ -39,6 +42,9 @@ function FrmInventario({
   const [showModalSetor, setShowModalSetor] = useState(false);
   const [showModalProcesso, setShowModalProcesso] = useState(false);
   const [showModalRisco, setShowModalRisco] = useState(false);
+  const [showModalMedidas, setShowModalMedidas] = useState(false);
+  const [isMedidasSet, setIsMedidasSet] = useState(false);
+
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
   const [processoId, setProcessoId] = useState('');
@@ -62,9 +68,7 @@ function FrmInventario({
   const [metodologia, setMetodologia] = useState('');
   const [comentarios, setComentarios] = useState('')
   const [medidas, setMedidas] = useState([]);
-  const [medidaId, setMedidaId] = useState('');
-  const [medidaTipo, setMedidaTipo] = useState('');
-  const [medidasInfo, setMedidasInfo] = useState([]);
+  const [data, setData] = useState('');
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -72,11 +76,28 @@ function FrmInventario({
   const openModalSetor = () => setShowModalSetor(true);
   const openModalProcesso = () => setShowModalProcesso(true);
   const openModalRisco = () => setShowModalRisco(true);
+  const openModalMedidas = () => setShowModalMedidas(true);
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
   const closeModalProcesso = () => setShowModalProcesso(false);
   const closeModalRisco = () => setShowModalRisco(false);
+  const closeModalMedidas = () => {
+    getGlobalSprm();
+    setShowModalMedidas(false);
+  }
+
+  useEffect(() => {
+    const obterDataFormatada = () => {
+      const dataAtual = new Date();
+      const ano = dataAtual.getFullYear();
+      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+      const dia = String(dataAtual.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    };
+
+    setData(obterDataFormatada)
+  }, [])
 
   useEffect(() => {
     if (showModalSetor && unidadeId) {
@@ -91,10 +112,11 @@ function FrmInventario({
     setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
     handleClearSetor();
+    setLoading(false);
+    setLoading(true);
   };
 
   const handleClearUnidade = () => {
-    setLoading(true);
     setUnidadeId(null);
     setNomeUnidade(null);
     handleClearProcesso();
@@ -134,7 +156,6 @@ function FrmInventario({
   };
 
   const handleClearSetor = () => {
-    setLoading(true);
     setSetorId(null);
     setSetorNome(null);
     setPessoasExpostas('');
@@ -158,7 +179,6 @@ function FrmInventario({
   };
 
   const handleClearProcesso = () => {
-    setLoading(true);
     setProcessoId(null);
     setProcessoNome(null);
     handleClearRisco();
@@ -178,8 +198,6 @@ function FrmInventario({
       setRiscosInput(riscoSelecionado);
     }
 
-    setLoading(true);
-
     // Criar um array para armazenar as medidas e tipos
     const medidasTipos = filteresRiscosMedidas.map((filteredRiscosMedidas) => ({
       medidaId: filteredRiscosMedidas.fk_medida_id,
@@ -191,9 +209,31 @@ function FrmInventario({
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
     try {
-      // Iterar sobre o array de medidas e tipos
       for (const { medidaId, medidaTipo } of medidasTipos) {
-        const response = await fetch(`${connect}/global_sprm`, {
+        const verificarResponse = await fetch(
+          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (!verificarResponse.ok) {
+          throw new Error(`Erro ao verificar a existência. Status: ${verificarResponse.status}`);
+        }
+
+        const verificarData = await verificarResponse.json();
+
+        // Se a combinação já existir, continue para a próxima iteração
+        if (verificarData.existeCombinação) {
+          continue;
+        }
+
+
+        // Caso contrário, adicione a nova medida
+        const adicionarResponse = await fetch(`${connect}/global_sprm`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -204,18 +244,20 @@ function FrmInventario({
             fk_risco_id: RiscoId,
             fk_medida_id: medidaId,
             tipo_medida: medidaTipo,
-            status: 'N/A',
+            status: '0',
           }),
         });
 
-        if (!response.ok) {
-          throw new Error(`Erro ao adicionar medida. Status: ${response.status}`);
+        if (!adicionarResponse.ok) {
+          throw new Error(`Erro ao adicionar medida. Status: ${adicionarResponse.status}`);
         }
 
-        const responseData = await response.json();
-        toast.success(responseData);
-        getGlobalSprm();
+        const adicionarData = await adicionarResponse.json();
+        toast.success("Meddias Adicionadas com sucesso!");
       }
+      getGlobalSprm();
+      setLoading(false);
+      setLoading(true);
     } catch (error) {
       console.error("Erro ao adicionar medidas", error);
     }
@@ -277,6 +319,7 @@ function FrmInventario({
 
   const handleMedicaoCheck = () => {
     setCheckMedicao(!checkMedicao);
+    setMedicao('');
   }
 
   useEffect(() => {
@@ -300,7 +343,14 @@ function FrmInventario({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !medicao) {
+    const medidasAplicadas = filteredGlobalSprm
+      .filter((item) => item.status === 'Aplica')
+      .map((item) => ({
+        nome: find(item.fk_medida_id, item.tipo_medida),
+        tipo: tipoDefine(item.tipo_medida),
+      }));
+
+    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !medicao || !data) {
       toast.warn("Preencha todos os campos!");
     }
     try {
@@ -313,10 +363,11 @@ function FrmInventario({
         fk_risco_id: riscoId || '',
         fontes: descricao || '',
         medicao: medicao || '0',
-        medidas: medidas || '',
+        medidas: medidasAplicadas || '',
         probabilidade: probabilidade || '',
         nivel: probabilidade * severidade || '',
-        comentarios: comentarios || ''
+        comentarios: comentarios || '',
+        data_inventario: data || ''
       };
 
       const url = onEdit
@@ -341,6 +392,7 @@ function FrmInventario({
       const responseData = await response.json();
 
       toast.success(responseData);
+      getInventario();
     } catch (error) {
       console.log("Erro ao inserir inventário: ", error)
     }
@@ -371,39 +423,57 @@ function FrmInventario({
     setMedicao(event.target.value);
   };
 
-  const findMedidas = (item, tipo) => {
-    if (!item || !tipo || !riscosMedidas || !medidasAdm || !medidasEpi || !medidasEpc) {
-      return 'N/A'
+  const handleMedidaChange = () => {
+    getGlobalSprm();
+    closeModalMedidas();
+    setIsMedidasSet(true);
+  }
+
+  const find = (item, tipo) => {
+    try {
+      if (!item) {
+        return 'N/A';
+      }
+
+      switch (tipo) {
+        case 1:
+          const admMedidas = medidasAdm.find((i) => i.id_medida_adm === item);
+          return admMedidas ? admMedidas.descricao_medida_adm : 'N/A';
+        case 2:
+          const epiMedidas = medidasEpi.find((i) => i.id_medida === item);
+          return epiMedidas ? epiMedidas.nome_medida : 'N/A';
+        case 3:
+          const epcMedidas = medidasEpc.find((i) => i.id_medida === item);
+          return epcMedidas ? epcMedidas.descricao_medida : 'N/A';
+
+        default:
+          return 'N/A';
+      }
+    } catch (error) {
+      console.log("Erro ao buscar Dados!", error);
+      return 'N/A';
     }
+  };
 
-    switch (tipo) {
+  const tipoDefine = (item) => {
+    switch (item) {
       case 1:
-        const medidaAdm = medidasAdm.find((c) => c.id_medida_adm === item);
-        return medidaAdm ? medidaAdm.descricao_medida_adm : 'N/A';
-
+        return 'Adm'
       case 2:
-        const epis = medidasEpi.find((c) => c.id_medida === item);
-        return epis ? epis.nome_medida : 'N/A';
-
+        return 'EPI'
       case 3:
-        const epcs = medidasEpc.find((c) => c.id_medida === item);
-        return epcs ? epcs.descricao_medida : 'N/A';
+        return 'EPC'
 
       default:
-        return 'N/A';
+        return 'N/A'
     }
   }
 
-  const findRisco = (item) => {
-    if (!item || !riscos) {
-      return 'N/A'
-    }
+  const handleChangeData = (event) => {
+    setData(event.target.value);
+  };
 
-    const riscosData = riscos.find((i) => i.id_risco === item);
-    return riscosData ? riscosData.nome_risco : 'N/A'
-  }
-
-  const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId)
+  const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
 
   return (
     <>
@@ -411,6 +481,7 @@ function FrmInventario({
       <div className="flex justify-center mt-10">
         <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
+
             {/* Unidade */}
             <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
@@ -597,6 +668,19 @@ function FrmInventario({
               />
             </div>
 
+            {/* Data */}
+            <div className="w-full md:w-1/4 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Data:
+              </label>
+              <input
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                type="date"
+                name="data_inventario"
+                value={data}
+                onChange={handleChangeData}
+              />
+            </div>
             {/* Consequencias */}
             <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -625,23 +709,8 @@ function FrmInventario({
                 disabled
               />
             </div>
-            {/* Descrição das Fontes */}
-            <div className="w-full md:w-2/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-                Descrição das Fontes:
-              </label>
-              <textarea
-                className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                type="text"
-                name="descricao_fontes"
-                value={descricao}
-                placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
-                onChange={handleDescricaoFontesChange}
-              />
-            </div>
-
             {/* Pessoas Expostas */}
-            <div className="w-full md:w-2/12 px-3">
+            <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                 Pessoas Expostas:
               </label>
@@ -654,8 +723,10 @@ function FrmInventario({
                 disabled
               />
             </div>
+
+
             {/* Limite de Tolerância */}
-            <div className="w-full md:w-2/12 px-3">
+            <div className="w-full md:w-3/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                 LT:
               </label>
@@ -669,7 +740,7 @@ function FrmInventario({
               />
             </div>
             {/* Medição */}
-            <div className="w-full md:w-2/12 px-3">
+            <div className="w-full md:w-3/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                 Medição:
               </label>
@@ -679,15 +750,15 @@ function FrmInventario({
                 name="medicao_risco"
                 placeholder="Medição"
                 value={medicao}
-                disabled={medicao === "N/A" || checkMedicao}
+                disabled={medicao === "0" || checkMedicao}
                 onChange={handleMedicaoChange}
               />
-              <div className={`${medicao === 'N/A' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
+              <div className={`${medicao === '0' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
                 <input
                   type="checkbox"
                   id="medica_risco"
                   className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
-                  disabled={medicao === "N/A"}
+                  disabled={medicao === "0"}
                   checked={checkMedicao}
                   onChange={handleMedicaoCheck}
                 />
@@ -753,49 +824,36 @@ function FrmInventario({
               />
             </div>
 
-            {/* Metodologia */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Metodologia:
-              </label>
-              <input
-                className={`${metodologia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                name="metodologia_risco"
-                placeholder="Metodologia"
-                value={metodologia}
-                disabled
-              />
-            </div>
-
             <div className="w-full flex">
-              {/* Medidas de Controle */}
-              <div className="w-full md:w-2/4 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                  Medidas de Controle:
+              {/* Descrição das Fontes */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                  Descrição das Fontes:
                 </label>
-                {filteredGlobalSprm && filteredGlobalSprm.map((item, i) => (
-                  <>
-                    <ul className="space-y-3 py-3" key={i}>
-                      <li className="bg-gray-50 py-2 px-4 rounded-md text-sm">
-                        <p className="text-gray-800 font-semibold">{findRisco(item.fk_risco_id)}</p>
-                        <div className="border-b border-gray-200 mt-1 mb-3"></div>
-                        <div className="grid grid-cols-3 items-center">
-                          <div className="col-span-2">
-                            <p className="">
-                              {findMedidas(item.fk_medida_id, item.tipo_medida)}
-                            </p>
-                          </div>
-                          <div className="col-span-1 text-right">
-                            <p className="text-gray-800 font-medium">{item.tipo_medida === 1 ? 'Adm' : item.tipo_medida === 2 ? 'EPI' : item.tipo_medida === 3 ? 'EPC' : 'N/A'}</p>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </>
-                ))}
+                <textarea
+                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  type="text"
+                  name="descricao_fontes"
+                  value={descricao}
+                  placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
+                  onChange={handleDescricaoFontesChange}
+                />
+              </div>
+              {/* Metodologia */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Metodologia:
+                </label>
+                <input
+                  className={`${metodologia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  name="metodologia_risco"
+                  placeholder="Metodologia"
+                  value={metodologia}
+                  disabled
+                />
               </div>
               {/* Comentários */}
-              <div className="w-full md:w-2/4 px-3">
+              <div className="w-full md:w-1/3 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                   Comentários:
                 </label>
@@ -807,6 +865,65 @@ function FrmInventario({
                   value={comentarios}
                   onChange={handleComentariosChange}
                 />
+              </div>
+            </div>
+
+            <div className="border-b border-gray-200 w-full mt-5"></div>
+
+            <div className="text-4xl font-bold text-sky-700 mt-5 mb-5 w-full flex justify-center">
+              <h1>Medidas</h1>
+            </div>
+
+            {/* Medidas */}
+            <div className="w-full flex">
+              {/* Medidas de Controle */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Medidas de Controle:
+                </label>
+                <div>
+                  <button
+                    type="button"
+                    className="w-full bg-gray-100 px-4 py-2 hover:bg-gray-200 font-semibold text-base rounded-md text-sky-700"
+                    onClick={openModalMedidas}
+                  >
+                    Defina as Medidas
+                  </button>
+                </div>
+                <ModalMedidasDefine
+                  isOpen={showModalMedidas}
+                  onCancel={closeModalMedidas}
+                  companyName={companyName}
+                  globalSprm={filteredGlobalSprm}
+                  medidasAdm={medidasAdm}
+                  medidasEpi={medidasEpi}
+                  medidasEpc={medidasEpc}
+                  medidasDefine={handleMedidaChange}
+                />
+              </div>
+              {/* Medidas de Controle Aplicadas*/}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Medidas Aplicadas:
+                </label>
+                {filteredGlobalSprm.filter((c) => c.status && c.status === 'Aplica')
+                  .map((item, i) => (
+                    <ul key={i}>
+                      <li className="pb-3 sm:pb-4">
+                        <div className="flex items-center space-x-4 rtl:space-x-reverse bg-gray-100 px-4 py-2 rounded-md hover:bg-gray-50">
+                          <div className="flex-1 min-w-0 pr-4">
+                            <p className="text-sm font-medium text-gray-900">
+                              {find(item.fk_medida_id, item.tipo_medida)}
+                            </p>
+                            <p className="text-sm text-gray-500 truncate"></p>
+                          </div>
+                          <div className="inline-flex items-center text-base font-semibold text-gray-900">
+                            {tipoDefine(item.tipo_medida)}
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  ))}
               </div>
             </div>
 
@@ -825,7 +942,6 @@ function FrmInventario({
           </div>
         </form >
       </div >
-      )
     </>
   );
 }

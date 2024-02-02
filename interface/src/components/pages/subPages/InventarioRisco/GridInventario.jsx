@@ -80,6 +80,11 @@ function GridInventario({
     setOnEdit(item);
   };
 
+  const formatData = (item) => {
+    const data_formatada = new Date(item).toLocaleDateString('pr-BR');
+    return data_formatada;
+  }
+
   const filteredInventario = inventario.filter((i) => i.fk_empresa_id === companyId)
 
   return (
@@ -161,7 +166,7 @@ function GridInventario({
                     {item.id_inventario}
                   </th>
                   <th className="px-4 py-2 text-gray-800 text-center">
-                    Data
+                    {formatData(item.data_inventario)}
                   </th>
                   <th className="px-4 py-2 text-gray-800 whitespace-normal min-w-[150px]">
                     {find(item.fk_unidade_id, 'nome_unidade')}
@@ -200,7 +205,7 @@ function GridInventario({
                     {find(item.fk_risco_id, 'metodologia')}
                   </td>
                   <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[200px]">
-                    *Colocar todas as medidas*
+                    {item.medidas}
                   </td>
                   <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[50px] text-center">
                     {item.probabilidade}

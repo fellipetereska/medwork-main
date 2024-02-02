@@ -22,11 +22,11 @@ function Inventario() {
     } = useAuth(null);
     const [onEdit, setOnEdit] = useState(null);
     const [nameCompany, setNameCompany] = useState(null);
-
+    
     useEffect(() => {
         handleSetCompanyId();
     }, []);
-
+    
     useEffect(() => {
         setNameCompany(selectedCompany[0]?.nome_empresa)
         getUnidades();
@@ -73,6 +73,7 @@ function Inventario() {
                 setGlobalSprm={setGlobalSprm}
                 globalSprm={globalSprm}
                 getGlobalSprmByRiscoId={getGlobalSprmByRiscoId}
+                getInventario={getInventario}
             />
 
             <GridInventario
@@ -83,6 +84,7 @@ function Inventario() {
                 processo={processos}
                 risco={riscos}
                 companyId={companyId}
+                companyName={nameCompany}
             />
         </>
     )

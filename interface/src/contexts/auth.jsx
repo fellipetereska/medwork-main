@@ -413,28 +413,12 @@ export const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      setGlobalSprm(data)
+      setGlobalSprm(data);
     } catch (error) {
       toast.warn("Erro ao buscar medidas do setor");
       console.log(`Erro ao buscar medidas do setor. ${error}`)
     }
   }
-
-  const getGlobalSprmByRiscoId = async (fk_risco_id) => {
-    try {
-      const response = await fetch(`${connect}/global_sprm?fk_risco_id=${fk_risco_id}`);
-
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar medidas do setor. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setGlobalSprm(data);
-    } catch (error) {
-      toast.warn("Erro ao buscar medidas do setor");
-      console.log(`Erro ao buscar medidas do setor. ${error}`);
-    }
-  };
 
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -544,7 +528,6 @@ export const AuthProvider = ({ children }) => {
         getInventario,
         inventario,
         getGlobalSprm,
-        getGlobalSprmByRiscoId,
         setGlobalSprm,
         globalSprm,
       }}>
