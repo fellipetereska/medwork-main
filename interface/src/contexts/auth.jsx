@@ -248,10 +248,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      data.sort((a, b) => {
-        return a.nome_processo.localeCompare(b.nome_processo);
-      });
-
+      data.sort((a, b) => a.nome_processo.localeCompare(b.nome_processo));
       setProcessos(data)
     } catch (error) {
       toast.warn("Erro ao buscar processos");

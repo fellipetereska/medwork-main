@@ -269,6 +269,7 @@ function FrmInventario({
     setRiscoNome('');
     setRiscosInput('');
     setDescricao('');
+    setCheckMedicao(false);
   }
 
   const setRiscosInput = (risco) => {
@@ -363,7 +364,7 @@ function FrmInventario({
         fk_risco_id: riscoId || '',
         fontes: descricao || '',
         medicao: medicao || '0',
-        medidas: medidasAplicadas || '',
+        medidas: JSON.stringify(medidasAplicadas) || '',
         probabilidade: probabilidade || '',
         nivel: probabilidade * severidade || '',
         comentarios: comentarios || '',
@@ -401,7 +402,7 @@ function FrmInventario({
   }
 
   const handleClear = () => {
-    handleClearUnidade();
+    handleClearRisco();
     setConsequencia('');
     setComentarios('');
     setMedicao('');
@@ -409,6 +410,7 @@ function FrmInventario({
     setNivel('');
     setDescricao('');
     setOnEdit(null);
+    setCheckMedicao(false)
   }
 
   const handleDescricaoFontesChange = (event) => {
@@ -825,6 +827,19 @@ function FrmInventario({
             </div>
 
             <div className="w-full flex">
+              {/* Metodologia */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Metodologia:
+                </label>
+                <input
+                  className={`${metodologia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  name="metodologia_risco"
+                  placeholder="Metodologia"
+                  value={metodologia}
+                  disabled
+                />
+              </div>
               {/* Descrição das Fontes */}
               <div className="w-full md:w-1/3 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -837,19 +852,6 @@ function FrmInventario({
                   value={descricao}
                   placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
                   onChange={handleDescricaoFontesChange}
-                />
-              </div>
-              {/* Metodologia */}
-              <div className="w-full md:w-1/3 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                  Metodologia:
-                </label>
-                <input
-                  className={`${metodologia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                  name="metodologia_risco"
-                  placeholder="Metodologia"
-                  value={metodologia}
-                  disabled
                 />
               </div>
               {/* Comentários */}
@@ -925,20 +927,20 @@ function FrmInventario({
                     </ul>
                   ))}
               </div>
+              <div className="w-full md:w-1/3 px-3 pl-8 flex justify-center">
+                <div className="px-3 pl-8 w-1/2">
+                  <button onClick={() => handleClear()} className="w-full shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+                    Limpar
+                  </button>
+                </div>
+                <div className="px-3 pl-8 w-1/2">
+                  <button className="w-full shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+                    Adicionar
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="w-full px-3 pl-8 flex justify-end">
-              <div>
-                <button onClick={() => handleClear()} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
-                  Limpar
-                </button>
-              </div>
-              <div className="px-3 pl-8">
-                <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
-                  Adicionar
-                </button>
-              </div>
-            </div>
           </div>
         </form >
       </div >

@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
 
 const ModalSearchEmpresa = ({ onCancel, isOpen, children, onContactSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }

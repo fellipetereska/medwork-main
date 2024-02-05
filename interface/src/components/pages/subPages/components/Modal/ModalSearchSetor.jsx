@@ -1,37 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
-import { connect, supabase } from '../../../../../services/api';
-import { json } from 'react-router-dom';
+import { connect } from '../../../../../services/api';
+
+import useAuth from '../../../../../hooks/useAuth';
 
 const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
 
+  const { getUnidades, unidades } = useAuth([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [unidade, setUnidade] = useState(null);
-
-  const getUnidade = async () => {
-
-    const response = await fetch(`${connect}/unidades`);
-
-    if (!response.ok) {
-      throw new Error(`Erro ao buscar unidades. Status: ${response.status}`)
-    }
-
-    const responseData = await response.json();
-
-    setUnidade(responseData);
-  }
 
   useEffect(() => {
-    getUnidade();
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    getUnidades();
   }, [])
 
   const findUnidade = (fkUnidadeId) => {
-    if (!unidade) {
+    if (!unidades) {
       return 'N/A';
     }
 
-    const unidades = unidade.find((c) => c.id_unidade === fkUnidadeId);
-    return unidades ? unidades.nome_unidade : 'N/A';
+    const unidade = unidades.find((c) => c.id_unidade === fkUnidadeId);
+    return unidade ? unidade.nome_unidade : 'N/A';
   }
 
   if (!isOpen) {
@@ -93,7 +87,7 @@ const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
                     </p>
                   </div>
                   <div className=''>
-                    <p className='text-xs text-gray-500 truncate'>Unidade:</p>
+                    <p className='text-xs text-gray-500 truncate'>Unidades:</p>
                     <p className='text-base font-bold text-gray-700'>
                       {findUnidade(item.fk_unidade_id)}
                     </p>

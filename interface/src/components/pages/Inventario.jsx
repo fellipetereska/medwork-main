@@ -4,6 +4,9 @@ import useAuth from "../../hooks/useAuth";
 import FrmInventario from "./subPages/InventarioRisco/FrmInventario";
 import GridInventario from "./subPages/InventarioRisco/GridInventario";
 
+import jsPDF from "jspdf";
+import GerarLaudo from "./subPages/InventarioRisco/GerarLaudo";
+
 function Inventario() {
 
     const {
@@ -85,6 +88,13 @@ function Inventario() {
                 risco={riscos}
                 companyId={companyId}
                 companyName={nameCompany}
+            />
+
+            <GerarLaudo
+                inventario={inventario}
+                processos={processos}
+                riscos={riscos}
+                empresa={nameCompany}
             />
         </>
     )

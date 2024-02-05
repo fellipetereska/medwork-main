@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SearchInput from '../SearchInput';
 
 const ModalCargo = ({ onCancel, isOpen, setorId, onContactSelect, cargos }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);

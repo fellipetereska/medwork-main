@@ -117,6 +117,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
     setLtcat(false);
     setLip(false);
     setOnEdit(null);
+    setClassificacao('')
 
     getRiscos();
   }
@@ -310,10 +311,11 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               placeholder="Metodologia"
             >
               <option value="NULL">Selecione uma Severidade</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
+              <option value="1">Muito Baixa</option>
+              <option value="2">Baixa</option>
+              <option value="3">Média</option>
+              <option value="4">Alta</option>
+              <option value="5">Muito Alta</option>
             </select>
           </div>
         </div>

@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
 
 const ModalSearchMedidas = ({ onCancel, isOpen, medidasAdm, medidasEpi, medidasEpc, onSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
 import icon_alerta from '../../../../media/icons_sup/icon_alerta.png'
 import icon_perigo from '../../../../media/icons_sup/icon_perigo.png'
@@ -6,6 +6,12 @@ import icon_perigo from '../../../../media/icons_sup/icon_perigo.png'
 const ModalSearchRisco = ({ onCancel, isOpen, children, onSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;

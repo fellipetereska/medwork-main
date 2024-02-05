@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from '../SearchInput';
 
 const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onSetorSelect, setorName }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
@@ -45,7 +51,7 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onSetorSelect, 
           {children
             .filter((child) =>
               child.nome_processo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              child.descricao_processo.toLowerCase().includes(searchTerm.toLowerCase())
+              child.descricao.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((child, i) => (
               <li

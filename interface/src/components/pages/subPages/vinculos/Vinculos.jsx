@@ -32,6 +32,7 @@ function Vinculos() {
       </div>
       <LinkScreen 
         selected={navValue}
+        setNavValue={setNavValue}
       />
     </>
   )

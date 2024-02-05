@@ -85,6 +85,22 @@ function GridInventario({
     return data_formatada;
   }
 
+  const convertMedidas = (item) => {
+    try {
+      const medidasArray = JSON.parse(item);
+      return (
+        <ul>
+          {medidasArray.map(({ nome, tipo }, index) => (
+            <li key={index}><span className="font-semibold">{index}</span>{`- ${nome}.`}</li>
+          ))}
+        </ul>
+      );
+    } catch (error) {
+      console.error("Erro ao converter medidas:", error);
+      return 'N/A';
+    }
+  };
+
   const filteredInventario = inventario.filter((i) => i.fk_empresa_id === companyId)
 
   return (
@@ -136,7 +152,7 @@ function GridInventario({
                 <th scope="col" className="px-4 py-2">
                   Metodologia
                 </th>
-                <th scope="col" className="px-4 py-2">
+                <th scope="col" className="px-4 py-2 text-center">
                   Medidas
                 </th>
                 <th scope="col" className="px-4 py-2 text-center">
@@ -204,8 +220,8 @@ function GridInventario({
                   <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[100px] text-center">
                     {find(item.fk_risco_id, 'metodologia')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[200px]">
-                    {item.medidas}
+                  <td className="px-4 py-2 text-gray-800 hyphens-auto text-justify whitespace-normal min-w-[300px]">
+                    {convertMedidas(item.medidas)}
                   </td>
                   <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[50px] text-center">
                     {item.probabilidade}

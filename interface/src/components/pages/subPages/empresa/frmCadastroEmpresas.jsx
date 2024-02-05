@@ -8,7 +8,7 @@ import icon_lupa from '../../../media/icon_lupa.svg'
 import icon_sair from '../../../media/icon_sair.svg'
 
 
-function CadastroEmpresa({ onEdit, setOnEdit, getEmpresas, contact, contatos }) {
+function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null);
@@ -117,7 +117,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresas, contact, contatos }) 
     setOnEdit(null);
 
     //Atualiza os dados
-    getEmpresas();
+    getEmpresa();
   };
 
   //Função para limpar o formulário
@@ -229,7 +229,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresas, contact, contatos }) 
               value={cnpj}
               onChange={handleCnpjChange}
               onPaste={handlePasteCnpj}
-              maxLength={14}
+              maxLength={18}
               placeholder="00.000.000/0000-00"
             />
           </div>

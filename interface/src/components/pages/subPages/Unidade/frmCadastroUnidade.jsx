@@ -289,7 +289,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               value={cnpj}
               onChange={handleCnpjChange}
               onPaste={handlePasteCnpj}
-              maxLength={14}
+              maxLength={18}
               placeholder="00.000.000/0000-00"
             />
           </div>

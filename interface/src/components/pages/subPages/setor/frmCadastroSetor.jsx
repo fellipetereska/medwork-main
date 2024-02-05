@@ -45,7 +45,8 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
 
     //Verificando se todos os campos foram preenchidos
     if (!user.nome_setor.value ||
-      !user.ambiente_setor.value) {
+      !user.ambiente_setor.value ||
+      !unidadeId) {
       return toast.warn("Preencha Todos os Campos!");
     }
 

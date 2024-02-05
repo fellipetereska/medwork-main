@@ -69,7 +69,7 @@ function Navbar() {
               {selectedCompany && empresa ? (
                 <div className='flex items-center gap-2'>
                   <p className='font- text-sm text-zinc-600'>Empresa:</p>
-                  <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
+                  <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate w-[200px]'>
                     <p className='text-sky-700 font-bold text-base'>{empresa}</p>
                   </div>
                   <button onClick={clearLocalSotrage}>

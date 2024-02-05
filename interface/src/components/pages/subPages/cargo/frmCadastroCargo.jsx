@@ -42,7 +42,8 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
     const user = ref.current;
 
     if (
-      !user.nome_cargo.value) {
+      !user.nome_cargo.value ||
+      !setorId) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {

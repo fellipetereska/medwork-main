@@ -4,13 +4,18 @@ import useAuth from '../../../../../hooks/useAuth';
 
 const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
 
-  const [searchTerm, setSearchTerm] = useState('');
-
   const { contatos, getContatos } = useAuth(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     getContatos();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
