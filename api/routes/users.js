@@ -3,6 +3,7 @@ import { pool } from "../db.js";
 // import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
+
 const router = express.Router();
 
 const SECRET = 'medworkldn'
@@ -1676,7 +1677,6 @@ router.put("/global_sprm/:id_global_sprm", (req, res) => {
     });
   })
 });
-
 
 
 

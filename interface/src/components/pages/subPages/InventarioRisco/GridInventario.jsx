@@ -89,11 +89,14 @@ function GridInventario({
     try {
       const medidasArray = JSON.parse(item);
       return (
-        <ul>
-          {medidasArray.map(({ nome, tipo }, index) => (
-            <li key={index}><span className="font-semibold">{index}</span>{`- ${nome}.`}</li>
-          ))}
-        </ul>
+        <>
+          {/* <p>Index - Tipo: Medida</p> */}
+          <ul>
+            {medidasArray.map(({ nome, tipo }, index) => (
+              <li key={index}><span className="font-semibold">{index}</span>{`- ${tipo}: ${nome}.`}</li>
+            ))}
+          </ul>
+        </>
       );
     } catch (error) {
       console.error("Erro ao converter medidas:", error);

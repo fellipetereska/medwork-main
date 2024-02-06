@@ -95,6 +95,9 @@ function Inventario() {
                 processos={processos}
                 riscos={riscos}
                 empresa={nameCompany}
+                unidades={unidades}
+                setores={setores}
+                empresaId={companyId}
             />
         </>
     )

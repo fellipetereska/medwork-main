@@ -1,11 +1,26 @@
 // GerarLaudo.jsx
-import React from "react";
-import PgrGenerate from "../components/PgrGenerate";
+import React, { useEffect, useState } from "react";
+import PgrGenerate from "../components/PgrGenerate/PgrGenerate";
+import { toast } from "react-toastify";
 
-function GerarLaudo({ inventario, processos, riscos, empresa }) {
+function GerarLaudo({ inventario, processos, riscos, empresa, unidades, setores, empresaId }) {
+
+  const [filteredInventario, setFilteredInventario] = useState([]);
+
+  useEffect(() => {
+    try {
+      const filtered = inventario.filter((i) => i.fk_empresa_id === empresaId);
+      setFilteredInventario(filtered);
+    } catch (error) {
+      toast.warn("Erro ao filtrar inventário!")
+      console.log("Erro ao filtrar inventario!", error);
+    }
+  }, [empresaId, inventario])
+
+
   const handleGenerate = async () => {
     try {
-      const pdfDoc = await PgrGenerate({ inventario, processos, riscos, empresa });
+      const pdfDoc = await PgrGenerate({ filteredInventario, processos, riscos, empresa, unidades, setores, empresaId });
 
       pdfDoc.download();
     } catch (error) {
