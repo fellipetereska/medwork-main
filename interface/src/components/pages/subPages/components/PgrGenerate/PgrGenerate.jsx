@@ -155,7 +155,7 @@ async function PgrGenerate({ filteredInventario, riscos, processos, empresa, uni
     { text: i.fontes, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
     { text: i.pessoas_expostas, alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
     { text: find(i.fk_risco_id, 'avaliacao'), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: i.medicao, alignment: 'center' + " " + find(i.fk_risco_id, 'unidade_medida'), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: i.medicao + " " + find(i.fk_risco_id, 'unidade_medida'), alignment: 'center', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
     { text: find(i.fk_risco_id, 'limite_tolerancia') + " " + find(i.fk_risco_id, 'unidade_medida'), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
     { text: find(i.fk_risco_id, 'metodologia'), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
     { text: convertMedidas(i.medidas), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
