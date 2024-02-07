@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [processosRiscos, setProcessosRiscos] = useState([]);
   const [riscosMedidas, setRiscosMedidas] = useState([]);
   const [inventario, setInventario] = useState([]);
+  const [plano, setPlano] = useState([]);
   const [globalSprm, setGlobalSprm] = useState([]);
   const [companyId, setCompanyId] = useState('');
 
@@ -155,31 +156,40 @@ export const AuthProvider = ({ children }) => {
 
   const getSetores = async () => {
     try {
-      const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
-      const unidadesInfo = unidadesInfoString ? JSON.parse(unidadesInfoString) : [];
+      // const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
+      // const unidadesInfo = unidadesInfoString ? JSON.parse(unidadesInfoString) : [];
 
-      const unidadesIds = unidadesInfo.map((unidade) => unidade.id);
+      // const unidadesIds = unidadesInfo.map((unidade) => unidade.id);
 
-      const setoresResponse = await fetch(`${connect}/setores`);
+      // const setoresResponse = await fetch(`${connect}/setores`);
 
-      if (!setoresResponse.ok) {
-        throw new Error(`Erro ao buscar setores. Status: ${setoresResponse.status}`);
+      // if (!setoresResponse.ok) {
+      //   throw new Error(`Erro ao buscar setores. Status: ${setoresResponse.status}`);
+      // }
+
+      // const setoresData = await setoresResponse.json();
+
+      // if (!setoresData || setoresData.length === 0) {
+      //   console.log("Nenhum setor encontrado");
+      //   return;
+      // }
+
+      // const filteredSetores = setoresData.filter((setor) => unidadesIds.includes(setor.fk_unidade_id));
+      // const setoresIds = filteredSetores.map((setor) => setor.id_setor);
+
+      // // Adiciona as informações dos setores ao localStorage associado à empresa selecionada
+      // localStorage.setItem(`selectedCompany_${companyId}_setoresInfo`, JSON.stringify(filteredSetores));
+
+      // setSetores(filteredSetores);
+      const response = await fetch(`${connect}/setores`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar setores. Status: ${response.status}`)
       }
 
-      const setoresData = await setoresResponse.json();
-
-      if (!setoresData || setoresData.length === 0) {
-        console.log("Nenhum setor encontrado");
-        return;
-      }
-
-      const filteredSetores = setoresData.filter((setor) => unidadesIds.includes(setor.fk_unidade_id));
-      const setoresIds = filteredSetores.map((setor) => setor.id_setor);
-
-      // Adiciona as informações dos setores ao localStorage associado à empresa selecionada
-      localStorage.setItem(`selectedCompany_${companyId}_setoresInfo`, JSON.stringify(filteredSetores));
-
-      setSetores(filteredSetores);
+      const data = await response.json();
+      data.sort((a, b) => a.nome_setor.localeCompare(b.nome_setor));
+      setSetores(data)
     } catch (error) {
       console.log(`Erro ao buscar setores. ${error}`);
     }
@@ -384,6 +394,21 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const getPlano = async () => {
+    try {
+      const response = await fetch(`${connect}/plano`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Plano de Ação. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setPlano(data)
+    } catch (error) {
+      toast.warn("Erro ao buscar Plano de Ação");
+      console.log(`Erro ao buscar Plano de Ação. ${error}`)
+    }
+  }
   const getInventario = async () => {
     try {
       const response = await fetch(`${connect}/inventario`);
@@ -524,6 +549,9 @@ export const AuthProvider = ({ children }) => {
         riscosMedidas,
         getInventario,
         inventario,
+        getPlano,
+        setPlano,
+        plano,
         getGlobalSprm,
         setGlobalSprm,
         globalSprm,

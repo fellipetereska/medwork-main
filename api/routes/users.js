@@ -1468,6 +1468,118 @@ router.delete("/riscos_medidas/:id_risco_medida", (req, res) => {
 
 
 
+//Plano de Ação
+//Get Table
+router.get("/plano", (req, res) => {
+  const q = `SELECT * FROM plano`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  });
+});
+
+//Add rows in table
+router.post("/plano", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO plano SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao cadastrar Plano de Ação", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Plano de Ação adicionado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update row int table
+router.put("/plano/:id_plano", (req, res) => {
+  const id_plano = req.params.id_plano;
+  const {
+    data,
+    fk_empresa_id,
+    fk_unidade_id,
+    fk_setor_id,
+    fk_processo_id,
+    fk_risco_id,
+    fk_medida_id,
+    tipo_medida,
+    responsavel,
+    prazo,
+    data_conclusao,
+    status
+  } = req.body;
+
+  const q = `
+    UPDATE inventario
+    SET data = ?,
+    fk_empresa_id = ?,
+    fk_unidade_id = ?,
+    fk_setor_id = ?,
+    fk_processo_id = ?,
+    fk_risco_id = ?,
+    fk_medida_id = ?,
+    tipo_medida = ?,
+    responsavel = ?,
+    prazo = ?,
+    data_conclusao = ?,
+    status = ?
+    WHERE id_plano = ?
+    `;
+
+  const values = [
+    data,
+    fk_empresa_id,
+    fk_unidade_id,
+    fk_setor_id,
+    fk_processo_id,
+    fk_risco_id,
+    fk_medida_id,
+    tipo_medida,
+    responsavel,
+    prazo,
+    data_conclusao,
+    status,
+    id_plano
+  ];
+
+  pool.getConnection((err, con) => {
+    con.release();
+
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar Plano de Ação", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Plano de Ação atualizado com sucesso!");
+    });
+  })
+
+});
+
+
+
+
 //Inventário de Riscos
 //Get Table
 router.get("/inventario", (req, res) => {
@@ -1511,7 +1623,7 @@ router.post("/inventario", (req, res) => {
 
 //Update row int table
 router.put("/inventario/:id_inventario", (req, res) => {
-  const id_inventario = req.params.id_inventario; // Obtém o ID da empresa da URL
+  const id_inventario = req.params.id_inventario;
   const {
     data,
     fk_empresa_id,
@@ -1578,6 +1690,7 @@ router.put("/inventario/:id_inventario", (req, res) => {
   })
 
 });
+
 
 
 

@@ -1,12 +1,14 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-
-//Importando os componentes
-import { createTitle } from "./ReportComponents";
 import { createTableInventario } from "./ReportComponents";
 
-
-async function PgrGenerate({ filteredInventario, riscos, processos, empresa, unidades, setores, empresaId }) {
+async function PgrGenerate({
+  filteredInventario,
+  riscos,
+  processos,
+  unidades,
+  setores,
+}) {
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   const find = (item, tipo) => {
@@ -48,7 +50,7 @@ async function PgrGenerate({ filteredInventario, riscos, processos, empresa, uni
               case 'avaliacao':
                 return riscoEncontrado.classificacao_risco || "N/A";
               case 'limite_tolerancia':
-                return riscoEncontrado.limite_tolerancia_risco|| "N/A";
+                return riscoEncontrado.limite_tolerancia_risco || "N/A";
               case 'metodologia':
                 return riscoEncontrado.metodologia_risco || "N/A";
               case 'severidade':
@@ -75,7 +77,7 @@ async function PgrGenerate({ filteredInventario, riscos, processos, empresa, uni
     } catch (error) {
       console.log("Erro ao formatar data!", error);
     }
-  }
+  };
 
   const convertMedidas = (item) => {
     try {
@@ -90,29 +92,38 @@ async function PgrGenerate({ filteredInventario, riscos, processos, empresa, uni
   const convertProbSev = (item) => {
     try {
       let fillColor;
+      let text;
 
       switch (item) {
         case 1:
           fillColor = "#d8f3dc";
-          return { text: "Muito Baixa", fillColor };
+          text = "Muito Baixa";
+          break;
         case 2:
           fillColor = "#caf0f8";
-          return { text: "Baixa", fillColor };
+          text = "Baixa";
+          break;
         case 3:
           fillColor = "#fff6cc";
-          return { text: "Média", fillColor };
+          text = "Média";
+          break;
         case 4:
-          fillColor = "ffc971";
-          return { text: "Alta", fillColor };
+          fillColor = "#ffc971";
+          text = "Alta";
+          break;
         case 5:
           fillColor = "#fcb9b2";
-          return { text: "Muito Alta", fillColor };
+          text = "Muito Alta";
+          break;
         default:
           fillColor = "white";
-          return { text: "N/A", fillColor };
+          text = "N/A";
       }
+
+      return { text, fillColor };
     } catch (error) {
       console.log("Erro ao converter Probabilidade/Severidade!", error);
+      return { text: "N/A", fillColor: "white" };
     }
   };
 
@@ -141,56 +152,33 @@ async function PgrGenerate({ filteredInventario, riscos, processos, empresa, uni
     }
   };
 
-
-
   const inventarioTable = filteredInventario.map((i) => [
-    { text: i.id_inventario, alignment: 'center', fontSize: 5, bold: true, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: formatData(i.data_inventario), alignment: 'center', bold: true, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_unidade_id, 'nome_unidade'), bold: true, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_setor_id, 'nome_setor'), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_processo_id, 'descricao_processo'), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_risco_id, 'nome_risco'), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_risco_id, 'grupo_risco'), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_risco_id, 'consequencia'), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: i.fontes, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: i.pessoas_expostas, alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_risco_id, 'avaliacao'), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: i.medicao + " " + find(i.fk_risco_id, 'unidade_medida'), alignment: 'center', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_risco_id, 'limite_tolerancia') + " " + find(i.fk_risco_id, 'unidade_medida'), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: find(i.fk_risco_id, 'metodologia'), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: convertMedidas(i.medidas), fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
-    { text: convertProbSev(i.probabilidade), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }], fillColor: convertProbSev(i.probabilidade).fillColor },
-    { text: convertProbSev(find(i.fk_risco_id, 'severidade')), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }], fillColor: convertProbSev(find(i.fk_risco_id, 'severidade')).fillColor },
-    { text: convertNivel(i.nivel), alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }], fillColor: convertNivel(i.nivel).fillColor },
-    { text: i.comentarios, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: i.id_inventario || '', alignment: 'center', fontSize: 5, bold: true, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: formatData(i.data_inventario) || 'N/A', alignment: 'center', bold: true, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_unidade_id, 'nome_unidade') || 'N/A', bold: true, fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_setor_id, 'nome_setor') || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_processo_id, 'descricao_processo') || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_risco_id, 'nome_risco') || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_risco_id, 'grupo_risco') || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_risco_id, 'consequencia') || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: i.fontes || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: i.pessoas_expostas || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_risco_id, 'avaliacao') || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: i.medicao + " " + find(i.fk_risco_id, 'unidade_medida') || 'N/A', alignment: 'center', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_risco_id, 'limite_tolerancia') + " " + find(i.fk_risco_id, 'unidade_medida') || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: find(i.fk_risco_id, 'metodologia') || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: convertMedidas(i.medidas) || 'N/A', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { ...convertProbSev(i.probabilidade) || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }], fillColor: convertProbSev(i.probabilidade).fillColor },
+    { ...convertProbSev(find(i.fk_risco_id, 'severidade')) || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }], fillColor: convertProbSev(find(i.fk_risco_id, 'severidade')).fillColor },
+    { ...convertNivel(i.nivel) || 'N/A', alignment: 'center', fontSize: 5, border: [false, false, false, { color: '#666', width: 0.5 }] },
+    { text: i.comentarios || '', alignment: 'center', fontSize: 5, bold: true, border: [false, false, false, { color: '#666', width: 0.5 }] },
   ]);
 
   const inventarioRiscos = [
-    createTableInventario(inventarioTable)
+    createTableInventario(inventarioTable),
   ];
 
-  const titlePage = [
-    {
-      text: 'Inventário de Riscos - PGR',
-      fontSize: 22,
-      bold: true,
-      alignment: 'center',
-    }
-  ];
-
-  const rodape = [];
-
-  const docDefinitions = {
-    pageSize: 'A4',
-    pageOrientation: 'landscape',
-    pageMargins: [10, 50, 10, 40],
-
-    header: [titlePage],
-    content: inventarioRiscos,
-    footer: [rodape]
-  };
-
-  return pdfMake.createPdf(docDefinitions);
+  return inventarioRiscos;
 }
 
-export default PgrGenerate
+export default PgrGenerate;
