@@ -197,53 +197,62 @@ export const AuthProvider = ({ children }) => {
 
   const getCargos = async () => {
     try {
-      const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
-      const unidadesInfo = unidadesInfoString ? JSON.parse(unidadesInfoString) : [];
+      // const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
+      // const unidadesInfo = unidadesInfoString ? JSON.parse(unidadesInfoString) : [];
 
-      const unidadesIds = unidadesInfo.map((unidade) => unidade.id);
+      // const unidadesIds = unidadesInfo.map((unidade) => unidade.id);
 
-      const setoresResponse = await fetch(`${connect}/setores`);
+      // const setoresResponse = await fetch(`${connect}/setores`);
 
-      if (!setoresResponse.ok) {
-        throw new Error(`Erro ao buscar setores. Status: ${setoresResponse.status}`);
+      // if (!setoresResponse.ok) {
+      //   throw new Error(`Erro ao buscar setores. Status: ${setoresResponse.status}`);
+      // }
+
+      // const setoresData = await setoresResponse.json();
+
+      // if (!setoresData || setoresData.length === 0) {
+      //   console.log("Nenhum setor encontrado");
+      //   return;
+      // }
+
+      // const filteredSetores = setoresData.filter((setor) => unidadesIds.includes(setor.fk_unidade_id));
+      // const setoresIds = filteredSetores.map((setor) => setor.id_setor);
+
+      // const cargosResponse = await fetch(`${connect}/cargos`);
+
+      // if (!cargosResponse.ok) {
+      //   throw new Error(`Erro ao buscar cargos. Status: ${cargosResponse.status}`);
+      // }
+
+      // const cargosData = await cargosResponse.json();
+
+      // if (!cargosData || cargosData.length === 0) {
+      //   console.log("Nenhum cargo encontrado");
+      //   return;
+      // }
+
+      // const filteredCargos = cargosData.filter((cargo) => setoresIds.includes(cargo.fk_setor_id));
+
+      // filteredCargos.sort((a, b) => {
+      //   if (a.ativo < b.ativo) return 1;
+      //   if (a.ativo > b.ativo) return -1;
+
+      //   return a.nome_cargo.localeCompare(b.nome_cargo);
+      // });
+
+      // // Adiciona as informações dos cargos ao localStorage associado à empresa selecionada
+      // localStorage.setItem(`selectedCompany_${companyId}_cargosInfo`, JSON.stringify(filteredCargos));
+
+      // setCargos(filteredCargos);
+      const response = await fetch(`${connect}/cargos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar cargos. Status: ${response.status}`)
       }
 
-      const setoresData = await setoresResponse.json();
-
-      if (!setoresData || setoresData.length === 0) {
-        console.log("Nenhum setor encontrado");
-        return;
-      }
-
-      const filteredSetores = setoresData.filter((setor) => unidadesIds.includes(setor.fk_unidade_id));
-      const setoresIds = filteredSetores.map((setor) => setor.id_setor);
-
-      const cargosResponse = await fetch(`${connect}/cargos`);
-
-      if (!cargosResponse.ok) {
-        throw new Error(`Erro ao buscar cargos. Status: ${cargosResponse.status}`);
-      }
-
-      const cargosData = await cargosResponse.json();
-
-      if (!cargosData || cargosData.length === 0) {
-        console.log("Nenhum cargo encontrado");
-        return;
-      }
-
-      const filteredCargos = cargosData.filter((cargo) => setoresIds.includes(cargo.fk_setor_id));
-
-      filteredCargos.sort((a, b) => {
-        if (a.ativo < b.ativo) return 1;
-        if (a.ativo > b.ativo) return -1;
-
-        return a.nome_cargo.localeCompare(b.nome_cargo);
-      });
-
-      // Adiciona as informações dos cargos ao localStorage associado à empresa selecionada
-      localStorage.setItem(`selectedCompany_${companyId}_cargosInfo`, JSON.stringify(filteredCargos));
-
-      setCargos(filteredCargos);
+      const data = await response.json();
+      data.sort((a, b) => a.nome_cargo.localeCompare(b.nome_cargo));
+      setCargos(data)
     } catch (error) {
       console.log(`Erro ao buscar cargos. ${error}`);
     }

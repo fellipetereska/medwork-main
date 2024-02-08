@@ -28,10 +28,10 @@ function Laudos() {
   }, []);
 
   useEffect(() => {
-    setNameCompany(selectedCompany[0]?.nome_empresa)
+    setNameCompany(selectedCompany[0]?.nome_empresa);
     getUnidades();
-    getCargos();
     getSetores();
+    getCargos();
     getProcessos();
     getRiscos();
     getSetoresProcessos();
@@ -59,6 +59,8 @@ function Laudos() {
         medidasAdm={medidasAdm}
         medidasEpi={medidasEpi}
         medidasEpc={medidasEpc}
+        cargos={cargos}
+        getUnidades={getUnidades}
       />
     </>
   )

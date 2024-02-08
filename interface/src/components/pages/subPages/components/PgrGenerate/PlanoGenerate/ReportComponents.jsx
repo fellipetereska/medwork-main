@@ -12,6 +12,7 @@ export const createTableInventario = (item) => {
   return {
     table: {
       headerRows: 1,
+      dontBreakRows: true,
       width: 'auto',
       body: [
         [
@@ -34,6 +35,35 @@ export const createTableInventario = (item) => {
           { text: 'Severidade', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 6 },
           { text: 'Nível', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 6 },
           { text: 'Comentários', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 6 },
+        ],
+        ...item
+      ],
+    },
+    layout: {
+      hLineWidth: function (i, node) { return 0.3; },
+      hLineColor: function (i, node) { return '#dee2e6'; },
+    },
+  };
+}
+
+export const createTablePlano = (item) => {
+  return {
+    table: {
+      headerRows: 1,
+      width: 'auto',
+      body: [
+        [
+          { text: 'ID', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Data', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Unidade', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Setor', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Responsável', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Processo', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Risco', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Medida', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Prazo', border: [false, false, false, true], fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Data de Conclusão', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 10 },
+          { text: 'Status', border: [false, false, false, true], alignment: 'center', fillColor: '#eeeeee', fontSize: 10 },
         ],
         ...item
       ],
