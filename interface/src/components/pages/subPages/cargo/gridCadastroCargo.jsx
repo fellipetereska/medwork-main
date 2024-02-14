@@ -1,8 +1,18 @@
 import { BsFillPencilFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { connect } from '../../../../services/api';
+import { useEffect, useState } from 'react';
 
-function GridCadastroCargo({ cargos, setCargo, getCargo, setOnEdit, find, findUnidades }) {
+function GridCadastroCargo({ cargos, setCargo, getCargo, setOnEdit, find, findUnidades, unidades, setor }) {
+
+  const [filteredSetores, setFilteredSetores] = useState([]);
+
+  useEffect(() => {
+    const filterunidades = unidades.map((i) => i.id_unidade);
+    const filtersetor = setor.filter((i) => filterunidades.includes(i.fk_unidade_id));
+    const idSetores = filtersetor.map((i) => i.id_setor);
+    setFilteredSetores(idSetores);
+  }, [unidades, setor]);
 
   const handleEdit = (item) => {
     setOnEdit(item);
@@ -63,7 +73,9 @@ function GridCadastroCargo({ cargos, setCargo, getCargo, setOnEdit, find, findUn
           </tr>
         </thead>
         <tbody>
-          {cargos.map((item, i) => (
+          {cargos
+          .filter((i) => filteredSetores.includes(i.fk_setor_id))
+          .map((item, i) => (
             <tr key={i} className={`border-b bg-white ${!item.ativo ? 'opacity-25' : ''}`}>
               <th scope="row" className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_cargo}

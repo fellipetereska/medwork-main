@@ -207,8 +207,8 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-ambiente_setor">
               Descrição do Ambiente
             </label>
-            <input
-              className="apperance-none block w-full bg-gray-100 rounded h-24 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+            <textarea
+              className="resize-none apperance-none block w-full bg-gray-100 rounded h-24 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="ambiente_setor"
               placeholder="Descrição do Ambiente"

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
-function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
+function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
@@ -14,10 +14,10 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
     const user = ref.current;
 
     if (onEdit) {
-      const { nome_processo, descricao } = user;
+      const { nome_processo, ramo_trabalho } = user;
 
       nome_processo.value = onEdit.nome_processo || "";
-      descricao.value = onEdit.descricao || "";
+      ramo_trabalho.value = onEdit.ramo_trabalho || "";
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -33,13 +33,13 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
     //Verificandose todos os campos foram preenchidos
     if (
       !user.nome_processo.value ||
-      !user.descricao.value) {
+      !user.ramo_trabalho.value) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
       const processoData = {
         nome_processo: user.nome_processo.value || null,
-        descricao: user.descricao.value || null,
+        ramo_trabalho: user.ramo_trabalho.value || null,
       };
 
       const url = onEdit
@@ -70,7 +70,7 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
 
     //Limpa os campos e reseta o estaodo de edição
     user.nome_processo.value = "";
-    user.descricao.value = "";
+    user.ramo_trabalho.value = "";
     setOnEdit(null);
     //Atualiza os dados
     getProcessos();
@@ -82,10 +82,15 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
 
     // Limpa todos os campos do formulário
     user.nome_processo.value = "";
-    user.descricao.value = "";
+    user.ramo_trabalho.value = "";
     setOnEdit(null);
   };
 
+  const handleSearchProceesso = (e) => {
+    e.preventDefault();
+
+    setSearchTerm(e.target.value);
+  }
 
   return (
     <div className="flex justify-center mt-10">
@@ -93,7 +98,7 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
         <div className="-mx-3 mb-6 p-3">
           {/* Campos Formulário */}
           <div className="flex">
-            <div className="w-full md:w-1/3 px-3">
+            <div className="w-full md:w-1/2 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                 Nome do Processo
               </label>
@@ -102,17 +107,18 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit }) {
                 type="text"
                 name="nome_processo"
                 placeholder="Nome do Processo"
+                onChange={handleSearchProceesso}
               />
             </div>
-            <div className="w-full px-3">
+            <div className="w-full md:w-1/2 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Descrição do Processo
+                Ramo de Trabalho
               </label>
-              <textarea
-                className="resize-none appearence-none block w-full bg-gray-100 h-20 min-h-20 max-h-20 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              <input
+                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                 type="text"
-                name="descricao"
-                placeholder="Descreva o processo"
+                name="ramo_trabalho"
+                placeholder="Ramo de Trabalho"
               />
             </div>
           </div>

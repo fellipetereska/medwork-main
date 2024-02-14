@@ -65,7 +65,7 @@ const ModalSearchUnidadeEmpresa = ({ onCancel, isOpen, children, onSetorSelect, 
                       {child.nome_processo}
                     </p>
                     <p className="text-sm text-gray-500 truncate">
-                      {child.descricao}
+                      {child.ramo_trabalho}
                     </p>
                   </div>
                   <div className="inline-flex items-center text-base font-semibold text-gray-900">

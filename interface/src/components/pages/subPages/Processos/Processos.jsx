@@ -60,6 +60,7 @@ function Processos() {
         onEdit={onEdit}
         setOnEdit={setOnEdit}
         getProcessos={getProcessos}
+        setSearchTerm={setSearchTerm}
       />
 
       {/* Barra de pesquisa */}

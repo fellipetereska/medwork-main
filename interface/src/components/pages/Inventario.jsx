@@ -52,7 +52,7 @@ function Inventario() {
     <>
       
 
-      <FrmInventario
+      <FrmInventario  
         unidades={unidades}
         cargos={cargos}
         setores={setores}

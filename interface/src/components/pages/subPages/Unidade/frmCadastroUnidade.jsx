@@ -19,6 +19,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
   const [estado, setEstado] = useState(null);
   const [cidade, setCidade] = useState(null);
   const [logradouro, setLogradouro] = useState(null);
+  const [complemento, setComplemento] = useState(null);
   const [bairro, setBairro] = useState(null);
   const [numero, setNumero] = useState(null);
 
@@ -36,6 +37,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
       setBairro(onEdit.bairro_unidade || "");
       setCidade(onEdit.cidade_unidade || "");
       setLogradouro(onEdit.endereco_unidade || "");
+      setComplemento(onEdit.complemento || "");
       setNumero(onEdit.numero_unidade || "");
 
       if (contact && onEdit.fk_contato_id) {
@@ -67,6 +69,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
         cep_unidade: user.cep_unidade.value || null,
         endereco_unidade: user.endereco_unidade.value || null,
         numero_unidade: user.numero_unidade.value || null,
+        complemento: user.complemento.value || null,
         cidade_unidade: user.cidade_unidade.value || null,
         bairro_unidade: user.bairro_unidade.value || null,
         uf_unidade: user.uf_unidade.value || null,
@@ -104,11 +107,12 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     user.nome_unidade.value = "";
     setNumero("");
     setBairro("");
-    setLogradouro("")
+    setLogradouro("");
     setCidade("")
     setEstado("");
     setCnpj("");
     setCep("");
+    setComplemento("");
     setOnEdit(null);
     setContatoId(null);
     setNomeContato(null);
@@ -116,7 +120,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
     //Atualiza os dados
     getUnidades();
-  }
+  };
 
   //Função para limpar os campos
   const handleClear = () => {
@@ -156,7 +160,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
   //Funções para formatação do CNPJ
   const handleFormatCnpj = (value) => {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-  }
+  };
 
   const handlePasteCnpj = (event) => {
     const inputCnpj = event.clipboardData.getData('text/plain');
@@ -261,12 +265,14 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     const inputValue = e.target.value;
     const numericValue = inputValue.replace(/\D/g, '');
     setNumero(numericValue)
-  }
+  };
 
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6 p-3">
+
+          {/* Nome Unidade */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Nome da Unidade:
@@ -278,6 +284,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               placeholder="Nome da Unidade"
             />
           </div>
+
+          {/* CNPJ */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
               CNPJ:
@@ -293,6 +301,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               placeholder="00.000.000/0000-00"
             />
           </div>
+
+          {/* CEP */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
               CEP:
@@ -308,6 +318,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               placeholder="00000-000"
             />
           </div>
+
+          {/* Endereço */}
           <div className="flex w-full md:w-1/3 px-3 gap-4">
             <div className="w-full">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -335,6 +347,24 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               />
             </div>
           </div>
+
+          {/* Complemento */}
+          <div className="flex w-full md:w-1/3 px-3 gap-4">
+            <div className="w-full">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                Complemento:
+              </label>
+              <input
+                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                type="text"
+                name="complemento"
+                placeholder="Complemento da Unidade"
+                value={complemento}
+              />
+            </div>
+          </div>
+
+          {/* Bairro */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Bairro:
@@ -347,6 +377,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               value={bairro}
             />
           </div>
+
+          {/* Cidade */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Cidade:
@@ -359,6 +391,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               value={cidade}
             />
           </div>
+
+          {/* Estado */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Selecione um Estado:
@@ -372,6 +406,8 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               onChange={handleUfChange}
             />
           </div>
+
+          {/* Contato */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
               Contato:

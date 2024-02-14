@@ -174,6 +174,7 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cep_unidade,
     endereco_unidade,
     numero_unidade,
+    complemento,
     cidade_unidade,
     bairro_unidade,
     uf_unidade,
@@ -188,6 +189,7 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cep_unidade = ?,
     endereco_unidade = ?,
     numero_unidade = ?,
+    complemento = ?,
     bairro_unidade = ?,
     cidade_unidade = ?,
     uf_unidade = ?,
@@ -202,6 +204,7 @@ router.put("/unidades/:id_unidade", (req, res) => {
     cep_unidade,
     endereco_unidade,
     numero_unidade,
+    complemento,
     cidade_unidade,
     bairro_unidade,
     uf_unidade,
@@ -621,12 +624,12 @@ router.post("/processos", (req, res) => {
 //Update row int table
 router.put("/processos/:id_processo", (req, res) => {
   const id_processo = req.params.id_processo; // Obtém o ID da empresa da URL
-  const { nome_processo, descricao, fk_setor_id, fk_cargo_id } = req.body;
+  const { nome_processo, ramo_trabalho, fk_setor_id, fk_cargo_id } = req.body;
 
   const q = `
     UPDATE processos
     SET nome_processo = ?,
-    descricao = ?,
+    ramo_trabalho = ?,
     fk_setor_id = ?,
     fk_cargo_id = ?
     WHERE id_processo = ?
@@ -634,7 +637,7 @@ router.put("/processos/:id_processo", (req, res) => {
 
   const values = [
     nome_processo,
-    descricao,
+    ramo_trabalho,
     fk_setor_id,
     fk_cargo_id,
     id_processo

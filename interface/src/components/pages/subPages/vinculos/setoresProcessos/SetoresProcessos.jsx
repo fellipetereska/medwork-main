@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { IoClose } from "react-icons/io5";
 import icon_setor from '../../../../media/icon_setor.svg'
@@ -10,12 +10,20 @@ import GridModalSetorProcessos from '../../components/gridsModal/GridModalSetorP
 
 function SetoresProcessos() {
 
-  const { setores } = useAuth(null);
+  const { setores, unidades } = useAuth(null);
 
   const [showModalSetor, setShowModalSetor] = useState(false);
   const [showModalProcessos, setShowModalProcessos] = useState(false);
   const [setorNome, setSetorNome] = useState(null);
   const [setorId, setSetorId] = useState(null);
+
+  const [filteredSetores, setFilteredSetores] = useState([]);
+
+  useEffect(() => {
+    const filterunidades = unidades.map((i) => i.id_unidade);
+    const filtersetor = setores.filter((i) => filterunidades.includes(i.fk_unidade_id));
+    setFilteredSetores(filtersetor);
+  }, [unidades, setores]);
 
   const openModalSetor = () => setShowModalSetor(true);
   const closeModalSetor = () => setShowModalSetor(false);
@@ -96,7 +104,7 @@ function SetoresProcessos() {
       <ModalSearchSetor
         isOpen={showModalSetor}
         onCancel={closeModalSetor}
-        children={setores}
+        children={filteredSetores}
         onContactSelect={handleSetorSelect}
       />
     </>

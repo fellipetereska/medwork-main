@@ -6,13 +6,21 @@ import icon_sair from '../../../media/icon_sair.svg'
 import ModalSearchSetor from '../components/Modal/ModalSearchSetor'
 
 
-function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
+function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades }) {
 
   // Instanciando a variavel que vai referenciar o formulario
   const ref = useRef(null);
   const [setorId, setSetorId] = useState(null);
   const [setorNome, setSetorNome] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [filteredSetores, setFilteredSetores] = useState([]);
+
+  useEffect(() => {
+    const filterunidades = unidades.map((i) => i.id_unidade);
+    const filtersetor = setor.filter((i) => filterunidades.includes(i.fk_unidade_id));
+    setFilteredSetores(filtersetor);
+  }, [unidades, setor]);
 
   useEffect(() => {
     if (onEdit) {
@@ -185,11 +193,11 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Descrição
             </label>
-            <input
-              className="apperance-none block w-full bg-gray-100 rounded h-20 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+            <textarea
+              className="resize-none apperance-none block w-full bg-gray-100 rounded h-20 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="descricao"
-              placeholder="Descrição do Setor"
+              placeholder="Descrição do Cargo"
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
@@ -236,7 +244,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor }) {
             <ModalSearchSetor
               isOpen={showModal}
               onCancel={closeModal}
-              children={setor}
+              children={filteredSetores}
               onContactSelect={handleSetorSelect}
             />
           </div>

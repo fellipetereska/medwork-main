@@ -405,7 +405,6 @@ function FrmInventario({
     setProbabilidade('');
     setNivel('');
     setDescricao('');
-    setPessoasExpostas('');
     setOnEdit(null);
     setCheckMedicao(false)
   }

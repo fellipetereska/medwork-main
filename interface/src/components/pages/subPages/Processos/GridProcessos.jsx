@@ -39,7 +39,7 @@ function GridProcesso({ processos, setOnEdit }) {
                 Processo
               </th>
               <th scope="col" className="px-4 py-3">
-                Descrição
+                Ramo de Trabalho
               </th>
               <th scope="col" className="px-4 py-3 text-center">
                 Ações
@@ -56,7 +56,7 @@ function GridProcesso({ processos, setOnEdit }) {
                   {item.nome_processo}
                 </th>
                 <td className="px-4 py-4">
-                  {item.descricao}
+                  {item.ramo_trabalho}
                 </td>
                 <td className="px-5 py-4 gap-4 flex justify-center">
                   <a className="font-medium text-blue-400 hover:text-blue-800">

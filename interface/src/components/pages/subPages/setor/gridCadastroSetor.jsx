@@ -1,7 +1,7 @@
 //Importando ferramentas
 import { BsFillPencilFill } from 'react-icons/bs'; //Icone de Edição
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { connect } from '../../../../services/api'; //Conexão com o banco de dados
 import ModalProcesso from '../components/Modal/ModalSetorProcesso'
 import { FiLink } from "react-icons/fi";
@@ -12,6 +12,13 @@ function GridCadastroSetor({ setor, getSetores, setSetor, setOnEdit, unidade }) 
   const [showModal, setShowModal] = useState(null);
   const [setorName, setSetorName] = useState(null);
   const [setorId, setSetorId] = useState(null);
+  const [unidadesIds, setUnidadesIds] = useState([]);
+
+  useEffect(() => {
+    const unidadesFilter = unidade.map((i) => i.id_unidade);
+    setUnidadesIds(unidadesFilter);
+    console.log(unidadesFilter)
+  }, [unidade]);
 
   //Função para editar item
   const handleEdit = (item) => {
@@ -66,7 +73,6 @@ function GridCadastroSetor({ setor, getSetores, setSetor, setOnEdit, unidade }) 
     openModal();
   }
 
-
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
       <table className="w-full xl:w-5/6 shadow-md text-sm mt-4 text-left rtl:text-right text-gray-500">
@@ -90,7 +96,8 @@ function GridCadastroSetor({ setor, getSetores, setSetor, setOnEdit, unidade }) 
           </tr>
         </thead>
         <tbody>
-          {setor && setor.map((item, i) => (
+          {setor && setor.filter((item) => unidadesIds.includes(item.fk_unidade_id))
+          .map((item, i) => (
             <tr key={i} className={`border-b bg-white ${!item.ativo ? 'opacity-25' : ''}`}>
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_setor}

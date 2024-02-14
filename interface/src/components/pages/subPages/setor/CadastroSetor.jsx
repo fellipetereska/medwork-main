@@ -57,6 +57,9 @@ function CadastroSetor({ }) {
 		}
 	};
 
+	const unidadesId = unidades.filter((i) => i.fk_empresa_id);
+	const filteredSetores = setores.filter((i) => i.fk_unidade_id === unidadesId);
+
 	return (
 		<div className="p-6">
 			<div className="flex justify-center items-center mb-10 mt-10">

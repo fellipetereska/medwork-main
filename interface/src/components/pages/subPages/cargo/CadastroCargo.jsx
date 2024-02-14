@@ -91,6 +91,7 @@ function CadastroCargo() {
         getCargo={getCargos}
         set={setorNome}
         setor={setores}
+        unidades={unidades}
       />
 
       {/* Barra de pesquisa */}
