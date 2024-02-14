@@ -263,6 +263,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               name="nivel_acao_risco"
               placeholder="Nivel de Ação"
               disabled={classificacao}
+              step="any"
             />
           </div>
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
@@ -275,6 +276,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               name="limite_tolerancia_risco"
               placeholder="Limite de Tolerância"
               disabled={classificacao}
+              step="any"
             />
           </div>
           <div className={`w-full md:w-1/3 px-3`}>

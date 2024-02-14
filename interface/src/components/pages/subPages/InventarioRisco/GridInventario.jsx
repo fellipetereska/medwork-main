@@ -215,7 +215,7 @@ function GridInventario({
                     {find(item.fk_risco_id, 'avaliacao')}
                   </td>
                   <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[50px] text-center">
-                    {item.medicao}
+                    {item.medicao} {find(item.fk_risco_id, 'unidade_medida')}
                   </td>
                   <td className="px-4 py-2 text-gray-800 whitespace-normal min-w-[100px] text-center">
                     {find(item.fk_risco_id, 'limite_tolerancia')} {find(item.fk_risco_id, 'unidade_medida')}

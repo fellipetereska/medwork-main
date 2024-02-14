@@ -3,6 +3,7 @@ import useAuth from "../../hooks/useAuth";
 
 import FrmInventario from "./subPages/InventarioRisco/FrmInventario";
 import GridInventario from "./subPages/InventarioRisco/GridInventario";
+import FrmForm from './subPages/InventarioRisco/FrmForm'
 
 function Inventario() {
 
@@ -49,9 +50,7 @@ function Inventario() {
 
   return (
     <>
-      <div className="flex justify-center items-center mt-12 mb-10">
-        <h1 className="text-3xl font-extrabold text-sky-700">Inventário de Riscos</h1>
-      </div>
+      
 
       <FrmInventario
         unidades={unidades}

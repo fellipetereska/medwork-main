@@ -731,8 +731,7 @@ router.put("/riscos/:id_risco", (req, res) => {
     severidade_risco,
     pgr_risco,
     ltcat_risco,
-    lip_risco,
-    fk_processo_id
+    lip_risco
   } = req.body;
 
   const q = `
@@ -750,8 +749,7 @@ router.put("/riscos/:id_risco", (req, res) => {
     severidade_risco = ?,
     pgr_risco = ?,
     ltcat_risco = ?,
-    lip_risco = ?,
-    fk_processo_id = ?
+    lip_risco = ?
     WHERE id_risco = ?
     `;
 
@@ -770,7 +768,6 @@ router.put("/riscos/:id_risco", (req, res) => {
     pgr_risco,
     ltcat_risco,
     lip_risco,
-    fk_processo_id,
     id_risco
   ];
 

@@ -12,7 +12,7 @@ import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
 
-function FrmInventario({
+function FrmForm({
   unidades,
   cargos,
   setores,
@@ -476,11 +476,28 @@ function FrmInventario({
 
   return (
     <>
+
       {loading && <LoadingScreen />}
       <div className="flex justify-center mt-10">
         <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
+          <div className="flex justify-center items-center mb-10">
+            <h1 className="text-3xl font-extrabold text-sky-700">Inventário de Riscos</h1>
+          </div>
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
-
+            
+            {/* Data */}
+            <div className="w-full md:w-1/4 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Data:
+              </label>
+              <input
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                type="date"
+                name="data_inventario"
+                value={data}
+                onChange={handleChangeData}
+              />
+            </div>
 
             {/* Unidade */}
             <div className="w-full md:w-1/4 px-3">
@@ -668,19 +685,7 @@ function FrmInventario({
               />
             </div>
 
-            {/* Data */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Data:
-              </label>
-              <input
-                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="date"
-                name="data_inventario"
-                value={data}
-                onChange={handleChangeData}
-              />
-            </div>
+
             {/* Pessoas Expostas */}
             <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -695,52 +700,8 @@ function FrmInventario({
                 disabled
               />
             </div>
-            {/* Consequencias */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Consequências:
-              </label>
-              <input
-                className={`${consequencia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="consequencias"
-                placeholder="Consequências"
-                value={consequencia}
-                disabled
-              />
-            </div>
-            {/* Avaliação */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Avaliação
-              </label>
-              <input
-                className={`${avaliacao ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="avaliacao_risco"
-                placeholder="Avaliação do Risco"
-                value={avaliacao}
-                disabled
-              />
-            </div>
 
 
-
-            {/* Limite de Tolerância */}
-            <div className="w-full md:w-3/12 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                LT:
-              </label>
-              <input
-                className={`${limiteTolerancia ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="limite_tolerancia"
-                placeholder="LT"
-                value={limiteTolerancia}
-                disabled
-                step="any"
-              />
-            </div>
             {/* Medição */}
             <div className="w-full md:w-3/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -828,19 +789,6 @@ function FrmInventario({
 
 
             <div className="w-full flex">
-              {/* Metodologia */}
-              <div className="w-full md:w-1/3 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                  Metodologia:
-                </label>
-                <input
-                  className={`${metodologia ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                  name="metodologia_risco"
-                  placeholder="Metodologia"
-                  value={metodologia}
-                  disabled
-                />
-              </div>
               {/* Descrição das Fontes */}
               <div className="w-full md:w-1/3 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -952,4 +900,4 @@ function FrmInventario({
   );
 }
 
-export default FrmInventario;
+export default FrmForm;
