@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log("Erro ao setar id da empresa.", error)
     }
-  }
+  };
 
   const getEmpresas = async () => {
     try {
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar empresas");
       console.log(`Erro ao buscar empresas. ${error}`)
     }
-  }
+  };
 
   const getContatos = async () => {
     try {
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar contatos");
       console.log(`Erro ao buscar contatos. ${error}`)
     }
-  }
+  };
 
   const handleSelectedCompany = async (id, nameCompany) => {
     try {
@@ -156,31 +156,6 @@ export const AuthProvider = ({ children }) => {
 
   const getSetores = async () => {
     try {
-      // const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
-      // const unidadesInfo = unidadesInfoString ? JSON.parse(unidadesInfoString) : [];
-
-      // const unidadesIds = unidadesInfo.map((unidade) => unidade.id);
-
-      // const setoresResponse = await fetch(`${connect}/setores`);
-
-      // if (!setoresResponse.ok) {
-      //   throw new Error(`Erro ao buscar setores. Status: ${setoresResponse.status}`);
-      // }
-
-      // const setoresData = await setoresResponse.json();
-
-      // if (!setoresData || setoresData.length === 0) {
-      //   console.log("Nenhum setor encontrado");
-      //   return;
-      // }
-
-      // const filteredSetores = setoresData.filter((setor) => unidadesIds.includes(setor.fk_unidade_id));
-      // const setoresIds = filteredSetores.map((setor) => setor.id_setor);
-
-      // // Adiciona as informações dos setores ao localStorage associado à empresa selecionada
-      // localStorage.setItem(`selectedCompany_${companyId}_setoresInfo`, JSON.stringify(filteredSetores));
-
-      // setSetores(filteredSetores);
       const response = await fetch(`${connect}/setores`);
 
       if (!response.ok) {
@@ -197,53 +172,6 @@ export const AuthProvider = ({ children }) => {
 
   const getCargos = async () => {
     try {
-      // const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
-      // const unidadesInfo = unidadesInfoString ? JSON.parse(unidadesInfoString) : [];
-
-      // const unidadesIds = unidadesInfo.map((unidade) => unidade.id);
-
-      // const setoresResponse = await fetch(`${connect}/setores`);
-
-      // if (!setoresResponse.ok) {
-      //   throw new Error(`Erro ao buscar setores. Status: ${setoresResponse.status}`);
-      // }
-
-      // const setoresData = await setoresResponse.json();
-
-      // if (!setoresData || setoresData.length === 0) {
-      //   console.log("Nenhum setor encontrado");
-      //   return;
-      // }
-
-      // const filteredSetores = setoresData.filter((setor) => unidadesIds.includes(setor.fk_unidade_id));
-      // const setoresIds = filteredSetores.map((setor) => setor.id_setor);
-
-      // const cargosResponse = await fetch(`${connect}/cargos`);
-
-      // if (!cargosResponse.ok) {
-      //   throw new Error(`Erro ao buscar cargos. Status: ${cargosResponse.status}`);
-      // }
-
-      // const cargosData = await cargosResponse.json();
-
-      // if (!cargosData || cargosData.length === 0) {
-      //   console.log("Nenhum cargo encontrado");
-      //   return;
-      // }
-
-      // const filteredCargos = cargosData.filter((cargo) => setoresIds.includes(cargo.fk_setor_id));
-
-      // filteredCargos.sort((a, b) => {
-      //   if (a.ativo < b.ativo) return 1;
-      //   if (a.ativo > b.ativo) return -1;
-
-      //   return a.nome_cargo.localeCompare(b.nome_cargo);
-      // });
-
-      // // Adiciona as informações dos cargos ao localStorage associado à empresa selecionada
-      // localStorage.setItem(`selectedCompany_${companyId}_cargosInfo`, JSON.stringify(filteredCargos));
-
-      // setCargos(filteredCargos);
       const response = await fetch(`${connect}/cargos`);
 
       if (!response.ok) {
@@ -313,7 +241,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar medidas adminitrativas");
       console.log(`Erro ao buscar medidas adminitrativas. ${error}`)
     }
-  }
+  };
 
   const getMedidasEpi = async () => {
     try {
@@ -333,7 +261,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar epi's");
       console.log(`Erro ao buscar epi's. ${error}`)
     }
-  }
+  };
 
   const getMedidasEpc = async () => {
     try {
@@ -353,7 +281,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar epc's");
       console.log(`Erro ao buscar epc's. ${error}`)
     }
-  }
+  };
 
   const getSetoresProcessos = async () => {
     try {
@@ -369,7 +297,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar Setores Processos");
       console.log(`Erro ao buscar Setores Processos. ${error}`)
     }
-  }
+  };
 
   const getProcessosRiscos = async () => {
     try {
@@ -385,7 +313,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar Processos Riscos");
       console.log(`Erro ao buscar Processos Riscos. ${error}`)
     }
-  }
+  };
 
   const getRiscosMedidas = async () => {
     try {
@@ -401,7 +329,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar Medidas dos riscos");
       console.log(`Erro ao buscar Medidas dos riscos. ${error}`)
     }
-  }
+  };
 
   const getPlano = async () => {
     try {
@@ -417,7 +345,8 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar Plano de Ação");
       console.log(`Erro ao buscar Plano de Ação. ${error}`)
     }
-  }
+  };
+
   const getInventario = async () => {
     try {
       const response = await fetch(`${connect}/inventario`);
@@ -433,7 +362,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar Inventário");
       console.log(`Erro ao buscar Inventário. ${error}`)
     }
-  }
+  };
 
   const getGlobalSprm = async () => {
     try {
@@ -449,7 +378,7 @@ export const AuthProvider = ({ children }) => {
       toast.warn("Erro ao buscar medidas do setor");
       console.log(`Erro ao buscar medidas do setor. ${error}`)
     }
-  }
+  };
 
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -508,7 +437,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(`selectedCompany_${companyId}_unidadesInfo`);
     localStorage.removeItem(`selectedCompany_${companyId}_setoresInfo`);
     localStorage.removeItem(`selectedCompany_${companyId}_cargosInfo`);
-  }
+  };
 
   return (
     <AuthContext.Provider

@@ -1,64 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { connect } from "../../services/api";
+import useAuth from "../../hooks/useAuth";
 
 import GridHome from "./subPages/GridHome";
 import SearchInput from "./subPages/components/SearchInput";
 
 function Home() {
 
-  //Instanciando o id da Empresa
-  const [empresas, setEmpresa] = useState([]);
-  const [contato, setContato] = useState([]);
+  const {empresas, getEmpresas, contatos, getContatos, companyId, handleSetCompanyId} = useAuth(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredEmpresas, setFilteredEmpresas] = useState([]);
 
-  // Pegando os dados do banco
-  const getEmpresa = async () => {
-    try {
-      const response = await fetch(`${connect}/empresas`);
-
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar empresa. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      data.sort((a, b) => {
-        if (a.ativo < b.ativo) return 1;
-        if (a.ativo > b.ativo) return -1;
-
-        return a.nome_empresa.localeCompare(b.nome_empresa);
-      });
-
-      setEmpresa(data);
-    } catch (error) {
-      console.log("Erro ao buscar empresas: ", error);
-    }
-  };
-
-
-  const getContato = async () => {
-    try {
-      const response = await fetch(`${connect}/contatos`);
-
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar contatos! Status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      setContato(responseData);
-    } catch (error) {
-      console.log("Erro ao buscar contatos!", error)
-    }
-  }
+  useEffect(() => {
+		handleSetCompanyId();
+	},[]);
 
   useEffect(() => {
-    getEmpresa();
-  }, []);
-
+    getEmpresas();
+    getContatos();
+  }, [companyId]);
 
   //Função para Pesquisa
   useEffect(() => {
@@ -68,7 +30,6 @@ function Home() {
 
 
   const handleSearch = (term) => {
-    // Atualizar o estado do termo de pesquisa com o valor fornecido
     setSearchTerm(term);
   }
 
@@ -82,8 +43,7 @@ function Home() {
 
       <GridHome
         empresas={filteredEmpresas}
-        contato={contato}
-
+        contatos={contatos}
       />
     </div>
   )

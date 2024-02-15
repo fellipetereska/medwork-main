@@ -72,6 +72,7 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
     user.nome_processo.value = "";
     user.ramo_trabalho.value = "";
     setOnEdit(null);
+    setSearchTerm('');
     //Atualiza os dados
     getProcessos();
   };
@@ -84,13 +85,18 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
     user.nome_processo.value = "";
     user.ramo_trabalho.value = "";
     setOnEdit(null);
+    setSearchTerm('');
   };
 
-  const handleSearchProceesso = (e) => {
-    e.preventDefault();
+  const handleSearchProcesso = (e) => {
+    const term = e.target.value;
 
-    setSearchTerm(e.target.value);
-  }
+    if(!term){
+      setSearchTerm('');
+    }
+
+    setSearchTerm(term)
+  };
 
   return (
     <div className="flex justify-center mt-10">
@@ -107,7 +113,7 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
                 type="text"
                 name="nome_processo"
                 placeholder="Nome do Processo"
-                onChange={handleSearchProceesso}
+                onChange={handleSearchProcesso}
               />
             </div>
             <div className="w-full md:w-1/2 px-3">

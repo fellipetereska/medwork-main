@@ -1,19 +1,20 @@
 import { BsBoxArrowDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import useAuth from '../../../hooks/useAuth'
+import useAuth from '../../../hooks/useAuth';
 import LoadingScreen from './components/LoadingScreen';
 import { useState } from 'react';
 
-function GridHome({ empresas, contato }) {
+
+function GridHome({ empresas, contatos }) {
 
   const navigate = useNavigate();
   const { handleSelectedCompany } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const findContactName = (fkContatoId) => {
-    const contatos = contato.find((c) => c.id_contato === fkContatoId);
-    return contatos ? contatos.nome_contato : 'N/A';
+    const contato = contatos.find((c) => c.id_contato === fkContatoId);
+    return contato ? contato.nome_contato : 'N/A';
   };
 
   const handleOpenCompany = async (id, nome_empresa) => {
@@ -21,15 +22,14 @@ function GridHome({ empresas, contato }) {
       setLoading(true);
       await handleSelectedCompany(id, nome_empresa);
       setLoading(false);
-      navigate("/home");
+      window.scrollTo({ top: 0, behavior: 'smooth' });  
     } catch (error) {
       toast.warn("Erro ao selecionar empresa!")
       console.log("Erro ao selecionar empresa!", error)
     }
-  }
+  };
 
   const empresasAtivas = empresas.filter((i) => i.ativo)
-
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg flex sm:justify-center">
@@ -52,16 +52,14 @@ function GridHome({ empresas, contato }) {
             <th scope="col" className="px-6 py-3">
               Contato
             </th>
-            <th scope="col" className="flex justify-center px-6 py-3">
-              Ações
-            </th>
           </tr>
         </thead>
         <tbody>
           {empresas && empresasAtivas.map((item, i) => (
             <tr
               key={i}
-              className={`border-b bg-white ${item.ativo ? '' : 'opacity-25'}`}
+              className={`border-b bg-white cursor-pointer hover:bg-gray-50 ${item.ativo ? '' : 'opacity-25'}`}
+              onClick={() => item.ativo && handleOpenCompany(item.id_empresa, item.nome_empresa)}
             >
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {item.id_empresa}
@@ -78,13 +76,6 @@ function GridHome({ empresas, contato }) {
               <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {findContactName(item.fk_contato_id)}
               </th>
-              <td className="py-4 flex justify-center">
-                <a className="font-medium text-blue-600 hover:text-blue-800 ">
-                  <BsBoxArrowDown
-                    onClick={() => item.ativo && handleOpenCompany(item.id_empresa, item.nome_empresa)}
-                  />
-                </a>
-              </td>
             </tr>
           ))}
         </tbody>

@@ -6,10 +6,11 @@ import { connect } from '../../../../services/api';
 
 function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
 
-  const [pgr, setPgr] = useState(false);
-  const [ltcat, setLtcat] = useState(false);
-  const [lip, setLip] = useState(false);
+  // const [pgr, setPgr] = useState(false);
+  // const [ltcat, setLtcat] = useState(false);
+  // const [lip, setLip] = useState(false);
   const [classificacao, setClassificacao] = useState(false);
+  const [avaliacao, setAvaliacao] = useState("0");
 
   const ref = useRef(null);
 
@@ -18,7 +19,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       const user = ref.current;
       const {
         nome_risco,
-        grupo_risco,
+        avaliacao,
         codigo_esocial_risco,
         meio_propagacao_risco,
         unidade_medida_risco,
@@ -31,48 +32,52 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       } = user;
 
       nome_risco.value = onEdit.nome_risco || "";
-      grupo_risco.value = onEdit.grupo_risco
+      setAvaliacao(onEdit.grupo_risco || "0");
       codigo_esocial_risco.value = onEdit.codigo_esocial_risco || "";
       meio_propagacao_risco.value = onEdit.meio_propagacao_risco || "";
       unidade_medida_risco.value = onEdit.unidade_medida_risco || "";
-      classificacao_risco.value = onEdit.classificacao_risco || "";
+      classificacao_risco.value = onEdit.classificacao_risco || "0";
       nivel_acao_risco.value = onEdit.nivel_acao_risco || "";
       limite_tolerancia_risco.value = onEdit.limite_tolerancia_risco || "";
       danos_saude_risco.value = onEdit.danos_saude_risco || "";
       metodologia_risco.value = onEdit.metodologia_risco || "";
-      severidade_risco.value = onEdit.severidade_risco || "";
-      setPgr(onEdit.pgr_risco || false)
-      setLtcat(onEdit.ltcat_risco || false)
-      setLip(onEdit.lip_risco || false)
+      severidade_risco.value = onEdit.severidade_risco || "0";
+      // setPgr(onEdit.pgr_risco || false)
+      // setLtcat(onEdit.ltcat_risco || false)
+      // setLip(onEdit.lip_risco || false)
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [onEdit, setPgr, setLtcat, setLip]);
+  }, [onEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const user = ref.current;
 
-    if (!user.nome_risco.value) {
+    if (!user.nome_risco.value ||
+      !user.danos_saude_risco ||
+      !user.severidade_risco ||
+      !user.grupo_risco ||
+      !user.classificacao_risco) {
       toast.warn("Preencha todos os campos!");
     }
     try {
       const riscoData = {
-        nome_risco: user.nome_risco.value || "",
-        grupo_risco: user.grupo_risco.value || "",
-        codigo_esocial_risco: user.codigo_esocial_risco.value || "",
-        meio_propagacao_risco: user.meio_propagacao_risco.value || "",
+        nome_risco: user.nome_risco.value || "N/A",
+        grupo_risco: avaliacao || "N/A",
+        codigo_esocial_risco: user.codigo_esocial_risco.value || "N/A",
+        meio_propagacao_risco: user.meio_propagacao_risco.value || "Risco Qualitativo",
         unidade_medida_risco: user.unidade_medida_risco.value || "",
-        classificacao_risco: user.classificacao_risco.value || "",
-        nivel_acao_risco: user.nivel_acao_risco.value || "",
-        limite_tolerancia_risco: user.limite_tolerancia_risco.value || "",
-        danos_saude_risco: user.danos_saude_risco.value || "",
-        metodologia_risco: user.metodologia_risco.value || "",
-        severidade_risco: user.severidade_risco.value || "",
-        pgr_risco: pgr,
-        ltcat_risco: ltcat,
-        lip_risco: lip,
+        classificacao_risco: user.classificacao_risco.value || "0",
+        nivel_acao_risco: user.nivel_acao_risco.value || "0",
+        limite_tolerancia_risco: user.limite_tolerancia_risco.value || "0",
+        danos_saude_risco: user.danos_saude_risco.value || "N/A",
+        metodologia_risco: user.metodologia_risco.value || "Risco Qualitativo",
+        severidade_risco: user.severidade_risco.value || "0",
+        // pgr_risco: pgr,
+        // ltcat_risco: ltcat,
+        // lip_risco: lip,
       };
 
       const url = onEdit
@@ -105,17 +110,16 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
     user.codigo_esocial_risco.value = "";
     user.meio_propagacao_risco.value = "";
     user.unidade_medida_risco.value = "";
-    user.classificacao_risco.value = "NULL";
     user.nivel_acao_risco.value = "";
     user.limite_tolerancia_risco.value = "";
     user.danos_saude_risco.value = "";
     user.metodologia_risco.value = "";
-    user.severidade_risco.value = "NULL";
-    user.grupo_risco.value = "NULL"
+    user.severidade_risco.value = "0";
+    setAvaliacao("0");
 
-    setPgr(false);
-    setLtcat(false);
-    setLip(false);
+    // setPgr(false);
+    // setLtcat(false);
+    // setLip(false);
     setOnEdit(null);
     setClassificacao('')
 
@@ -130,31 +134,30 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
     user.codigo_esocial_risco.value = "";
     user.meio_propagacao_risco.value = "";
     user.unidade_medida_risco.value = "";
-    user.classificacao_risco.value = "NULL";
     user.nivel_acao_risco.value = "";
     user.limite_tolerancia_risco.value = "";
     user.danos_saude_risco.value = "";
     user.metodologia_risco.value = "";
-    user.severidade_risco.value = "NULL";
-    user.grupo_risco.value = "NULL";
+    user.severidade_risco.value = "0";
+    setAvaliacao("0");
 
-    setPgr(false);
-    setLtcat(false);
-    setLip(false);
+    // setPgr(false);
+    // setLtcat(false);
+    // setLip(false);
     setOnEdit(null);
   }
 
-  const checkedPgr = () => {
-    setPgr(!pgr);
-  }
+  // const checkedPgr = () => {
+  //   setPgr(!pgr);
+  // }
 
-  const checkedLtcat = () => {
-    setLtcat(!ltcat);
-  }
+  // const checkedLtcat = () => {
+  //   setLtcat(!ltcat);
+  // }
 
-  const checkedLip = () => {
-    setLip(!lip);
-  }
+  // const checkedLip = () => {
+  //   setLip(!lip);
+  // }
 
   const setClassificacaoChange = (event) => {
     const data = event.target.value;
@@ -175,6 +178,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6 p-3">
           {/* Campos do Formulário */}
+
+          {/* Nome Risco */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Nome do Risco:
@@ -186,6 +191,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               placeholder="Nome do Risco"
             />
           </div>
+
+          {/* Grupo Risco */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Grupo de Risco
@@ -193,15 +200,20 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
             <select
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               name="grupo_risco"
+              value={avaliacao}
+              onChange={(e) => setAvaliacao(e.target.value)}
             >
-              <option value="NULL">Selecione um Grupo de Risco</option>
+              <option value="0">Selecione um Grupo de Risco</option>
               <option value="Fisico">Físico</option>
-              <option value="Fisico">Químico</option>
-              <option value="Fisico">Biológico</option>
-              <option value="Fisico">Ergonômico</option>
-              <option value="Fisico">Acidentes</option>
+              <option value="Químico">Químico</option>
+              <option value="Biológico">Biológico</option>
+              <option value="Ergonômico">Ergonômico</option>
+              <option value="Acidentes">Acidentes</option>
+              <option value="Inespecífico">Inespecífico</option>
             </select>
           </div>
+
+          {/* Código E-social */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Código do E-social
@@ -214,6 +226,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               onChange={handleFormatCodigo}
             />
           </div>
+
+          {/* Classificação */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Classificação
@@ -224,11 +238,13 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               name="classificacao_risco"
               onChange={setClassificacaoChange}
             >
-              <option value="NULL">Selecione uma classificação</option>
+              <option value="0">Selecione uma classificação</option>
               <option value="Qualitativo">Qualitativo</option>
               <option value="Quantitativo">Quantitativo</option>
             </select>
           </div>
+
+          {/* Meio de Propagação */}
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Meio de Propagação:
@@ -241,6 +257,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               disabled={classificacao}
             />
           </div>
+
+          {/* Unidade de Medida */}
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Unidade de Medida:
@@ -253,6 +271,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               disabled={classificacao}
             />
           </div>
+
+          {/* Nivel de Ação */}
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Nível de Ação:
@@ -266,6 +286,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               step="any"
             />
           </div>
+
+          {/* Limite de Tolerància */}
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Limite de Tolerância:
@@ -279,6 +301,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               step="any"
             />
           </div>
+
+          {/* Danos a Saúde */}
           <div className={`w-full md:w-1/3 px-3`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Danos a Saúde:
@@ -290,6 +314,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               placeholder="Danos a Saúde"
             />
           </div>
+
+          {/* Metodologia */}
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Metodologia:
@@ -302,6 +328,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               disabled={classificacao}
             />
           </div>
+
+          {/* Severidade */}
           <div className={`w-full md:w-1/3 px-3`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
               Severidade
@@ -312,7 +340,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               name="severidade_risco"
               placeholder="Metodologia"
             >
-              <option value="NULL">Selecione uma Severidade</option>
+              <option value="0">Selecione uma Severidade</option>
               <option value="1">Muito Baixa</option>
               <option value="2">Baixa</option>
               <option value="3">Média</option>
@@ -321,7 +349,9 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
             </select>
           </div>
         </div>
-        <div className="border-b bg-gray-200"></div>
+
+        {/* Relatórios */}
+        {/* <div className="border-b bg-gray-200"></div>
         <h3 className="flex justify-center text-sky-700 text-2xl font-bold mt-4">Relatórios</h3>
         <div className="flex flex-col -mx-3 mb-6 p-3">
           <div className="flex items-center mb-4">
@@ -351,7 +381,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
             />
             <label className="text-sm font-medium ms-2 text-gray-900">LIP <span className="font-light">(Laudo de Insalubridade e Periculosidade)</span></label>
           </div>
-        </div>
+        </div> */}
 
         <div className="w-full px-3 pl-8 flex justify-end mb-6">
           <div>

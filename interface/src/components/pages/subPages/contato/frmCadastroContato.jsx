@@ -38,13 +38,17 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
       return toast.warn("Preencha Todos os Campos!")
     }
 
+    if (showMailError1 === true || showMailError2 === true) {
+      return toast.warn("Preencha os emails corretamente")
+    };
+
     try {
 
       const contatoData = {
-        nome_contato: user.nome_contato.value,
-        telefone_contato: user.telefone_contato.value,
-        email_contato: user.email_contato.value,
-        email_secundario_contato: user.email_secundario_contato.value,
+        nome_contato: user.nome_contato.value || '',
+        telefone_contato: user.telefone_contato.value || '',
+        email_contato: user.email_contato.value || '',
+        email_secundario_contato: user.email_secundario_contato.value || 'N/A',
         ativo: 1,
       }
 
@@ -81,8 +85,8 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
     user.email_contato.value = "";
     user.email_secundario_contato.value = "";
     setOnEdit(null);
-    setMailCompleted1(false);
-    setMailCompleted2(false);
+    setShowMailError1(false);
+    setShowMailError2(false);
 
     getContato();
   }
@@ -94,43 +98,38 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
     user.telefone_contato.value = "";
     user.email_contato.value = "";
     user.email_secundario_contato.value = "";
-    setMailCompleted1(false);
-    setMailCompleted2(false);
+    setShowMailError1(false);
+    setShowMailError2(false);
     setOnEdit(null);
   };
 
   const handleInputChangePhone = (e) => {
     const inputValue = e.target.value;
     const phoneNumber = inputValue.replace(/\D/g, '');
-    const formattedPhoneNumber = `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 6)}-${phoneNumber.slice(6, 11)}`;
+    const formattedPhoneNumber = `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 7)}-${phoneNumber.slice(7, 11)}`;
     e.target.value = formattedPhoneNumber;
   };
 
   const handleInputChangeMail1 = (e) => {
     const inputValue = e.target.value;
-    if (inputValue.trim() === "") {
-      setMailCompleted1(false);
-    } else if (inputValue.includes('@') || inputValue.includes('.')) {
-      setMailCompleted1(true);
-    } else {
-      setMailCompleted1(true);
-    }
+    const isValid = inputValue.includes('@') && inputValue.includes('.');
+
+    setMailCompleted1(isValid);
+    setShowMailError1(!isValid);
   }
+
+  const handleInputChangeMail2 = (e) => {
+    const inputValue = e.target.value;
+    const isValid = inputValue.includes('@') && inputValue.includes('.');
+
+    setMailCompleted2(isValid);
+    setShowMailError2(!isValid);
+  }
+
 
   const handleClickMail1 = () => {
-    if (!mailCompleted2) {
-      setShowMailError2(true);
-    }
-  }
-
-  const handleBlurMail2 = (e) => {
-    const inputValue = e.target.value;
-    if (inputValue.trim() === "") {
-      setMailCompleted2(false);
-    } else if (inputValue.includes('@') || inputValue.includes('.')) {
-      setMailCompleted2(true);
-    } else {
-      setMailCompleted2(true);
+    if (!mailCompleted1) {
+      setShowMailError1(true);
     }
   }
 
@@ -141,11 +140,11 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
   }
 
 
-
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={(e) => handleSubmit(e)}>
         <div className="flex flex-wrap -mx-3 mb-6">
+
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Nome
@@ -157,6 +156,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
               placeholder="Nome do Contato"
             />
           </div>
+
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Telefone
@@ -169,6 +169,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
               placeholder="Telefone para Contato"
             />
           </div>
+
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Email
@@ -183,6 +184,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
             />
             <p className={`${showMailError1 ? "text-xs font-medium text-red-600 px-1 mt-1" : "hidden"}`}>*Email Incompleto</p>
           </div>
+
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Email Secundário
@@ -191,15 +193,16 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="email_secundario_contato"
-              onBlur={handleBlurMail2}
+              onBlur={handleInputChangeMail2}
               onClick={handleClickMail2}
               placeholder="Email para Contato"
             />
             <p className={`${showMailError2 ? "text-xs font-medium text-red-600 px-1 mt-1" : "hidden"}`}>*Email Incompleto</p>
           </div>
+
           <div className="w-full px-3 pl-8 flex justify-end">
             <div>
-              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+              <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
                 Limpar
               </button>
             </div>

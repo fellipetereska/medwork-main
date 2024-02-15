@@ -11,7 +11,14 @@ function Riscos() {
 
   const [onEdit, setOnEdit] = useState(null);
 
-  const { riscos, setRiscos, getRiscos, handleSetCompanyId, companyId } = useAuth(null);
+  const {
+    handleSetCompanyId, companyId,
+    riscos, setRiscos, getRiscos,
+    getMedidasAdm, medidasAdm, getMedidasEpi, medidasEpi, getMedidasEpc, medidasEpc,
+    getProcessos, processos,
+    getProcessosRiscos, processosRiscos,
+    getRiscosMedidas, riscosMedidas,
+  } = useAuth(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,6 +31,12 @@ function Riscos() {
 
   useEffect(() => {
     getRiscos();
+    getProcessos();
+    getMedidasAdm();
+    getMedidasEpi();
+    getMedidasEpc();
+    getProcessosRiscos();
+    getRiscosMedidas();
   }, [companyId])
 
   const handleEdit = (selectedRisco) => {
@@ -36,9 +49,7 @@ function Riscos() {
     setFilteredRiscos(filtered);
   }, [searchTerm, riscos]);
 
-
   const handleSearch = (term) => {
-    // Atualizar o estado do termo de pesquisa com o valor fornecido
     setSearchTerm(term);
   }
 
@@ -53,7 +64,7 @@ function Riscos() {
             </Link>
           </div>
 
-          <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Risco</h1>
+          <h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Risco</h1> 
         </div>
 
         {/* Formulário de Cadastro */}
@@ -76,7 +87,14 @@ function Riscos() {
           riscos={filteredRiscos}
           setRiscos={setRiscos}
           setOnEdit={handleEdit}
+          processos={processos}
+          medidasAdm={medidasAdm}
+          medidasEpi={medidasEpi}
+          medidasEpc={medidasEpc}
+          processosRiscos={processosRiscos}
+          riscosMeidas={riscosMedidas}
         />
+ 
       </div>
     </>
   )

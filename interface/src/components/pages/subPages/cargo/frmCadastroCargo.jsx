@@ -137,7 +137,13 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
     const numericValue = inputValue.replace(/\D/g, '');
-    e.target.value = numericValue;
+    const numberValue = parseInt(numericValue, 10);
+  
+    if (isNaN(numberValue) || numberValue < 0) {
+      e.target.value = '';
+    } else {
+      e.target.value = numberValue;
+    }
   };
 
   return (
@@ -168,8 +174,6 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-            </label>
             <input
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-7 leading-tight focus:outline-gray-100 focus:bg-white"
               type="number"
@@ -179,8 +183,6 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-            </label>
             <input
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-7 leading-tight focus:outline-gray-100 focus:bg-white"
               type="number"
