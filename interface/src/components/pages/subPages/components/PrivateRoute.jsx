@@ -2,15 +2,14 @@ import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
 import useAuth from '../../../../hooks/useAuth';
 
-const PrivateRoute = ({ element: Element, ...rest }) => {
+function PrivateRoute({ element, ...props }) {
   const { user } = useAuth();
 
-  return (
-    <Route
-      {...rest}
-      element={user ? <Element /> : <Navigate to="/" replace />}
-    />
+  return user ? (
+    <Route {...props} element={element} />
+  ) : (
+    <Navigate to="/" replace />
   );
-};
+}
 
 export default PrivateRoute;

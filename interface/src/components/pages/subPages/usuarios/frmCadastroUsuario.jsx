@@ -1,12 +1,22 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { supabase } from "../../../../services/api";
-
+import { auth, connect } from "../../../../services/api";
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 
 	// Instanciando a variavel que vai referenciar o formulario
 	const ref = useRef(null);
+
+	const [
+		createUserWithEmailAndPassword,
+		error,
+	] = useCreateUserWithEmailAndPassword(auth);
+
+	const [tipo, setTipo] = useState(0);
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [cpf, setCpf] = useState('');
 
 	// Colocando as informações do formulario nas variaveis
 	useEffect(() => {
@@ -15,185 +25,190 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 
 			//Passando o dado do input para a props
 			user.nome_usuario.value = onEdit.nome_usuario;
-			user.cpf_usuario.value = onEdit.cpf_usuario;
-			user.email_usuario.value = onEdit.email_usuario;
-			user.usuario.value = onEdit.usuario;
-			user.senha.value = onEdit.senha;
-			user.permissao_usuario.value = onEdit.permissao_usuario;
+			setCpf(onEdit.cpf_usuario);
+			setEmail(onEdit.email);
+			setPassword(onEdit.password);
+			setTipo(onEdit.tipo)
 		}
 	}, [onEdit]);
 
+	const signUp = async (email, password) => {
+		try {
+			createUserWithEmailAndPassword(email, password);
+
+			if (error) {
+				toast.warn("Erro ao registrar usuário!");
+				console.log("Erro ao registrar usuário", error);
+			}
+		} catch (error) {
+			toast.warn("Erro ao registrar usuário!");
+			console.log("Erro ao registrar usuario no FireBase", error.response.data)
+		}
+	}
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		await signUp(email, password);
 
 		const user = ref.current;
 
 		if (
 			!user.nome_usuario.value ||
 			!user.cpf_usuario.value ||
-			!user.email_usuario.value ||
-			!user.usuario.value ||
+			!user.email.value ||
 			!user.senha.value ||
-			!user.permissao_usuario) {
+			!user.tipo) {
 			return toast.warn("Preencha Todos os Campos!")
 		}
 		try {
-			// Criar o usuário no Supabase
-      const { user: supabaseUser, error: supabaseError } =
-        await supabase.auth.signUp({
-          email: user.email_usuario.value,
-          password: user.senha.value,
-        });
-
-      if (supabaseError || !supabaseUser) {
-        throw new Error("Falha ao criar usuário no Supabase");
-      }
-
-			//Adicionando ao Banco
 			const userData = {
-				nome_usuario: user.nome_usuario.value || null,
-				cpf_usuario: user.cpf_usuario.value || null,
-				email_usuario: user.email_usuario.value || null,
-				usuario: user.usuario.value || null,
-				senha: user.senha.value || null,
-				permissao_usuario: user.permissao_usuario.value || null,
+				nome_usuario: user.nome_usuario.value || "",
+				cpf_usuario: cpf || "",
+				email: user.email.value || "",
+				password: user.senha.value || "",
+				tipo: tipo || "0",
 			}
 
-			if (onEdit) {
-				//Caso já tiver o cadastro ele vai colocar as opções para editar
-				await supabase
-					.put("usuarios")
-					.upsert([
-						{
-							id_usuario: onEdit.id_usuario,
-							...userData
-						}
-					])
-				toast.success(`Usuário: ${onEdit.nome_usuario} atualizado com sucesso!`)
-			}
-			else {
-				//Caso não tiver o cadastro ele cadastra
-				const { error } = await supabase
-					.from("usuarios")
-					.upsert([userData])
+			const url = onEdit
+				? `${connect}/usuarios/${onEdit.id_usuario}`
+				: `${connect}/usuarios`
 
-				if (error) {
-					toast.error("Erro ao inserir usuário! Verifique o console");
-					console.log("Erro ao inserir usuário: ", error)
-					throw error;
-				}
+			const method = onEdit ? 'PUT' : 'POST';
 
-				toast.success("Usuário inserido com sucesso")
-			}
+			const response = await fetch(url, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(userData),
+			});
+
+			if (!response.ok) {
+				throw new Error(`Erro ao cadastrar/Editar Usuário. Status: ${response.status}`);
+			};
+
+			const responseData = await response.json();
+
+			toast.success(responseData);
 		} catch (error) {
-			console.log(error)
+			toast.warn("Erro ao cadastrar/atualizar o usuário")
+			console.log("Erro ao cadastrar/atualizar Usuário", error)
 		}
 
 		user.nome_usuario.value = "";
-		user.cpf_usuario.value = "";
-		user.email_usuario.value = "";
-		user.usuario.value = "";
-		user.senha.value = "";
-		user.permissao_usuario.value = "Selecione uma Permissão";
+		setCpf('');
+		setEmail('');
+		setPassword('');
+		setTipo('0');
 
 		setOnEdit(null);
 		getUsuario();
-
 	}
 
 	const handleClear = () => {
-		// Limpa todos os campos do formulário
 		const user = ref.current;
 		user.nome_usuario.value = "";
-		user.cpf_usuario.value = "";
-		user.email_usuario.value = "";
-		user.usuario.value = "";
-		user.senha.value = "";
-		user.permissao_usuario.value = "Selecione uma Permissão";
+		setCpf('');
+		setEmail('');
+		setPassword('');
+		setTipo('0');
+
+		setOnEdit(null);
 	};
 
+	const handleFormatCpf = (e) => {
+		const cpfInput = e.target.value;
+
+		const numerosCpf = cpfInput.replace(/[^\d]/g, '');
+
+		const cpfFormat = numerosCpf.replace(
+			/^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+			'$1.$2.$3-$4'
+		)
+
+		setCpf(cpfFormat);
+	}
+
 	return (
-		<div class="flex justify-center mt-10">
-			<form class="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-				<div class="flex flex-wrap -mx-3 mb-6">
-					<div class="w-full md:w-1/3 px-3">
-						<label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+		<div className="flex justify-center mt-10">
+			<form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
+				<div className="flex flex-wrap -mx-3 mb-6">
+					<div className="w-full md:w-1/3 px-3">
+						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
 							Nome:
 						</label>
 						<input
-							class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+							className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
 							type="text"
 							name="nome_usuario"
-							placeholder="Nome"
+							placeholder="Nome do Usuário"
 						/>
 					</div>
-					<div class="w-full md:w-1/3 px-3">
-						<label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+					<div className="w-full md:w-1/3 px-3">
+						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
 							CPF:
 						</label>
 						<input
-							class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+							className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
 							type="text"
 							name="cpf_usuario"
-							placeholder="Telefone para Contato"
+							placeholder="CPF do Usuário"
+							onChange={handleFormatCpf}
+							value={cpf}
+							maxLength={11}
 						/>
 					</div>
-					<div class="w-full md:w-1/3 px-3">
-						<label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+					<div className="w-full md:w-1/3 px-3">
+						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
 							Email
 						</label>
 						<input
-							class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+							className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
 							type="text"
-							name="email_usuario"
+							name="email"
 							placeholder="Email do Usuário"
+							value={email}
+							onChange={e => setEmail(e.target.value)}
 						/>
 					</div>
-					<div class="w-full md:w-1/3 px-3">
-						<label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-							Usuário
-						</label>
-						<input
-							class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-							type="text"
-							name="usuario"
-							placeholder="Nome de Usuário"
-						/>
-						<p class="text-xs text-gray-400  mb-3">*Letras minúsculas e sem espaço</p>
-					</div>
-					<div class="w-full md:w-1/3 px-3">
-						<label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+					<div className="w-full md:w-1/3 px-3">
+						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
 							Senha
 						</label>
 						<input
-							class="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-							type="text"
+							className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+							type="password"
 							name="senha"
 							placeholder="Senha do Usuário"
+							value={password}
+							onChange={e => setPassword(e.target.value)}
 						/>
 					</div>
-					<div class="w-full md:w-1/3 px-3">
-						<label class="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+					<div className="w-full md:w-1/3 px-3">
+						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
 							Permissão:
 						</label>
 						<select
-							className="w-full appearance-none bg-gray-100 border-gray-200 mt-1 text-gray-400 py-3 px-4 rounded leading-tight focus:outline-none"
+							className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100"
 							id="grid-usuario"
-							name="permissao_usuario"
+							name="tipo"
+							value={tipo}
+							onChange={e => setTipo(e.target.value)}
 						>
-							<option>Selecione uma Permissão</option>
-							<option>Administrador</option>
-							<option>Técnico</option>
+							<option value="0">Selecione uma Permissão</option>
+							<option value="1">Administrador</option>
+							<option value="2">Técnico</option>
 						</select>
 					</div>
-					<div class="w-full px-3 pl-8 flex justify-end">
+					<div className="w-full px-3 pl-8 flex justify-end">
 						<div>
-							<button onClick={handleClear} class="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+							<button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
 								Limpar
 							</button>
 						</div>
-						<div class="px-3 pl-8">
-							<button class="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+						<div className="px-3 pl-8">
+							<button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
 								Cadastrar
 							</button>
 						</div>

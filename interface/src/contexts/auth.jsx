@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../services/api";
 
+
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -23,7 +24,9 @@ export const AuthProvider = ({ children }) => {
   const [inventario, setInventario] = useState([]);
   const [plano, setPlano] = useState([]);
   const [globalSprm, setGlobalSprm] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [companyId, setCompanyId] = useState('');
+  const [user, setUser] = useState('');
 
   const handleSetCompanyId = () => {
     try {
@@ -380,6 +383,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getUsuarios = async () => {
+    try {
+      const response = await fetch(`${connect}/usuarios`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Usuários. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => a.nome_usuario.localeCompare(b.nome_usuario));
+      setUsuarios(data)
+    } catch (error) {
+      console.log(`Erro ao buscar Usuários. ${error}`);
+    }
+  };  
+
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
 
@@ -493,6 +512,11 @@ export const AuthProvider = ({ children }) => {
         getGlobalSprm,
         setGlobalSprm,
         globalSprm,
+        getUsuarios,
+        setUsuarios,
+        usuarios,
+        user,
+        setUser,
       }}>
       {children}
     </AuthContext.Provider>

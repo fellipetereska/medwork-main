@@ -661,19 +661,6 @@ router.put("/processos/:id_processo", (req, res) => {
 });
 
 
-//Tabela Usuarios
-//Get table
-router.get("/usuarios", (req, res) => {
-  const q = `SELECT * FROM usuarios`;
-
-  db.query(q, (err, data) => {
-    if (err) return res.status(500).json(err);
-
-    return res.status(200).json(data);
-  });
-});
-
-
 
 //Tabela Riscos
 //Get table
@@ -1031,7 +1018,6 @@ router.put("/medidas_epc/:id_medida", (req, res) => {
 
 
 
-
 //Gestão
 
 //Tabela Usuarios
@@ -1039,11 +1025,17 @@ router.put("/medidas_epc/:id_medida", (req, res) => {
 router.get("/usuarios", (req, res) => {
   const q = `SELECT * FROM usuarios`;
 
-  db.query(q, (err, data) => {
-    if (err) return res.status(500).json(err);
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
 
-    return res.status(200).json(data);
-  });
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
 });
 
 //Add rows in table
@@ -1052,49 +1044,63 @@ router.post("/usuarios", (req, res) => {
 
   const q = "INSERT INTO usuarios SET ?"
 
-  db.query(q, data, (err, result) => {
-    if (err) {
-      console.error("Erro ao inserir usuário na tabela", err);
-      return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-    }
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
 
-    return res.status(200).json(`Usuário cadastrado com sucesso!`);
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir usuário na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Usuário cadastrado com sucesso!`);
+    });
+
+    con.release();
   })
 });
 
 //Update row int table
 router.put("/usuarios/:id_usuario", (req, res) => {
-  const id_usuario = req.params.id_usuario; // Obtém o ID da empresa da URL
-  const { nome_usuario, cpf_usuario, email_usuario, usuario, senha } = req.body;
+  const id_usuario = req.params.id_usuario;
+  const { nome_usuario, cpf_usuario, email, password, tipo } = req.body;
 
   const q = `
     UPDATE usuarios
     SET nome_usuario = ?,
     cpf_usuario = ?,
-    email_usuario = ?,
-    usuario = ?,
-    senha = ?
+    email = ?,
+    password = ?,
+    tipo = ?
     WHERE id_usuario = ?
     `;
 
   const values = [
     nome_usuario,
     cpf_usuario,
-    email_usuario,
-    usuario,
-    senha,
+    email,
+    password,
+    tipo,
     id_usuario
   ];
 
-  db.query(q, values, (err) => {
-    if (err) {
-      console.error("Erro ao atualizar usuário na tabela", err);
-      return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-    }
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
 
-    return res.status(200).json("Usuário atualizado com sucesso!");
-  });
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar usuário na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Usuário atualizado com sucesso!");
+    });
+
+    con.release();
+  })
 });
+
+
 
 //Tabela Aparelhos
 //Get table

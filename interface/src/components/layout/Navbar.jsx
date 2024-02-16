@@ -10,15 +10,16 @@ import { IoClose } from "react-icons/io5";
 function Navbar() {
 
   //Instanciando as variaveis
-  const { user, signout, selectedCompany, handleClearLocalStorage } = useAuth();
+  const { user, signout, selectedCompany, handleClearLocalStorage, getUsuarios, usuarios, setUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [tipo, setTipo] = useState('');
   const navigate = useNavigate();
 
   const empresa = selectedCompany[0]?.nome_empresa
 
   //Criando as Funções
   const handleLogoutClick = () => {
-    signout(true);
+    setUser('');
     navigate("/")
     setIsMenuOpen(false)
   }
@@ -35,6 +36,30 @@ function Navbar() {
     handleClearLocalStorage();
     navigate("/home");
     window.location.reload();
+  }
+
+  useEffect(() => {
+    getUsuarios();
+  }, [])
+
+  useEffect(() => {
+    try {
+      const findUser = usuarios.find((i) => i.nome_usuario === user);
+      setTipo(findUser.tipo);
+    } catch (error) {
+      console.log("Erro ao buscar permissao");
+    }
+  }, [user]);
+
+  const findTipo = (item) => {
+    switch (item) {
+      case 1:
+        return "Adm"
+      case 2:
+        return "Técnico"
+      default:
+        return ""
+    }
   }
 
   return (
@@ -60,8 +85,11 @@ function Navbar() {
                 <div className='flex items-center gap-2'>
                   <p className='font- text-sm text-zinc-600'>Usuário:</p>
                   <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
-                    <p className='text-gray-600 font-bold text-base'>{user}</p>
+                    <p className='text-sky-700 font-bold text-base'>{user} - {findTipo(tipo)}</p>
                   </div>
+                  <button onClick={handleLogoutClick}>
+                    <IoClose />
+                  </button>
                 </div>
               ) : null}
 
@@ -69,7 +97,7 @@ function Navbar() {
               {selectedCompany && empresa ? (
                 <div className='flex items-center gap-2'>
                   <p className='font- text-sm text-zinc-600'>Empresa:</p>
-                  <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate w-[200px]'>
+                  <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[200px]'>
                     <p className='text-sky-700 font-bold text-base'>{empresa}</p>
                   </div>
                   <button onClick={clearLocalSotrage}>
