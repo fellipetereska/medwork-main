@@ -11,7 +11,7 @@ import login_image from '../media/login_image.png'
 
 function Login() {
 
-  const { setUser, user, usuarios, getUsuarios } = useAuth();
+  const { setUser, user, usuarios, getUsuarios, setPermissao } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,28 +30,32 @@ function Login() {
   }, []);
 
   const signIn = async (email, password) => {
-    signInWithEmailAndPassword(email, password);
+    try {
+      await signInWithEmailAndPassword(email, password);
 
-    if (error) {
+      if (error) {
+        toast.error("Erro ao logar!");
+        console.log("Erro ao logar!", error);
+      }
+
+      const findUser = usuarios.find((i) => i.email === email);
+      setUser(findUser.nome_usuario);
+      setPermissao(findUser.tipo);
+
+      setRedirect(true);
+    } catch (error) {
       toast.error("Erro ao logar!");
       console.log("Erro ao logar!", error);
     }
-
-    const findUser = usuarios.find((i) => i.email === email);
-    setUser(findUser.nome_usuario);
-
-    setRedirect(true);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-
       await signIn(email, password);
     } catch (error) {
       toast.error("Erro ao logar");
-      console.log("Erro ao logar!", error);
+      console.log("Erro ao logar", error);
     }
   };
 
@@ -61,14 +65,12 @@ function Login() {
 
   const ShowPassword = (e) => {
     e.preventDefault();
-
     setShowpasd(!showpasd);
   }
 
   const forgotpasd = () => {
     toast.info("Fale com um adminitrador!")
   }
-
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">

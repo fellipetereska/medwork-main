@@ -61,7 +61,7 @@ function Aparelhos() {
       <div className="flex justify-center items-center">
         {/* Botão para voltar */}
         <div className="absolute left-0">
-          <Link to="/cadastros">
+          <Link to="/gestao">
             <Back />
           </Link>
         </div>

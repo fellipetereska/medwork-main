@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
   const [usuarios, setUsuarios] = useState([]);
   const [companyId, setCompanyId] = useState('');
   const [user, setUser] = useState('');
+  const [permissao, setPermissao] = useState('');
 
   const handleSetCompanyId = () => {
     try {
@@ -517,6 +518,8 @@ export const AuthProvider = ({ children }) => {
         usuarios,
         user,
         setUser,
+        setPermissao,
+        permissao,
       }}>
       {children}
     </AuthContext.Provider>

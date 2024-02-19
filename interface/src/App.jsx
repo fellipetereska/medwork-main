@@ -39,12 +39,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        {/* Menu */}
-        {user ? (
-          <Navbar />
-        ) : (
-          null
-        )}
+        <Navbar />
 
         {/* Loading */}
         <LoadingScreen />
@@ -52,34 +47,28 @@ function App() {
         <Routes>
           {/* Linkando as rotas as paginas */}
           <Route path='/' element={<Login />} />
-          <Route path='/home' element={<PrivateRoute element={<Home />} />} />
-          <Route path='/gestao' element={<PrivateRoute element={<Gestao />} />} />
-          <Route path='/cadastros' element={<PrivateRoute element={<Cadastros />} />} />
-          <Route path='/inventario' element={<PrivateRoute element={<Inventario />} />} />
-          <Route path='/plano' element={<PrivateRoute element={<Plano />} />} />
-          <Route path='/laudos' element={<PrivateRoute element={<Laudos />} />} />
-          <Route path='/cadastro_empresa' element={<PrivateRoute element={<Empresa />} />} />
-          <Route path='/cadastro_unidade' element={<PrivateRoute element={<Unidade />} />} />
-          <Route path='/cadastro_setor' element={<PrivateRoute element={<Setor />} />} />
-          <Route path='/cadastro_cargo' element={<PrivateRoute element={<Cargo />} />} />
-          <Route path='/cadastro_contato' element={<PrivateRoute element={<Contato />} />} />
-          <Route path='/cadastro_usuario' element={<PrivateRoute element={<Usuario />} />} />
-          <Route path='/cadastro_processo' element={<PrivateRoute element={<Processos />} />} />
-          <Route path='/cadastro_risco' element={<PrivateRoute element={<Riscos />} />} />
-          <Route path='/cadastro_medida' element={<PrivateRoute element={<Medidas />} />} />
-          <Route path='/cadastro_aparelhos' element={<PrivateRoute element={<Aparelhos />} />} />
-          <Route path='/importxlsx' element={<PrivateRoute element={<ImportXlsx />} />} />
-          <Route path='/vinculos' element={<PrivateRoute element={<Vinculos />} />} />
-          <Route path='/*' element={<PrivateRoute element={<Navigate to='/' />} />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/gestao' element={<Gestao />} />
+          <Route path='/cadastros' element={<Cadastros />} />
+          <Route path='/inventario' element={<Inventario />} />
+          <Route path='/plano' element={<Plano />} />
+          <Route path='/laudos' element={<Laudos />} />
+          <Route path='/cadastro_empresa' element={<Empresa />} />
+          <Route path='/cadastro_unidade' element={<Unidade />} />
+          <Route path='/cadastro_setor' element={<Setor />} />
+          <Route path='/cadastro_cargo' element={<Cargo />} />
+          <Route path='/cadastro_contato' element={<Contato />} />
+          <Route path='/cadastro_usuario' element={<Usuario />} />
+          <Route path='/cadastro_processo' element={<Processos />} />
+          <Route path='/cadastro_risco' element={<Riscos />} />
+          <Route path='/cadastro_medida' element={<Medidas />} />
+          <Route path='/cadastro_aparelhos' element={<Aparelhos />} />
+          <Route path='/importxlsx' element={<ImportXlsx />} />
+          <Route path='/vinculos' element={<Vinculos />} />
+          <Route path='/*' element={<Navigate to='/' />} />
         </Routes>
 
-        {/* Rodapé */}
-        {user ? (
-          <Footer />
-        ) : (
-          null
-        )}
-
+        <Footer />
       </Router>
 
       {/* Mensagem */}

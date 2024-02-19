@@ -10,9 +10,9 @@ import { IoClose } from "react-icons/io5";
 function Navbar() {
 
   //Instanciando as variaveis
-  const { user, signout, selectedCompany, handleClearLocalStorage, getUsuarios, usuarios, setUser } = useAuth();
+  const { user, signout, selectedCompany, handleClearLocalStorage, getUsuarios, usuarios, setUser, permissao, setPermissao } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [tipo, setTipo] = useState('');
+
   const navigate = useNavigate();
 
   const empresa = selectedCompany[0]?.nome_empresa
@@ -20,6 +20,7 @@ function Navbar() {
   //Criando as Funções
   const handleLogoutClick = () => {
     setUser('');
+    setPermissao('');
     navigate("/")
     setIsMenuOpen(false)
   }
@@ -41,15 +42,6 @@ function Navbar() {
   useEffect(() => {
     getUsuarios();
   }, [])
-
-  useEffect(() => {
-    try {
-      const findUser = usuarios.find((i) => i.nome_usuario === user);
-      setTipo(findUser.tipo);
-    } catch (error) {
-      console.log("Erro ao buscar permissao");
-    }
-  }, [user]);
 
   const findTipo = (item) => {
     switch (item) {
@@ -85,7 +77,7 @@ function Navbar() {
                 <div className='flex items-center gap-2'>
                   <p className='font- text-sm text-zinc-600'>Usuário:</p>
                   <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
-                    <p className='text-sky-700 font-bold text-base'>{user} - {findTipo(tipo)}</p>
+                    <p className='text-sky-700 font-bold text-base'>{user} - {findTipo(permissao)}</p>
                   </div>
                   <button onClick={handleLogoutClick}>
                     <IoClose />

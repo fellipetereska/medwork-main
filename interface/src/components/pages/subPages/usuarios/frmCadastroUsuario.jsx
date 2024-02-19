@@ -3,8 +3,7 @@ import { toast } from "react-toastify";
 import { auth, connect } from "../../../../services/api";
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
-function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
-
+function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario, usuarios }) {
 	// Instanciando a variavel que vai referenciar o formulario
 	const ref = useRef(null);
 
@@ -17,6 +16,8 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [cpf, setCpf] = useState('');
+	const [emailcheck, setemailcheck] = useState(false);
+	const [pasdCheck, setPasdCheck] = useState(false);
 
 	// Colocando as informações do formulario nas variaveis
 	useEffect(() => {
@@ -32,13 +33,21 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 		}
 	}, [onEdit]);
 
-	const signUp = async (email, password) => {
+	const signIn = async (email, password) => {
 		try {
-			createUserWithEmailAndPassword(email, password);
+			const users = usuarios.filter((i) => i.email === email);
 
-			if (error) {
-				toast.warn("Erro ao registrar usuário!");
-				console.log("Erro ao registrar usuário", error);
+			if (users.length > 0) {
+				toast.info("Usuário já cadastrado!");
+				return "existe";
+			} else {
+				await createUserWithEmailAndPassword(email, password);
+
+				if (error) {
+					toast.warn("Erro ao registrar usuário!");
+					console.log("Erro ao registrar usuário", error);
+				}
+				return "não existe"
 			}
 		} catch (error) {
 			toast.warn("Erro ao registrar usuário!");
@@ -49,61 +58,60 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		await signUp(email, password);
-
 		const user = ref.current;
 
-		if (
-			!user.nome_usuario.value ||
-			!user.cpf_usuario.value ||
-			!user.email.value ||
-			!user.senha.value ||
-			!user.tipo) {
-			return toast.warn("Preencha Todos os Campos!")
-		}
-		try {
-			const userData = {
-				nome_usuario: user.nome_usuario.value || "",
-				cpf_usuario: cpf || "",
-				email: user.email.value || "",
-				password: user.senha.value || "",
-				tipo: tipo || "0",
+		const res = await signIn(email, password);
+
+		if (res === "existe") {
+			handleClear();
+			return;
+		} else {
+			if (
+				!user.nome_usuario.value ||
+				!user.cpf_usuario.value ||
+				!user.email.value ||
+				!user.senha.value ||
+				!user.tipo) {
+				return toast.warn("Preencha Todos os Campos!")
 			}
+			try {
+				const userData = {
+					nome_usuario: user.nome_usuario.value || "",
+					cpf_usuario: cpf || "",
+					email: user.email.value || "",
+					password: user.senha.value || "",
+					tipo: tipo || "0",
+				}
 
-			const url = onEdit
-				? `${connect}/usuarios/${onEdit.id_usuario}`
-				: `${connect}/usuarios`
+				const url = onEdit
+					? `${connect}/usuarios/${onEdit.id_usuario}`
+					: `${connect}/usuarios`
 
-			const method = onEdit ? 'PUT' : 'POST';
+				const method = onEdit ? 'PUT' : 'POST';
 
-			const response = await fetch(url, {
-				method,
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(userData),
-			});
+				const response = await fetch(url, {
+					method,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(userData),
+				});
 
-			if (!response.ok) {
-				throw new Error(`Erro ao cadastrar/Editar Usuário. Status: ${response.status}`);
-			};
+				if (!response.ok) {
+					throw new Error(`Erro ao cadastrar/Editar Usuário. Status: ${response.status}`);
+				};
 
-			const responseData = await response.json();
+				const responseData = await response.json();
 
-			toast.success(responseData);
-		} catch (error) {
-			toast.warn("Erro ao cadastrar/atualizar o usuário")
-			console.log("Erro ao cadastrar/atualizar Usuário", error)
+				toast.success(responseData);
+			} catch (error) {
+				toast.warn("Erro ao cadastrar/atualizar o usuário")
+				console.log("Erro ao cadastrar/atualizar Usuário", error)
+			}
+			handleClear();
+			setOnEdit(null);
+			getUsuario();
 		}
-
-		user.nome_usuario.value = "";
-		setCpf('');
-		setEmail('');
-		setPassword('');
-		setTipo('0');
-
-		setOnEdit(null);
-		getUsuario();
 	}
 
 	const handleClear = () => {
@@ -117,18 +125,38 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 		setOnEdit(null);
 	};
 
-	const handleFormatCpf = (e) => {
-		const cpfInput = e.target.value;
-
-		const numerosCpf = cpfInput.replace(/[^\d]/g, '');
-
-		const cpfFormat = numerosCpf.replace(
-			/^(\d{3})(\d{3})(\d{3})(\d{2})$/,
-			'$1.$2.$3-$4'
-		)
-
-		setCpf(cpfFormat);
+	const handleFormatCpf = (inputValue) => {
+		const numerosCpf = inputValue.replace(/[^\d]/g, '');
+		const cpfFormatado = numerosCpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+		return cpfFormatado;
 	}
+
+	const handleChangeCpf = (e) => {
+		const inputValue = e.target.value;
+		const cpfFormatado = handleFormatCpf(inputValue);
+		setCpf(cpfFormatado);
+	}
+
+	const handlePasteCpf = (event) => {
+		const inputCpf = event.clipboardData.getData('text/plain');
+		const cpfFormatado = handleFormatCpf(inputCpf);
+		setCpf(cpfFormatado);
+	};
+
+	const handleChangeMail = (e) => {
+		const inputValue = e.target.value;
+		const isValid = inputValue.includes('@') && inputValue.includes('.');
+
+		setemailcheck(!isValid);
+	}
+
+	const handleSetPassd = (e) => {
+    const inputPasd = e.target.value;
+    const isValid = inputPasd.length < 6;
+    setPasdCheck(isValid);
+		setPassword(inputPasd)
+}
+
 
 	return (
 		<div className="flex justify-center mt-10">
@@ -154,9 +182,10 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 							type="text"
 							name="cpf_usuario"
 							placeholder="CPF do Usuário"
-							onChange={handleFormatCpf}
+							onChange={handleChangeCpf}
+							onPaste={handlePasteCpf}
 							value={cpf}
-							maxLength={11}
+							maxLength={14}
 						/>
 					</div>
 					<div className="w-full md:w-1/3 px-3">
@@ -164,13 +193,15 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 							Email
 						</label>
 						<input
-							className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+							className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
 							type="text"
 							name="email"
 							placeholder="Email do Usuário"
 							value={email}
+							onBlur={handleChangeMail}
 							onChange={e => setEmail(e.target.value)}
 						/>
+						<p className={`text-xs font-medium text-red-600 px-1 mt-1 ${!emailcheck && "hidden"}`}>*Email Incompleto</p>
 					</div>
 					<div className="w-full md:w-1/3 px-3">
 						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
@@ -182,8 +213,9 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario }) {
 							name="senha"
 							placeholder="Senha do Usuário"
 							value={password}
-							onChange={e => setPassword(e.target.value)}
+							onChange={handleSetPassd}
 						/>
+						<p className={`text-xs font-medium text-red-600 px-1 mt-1 ${!pasdCheck && "hidden"}`}>*Senha deve conter no minimo 6 caracteres</p>
 					</div>
 					<div className="w-full md:w-1/3 px-3">
 						<label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
