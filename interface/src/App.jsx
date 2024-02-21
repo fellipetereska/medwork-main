@@ -34,8 +34,6 @@ import PrivateRoute from './components/pages/subPages/components/PrivateRoute';
 
 // Função Principal
 function App() {
-  const { user } = useAuth;
-
   return (
     <AuthProvider>
       <Router>
@@ -47,24 +45,24 @@ function App() {
         <Routes>
           {/* Linkando as rotas as paginas */}
           <Route path='/' element={<Login />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/gestao' element={<Gestao />} />
-          <Route path='/cadastros' element={<Cadastros />} />
-          <Route path='/inventario' element={<Inventario />} />
-          <Route path='/plano' element={<Plano />} />
-          <Route path='/laudos' element={<Laudos />} />
-          <Route path='/cadastro_empresa' element={<Empresa />} />
-          <Route path='/cadastro_unidade' element={<Unidade />} />
-          <Route path='/cadastro_setor' element={<Setor />} />
-          <Route path='/cadastro_cargo' element={<Cargo />} />
-          <Route path='/cadastro_contato' element={<Contato />} />
-          <Route path='/cadastro_usuario' element={<Usuario />} />
-          <Route path='/cadastro_processo' element={<Processos />} />
-          <Route path='/cadastro_risco' element={<Riscos />} />
-          <Route path='/cadastro_medida' element={<Medidas />} />
-          <Route path='/cadastro_aparelhos' element={<Aparelhos />} />
-          <Route path='/importxlsx' element={<ImportXlsx />} />
-          <Route path='/vinculos' element={<Vinculos />} />
+          <Route path='/home' element={<PrivateRoute requiredPermission={2}><Home /></PrivateRoute>} />
+          <Route path='/gestao' element={<PrivateRoute requiredPermission={2}><Gestao /></PrivateRoute>} />
+          <Route path='/cadastros' element={<PrivateRoute requiredPermission={2}><Cadastros /></PrivateRoute>} />
+          <Route path='/inventario' element={<PrivateRoute requiredPermission={2}><Inventario /></PrivateRoute>} />
+          <Route path='/plano' element={<PrivateRoute requiredPermission={2}><Plano /></PrivateRoute>} />
+          <Route path='/laudos' element={<PrivateRoute requiredPermission={2}><Laudos /></PrivateRoute>} />
+          <Route path='/cadastro_empresa' element={<PrivateRoute requiredPermission={2}><Empresa /></PrivateRoute>} />
+          <Route path='/cadastro_unidade' element={<PrivateRoute requiredPermission={2}><Unidade /></PrivateRoute>} />
+          <Route path='/cadastro_setor' element={<PrivateRoute requiredPermission={2}><Setor /></PrivateRoute>} />
+          <Route path='/cadastro_cargo' element={<PrivateRoute requiredPermission={2}><Cargo /></PrivateRoute>} />
+          <Route path='/cadastro_contato' element={<PrivateRoute requiredPermission={2}><Contato /></PrivateRoute>} />
+          <Route path='/cadastro_usuario' element={<PrivateRoute requiredPermission={1}><Usuario /></PrivateRoute>} />
+          <Route path='/cadastro_processo' element={<PrivateRoute requiredPermission={2}><Processos /></PrivateRoute>} />
+          <Route path='/cadastro_risco' element={<PrivateRoute requiredPermission={2}><Riscos /></PrivateRoute>} />
+          <Route path='/cadastro_medida' element={<PrivateRoute requiredPermission={2}><Medidas /></PrivateRoute>} />
+          <Route path='/cadastro_aparelhos' element={<PrivateRoute requiredPermission={2}><Aparelhos /></PrivateRoute>} />
+          <Route path='/importxlsx' element={<PrivateRoute requiredPermission={1}><ImportXlsx /></PrivateRoute>} />
+          <Route path='/vinculos' element={<PrivateRoute requiredPermission={2}><Vinculos /></PrivateRoute>} />
           <Route path='/*' element={<Navigate to='/' />} />
         </Routes>
 

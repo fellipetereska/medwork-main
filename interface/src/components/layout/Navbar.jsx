@@ -10,38 +10,43 @@ import { IoClose } from "react-icons/io5";
 function Navbar() {
 
   //Instanciando as variaveis
-  const { user, signout, selectedCompany, handleClearLocalStorage, getUsuarios, usuarios, setUser, permissao, setPermissao } = useAuth();
+  const { user, selectedCompany, handleClearLocalStorageCompany, getUsuarios, checkSignIn, clearUser, } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const empresa = selectedCompany[0]?.nome_empresa
+  const empresa = selectedCompany[0]?.nome_empresa;
+  const usuario = user ? user.nome_usuario : '';
 
   //Criando as Funções
   const handleLogoutClick = () => {
-    setUser('');
-    setPermissao('');
-    navigate("/")
-    setIsMenuOpen(false)
+    try {
+      clearUser();
+      navigate("/")
+      setIsMenuOpen(false)
+    } catch (error) {
+      console.log("Erro ao deslogar!", error)
+    }
   }
 
   const handleMenuClick = () => {
-    setIsMenuOpen(!isMenuOpen); //Abrir o menu móvel
+    setIsMenuOpen(!isMenuOpen);
   };
 
   const handleMenuItemClick = () => {
-    setIsMenuOpen(false); // Fechar o menu ao clicar em um item de menu
+    setIsMenuOpen(false);
   };
 
-  const clearLocalSotrage = () => {
-    handleClearLocalStorage();
+  const clearLocalSotrageCompany = () => {
+    handleClearLocalStorageCompany();
     navigate("/home");
     window.location.reload();
   }
 
   useEffect(() => {
     getUsuarios();
-  }, [])
+    checkSignIn();
+  }, []);
 
   const findTipo = (item) => {
     switch (item) {
@@ -77,7 +82,7 @@ function Navbar() {
                 <div className='flex items-center gap-2'>
                   <p className='font- text-sm text-zinc-600'>Usuário:</p>
                   <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100'>
-                    <p className='text-sky-700 font-bold text-base'>{user} - {findTipo(permissao)}</p>
+                    <p className='text-sky-700 font-bold text-base'>{usuario}</p>
                   </div>
                   <button onClick={handleLogoutClick}>
                     <IoClose />
@@ -92,7 +97,7 @@ function Navbar() {
                   <div className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[200px]'>
                     <p className='text-sky-700 font-bold text-base'>{empresa}</p>
                   </div>
-                  <button onClick={clearLocalSotrage}>
+                  <button onClick={clearLocalSotrageCompany}>
                     <IoClose />
                   </button>
                 </div>

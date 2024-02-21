@@ -26,8 +26,7 @@ export const AuthProvider = ({ children }) => {
   const [globalSprm, setGlobalSprm] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [companyId, setCompanyId] = useState('');
-  const [user, setUser] = useState('');
-  const [permissao, setPermissao] = useState('');
+  const [user, setUser] = useState([]);
 
   const handleSetCompanyId = () => {
     try {
@@ -114,7 +113,6 @@ export const AuthProvider = ({ children }) => {
         setSelectedCompany([]);
         setSelectedCompany((prevCompanies) => [...prevCompanies, newSelectedCompany]);
 
-        // Chama funções para carregar unidades, setores, cargos, etc.
         await getUnidades();
         await getSetores();
         await getCargos();
@@ -398,7 +396,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log(`Erro ao buscar Usuários. ${error}`);
     }
-  };  
+  };
 
   const loadSelectedCompanyFromLocalStorage = () => {
     const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -410,6 +408,51 @@ export const AuthProvider = ({ children }) => {
       setCompanyId(selectedCompanyData.id_empresa);
     }
   };
+
+  const handleSignInUser = async (authToken, email) => {
+    try {
+      await getUsuarios();
+      const findUser = usuarios.find((i) => i.email === email);
+
+      const userDefine = {
+        nome_usuario: findUser.nome_usuario,
+        permissao_usuario: findUser.tipo,
+        token_usuario: authToken,
+      }
+
+      localStorage.removeItem('user');
+      localStorage.setItem('user', JSON.stringify(userDefine));
+      setUser(userDefine);
+    } catch (error) {
+      console.log("Erro ao logar e autenticar usuario!", error)
+    }
+  }
+
+  const clearUser = async () => {
+    try {
+      localStorage.removeItem('user');
+      setUser(null);
+      localStorage.removeItem('selectedCompanyData');
+      setSelectedCompany([]);
+      setCompanyId('');
+    } catch (error) {
+      console.log("Erro ao limpar os dados de usuario e empresa!", error)
+    }
+  }
+
+  const checkSignIn = () => {
+    try {
+      const storedUser = localStorage.getItem('user');
+
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        return
+      }
+      setUser(null)
+    } catch (error) {
+      console.log("Erro ao checar usuario!", error)
+    }
+  }
 
   useEffect(() => {
     const loadFromLocalStorage = () => {
@@ -452,7 +495,7 @@ export const AuthProvider = ({ children }) => {
 
   }, [companyId]);
 
-  const handleClearLocalStorage = () => {
+  const handleClearLocalStorageCompany = () => {
     localStorage.removeItem('selectedCompanyData');
     localStorage.removeItem(`selectedCompany_${companyId}_unidadesInfo`);
     localStorage.removeItem(`selectedCompany_${companyId}_setoresInfo`);
@@ -463,7 +506,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         handleSelectedCompany,
-        handleClearLocalStorage,
+        handleClearLocalStorageCompany,
         selectedCompany,
         handleSetCompanyId,
         companyId,
@@ -518,8 +561,9 @@ export const AuthProvider = ({ children }) => {
         usuarios,
         user,
         setUser,
-        setPermissao,
-        permissao,
+        handleSignInUser,
+        checkSignIn,
+        clearUser,
       }}>
       {children}
     </AuthContext.Provider>

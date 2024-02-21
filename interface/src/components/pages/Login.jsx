@@ -4,26 +4,21 @@ import { toast } from 'react-toastify';
 import { IoEyeSharp } from "react-icons/io5";
 import { BsEyeSlashFill } from "react-icons/bs";
 import useAuth from '../../hooks/useAuth'
-import { auth } from '../../services/api';
+import { auth, connect } from '../../services/api';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 import login_image from '../media/login_image.png'
 
 function Login() {
 
-  const { setUser, user, usuarios, getUsuarios, setPermissao } = useAuth();
+  const { setUser, usuarios, getUsuarios, setPermissao, handleSignInUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [showpasd, setShowpasd] = useState(false);
 
-  const [
-    signInWithEmailAndPassword,
-    usuario,
-    loading,
-    error,
-  ] = useSignInWithEmailAndPassword(auth);
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
   useEffect(() => {
     getUsuarios();
@@ -31,16 +26,36 @@ function Login() {
 
   const signIn = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(email, password);
+      const res = await signInWithEmailAndPassword(email, password);
 
-      if (error) {
-        toast.error("Erro ao logar!");
-        console.log("Erro ao logar!", error);
+      if (!res.user) {
+        toast.error("Erro ao fazer login");
+        console.log("Erro ao fazer login com o firebase!", res.error);
       }
 
-      const findUser = usuarios.find((i) => i.email === email);
-      setUser(findUser.nome_usuario);
-      setPermissao(findUser.tipo);
+      const authToken = res.user.accessToken;
+
+      fetch(`${connect}/api/protected`, {
+        method: 'GET',
+        headers: {
+          Authorization: authToken,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Falha ao acessar a rota protegida');
+          }
+          return response.json();
+        })
+        .then(data => {
+          toast.success("Usuário Logado, Bem-vindo!")
+        })
+        .catch(error => {
+          console.error('Erro ao acessar a rota protegida:', error.message);
+        });
+
+      await handleSignInUser(res.user.accessToken, email);
 
       setRedirect(true);
     } catch (error) {
@@ -53,6 +68,7 @@ function Login() {
     e.preventDefault();
     try {
       await signIn(email, password);
+      //Tratar os erros separadamente
     } catch (error) {
       toast.error("Erro ao logar");
       console.log("Erro ao logar", error);

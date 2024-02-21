@@ -33,7 +33,7 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario, usuarios }) {
 		}
 	}, [onEdit]);
 
-	const signIn = async (email, password) => {
+	const signIn = async (email, password, displayName) => {
 		try {
 			const users = usuarios.filter((i) => i.email === email);
 
@@ -41,7 +41,7 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario, usuarios }) {
 				toast.info("Usuário já cadastrado!");
 				return "existe";
 			} else {
-				await createUserWithEmailAndPassword(email, password);
+				await createUserWithEmailAndPassword(email, password, displayName);
 
 				if (error) {
 					toast.warn("Erro ao registrar usuário!");
@@ -60,7 +60,7 @@ function FrmCadastroUsuario({ onEdit, setOnEdit, getUsuario, usuarios }) {
 
 		const user = ref.current;
 
-		const res = await signIn(email, password);
+		const res = await signIn(email, password, user.nome_usuario.value);
 
 		if (res === "existe") {
 			handleClear();
