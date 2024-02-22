@@ -27,6 +27,7 @@ function Login() {
   const signIn = async (email, password) => {
     try {
       const res = await signInWithEmailAndPassword(email, password);
+      const findUser = usuarios.find((i) => i.email === email);
 
       if (!res.user) {
         toast.error("Erro ao fazer login");
@@ -49,7 +50,7 @@ function Login() {
           return response.json();
         })
         .then(data => {
-          toast.success("Usuário Logado, Bem-vindo!")
+          toast.success(`Bem-vindo, ${findUser.nome_usuario}!`)
         })
         .catch(error => {
           console.error('Erro ao acessar a rota protegida:', error.message);
@@ -90,8 +91,8 @@ function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className='grid grid-cols-2 w-full bg-white rounded-xl shadow dark:border md:mt-0 sm:max-w-4xl xl:p-0'>
-        <div className="mx-auto flex items-center justify-center p-10">
+      <div className='lg:grid lg:grid-cols-2 w-full md:w-1/2 lg:w-full bg-white rounded-xl shadow dark:border md:mt-0 sm:max-w-4xl xl:p-0'>
+        <div className="mx-auto hidden lg:flex items-center justify-center p-10">
           <img src={login_image} alt="" />
         </div>
         <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
@@ -127,6 +128,7 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)} />
                 <button
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400"
+                  type='button'
                   onClick={ShowPassword}
                 >
                   {showpasd ? (
