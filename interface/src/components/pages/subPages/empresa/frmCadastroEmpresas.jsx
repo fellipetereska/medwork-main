@@ -18,6 +18,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
   const [checkedEstadual, setCheckedEstadual] = useState(false); //Armazena o estado do checkbox da Inscrição Estadual
   const [checkedMunicipal, setCheckedMunicipal] = useState(false); //Armazena o estado do checkbox da Inscrição Municipal
   const [cnpj, setCnpj] = useState(""); //Armazena o CNPJ
+  const [cnae, setCnae] = useState(""); //Armazena o CNAE
+  const [grauRisco, setGrauRisco] = useState(""); //Armazena o Grau de Risco
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
@@ -27,6 +29,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
       nome_empresa.value = onEdit?.nome_empresa || "";
       razao_social.value = onEdit?.razao_social || "";
+      setCnae(onEdit.cnae_empresa || '');
+      setGrauRisco(onEdit.grau_risco_cnae || '')
       setCnpj(onEdit?.cnpj_empresa || "");
       if (onEdit?.inscricao_estadual_empresa == 0 || "") {
         setCheckedEstadual(true);
@@ -62,7 +66,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     if (
       !user.nome_empresa.value ||
       !user.razao_social.value ||
-      !user.cnpj_empresa.value) {
+      !user.cnpj_empresa.value ||
+      !user.cnae_empresa) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
@@ -73,6 +78,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
         inscricao_estadual_empresa: checkedEstadual ? "0" : user.inscricao_estadual_empresa.value || null,
         inscricao_municipal_empresa: checkedMunicipal ? "0" : user.inscricao_municipal_empresa.value || null,
         fk_contato_id: contactId || null,
+        cnae_empresa: cnae || null,
+        grau_risco_cnae: grauRisco || null,
         ativo: 1,
       };
 
@@ -104,17 +111,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     }
 
     //Limpa os campos e reseta o estaodo de edição
-    user.nome_empresa.value = "";
-    user.razao_social.value = "";
-    user.inscricao_estadual_empresa.value = "";
-    user.inscricao_municipal_empresa.value = "";
-    setCnpj("");
-    setOnEdit(null);
-    setContactId(null);
-    setContactName(null);
-    setCheckedEstadual(null);
-    setCheckedMunicipal(null);
-    setOnEdit(null);
+    handleClear();
 
     //Atualiza os dados
     getEmpresa();
@@ -134,6 +131,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     setCheckedEstadual(null);
     setCheckedMunicipal(null);
     setOnEdit(null);
+    setCnae('');
+    setGrauRisco('');
   };
 
   //Funções do Modal
@@ -192,10 +191,55 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     }
   };
 
+  const ObterInfoCnae = async (cnae) => {
+    try {
+      const response = await fetch(`https://api-grau-de-risco.onrender.com/cnae/${cnae}`);
+      const data = await response.json();
+  
+      // Verifica se há um erro na resposta
+      if (response.ok) {
+        return data;
+      } else {
+        console.error("Erro ao obter informações do CNAE:", data);
+        return null;
+      }
+    } catch (error) {
+      console.error("Erro ao obter informações do CNAE:", error);
+      return null;
+    }
+  };
+
+  //Funções para formatação do CNPJ
+  const handleFormatCnae = (value) => {
+    return value.replace(/\D/g, '').replace(/(\d{4})(\d{1})(\d{2})/, '$1-$2/$3');
+  }
+
+  const handlePastCnae = (event) => {
+    const inputCnae = event.clipboardData.getData('text/plain');
+    const cnaeFormated = handleFormatCnae(inputCnae);
+    setCnae(cnaeFormated);
+  };
+
+  const handleCnaeChange = async (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    const truncatedValue = numericValue.slice(0, 7);
+    const formatedCnae = handleFormatCnae(truncatedValue);
+    setCnae(formatedCnae);
+
+    if (truncatedValue.length === 7) {
+      const cnaeInfo = await ObterInfoCnae(truncatedValue);
+      console.log(cnaeInfo);
+      setGrauRisco(cnaeInfo.risco)
+    }
+  };
+
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6 p-3">
+
+          {/* Nome Empresa */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
               Nome da Empresa:
@@ -207,6 +251,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               placeholder="Nome da empresa"
             />
           </div>
+
+          {/* Razão Social */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
               Razão Social:
@@ -218,6 +264,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               placeholder="Razão Social da Empresa"
             />
           </div>
+
+          {/* CNPJ */}
           <div className="w-full md:w-1/3 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
               CNPJ:
@@ -233,7 +281,9 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               placeholder="00.000.000/0000-00"
             />
           </div>
-          <div className="w-full md:w-1/3 px-3">
+
+          {/* Incrição Estadual */}
+          <div className="w-full md:w-2/12 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-inscricao_estadual_empresa">
               Inscrição Estadual:
             </label>
@@ -255,7 +305,9 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               <label className="text-sm font-ligth text-gray-500" htmlFor="estadualCheckbox">Isento</label>
             </div>
           </div>
-          <div className="w-full md:w-1/3 px-3">
+
+          {/* Incrição Municipal */}
+          <div className="w-full md:w-2/12 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-inscricao_municipal_empresa">
               Inscrição Municipal:
             </label>
@@ -277,7 +329,40 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               <label className="text-sm font-ligth text-gray-500" htmlFor="municipalCheckbox">Isento</label>
             </div>
           </div>
-          <div className="w-full md:w-1/3 px-3">
+
+          {/* CNAE */}
+          <div className={`w-full px-3 ${grauRisco ? 'md:w-2/12' : 'md:w-4/12'}`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+              CNAE:
+            </label>
+            <input
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              type="text"
+              name="cnae_empresa"
+              value={cnae}
+              onChange={handleCnaeChange}
+              onPaste={handlePastCnae}
+              maxLength={9}
+              placeholder="0000-0/00"
+            />
+          </div>
+
+          {/* Grau de Risco */}
+          <div className={`w-full md:w-2/12 px-3 ${grauRisco ? '' : 'hidden'}`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+              Grau de Risco:
+            </label>
+            <input
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              type="text"
+              name="grau_risco_empresa"
+              value={grauRisco}
+              disabled
+            />
+          </div>
+
+          {/* Contato */}
+          <div className="w-full md:w-4/12 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
               Contato:
             </label>
@@ -325,6 +410,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               onContactSelect={handleContactSelect}
             />
           </div>
+
+          {/* Botões */}
           <div className="w-full px-3 pl-8 flex justify-end">
             <div>
               <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
@@ -337,6 +424,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               </button>
             </div>
           </div>
+
         </div>
       </form>
     </div>

@@ -8,12 +8,7 @@ function PrivateRoute({ children, requiredPermission }) {
 
   useEffect(() => {
     checkSignIn();
-
-    if (user && user.permissao_usuario > requiredPermission) {
-      toast.warn('Somente para Administradores!');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [user, requiredPermission, checkSignIn]);
+  }, []);
 
   return user && user.permissao_usuario <= requiredPermission ? (
     children

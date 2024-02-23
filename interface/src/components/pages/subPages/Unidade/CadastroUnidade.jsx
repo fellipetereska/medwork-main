@@ -14,7 +14,7 @@ function CadastroUnidade() {
     getUnidades,
     unidades,
     setUnidades,
-    handleSetCompanyId,
+    loadSelectedCompanyFromLocalStorage,
     companyId,
     getContatos,
     contatos,
@@ -32,7 +32,7 @@ function CadastroUnidade() {
   const [filteredUnidade, setFilteredUnidades] = useState([]);
 
   useEffect(() => {
-    handleSetCompanyId();
+    loadSelectedCompanyFromLocalStorage();
   }, [])
 
   useEffect(() => {

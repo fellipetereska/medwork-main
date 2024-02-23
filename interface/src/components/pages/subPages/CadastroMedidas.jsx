@@ -53,15 +53,15 @@ function CadastroMedidas() {
       </div>
       <div>
         <div className="flex mt-5 xl:w-4/12 ml-5 justify-center">
-          <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200">
-            <li class={`me-2 ${activeTab === 1 ? "rounded-t-lg bg-gray-50" : ""}`}>
-              <button class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-100" onClick={() => handleTabClick(1)}>Administrativas</button>
+          <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200">
+            <li className={`me-2 ${activeTab === 1 ? "rounded-t-lg bg-gray-50" : ""}`}>
+              <button className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-100" onClick={() => handleTabClick(1)}>Administrativas</button>
             </li>
-            <li class={`me-2 ${activeTab === 2 ? "rounded-t-lg bg-gray-50" : ""}`}>
-              <button class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-100" onClick={() => handleTabClick(2)}>EPI's</button>
+            <li className={`me-2 ${activeTab === 2 ? "rounded-t-lg bg-gray-50" : ""}`}>
+              <button className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-100" onClick={() => handleTabClick(2)}>EPI's</button>
             </li>
-            <li class={`me-2 ${activeTab === 3 ? "rounded-t-lg bg-gray-50" : ""}`}>
-              <button class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-100" onClick={() => handleTabClick(3)}>EPC's</button>
+            <li className={`me-2 ${activeTab === 3 ? "rounded-t-lg bg-gray-50" : ""}`}>
+              <button className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-100" onClick={() => handleTabClick(3)}>EPC's</button>
             </li>
           </ul>
         </div>

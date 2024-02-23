@@ -59,6 +59,8 @@ router.put("/empresas/:id_empresa", (req, res) => {
     cnpj_empresa,
     inscricao_estadual_empresa,
     inscricao_municipal_empresa,
+    cnae_empresa,
+    grau_risco_cnae,
     fk_contato_id } = req.body;
 
   const q = `
@@ -68,7 +70,9 @@ router.put("/empresas/:id_empresa", (req, res) => {
     cnpj_empresa = ?,
     inscricao_estadual_empresa = ?,
     inscricao_municipal_empresa = ?,
-    fk_contato_id = ?
+    fk_contato_id = ?,
+    cnae_empresa = ?,
+    grau_risco_cnae = ?
     WHERE id_empresa = ?
     `;
 
@@ -79,6 +83,8 @@ router.put("/empresas/:id_empresa", (req, res) => {
     inscricao_estadual_empresa,
     inscricao_municipal_empresa,
     fk_contato_id,
+    cnae_empresa,
+    grau_risco_cnae,
     id_empresa
   ];
 

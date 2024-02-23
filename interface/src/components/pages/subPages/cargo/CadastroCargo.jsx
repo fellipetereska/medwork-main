@@ -9,7 +9,7 @@ import Back from '../../../layout/Back'
 
 function CadastroCargo() {
 
-  const {cargos, setCargos, getCargos, getSetores, setores, companyId, handleSetCompanyId, unidades, getUnidades} = useAuth(null)
+  const {cargos, setCargos, getCargos, getSetores, setores, companyId, loadSelectedCompanyFromLocalStorage, unidades, getUnidades} = useAuth(null)
 
   // Instanciando e Definindo como vazio
   const [setorNome, setSetorNome] = useState(null);
@@ -20,7 +20,7 @@ function CadastroCargo() {
   const [filteredCargo, setFilteredCargo] = useState([]);
 
   useEffect(() => {
-    handleSetCompanyId();
+    loadSelectedCompanyFromLocalStorage();
   },[])
 
   useEffect(() => {

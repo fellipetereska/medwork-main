@@ -19,9 +19,9 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
   const [estado, setEstado] = useState(null);
   const [cidade, setCidade] = useState(null);
   const [logradouro, setLogradouro] = useState(null);
-  const [complemento, setComplemento] = useState(null);
+  const [complemento, setComplemento] = useState('');
   const [bairro, setBairro] = useState(null);
-  const [numero, setNumero] = useState(null);
+  const [numero, setNumero] = useState('');
 
   const user = ref.current
 
@@ -267,6 +267,10 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     setNumero(numericValue)
   };
 
+  const handleOnChange =() => {
+
+  }
+
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
@@ -331,6 +335,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
                 name="endereco_unidade"
                 placeholder="Endereço da Unidade"
                 value={logradouro}
+                onChange={handleOnChange}
               />
             </div>
             <div className="w-1/3">
@@ -360,6 +365,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
                 name="complemento"
                 placeholder="Complemento da Unidade"
                 value={complemento}
+                onChange={handleOnChange}
               />
             </div>
           </div>
@@ -375,6 +381,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               name="bairro_unidade"
               placeholder="Bairro da Unidade"
               value={bairro}
+              onChange={handleOnChange}
             />
           </div>
 
@@ -389,6 +396,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               name="cidade_unidade"
               placeholder="Cidade da Unidade"
               value={cidade}
+              onChange={handleOnChange}
             />
           </div>
 

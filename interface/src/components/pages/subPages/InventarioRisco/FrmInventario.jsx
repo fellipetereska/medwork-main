@@ -471,6 +471,10 @@ function FrmInventario({
     setData(event.target.value);
   };
 
+  const handleChangeSeveridade = (e) => {
+    setSeveridade(e.target.value);
+  }
+
   const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
 
   return (
@@ -799,6 +803,7 @@ function FrmInventario({
                 type="text"
                 name="severidade_risco"
                 value={severidade}
+                onChange={handleChangeSeveridade}
                 disabled={severidade === '0'}
               >
                 <option value="0"> Selecione</option>

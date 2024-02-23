@@ -6,7 +6,7 @@ import GerarLaudo from "./subPages/components/GerarLaudo";
 function Laudos() {
 
   const {
-    handleSetCompanyId, companyId, selectedCompany,
+    loadSelectedCompanyFromLocalStorage, companyId, selectedCompany,
     getUnidades, unidades,
     getSetores, setores, setSetores,
     getCargos, cargos,
@@ -24,11 +24,11 @@ function Laudos() {
   const [nameCompany, setNameCompany] = useState(null);
 
   useEffect(() => {
-    handleSetCompanyId();
+    loadSelectedCompanyFromLocalStorage();
   }, []);
 
   useEffect(() => {
-    setNameCompany(selectedCompany[0]?.nome_empresa);
+    setNameCompany(selectedCompany ? selectedCompany.nome_empresa : '');
     getUnidades();
     getSetores();
     getCargos();

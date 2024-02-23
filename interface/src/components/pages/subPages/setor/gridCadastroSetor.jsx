@@ -17,7 +17,6 @@ function GridCadastroSetor({ setor, getSetores, setSetor, setOnEdit, unidade }) 
   useEffect(() => {
     const unidadesFilter = unidade.map((i) => i.id_unidade);
     setUnidadesIds(unidadesFilter);
-    console.log(unidadesFilter)
   }, [unidade]);
 
   //Função para editar item

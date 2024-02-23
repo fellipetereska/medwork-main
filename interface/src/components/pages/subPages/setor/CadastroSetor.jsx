@@ -16,14 +16,14 @@ function CadastroSetor({ }) {
 	const [onEdit, setOnEdit] = useState(null);
 	const [nomeUnidade, setNomeUnidade] = useState(null);
 
-	const { setores, setSetores, getSetores, unidades, getUnidades, companyId, handleSetCompanyId } = useAuth(null);
+	const { setores, setSetores, getSetores, unidades, getUnidades, companyId, loadSelectedCompanyFromLocalStorage } = useAuth(null);
 
 	//Instanciando o Search
 	const [searchTerm, setSearchTerm] = useState('');
 	const [filteredSetor, setFilteredSetor] = useState([]);
 
 	useEffect(() => {
-		handleSetCompanyId();
+		loadSelectedCompanyFromLocalStorage();
 	},[])
 
 	useEffect(() => {

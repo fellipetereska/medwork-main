@@ -8,7 +8,7 @@ import FrmForm from './subPages/InventarioRisco/FrmForm'
 function Inventario() {
 
   const {
-    handleSetCompanyId, companyId, selectedCompany,
+    loadSelectedCompanyFromLocalStorage, companyId, selectedCompany,
     getUnidades, unidades,
     getSetores, setores, setSetores,
     getCargos, cargos,
@@ -25,7 +25,7 @@ function Inventario() {
   const [nameCompany, setNameCompany] = useState(null);
 
   useEffect(() => {
-    handleSetCompanyId();
+    loadSelectedCompanyFromLocalStorage();
   }, []);
 
   useEffect(() => {

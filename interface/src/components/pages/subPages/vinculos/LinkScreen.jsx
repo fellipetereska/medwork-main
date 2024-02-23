@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import icon_setor from '../../../media/icon_setor.svg'
 import icon_medidas from '../../../media/icon_medidas.svg'
 import icon_riscos from '../../../media/icon_riscos.svg'
@@ -13,6 +13,17 @@ import ProcessosRiscos from './processosRiscos/ProcessosRiscos'
 import RiscosMedidas from "./riscosMedidas/RiscsoMedidas";
 
 function LinkScreen({ selected, setNavValue }) {
+
+  const {getUnidades, getSetores, getRiscos, getMedidasAdm, getMedidasEpi, getMedidasEpc} = useAuth(null);
+
+  useEffect(() => {
+    getUnidades();
+    getSetores();
+    getRiscos();
+    getMedidasAdm();
+    getMedidasEpi();
+    getMedidasEpc();
+  }, [])
 
   const renderContent = () => {
     switch (selected) {

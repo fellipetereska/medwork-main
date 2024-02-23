@@ -7,18 +7,18 @@ function Gestao () {
     return (
         <div>
             <div className="mt-16 px-12">
-                <div class="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
-                    <figure class="flex flex-col justify-center">
+                <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
+                    <figure className="flex flex-col justify-center">
                         <Link to="/cadastro_usuario">
                             <BotaoUsuario />
                         </Link>
                     </figure>
-                    <figure class="flex flex-col justify-center">
+                    <figure className="flex flex-col justify-center">
                         <Link to="/cadastro_aparelhos">
                             <BotaoCadastroAparelho />
                         </Link>
                     </figure>
-                    <figure class="flex flex-col justify-center">
+                    <figure className="flex flex-col justify-center">
                         <Link to="/importxlsx">
                             <BotaoImportCsv />
                         </Link>

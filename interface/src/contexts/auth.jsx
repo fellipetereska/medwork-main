@@ -110,8 +110,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('selectedCompanyData');
         localStorage.setItem('selectedCompanyData', JSON.stringify(newSelectedCompany));
 
-        setSelectedCompany([]);
-        setSelectedCompany((prevCompanies) => [...prevCompanies, newSelectedCompany]);
+        setSelectedCompany(newSelectedCompany);
 
         await getUnidades();
         await getSetores();
@@ -142,14 +141,6 @@ export const AuthProvider = ({ children }) => {
 
         return a.nome_unidade.localeCompare(b.nome_unidade);
       });
-
-      const unidadesInfo = filteredUnidades.map((unidade) => ({
-        id: unidade.id_unidade,
-        nome: unidade.nome_unidade
-      }));
-
-      // Adiciona as informações das unidades ao localStorage associado à empresa selecionada
-      localStorage.setItem(`selectedCompany_${companyId}_unidadesInfo`, JSON.stringify(unidadesInfo));
       setUnidades(filteredUnidades);
     } catch (error) {
       console.log(`Erro ao buscar unidades. ${error}`);
@@ -399,13 +390,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadSelectedCompanyFromLocalStorage = () => {
-    const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
+    try {
+      const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
 
-    if (selectedCompanyDataLocal) {
-      const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
-      setSelectedCompany((prevCompanies) => [...prevCompanies, selectedCompanyData]);
-
-      setCompanyId(selectedCompanyData.id_empresa);
+      if (selectedCompanyDataLocal) {
+        const parseData = JSON.parse(selectedCompanyDataLocal);
+        setCompanyId(parseData.id_empresa);
+        setSelectedCompany(JSON.parse(selectedCompanyDataLocal));
+        return
+      }
+    } catch (error) {
+      console.log("Erro ao carregar empresa do localStorage", error)
     }
   };
 
@@ -454,47 +449,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  useEffect(() => {
-    const loadFromLocalStorage = () => {
-      loadSelectedCompanyFromLocalStorage();
-
-      const unidadesInfoString = localStorage.getItem(`selectedCompany_${companyId}_unidadesInfo`);
-      if (unidadesInfoString) {
-        const unidadesInfo = JSON.parse(unidadesInfoString);
-        setUnidades(unidadesInfo);
-      }
-
-      const setoresInfoString = localStorage.getItem(`selectedCompany_${companyId}_setoresInfo`);
-      if (setoresInfoString) {
-        const setoresInfo = JSON.parse(setoresInfoString);
-        setSetores(setoresInfo);
-      }
-
-      const cargosInfoString = localStorage.getItem(`selectedCompany_${companyId}_cargosInfo`);
-      if (cargosInfoString) {
-        const cargosInfo = JSON.parse(cargosInfoString);
-        setCargos(cargosInfo);
-      }
-    };
-
-    const fetchData = async () => {
-      try {
-        await getUnidades();
-        await getSetores();
-        await getCargos();
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    loadFromLocalStorage();
-
-    if (!unidades.length || !setores.length || !cargos.length) {
-      fetchData();
-    }
-
-  }, [companyId]);
-
   const handleClearLocalStorageCompany = () => {
     localStorage.removeItem('selectedCompanyData');
     localStorage.removeItem(`selectedCompany_${companyId}_unidadesInfo`);
@@ -509,6 +463,7 @@ export const AuthProvider = ({ children }) => {
         handleClearLocalStorageCompany,
         selectedCompany,
         handleSetCompanyId,
+        loadSelectedCompanyFromLocalStorage,
         companyId,
         getEmpresas,
         setEmpresas,
