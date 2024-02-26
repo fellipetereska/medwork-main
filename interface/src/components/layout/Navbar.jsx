@@ -19,20 +19,10 @@ function Navbar() {
     checkSignIn,
     clearUser,
     getUsuarios,
-    getEmpresas, empresas,
-    getContatos, contatos,
-    getUnidades, unidades
   } = useAuth();
 
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showModalProfileCompany, setShowModalProfileCompany] = useState(false);
-  const [razaoSocial, setRazaoSocial] = useState('');
-  const [companyCnpj, setCompanyCnpj] = useState('');
-  const [contato, setContato] = useState('');
-  const [contactMail, setContactMail] = useState('');
-  const [unidadesData, setUnidadesData] = useState([]);
-  const [contatoUnidade, setContatoUnidade] = useState('');
 
   const navigate = useNavigate();
 
@@ -71,66 +61,11 @@ function Navbar() {
 
   useEffect(() => {
     getUsuarios();
-    getEmpresas();
-    getContatos();
-    getUnidades();
   }, [companyId]);
 
-  const handleSetProfile = () => {
-    try {
-      if (empresas && contatos && companyId) {
-        const filteredEmpresas = empresas.filter((i) => i.id_empresa === companyId);
-
-        if (filteredEmpresas.length > 0) {
-          setRazaoSocial(filteredEmpresas[0]?.razao_social);
-          setCompanyCnpj(filteredEmpresas[0]?.cnpj_empresa);
-
-          const filteredContatos = contatos.filter((i) => i.id_contato === filteredEmpresas[0]?.fk_contato_id);
-
-          if (filteredContatos.length > 0) {
-            setContato(filteredContatos[0]?.nome_contato);
-            setContactMail(filteredContatos[0]?.email_contato);
-          } else {
-            console.error('Nenhum contato encontrado para a empresa com o ID:', companyId);
-          }
-
-          const filteredUnidades = unidades.filter((i) => i.fk_empresa_id === companyId);
-          setUnidadesData(filteredUnidades);
-          const filteredContatoUnidade = contatos.filter((i) => i.id_contato === filteredUnidades[0]?.fk_contato_id);
-          setContatoUnidade(filteredContatoUnidade[0]?.nome_contato);
-
-        } else {
-          console.error('Nenhuma empresa encontrada com o ID:', companyId);
-        }
-      } else {
-        console.error('Dados ausentes para processamento.');
-      }
-    } catch (error) {
-      console.log("Erro ao buscar dados do profile!", error)
-    }
-  };
-
-
-  const findTipo = (item) => {
-    switch (item) {
-      case 1:
-        return "Adm"
-      case 2:
-        return "Técnico"
-      default:
-        return ""
-    }
-  }
-
   const handleCompanyInfo = () => {
-    openModalProfileCompany();
+    navigate("/profile_company")
   }
-
-  const openModalProfileCompany = () => {
-    setShowModalProfileCompany(true);
-    handleSetProfile();
-  }
-  const closeModalProfileCompany = () => setShowModalProfileCompany(false);
 
   return (
     <>
@@ -250,18 +185,6 @@ function Navbar() {
         </div>
 
       </nav>
-      <ModalProfileCompany
-        isOpen={showModalProfileCompany}
-        onCancel={closeModalProfileCompany}
-        setProfile={handleSetProfile}
-        companyName={empresa}
-        razaoSocial={razaoSocial}
-        cnpj={companyCnpj}
-        contato={contato}
-        email={contactMail}
-        unidades={unidadesData}
-        contatoUnidade={contatoUnidade}
-      />
     </>
   )
 }

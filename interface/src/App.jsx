@@ -25,6 +25,7 @@ import Medidas from './components/pages/subPages/CadastroMedidas'
 import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
 import ImportXlsx from './components/pages/subPages/components/ImportXlsx';
 import Vinculos from './components/pages/subPages/vinculos/Vinculos';
+import ProfileCompany from './components/pages/ProfileCompany';
 
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
@@ -63,6 +64,7 @@ function App() {
           <Route path='/cadastro_aparelhos' element={<PrivateRoute requiredPermission={2}><Aparelhos /></PrivateRoute>} />
           <Route path='/importxlsx' element={<PrivateRoute requiredPermission={1}><ImportXlsx /></PrivateRoute>} />
           <Route path='/vinculos' element={<PrivateRoute requiredPermission={2}><Vinculos /></PrivateRoute>} />
+          <Route path='/profile_company' element={<PrivateRoute requiredPermission={2}><ProfileCompany /></PrivateRoute>} />
           <Route path='/*' element={<Navigate to='/' />} />
         </Routes>
 

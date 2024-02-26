@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
-import useAuth from '../../../../../hooks/useAuth'
-
 import { IoCloseOutline } from "react-icons/io5";
 
 const ModalProfileCompany = ({
   isOpen, onCancel,
-  setProfile,
   companyName,
   razaoSocial, cnpj,
   contato, email,
   unidades, contatoUnidade,
+  setores,
 }) => {
+
+  const [showSetores, setShowSetores] = useState(false);
+  const [showSetorData, setShowSetorData] = useState({});
+
+  useEffect(() => {
+    setShowSetores(false);
+  }, [isOpen])
 
   if (!isOpen) {
     return null;
@@ -48,7 +53,7 @@ const ModalProfileCompany = ({
               <div className='col-span-1'>
                 <ul className='space-y-4'>
                   {unidades.map((item) => (
-                    <li key={item.id_unidade}>
+                    <li key={item.id_unidade} onClick={() => setShowSetores(!showSetores)}>
                       <div className='bg-gray-50 rounded-md px-4 py-2 hover:bg-gray-100 shadow-sm cursor-pointer'>
                         <div className='grid grid-cols-2 '>
                           <div className='col-span-1'>
@@ -69,57 +74,67 @@ const ModalProfileCompany = ({
               </div>
 
               {/* Setores */}
-              <div className='col-span-2 border border-gray-200 rounded-md px-4 py-2'>
+              <div className='col-span-2 rounded-md px-4 py-2'>
                 <div className='px-4 py-2'>
-                  <ul>
-                    <li>
-                      <div className='bg-gray-100 rounded-md px-4 py-2'>
-                        <div>
-                          <h2 className='text-sky-600 font-bold text-xl'>Nome do Setor</h2>
-                          <p className='truncate font-light'>Descrição do Setor</p>
-                        </div>
-                        <div className='border-b border-gray-200 mb-4'></div>
-                        <div className='grid grid-cols-4 gap-4'>
-                          <div className='col-span-1'>
-                            <p>Cargos</p>
-                            <ul className='space-y-2'>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
-                            </ul>
+                  {showSetores ? (
+                    <ul className='space-y-2'>
+                      {setores.map((item) => (
+                        <li key={item.id_setor} onClick={() => setShowSetorData(prevState => ({ ...prevState, [item.id_setor]: !prevState[item.id_setor] }))}>
+                          <div className='bg-gray-100 rounded-md px-4 py-2'>
+                            <div>
+                              <h2 className='text-sky-600 font-bold text-xl'>{item.nome_setor}</h2>
+                              <p className='truncate font-light'>{item.ambiente_setor}</p>
+                            </div>
+                            {showSetorData[item.id_setor] ? (
+                              <>
+                                <div>
+                                  <div className='border-b border-gray-200 mb-4'></div>
+                                  <div className='grid grid-cols-4 gap-4'>
+                                    <div className='col-span-1'>
+                                      <p>Cargos</p>
+                                      <ul className='space-y-2'>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Cargo</li>
+                                      </ul>
+                                    </div>
+                                    <div className='col-span-1'>
+                                      <p>Processos</p>
+                                      <ul className='space-y-2'>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
+                                      </ul>
+                                    </div>
+                                    <div className='col-span-1'>
+                                      <p>Riscos</p>
+                                      <ul className='space-y-2'>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
+                                      </ul>
+                                    </div>
+                                    <div className='col-span-1'>
+                                      <p>Medidas</p>
+                                      <ul className='space-y-2'>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
+                                        <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            ) : (null)}
                           </div>
-                          <div className='col-span-1'>
-                            <p>Processos</p>
-                            <ul className='space-y-2'>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Processo</li>
-                            </ul>
-                          </div>
-                          <div className='col-span-1'>
-                            <p>Riscos</p>
-                            <ul className='space-y-2'>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome do Risco</li>
-                            </ul>
-                          </div>
-                          <div className='col-span-1'>
-                            <p>Medidas</p>
-                            <ul className='space-y-2'>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
-                              <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm text-center truncate'>Nome da Medida</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (null)}
                 </div>
               </div>
 
