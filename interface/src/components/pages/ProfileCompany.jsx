@@ -37,24 +37,23 @@ function ProfileCompany() {
 
   useEffect(() => {
     loadSelectedCompanyFromLocalStorage();
+    if (companyId) {
+      getEmpresas();
+      getContatos();
+      getUnidades();
+      getSetores();
+      getCargos();
+      getProcessos();
+      getSetoresProcessos();
+      getProcessosRiscos();
+      getRiscosMedidas();
+      getRiscos();
+      getMedidasAdm();
+      getMedidasEpi();
+      getMedidasEpc();
+      handleSetProfile();
+    }
   }, []);
-
-  useEffect(() => {
-    getEmpresas();
-    getContatos();
-    getUnidades();
-    getSetores();
-    getCargos();
-    getProcessos();
-    getSetoresProcessos();
-    getProcessosRiscos();
-    getRiscosMedidas();
-    getRiscos();
-    getMedidasAdm();
-    getMedidasEpi();
-    getMedidasEpc();
-    handleSetProfile();
-  }, [companyId]);
 
   const handleSetProfile = () => {
     try {
@@ -105,33 +104,55 @@ function ProfileCompany() {
     }
   }
 
-  const handleSetSetoresData = (item) => {
+  const handleSetSetoresData = async (item) => {
     setShowSetorData(prevState => ({ ...prevState, [item]: !prevState[item] }));
 
-    const filteredCargos = cargos.filter((i) => i.fk_setor_id === item);
+    const filteredSetores = setoresData.map((i) => i.id_setor);
+
+    const filteredCargos = cargos.filter((cargo) =>
+      filteredSetores.includes(cargo.fk_setor_id)
+    );
+
     setCargosData(filteredCargos);
 
-    const setfilter = setoresProcessos.find((i) => i.fk_setor_id === item);
+    const setfilter = setoresProcessos.filter((i) => i.fk_setor_id === item);
+    const setMap = setfilter.map((i) => i.fk_processo_id);
 
-    if (setfilter) {
-      const filteredProcesso = processos.filter((i) => i.id_processo === setfilter.fk_processo_id);
+    if (setMap) {
+      const filteredProcesso = processos.filter((i) =>
+        setMap.includes(i.id_processo)
+      );
 
       if (filteredProcesso) {
         setProcessosData(filteredProcesso);
 
-        const riscFilter = processosRiscos.find((i) => i.fk_processo_id === filteredProcesso[0]?.id_processo);
+        const procMap = filteredProcesso.map((i) => i.id_processo);
 
-        if (riscFilter) {
-          const filteredRiscos = riscos.filter((i) => i.id_risco === riscFilter.fk_risco_id);
+        const riscFilter = processosRiscos.filter((i) =>
+          procMap.includes(i.fk_processo_id)
+        );
+
+        const filterRisc = riscFilter.map((i) => i.fk_risco_id);
+
+        if (filterRisc) {
+          const filteredRiscos = riscos.filter((i) =>
+            filterRisc.includes(i.id_risco)
+          );
           setRiscosData(filteredRiscos);
 
-          const medFilter = riscosMedidas.find((i) => i.fk_risco_id === riscFilter.fk_risco_id);
-          
-          if (medFilter) {
-            const filteredMedidas = medidasAdm.filter((i) => i.id_medida_adm === medFilter.fk_medida_id);
-            setMedidasData(filteredMedidas)
-            console.log(filteredMedidas)
-          }
+          const medFilter = riscosMedidas.filter((i) =>
+            filterRisc.includes(i.fk_risco_id)
+          );
+
+          const medData = medFilter.map(({ fk_medida_id, tipo }) => ({
+            fk_medida_id,
+            tipo
+          }));
+
+          const medidasFiltradas = await handleSetMedida(medData);
+
+          setMedidasData(medidasFiltradas)
+
 
         } else {
           console.error("Nenhum risco encontrado para o processo: ", filteredProcesso);
@@ -144,10 +165,38 @@ function ProfileCompany() {
     }
   }
 
+  const handleSetMedida = async (data) => {
+    const medidasFiltradas = [];
+
+    data.forEach((item) => {
+      const { fk_medida_id, tipo } = item;
+
+      let medidaFiltrada;
+
+      switch (tipo) {
+        case 1:
+          medidaFiltrada = medidasAdm.find((medida) => medida.id_medida_adm === fk_medida_id);
+          if (medidaFiltrada) medidasFiltradas.push(medidaFiltrada);
+          break;
+        case 2:
+          medidaFiltrada = medidasEpi.find((medida) => medida.id_medida === fk_medida_id);
+          if (medidaFiltrada) medidasFiltradas.push(medidaFiltrada);
+          break;
+        case 3:
+          medidaFiltrada = medidasEpc.find((medida) => medida.id_medida === fk_medida_id);
+          if (medidaFiltrada) medidasFiltradas.push(medidaFiltrada);
+          break;
+        default:
+          break;
+      }
+    })
+
+    return medidasFiltradas;
+  }
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center max-h-screen mt-10">
         <div className="w-full max-w-6xl bg-white overflow-hidden">
 
           {/* Company Infos */}
@@ -221,7 +270,9 @@ function ProfileCompany() {
                                       <p>Cargos</p>
                                       <ul className='space-y-2'>
                                         {cargosData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate'>{item.nome_cargo}</li>
+                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                            {item.nome_cargo}
+                                          </li>
                                         ))}
                                       </ul>
                                     </div>
@@ -229,7 +280,9 @@ function ProfileCompany() {
                                       <p>Processos</p>
                                       <ul className='space-y-2'>
                                         {processosData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>{item.nome_processo}</li>
+                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                            {item.nome_processo}
+                                          </li>
                                         ))}
                                       </ul>
                                     </div>
@@ -237,7 +290,9 @@ function ProfileCompany() {
                                       <p>Riscos</p>
                                       <ul className='space-y-2'>
                                         {riscosData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>{item.nome_risco}</li>
+                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                            {item.nome_risco}
+                                          </li>
                                         ))}
                                       </ul>
                                     </div>
@@ -245,7 +300,9 @@ function ProfileCompany() {
                                       <p>Medidas</p>
                                       <ul className='space-y-2'>
                                         {medidasData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>{item.descricao_medida_adm}</li>
+                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                            {item.descricao_medida_adm || item.nome_medida || item.descricao_medida}
+                                          </li>
                                         ))}
                                       </ul>
                                     </div>
