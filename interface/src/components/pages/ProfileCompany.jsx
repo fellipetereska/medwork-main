@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import useAuth from "../../hooks/useAuth";
 import { IoCloseOutline } from "react-icons/io5";
+import LoadingScreen from "./subPages/components/LoadingScreen";
 
 function ProfileCompany() {
 
@@ -37,23 +38,24 @@ function ProfileCompany() {
 
   useEffect(() => {
     loadSelectedCompanyFromLocalStorage();
-    if (companyId) {
-      getEmpresas();
-      getContatos();
-      getUnidades();
-      getSetores();
-      getCargos();
-      getProcessos();
-      getSetoresProcessos();
-      getProcessosRiscos();
-      getRiscosMedidas();
-      getRiscos();
-      getMedidasAdm();
-      getMedidasEpi();
-      getMedidasEpc();
-      handleSetProfile();
-    }
   }, []);
+
+  useEffect(() => {
+    getEmpresas();
+    getContatos();
+    getUnidades();
+    getSetores();
+    getCargos();
+    getProcessos();
+    getSetoresProcessos();
+    getProcessosRiscos();
+    getRiscosMedidas();
+    getRiscos();
+    getMedidasAdm();
+    getMedidasEpi();
+    getMedidasEpc();
+    handleSetProfile();
+  }, [companyId])
 
   const handleSetProfile = () => {
     try {
@@ -113,7 +115,9 @@ function ProfileCompany() {
       filteredSetores.includes(cargo.fk_setor_id)
     );
 
-    setCargosData(filteredCargos);
+    const cargosFilter = filteredCargos.filter((i) => i.fk_setor_id === item);
+
+    setCargosData(cargosFilter);
 
     const setfilter = setoresProcessos.filter((i) => i.fk_setor_id === item);
     const setMap = setfilter.map((i) => i.fk_processo_id);
@@ -196,7 +200,7 @@ function ProfileCompany() {
 
   return (
     <>
-      <div className="flex items-center justify-center max-h-screen mt-10">
+      <div className="flex items-center justify-center max-h-fit mt-10">
         <div className="w-full max-w-6xl bg-white overflow-hidden">
 
           {/* Company Infos */}
@@ -218,7 +222,7 @@ function ProfileCompany() {
           </div>
 
           {/* Company Data */}
-          <div className='w-full px-8 py-4'>
+          <div className='w-full py-4'>
             <div className='w-full grid grid-cols-3 gap-6'>
 
               {/* Unidades */}
@@ -227,12 +231,12 @@ function ProfileCompany() {
                   {unidades.map((item) => (
                     <li key={item.id_unidade} onClick={() => handleSetSetores(item.id_unidade)}>
                       <div className='bg-gray-50 rounded-md px-4 py-2 hover:bg-gray-100 shadow-sm cursor-pointer'>
-                        <div className='grid grid-cols-2 '>
+                        <div className='grid grid-cols-2 items-center'>
                           <div className='col-span-1'>
                             <h2 className='text-sky-600 font-extrabold text-lg truncate'>{item.nome_unidade}</h2>
                           </div>
                           <div className='col-span-1 text-right'>
-                            <h2 className='text-sky-600 font-extrabold text-lg truncate'>{item.cnpj_unidade}</h2>
+                            <h2 className='text-sky-600 font-extrabold truncate'>{item.cnpj_unidade}</h2>
                           </div>
                         </div>
                         <div className='border-b border-gray-200 mb-2'></div>
