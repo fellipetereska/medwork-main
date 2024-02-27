@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-
 import useAuth from "../../hooks/useAuth";
-import { IoCloseOutline } from "react-icons/io5";
-import LoadingScreen from "./subPages/components/LoadingScreen";
 
-function ProfileCompany() {
+import { IoCloseCircleOutline } from "react-icons/io5";
+
+function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocial, contato, contactMail, contatoUnidade }) {
 
   //Instanciando as variaveis
   const { user,
@@ -23,13 +22,7 @@ function ProfileCompany() {
 
   const [showSetores, setShowSetores] = useState(false);
   const [showSetorData, setShowSetorData] = useState({});
-  const [companyName, setCompanyName] = useState('');
-  const [razaoSocial, setRazaoSocial] = useState('');
-  const [companyCnpj, setCompanyCnpj] = useState('');
-  const [contato, setContato] = useState('');
-  const [contactMail, setContactMail] = useState('');
   const [unidadesData, setUnidadesData] = useState([]);
-  const [contatoUnidade, setContatoUnidade] = useState('');
   const [setoresData, setSetoresData] = useState([]);
   const [cargosData, setCargosData] = useState([]);
   const [processosData, setProcessosData] = useState([]);
@@ -40,7 +33,11 @@ function ProfileCompany() {
     loadSelectedCompanyFromLocalStorage();
   }, []);
 
-  useEffect(() => {
+  if (isOpen) {
+    getUnidades();
+  }
+
+  const handleSetSetores = (item) => {
     getEmpresas();
     getContatos();
     getUnidades();
@@ -54,48 +51,6 @@ function ProfileCompany() {
     getMedidasAdm();
     getMedidasEpi();
     getMedidasEpc();
-    handleSetProfile();
-  }, [companyId])
-
-  const handleSetProfile = () => {
-    try {
-      const companyInfo = empresas.find((i) => i.id_empresa === companyId);
-      if (companyInfo) {
-        setCompanyName(companyInfo.nome_empresa);
-        setRazaoSocial(companyInfo.razao_social);
-        setCompanyCnpj(companyInfo.cnpj_empresa);
-
-        const filteredContatos = contatos.find((i) => i.id_contato === companyInfo.fk_contato_id);
-
-        if (filteredContatos) {
-          setContato(filteredContatos.nome_contato);
-          setContactMail(filteredContatos.email_contato);
-        } else {
-          console.error('Nenhum contato encontrado para a empresa: ', companyName);
-        }
-
-        const contatosUnidades = {};
-
-        unidades.forEach((unidade) => {
-          const filteredContatoUnidade = contatos.find((contato) => contato.id_contato === unidade.fk_contato_id);
-          if (filteredContatoUnidade) {
-            contatosUnidades[unidade.id_unidade] = filteredContatoUnidade.nome_contato;
-          } else {
-            console.error('Nenhum contato encontrado para a unidade: ', unidade.nome_unidade);
-          }
-        });
-
-        setContatoUnidade(contatosUnidades);
-
-      } else {
-        console.error("Erro ao buscar os dados da empresa do id: ", companyId)
-      }
-    } catch (error) {
-      console.log("Erro ao buscar dados do profile!", error)
-    }
-  };
-
-  const handleSetSetores = (item) => {
     setShowSetores(true);
     const filteredSetores = setores.filter((i) => i.fk_unidade_id === item);
 
@@ -198,13 +153,25 @@ function ProfileCompany() {
     return medidasFiltradas;
   }
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <>
-      <div className="flex items-center justify-center max-h-fit mt-10">
-        <div className="w-full max-w-6xl bg-white overflow-hidden">
+      <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="modal-overlay absolute inset-0 backdrop-blur-[1px] bg-black bg-opacity-10" onClick={onCancel}></div>
+        <div className="modal-container w-5/6 mx-auto rounded-xl z-50 bg-white overflow-y-auto max-h-[90vh]">
 
           {/* Company Infos */}
           <div className='w-full bg-sky-600 shadow-md px-4 py-4 rounded-xl mb-4'>
+            <div className="flex justify-end text-gray-200 w-full">
+              <div className=" rounded-full hover:text-white cursor-pointer hover:scale-110">
+                <IoCloseCircleOutline
+                  onClick={onCancel}
+                />
+              </div>
+            </div>
             <div className='px-4 mt-2 grid grid-cols-3'>
               <div className='col-span-2'>
                 <h2 className='text-white font-extrabold text-2xl truncate'>{companyName}</h2>
@@ -215,14 +182,14 @@ function ProfileCompany() {
                   <p className='text-sm text-gray-700 font-light truncate text-left'>- {contactMail}</p>
                 </div>
               </div>
-              <div className='col-span-1 text-right'>
+              <div className='col-span-1 text-right px-2'>
                 <h2 className='text-white font-extrabold text-2xl truncate'>{companyCnpj}</h2>
               </div>
             </div>
           </div>
 
           {/* Company Data */}
-          <div className='w-full py-4'>
+          <div className='w-full py-4 px-8 mb-4'>
             <div className='w-full grid grid-cols-3 gap-6'>
 
               {/* Unidades */}
@@ -254,13 +221,13 @@ function ProfileCompany() {
               </div>
 
               {/* Setores */}
-              <div className='col-span-2 rounded-md px-4 py-2'>
-                <div className='px-4 py-2'>
+              <div className='col-span-2 rounded-md'>
+                <div className=''>
                   {showSetores ? (
                     <ul className='space-y-2'>
                       {setoresData.map((item) => (
                         <li key={item.id_setor} onClick={() => handleSetSetoresData(item.id_setor)}>
-                          <div className='bg-gray-100 rounded-md px-4 py-2'>
+                          <div className='bg-gray-100 hover:bg-gray-50 rounded-md px-4 py-2'>
                             <div>
                               <h2 className='text-sky-600 font-bold text-xl'>{item.nome_setor}</h2>
                               <p className='truncate font-light'>{item.ambiente_setor}</p>

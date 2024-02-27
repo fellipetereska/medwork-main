@@ -9,12 +9,15 @@ import FrmCadastroSetor from "./frmCadastroSetor";
 import GridCadastroSetor from "./gridCadastroSetor";
 import SearchInput from "../components/SearchInput";
 
+import { IoInformationCircleSharp } from "react-icons/io5";
+
 
 function CadastroSetor({ }) {
 
 	// Instanciando e Definindo como vazio
 	const [onEdit, setOnEdit] = useState(null);
 	const [nomeUnidade, setNomeUnidade] = useState(null);
+	const [visible, setVisible] = useState(false);
 
 	const { setores, setSetores, getSetores, unidades, getUnidades, companyId, loadSelectedCompanyFromLocalStorage } = useAuth(null);
 
@@ -24,14 +27,14 @@ function CadastroSetor({ }) {
 
 	useEffect(() => {
 		loadSelectedCompanyFromLocalStorage();
-	},[])
+	}, [])
 
 	useEffect(() => {
 		if (companyId) {
-				getUnidades();
-				getSetores();
+			getUnidades();
+			getSetores();
 		}
-}, [companyId]);
+	}, [companyId]);
 
 	//Função para Pesquisa
 	useEffect(() => {
@@ -61,15 +64,47 @@ function CadastroSetor({ }) {
 	const filteredSetores = setores.filter((i) => i.fk_unidade_id === unidadesId);
 
 	return (
-		<div className="p-6">
-			<div className="flex justify-center items-center mb-10 mt-10">
+		<div>
+			<div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
+				<div className="fixed z-50 m-2 -mt-4">
+					<div className={`bg-gray-700 rounded-lg px-6 py-2 ${visible ? 'block' : 'hidden'} text-white`}>
+						<h2 className="font-bold text-xl mb-2 text-gray-100 mt-2">Página Cadastro Setor</h2>
+						<div>
+							<p className="mb-2 text-justify font-light text-gray-300 flex">
+								A página de cadastro de setor foi desenvolvida para oferecer uma experiência centrada na facilidade de uso e na gestão eficiente. Ao acessar essa funcionalidade, os usuários encontrarão um layout intuitivo e organizado.
+							</p>
+							<p className="mb-2 text-justify font-light text-gray-300 flex">
+								No canto superior esquerdo da tela, destaca-se um botão que proporciona a facilidade de retorno à página principal de cadastros. Esse recurso visa garantir uma navegação ágil e intuitiva para os usuários. No centro da tela, encontra-se um formulário que possibilita o cadastro e a edição das informações referentes ao setor. Esse formulário foi projetado para ser claro e de fácil compreensão, simplificando o processo de inserção e modificação de dados.	Abaixo do formulário, implementamos um campo de pesquisa para facilitar a localização rápida de setores específicos. Esse recurso busca otimizar a experiência do usuário, permitindo que encontrem informações de maneira eficiente.
+							</p>
+							<p className="mb-2 text-justify font-light text-gray-300 flex">
+								Além disso, apresentamos uma tabela organizada abaixo do campo de pesquisa, contendo os dados do setor, como Setor, Descrição e Unidade. Em uma coluna dedicada, são disponibilizados três botões distintos para cada setor: um ícone de lápis para edição, um ícone de corrente para vincular processos e um checkbox para desativar o setor. O botão de edição permite ajustar informações diretamente na tabela, enquanto o ícone de corrente abre um modal dedicado para vincular processos ao setor, proporcionando uma integração eficaz entre os dados.
+							</p>
+							<p className="mb-2 text-justify font-light text-gray-300 flex">
+								Com essa abordagem, buscamos fornecer uma página de cadastro de setor que atenda às necessidades dos usuários, oferecendo uma experiência intuitiva, eficiente e completa para a gestão e organização das informações relacionadas aos setores da empresa.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div className="grid grid-cols-3 mb-10 mt-10">
 				{/* Botão para voltar */}
-				<div className="absolute left-0">
+				<div className="">
 					<Link to="/cadastros">
 						<Back />
 					</Link>
 				</div>
-				<h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Setor</h1>
+				<div className="flex justify-center">
+					<h1 className="text-3xl font-extrabold text-sky-700">Cadastrar Setor</h1>
+				</div>
+				<div>
+					<div className="flex justify-end w-3/4">
+						<div onMouseEnter={() => setVisible(true)}>
+							<IoInformationCircleSharp className='text-sky-700' />
+						</div>
+					</div>
+				</div>
 			</div>
 
 			{/* Formulário de Cadastro */}

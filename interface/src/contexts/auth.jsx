@@ -435,7 +435,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const checkSignIn = () => {
+  const checkSignIn = async () => {
     try {
       const storedUser = localStorage.getItem('user');
 

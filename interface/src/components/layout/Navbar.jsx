@@ -7,8 +7,7 @@ import { BiLogIn } from 'react-icons/bi'
 import logo from '../media/logo_menu.png'
 import { IoClose } from "react-icons/io5";
 import { toast } from 'react-toastify';
-
-import ModalProfileCompany from '../pages/subPages/components/Modal/ModalProfileCompany';
+import ProfileCompany from '../pages/ProfileCompany'
 
 function Navbar() {
 
@@ -19,10 +18,20 @@ function Navbar() {
     checkSignIn,
     clearUser,
     getUsuarios,
+    getEmpresas, empresas,
+    getContatos, contatos,
+    getUnidades, unidades,
   } = useAuth();
 
-
+  const [showModalProfileCompany, setShowModalProfileCompany] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [companyName, setCompanyName] = useState('');
+  const [razaoSocial, setRazaoSocial] = useState('');
+  const [companyCnpj, setCompanyCnpj] = useState('');
+  const [contato, setContato] = useState('');
+  const [contactMail, setContactMail] = useState('');
+  const [contatoUnidade, setContatoUnidade] = useState('');
 
   const navigate = useNavigate();
 
@@ -33,7 +42,7 @@ function Navbar() {
   const handleLogoutClick = () => {
     try {
       clearUser();
-      navigate("/")
+      navigate("/login")
       setIsMenuOpen(false)
     } catch (error) {
       console.log("Erro ao deslogar!", error)
@@ -60,12 +69,57 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
+    getEmpresas();
     getUsuarios();
+    getContatos();
+    getUnidades();
   }, [companyId]);
 
+  const handleSetProfile = () => {
+    try {
+      const companyInfo = empresas.find((i) => i.id_empresa === companyId);
+      if (companyInfo) {
+        setCompanyName(companyInfo.nome_empresa);
+        setRazaoSocial(companyInfo.razao_social);
+        setCompanyCnpj(companyInfo.cnpj_empresa);
+
+        const filteredContatos = contatos.find((i) => i.id_contato === companyInfo.fk_contato_id);
+
+        if (filteredContatos) {
+          setContato(filteredContatos.nome_contato);
+          setContactMail(filteredContatos.email_contato);
+        } else {
+          console.error('Nenhum contato encontrado para a empresa: ', companyName);
+        }
+
+        const contatosUnidades = {};
+
+        unidades.forEach((unidade) => {
+          const filteredContatoUnidade = contatos.find((contato) => contato.id_contato === unidade.fk_contato_id);
+          if (filteredContatoUnidade) {
+            contatosUnidades[unidade.id_unidade] = filteredContatoUnidade.nome_contato;
+          } else {
+            console.error('Nenhum contato encontrado para a unidade: ', unidade.nome_unidade);
+          }
+        });
+
+        setContatoUnidade(contatosUnidades);
+
+      } else {
+        console.error("Erro ao buscar os dados da empresa do id: ", companyId)
+      }
+    } catch (error) {
+      console.log("Erro ao buscar dados do profile!", error)
+    }
+  };
+
   const handleCompanyInfo = () => {
-    navigate("/profile_company")
+    handleSetProfile();
+    openModalProfileCompany(true);
   }
+
+  const openModalProfileCompany = () => setShowModalProfileCompany(true);
+  const closeModalProfileCompany = () => setShowModalProfileCompany(false);
 
   return (
     <>
@@ -97,6 +151,7 @@ function Navbar() {
                     className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[150px]'
                     onClick={handleCompanyInfo}
                   >
+
                     <p className='text-sky-700 font-bold text-base'>{empresa}</p>
                   </div>
                   <button onClick={clearLocalSotrageCompany}>
@@ -105,6 +160,18 @@ function Navbar() {
                 </div>
               ) : null}
             </div>
+
+            {/* Modal Profile Company */}
+            <ProfileCompany
+              isOpen={showModalProfileCompany}
+              onCancel={closeModalProfileCompany}
+              companyName={companyName}
+              companyCnpj={companyCnpj}
+              razaoSocial={razaoSocial}
+              contato={contato}
+              contactMail={contactMail}
+              contatoUnidade={contatoUnidade}
+            />
 
             <div
               type="button"
@@ -172,7 +239,7 @@ function Navbar() {
                 </div>
               ) : (
                 // Renderiza o botão login quando o usuario da logout
-                <Link to="/">
+                <Link to="/login">
                   <button
                     className=" bg-sky-600 hover:bg-skky-700 text-white font-bold py-2 px-4 border shadow hover:shadow-md rounded"
                   >

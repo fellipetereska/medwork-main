@@ -27,13 +27,13 @@ function Login() {
   const signIn = async (email, password) => {
     try {
       const res = await signInWithEmailAndPassword(email, password);
-      const findUser = usuarios.find((i) => i.email === email);
 
       if (!res.user) {
         toast.error("Erro ao fazer login");
-        console.log("Erro ao fazer login com o firebase!", res.error);
+        console.log("Erro ao fazer login com o firebase!", res.error.message);
       }
 
+      const findUser = usuarios.find((i) => i.email === email);
       const authToken = res.user.accessToken;
 
       fetch(`${connect}/api/protected`, {
@@ -60,8 +60,13 @@ function Login() {
 
       setRedirect(true);
     } catch (error) {
-      toast.error("Erro ao logar!");
-      console.log("Erro ao logar!", error);
+      if (error.message === "Cannot read properties of undefined (reading 'user')") {
+        toast.warn("Usuário ou senha inválidos!");
+        console.log("Erro ao logar!", error.message);
+      } else {
+        toast.error("Erro ao Logar!");
+        console.log("Error Code!", error);
+      }
     }
   }
 
@@ -77,7 +82,7 @@ function Login() {
   };
 
   if (redirect == true) {
-    return <Navigate to="/home" />
+    return <Navigate to="/" />
   }
 
   const ShowPassword = (e) => {
