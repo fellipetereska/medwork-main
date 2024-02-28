@@ -1,13 +1,14 @@
 //Importando Ferramentas
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
-function CadastroEpi({ onEdit, setOnEdit, get }) {
+function CadastroEpi({ onEdit, get, epis }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
+  const [certificado, setCertificado] = useState('');
 
   useEffect(() => {
     if (onEdit) {
@@ -35,9 +36,22 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
 
       fabricante_medida.value = onEdit.fabricante_medida || "";
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onEdit]);
 
+  const verify = async (medida, certificado) => {
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
 
+    try {
+      const verifyNome = epis.filter((i) => normalizeString(i.nome_medida) === normalizeString(medida));
+      const verifyCa = verifyNome.filter((i) => i.certificado_medida.trim() == certificado.trim());
+      if (verifyCa.length > 0) {
+        return verifyCa;
+      }
+    } catch (error) {
+      console.log("Erro ao verificar medidas EPI: ", error)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,10 +60,24 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
 
     if (
       !user.nome_medida.value ||
-      !user.certificado_medida) {
-      toast.warn("Preencha todos os campos!");
+      !certificado ||
+      !user.fator_reducao_medida ||
+      !user.vencimento_certificado_medida) {
+      return toast.warn("Preencha todos os campos!");
     }
+    
+    if (certificado == 0) {
+      return toast.warn("Preencha o campo certificado de aprovação!");
+    }
+
     try {
+
+      const res = await verify(user.nome_medida.value, certificado);
+
+      if (res) {
+        return toast.warn(`Epi: ${user.nome_medida} com CA: ${certificado} já cadastrado!`)
+      }
+
       const epiData = {
         nome_medida: user.nome_medida.value || "",
         certificado_medida: user.certificado_medida.value || "",
@@ -103,6 +131,12 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
     user.fabricante_medida.value = "";
   }
 
+  const handleVerifyCA = async (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    setCertificado(numericValue);
+  }
+
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
@@ -124,9 +158,10 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
+              type="number"
               name="certificado_medida"
               placeholder="Certificado de Aprovação"
+              onBlur={handleVerifyCA}
             />
           </div>
           <div className="w-full md:w-1/3 px-3">

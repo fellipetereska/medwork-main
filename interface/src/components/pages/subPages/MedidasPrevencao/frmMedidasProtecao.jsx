@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
-function CadastroMedidas({ onEdit, setOnEdit, get }) {
+function CadastroMedidas({ onEdit, setOnEdit, get, medidas }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
@@ -16,8 +16,24 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
 
       descricao_medida_adm.value = onEdit.descricao_medida_adm || "";
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onEdit]);
 
+  const verify = async (medida) => {
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+
+    try {
+      const measure = medidas.filter((med) => normalizeString(med.descricao_medida_adm) === normalizeString(medida));
+      console.log(measure);
+
+      if(measure.length > 0) {
+        return measure;
+      }
+
+    } catch (error) {
+      console.error(`Erro ao buscar dados da Medida: ${medida}`, error)
+    }
+  }
 
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
@@ -30,6 +46,13 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
+
+      const resVerify = await verify(user.descricao_medida_adm.value);
+
+      if (resVerify) {
+        return toast.warn(`Uma medida com a mesma descrição foi encontrada`);
+      }
+
       const medidasData = {
         descricao_medida_adm: user.descricao_medida_adm.value || null,
       };

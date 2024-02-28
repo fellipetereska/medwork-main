@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
-function CadastroEpi({ onEdit, setOnEdit, get }) {
+function CadastroEpi({ onEdit, setOnEdit, get, medidas }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
@@ -18,8 +18,22 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
 
       descricao_medida.value = onEdit.descricao_medida || "";
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onEdit]);
 
+  const verify = async (medida) => {
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+
+    try {
+      const verifyMedida = medidas.filter((i) => normalizeString(i.descricao_medida) === normalizeString(medida));
+
+      if (verifyMedida.length > 0) {
+        return verifyMedida;
+      }
+    } catch (error) {
+      console.error("Erro ao verificar medidas EPC", error)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,29 +44,36 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
       toast.warn("Preencha todos os campos!");
     }
     try {
+
+      const res = await verify(user.descricao_medida.value);
+
+      if (res) {
+        return toast.warn(`Medida: ${user.descricao_medida.value} ja cadastrada!`)
+      }
+
       const epcData = {
         descricao_medida: user.descricao_medida.value || "",
       };
 
       const url = onEdit
-      ? `${connect}/medidas_epc/${onEdit.id_medida}`
-      : `${connect}/medidas_epc`
+        ? `${connect}/medidas_epc/${onEdit.id_medida}`
+        : `${connect}/medidas_epc`
 
       const method = onEdit ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
-        headers : {
-          'Content-Type' : 'application/json'
+        headers: {
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(epcData),
       })
 
-      if(!response.ok) {
+      if (!response.ok) {
         toast.error("Erro ao inserir/atualizar o EPC");
         throw new Error(`Erro ao inserir/atualizar o EPC. Status ${response.status}`);
       }
-      
+
       const responseData = await response.json();
 
       toast.success(responseData)
@@ -67,7 +88,7 @@ function CadastroEpi({ onEdit, setOnEdit, get }) {
 
   const handleClear = () => {
     const user = ref.current;
-    
+
     user.descricao_medida.value = "";
   }
 

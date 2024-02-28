@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { connect } from "../../../../services/api"; //Conexão com o banco
+import useAuth from '../../../../hooks/useAuth'
 
 import FrmEpi from './FrmEpi'
 import GridEpi from './GridEpi'
@@ -8,32 +8,16 @@ import SearchInput from '../components/SearchInput'
 
 function Epi() {
 
-  const [epi, setEpi] = useState([]);
+  const {getMedidasEpi, medidasEpi, setMedidasEpi} = useAuth(null);
+
   const [onEdit, setOnEdit] = useState(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filtered, setFiltered] = useState([]);
 
-  const fetchEpi = async () => {
-    try {
-      const response = await fetch(`${connect}/medidas_epi`);
-
-      if(!response.ok) {
-        toast.error("Erro ao buscar EPI's");
-        throw new Error(`Erro ao buscar EPI's. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setEpi(data);
-    } catch (error) {
-      toast.warn("Erro ao buscar EPI's. Verificar Console!")
-      console.log("Erro ao buscar EPI's", error)
-    }
-  }
-
   useEffect(() => {
-    fetchEpi();
+    getMedidasEpi();
   }, [])
 
 
@@ -43,9 +27,9 @@ function Epi() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = epi.filter((epi) => epi.nome_medida && epi.nome_medida.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filtered = medidasEpi.filter((epi) => epi.nome_medida && epi.nome_medida.toLowerCase().includes(searchTerm.toLowerCase()));
     setFiltered(filtered);
-  }, [searchTerm, epi]);
+  }, [searchTerm, medidasEpi]);
 
 
   const handleSearch = (term) => {
@@ -57,8 +41,8 @@ function Epi() {
     <>
       <FrmEpi
         onEdit={onEdit}
-        setOnEdit={setOnEdit}
-        get={fetchEpi}
+        get={getMedidasEpi}
+        epis={medidasEpi}
       />
 
       <div className="flex justify-center w-full">
@@ -69,7 +53,7 @@ function Epi() {
 
       <GridEpi
         epis={filtered}
-        setEpi={setEpi}
+        setEpi={setMedidasEpi}
         setOnEdit={handleEdit}
       />
     </>

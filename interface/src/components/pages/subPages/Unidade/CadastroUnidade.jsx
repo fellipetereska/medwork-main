@@ -78,7 +78,7 @@ function CadastroUnidade() {
 
 
   return (
-    <div className="tab-content mt-14 mb-32">
+    <div className="tab-content mb-10">
 
       <div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
         <div className="fixed z-50 m-2 -mt-4">

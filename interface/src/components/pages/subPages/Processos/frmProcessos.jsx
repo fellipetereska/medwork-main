@@ -1,10 +1,10 @@
 //Importando Ferramentas
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
 
 
-function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
+function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm, processos }) {
 
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
@@ -24,6 +24,23 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
 
   }, [onEdit]);
 
+  const verifyProcessRegister = async (processo, ramo) => {
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+    getProcessos();
+
+    try {
+      const process = processos.filter((proc) => normalizeString(proc.nome_processo) === normalizeString(processo));
+      console.log(process)
+      const procRam = process.filter((ram) => normalizeString(ram.ramo_trabalho) === normalizeString(ramo));
+
+      if (procRam.length > 0) {
+        return procRam;
+      }
+    } catch (error) {
+      console.error(`Erro ao verificar registro do processo ${processo}!`, error)
+    }
+  }
+
   //Função para adicionar ou atualizar dados
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +54,13 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
       return toast.warn("Preencha Todos os Campos!")
     }
     try {
+
+      const resVerify = await verifyProcessRegister(user.nome_processo.value, user.ramo_trabalho.value);
+
+      if (resVerify) {
+        return toast.warn(`Já existem processos cadastrados com esse nome: ${user.nome_processo.value} nesse ramo: ${user.ramo_trabalho.value}`);
+      }
+
       const processoData = {
         nome_processo: user.nome_processo.value || null,
         ramo_trabalho: user.ramo_trabalho.value || null,
@@ -90,11 +114,9 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
 
   const handleSearchProcesso = (e) => {
     const term = e.target.value;
-
-    if(!term){
+    if (!term) {
       setSearchTerm('');
     }
-
     setSearchTerm(term)
   };
 
@@ -125,6 +147,7 @@ function CadastroProcesso({ onEdit, getProcessos, setOnEdit, setSearchTerm }) {
                 type="text"
                 name="ramo_trabalho"
                 placeholder="Ramo de Trabalho"
+                onChange={handleSearchProcesso}
               />
             </div>
           </div>

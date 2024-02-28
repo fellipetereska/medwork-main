@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { connect, supabase } from "../../../../services/api"; //Conexão com o banco
+import { connect } from "../../../../services/api"; //Conexão com o banco
+import useAuth from '../../../../hooks/useAuth'
 
 //Importando componentes
 import CadastroMedidas from "./frmMedidasProtecao";
@@ -11,32 +12,17 @@ import SearchInput from "../components/SearchInput";
 
 function MedidasProtecao() {
 
+  const {getMedidasAdm, medidasAdm} = useAuth(null);
+
   // Instanciando e Definindo como vazio
-  const [medidasProtecao, setMedidasProtecao] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filtered, setFiltered] = useState([]);
 
-  // Pegando os dados da tabela Empresa
-  const getMedidasProtecao = async () => {
-    try {
-      const response = await fetch(`${connect}/medidas_adm`);
-
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar medidas. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setMedidasProtecao(data)
-    } catch (error) {
-      console.log("Erro ao buscar Medidas: ", error);
-    }
-  };
-
   useEffect(() => {
-    getMedidasProtecao();
+    getMedidasAdm();
   }, []);
 
   const handleEdit = (selected) => {
@@ -45,9 +31,10 @@ function MedidasProtecao() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = medidasProtecao.filter((mp) => mp.descricao_medida_adm.toLowerCase().includes(searchTerm.toLowerCase()));
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase()
+    const filtered = medidasAdm.filter((mp) => normalizeString(mp.descricao_medida_adm).includes(normalizeString(searchTerm)));
     setFiltered(filtered);
-  }, [searchTerm, medidasProtecao]);
+  }, [searchTerm, medidasAdm]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -59,20 +46,21 @@ function MedidasProtecao() {
       <CadastroMedidas
         onEdit={onEdit}
         setOnEdit={setOnEdit}
-        get={getMedidasProtecao}
+        get={getMedidasAdm}
+        medidas={medidasAdm}
       />
 
       {/* Barra de pesquisa */}
       <div className="flex justify-center w-full">
         <div className="w-3/6">
-          <SearchInput onSearch={handleSearch} placeholder="Buscar Medidas de Proteção..." />
+          <SearchInput onSearch={handleSearch} placeholder="Buscar Medidas de Proteção Adminitrativas..." />
         </div>
       </div>
 
       {/* Tabela Empresa */}
       <GridMedidas
         children={filtered}
-        set={setMedidasProtecao}
+        set={getMedidasAdm}
         setOnEdit={handleEdit}
       />
     </div>

@@ -247,7 +247,6 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     }
   };
 
-
   // Função para formatar e atualizar o estado (UF)
   const handleUfChange = (e) => {
     const inputValue = e.target.value.trim().toUpperCase();

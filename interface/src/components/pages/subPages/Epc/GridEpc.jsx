@@ -32,7 +32,7 @@ function GridCadastroEpi({ children, setEpi, setOnEdit, find }) {
                 {item.descricao_medida}
               </td>
               <td className="flex justify-center px-5 py-4 gap-4">
-                <a className=" font-medium text-blue-400 hover:text-blue-800">
+                <a className=" font-medium text-blue-400 hover:text-blue-800 cursor-pointer">
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
               </td>

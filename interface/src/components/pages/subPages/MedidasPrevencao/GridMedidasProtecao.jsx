@@ -42,7 +42,7 @@ function GridCadastroEmpresa({ children, setOnEdit }) {
                 {item.descricao_medida_adm}
               </td>
               <td className="py-4 gap-4">
-                <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800">
+                <a className="flex justify-center font-medium text-blue-400 hover:text-blue-800 cursor-pointer">
                   <BsFillPencilFill onClick={handleEditClick(item)} />
                 </a>
               </td>

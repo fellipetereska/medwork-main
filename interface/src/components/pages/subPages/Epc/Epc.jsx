@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { connect } from "../../../../services/api"; //Conexão com o banco
+import { connect } from "../../../../services/api";
+import useAuth from '../../../../hooks/useAuth'
 
 import FrmEpc from './FrmEpc'
 import GridEpc from './GridEpc'
@@ -9,34 +10,17 @@ import SearchInput from '../components/SearchInput'
 
 function Epc() {
 
-  const [epc, setEpc] = useState([]);
+  const { getMedidasEpc, setMedidasEpc, medidasEpc } = useAuth();
+
   const [onEdit, setOnEdit] = useState(null);
 
   //Instanciando o Search
   const [searchTerm, setSearchTerm] = useState('');
   const [filtered, setFiltered] = useState([]);
 
-  const fetchEpc = async () => {
-    try {
-      const response = await fetch(`${connect}/medidas_epc`);
-
-      if(!response.ok) {
-        toast.error("Erro ao buscar EPC's");
-        throw new Error(`Erro ao buscar EPC's. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setEpc(data);
-    } catch (error) {
-      toast.warn("Erro ao buscar EPC's. Verificar Console!")
-      console.log("Erro ao buscar EPC's", error)
-    }
-  }
-
   useEffect(() => {
-    fetchEpc();
+    getMedidasEpc();
   }, [])
-
 
   const handleEdit = (item) => {
     setOnEdit(item);
@@ -44,9 +28,11 @@ function Epc() {
 
   //Função para Pesquisa
   useEffect(() => {
-    const filtered = epc.filter((emp) => emp.descricao_medida.toLowerCase().includes(searchTerm.toLowerCase()));
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+
+    const filtered = medidasEpc.filter((emp) => normalizeString(emp.descricao_medida).includes(normalizeString(searchTerm)));
     setFiltered(filtered);
-  }, [searchTerm, epc]);
+  }, [searchTerm, medidasEpc]);
 
 
   const handleSearch = (term) => {
@@ -60,7 +46,8 @@ function Epc() {
       <FrmEpc
         onEdit={onEdit}
         setOnEdit={setOnEdit}
-        get={fetchEpc}
+        get={getMedidasEpc}
+        medidas={medidasEpc}
       />
 
       <div className="flex justify-center w-full">
@@ -71,7 +58,7 @@ function Epc() {
 
       <GridEpc
         children={filtered}
-        setEpi={setEpc}
+        setEpi={setMedidasEpc}
         setOnEdit={handleEdit}
       />
     </>
