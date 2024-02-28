@@ -195,7 +195,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     try {
       const response = await fetch(`https://api-grau-de-risco.onrender.com/cnae/${cnae}`);
       const data = await response.json();
-  
+
       // Verifica se há um erro na resposta
       if (response.ok) {
         return data;
@@ -233,6 +233,38 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
       setGrauRisco(cnaeInfo.risco)
     }
   };
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = inputValue.replace(/\D/g, '');
+    const numberValue = parseInt(numericValue, 10);
+
+    if (isNaN(numberValue) || numberValue < 0) {
+      e.target.value = '';
+    } else {
+      e.target.value = numberValue;
+    }
+  };
+
+  const handleBlurEstadual = (e) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === '' || inputValue === 0) {
+      setCheckedEstadual(true);
+    } else {
+      setCheckedEstadual(false);
+    }
+  }
+
+  const handleBlurMunicipal = (e) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === '' || inputValue === 0) {
+      setCheckedMunicipal(true);
+    } else {
+      setCheckedMunicipal(false);
+    }
+  }
 
   return (
     <div className="flex justify-center mt-10">
@@ -288,11 +320,14 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               Inscrição Estadual:
             </label>
             <input
-              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedEstadual ? 'opacity-50' : 'bg-gray-100'}`}
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedEstadual ? 'opacity-25' : 'bg-gray-100'}`}
               type="number"
               name="inscricao_estadual_empresa"
               placeholder="Inscrição Estadual"
               disabled={checkedEstadual}
+              onChange={handleInputChange}
+              onInput={handleInputChange}
+              onBlur={handleBlurEstadual}
             />
             <div className="flex items-center gap-2 mt-1 px-1">
               <input
@@ -312,11 +347,14 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               Inscrição Municipal:
             </label>
             <input
-              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'opacity-50' : 'bg-gray-100'}`}
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'opacity-25' : 'bg-gray-100'}`}
               type="number"
               name="inscricao_municipal_empresa"
               placeholder="Inscrição Municipal"
               disabled={checkedMunicipal}
+              onChange={handleInputChange}
+              onInput={handleInputChange}
+              onBlur={handleBlurMunicipal}
             />
             <div className="flex items-center gap-2 mt-1 px-1">
               <input

@@ -24,6 +24,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
       user.email_contato.value = onEdit.email_contato;
       user.email_secundario_contato.value = onEdit.email_secundario_contato
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onEdit]);
 
   const handleSubmit = async (e) => {

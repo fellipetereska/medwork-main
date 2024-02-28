@@ -110,7 +110,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato, getEmpre
               <th className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {findContato(item.fk_contato_id)}
               </th>
-              <td className="">
+              <td className="px-4 py-4">
                 <div className='flex justify-center gap-2 items-center'>
                   <a className="font-medium text-blue-400 hover:text-blue-800 cursor-pointer">
                     <BsFillPencilFill onClick={handleEditClick(item)} />

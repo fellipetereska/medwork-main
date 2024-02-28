@@ -12,6 +12,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
   const ref = useRef(null);
   const [setorId, setSetorId] = useState(null);
   const [setorNome, setSetorNome] = useState(null);
+  const [funcMasc, setFuncMasc] = useState('');
+  const [funcFem, setFuncFem] = useState('');
+  const [funcMenor, setFuncMenor] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const [filteredSetores, setFilteredSetores] = useState([]);
@@ -29,9 +32,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
       //Passando o dado do input para a props
       user.nome_cargo.value = onEdit.nome_cargo || '';
       user.descricao.value = onEdit.descricao || '';
-      user.func_masc.value = onEdit.func_masc || 0;
-      user.func_fem.value = onEdit.func_fem || 0;
-      user.func_menor.value = onEdit.func_menor || 0;
+      setFuncMasc(onEdit.func_masc || 0);
+      setFuncFem(onEdit.func_fem || 0);
+      setFuncMenor(onEdit.func_menor || 0);
 
       if (set && onEdit.fk_setor_id) {
         setSetorId(onEdit.fk_setor_id);
@@ -58,9 +61,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
       const cargoData = {
         nome_cargo: user.nome_cargo.value || null,
         descricao: user.descricao.value || null,
-        func_masc: user.func_masc.value || 0,
-        func_fem: user.func_fem.value || 0,
-        func_menor: user.func_menor.value || 0,
+        func_masc: funcMasc || 0,
+        func_fem: funcFem || 0,
+        func_menor: funcMenor || 0,
         fk_setor_id: setorId || null,
         ativo: 1,
       }
@@ -90,16 +93,7 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
       console.log(error)
     }
 
-
-    user.nome_cargo.value = "";
-    user.descricao.value = "";
-    user.func_masc.value = "";
-    user.func_fem.value = "";
-    user.func_menor.value = "";
-    setOnEdit(null);
-    setSetorId(null);
-    setSetorNome(null);
-
+    handleClear();
     getCargo();
   }
 
@@ -108,9 +102,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
     const user = ref.current;
     user.nome_cargo.value = "";
     user.descricao.value = "";
-    user.func_masc.value = "";
-    user.func_fem.value = "";
-    user.func_menor.value = "";
+    setFuncMasc('');
+    setFuncFem('');
+    setFuncMenor('');
     setOnEdit(null);
     setSetorId(null);
     setSetorNome(null);
@@ -138,13 +132,43 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
     const inputValue = e.target.value;
     const numericValue = inputValue.replace(/\D/g, '');
     const numberValue = parseInt(numericValue, 10);
-  
+
     if (isNaN(numberValue) || numberValue < 0) {
       e.target.value = '';
     } else {
       e.target.value = numberValue;
     }
   };
+
+  const handleFocusInputFuncMasc = (e) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === 0 || inputValue === '') {
+      setFuncMasc(0);
+    } else {
+      setFuncMasc(funcMasc)
+    }
+  }
+
+  const handleFocusInputFuncFem = (e) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === 0 || inputValue === '') {
+      setFuncFem(0);
+    } else {
+      setFuncFem(funcFem)
+    }
+  }
+
+  const handleFocusInputFuncMenor = (e) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === 0 || inputValue === '') {
+      setFuncMenor(0);
+    } else {
+      setFuncMenor(funcMenor)
+    }
+  }
 
   return (
     <div className="flex justify-center mt-10">
@@ -171,6 +195,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
               name="func_masc"
               placeholder="Masculinos"
               onInput={handleInputChange}
+              value={funcMasc}
+              onFocus={handleFocusInputFuncMasc}
+              onChange={(e) => setFuncMasc(e.target.value)}
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
@@ -180,6 +207,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
               name="func_fem"
               placeholder="Femininos"
               onInput={handleInputChange}
+              value={funcFem}
+              onFocus={handleFocusInputFuncFem}
+              onChange={(e) => setFuncFem(e.target.value)}
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
@@ -189,6 +219,9 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
               name="func_menor"
               placeholder="Menores de Idade"
               onInput={handleInputChange}
+              value={funcMenor}
+              onFocus={handleFocusInputFuncMenor}
+              onChange={(e) => setFuncMenor(e.target.value)}
             />
           </div>
           <div className="w-full md:w-2/3 px-3">

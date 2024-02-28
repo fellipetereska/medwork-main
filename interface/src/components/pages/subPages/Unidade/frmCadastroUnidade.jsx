@@ -247,6 +247,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     }
   };
 
+
   // Função para formatar e atualizar o estado (UF)
   const handleUfChange = (e) => {
     const inputValue = e.target.value.trim().toUpperCase();
@@ -267,8 +268,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
     setNumero(numericValue)
   };
 
-  const handleOnChange =() => {
-
+  const handleOnChange = (e) => {
   }
 
   return (
@@ -319,6 +319,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
               onChange={handleCepChange}
               onPaste={handlePasteCep}
               maxLength={9}
+              onBlur={() => ref.current.numero_unidade.focus()}
               placeholder="00000-000"
             />
           </div>
@@ -365,7 +366,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
                 name="complemento"
                 placeholder="Complemento da Unidade"
                 value={complemento}
-                onChange={handleOnChange}
+                onChange={(e) => setComplemento(e.target.value)}
               />
             </div>
           </div>
