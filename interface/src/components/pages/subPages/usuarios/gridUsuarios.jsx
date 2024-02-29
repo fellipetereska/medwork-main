@@ -69,7 +69,7 @@ function GridUsuarios({ usuario, setOnEdit }) {
                 {filterTipo(item.tipo)}
               </td>
               <td className="py-4 flex justify-center">
-                <a className="font-medium text-blue-600 hover:text-blue-800">
+                <a className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
                   <BsFillPencilFill onClick={() => handleEdit(item)} />
                 </a>
               </td>

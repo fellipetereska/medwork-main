@@ -8,9 +8,11 @@ import ModalSearchSetor from "../components/Modal/ModalSearchSetor";
 import ModalSearchProcesso from '../components/Modal/ModalSearchProcesso';
 import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
 import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
+import ModalSearchAparelhos from '../components/Modal/ModalSearchAparelhos';
 
-import icon_sair from '../../../media/icon_sair.svg'
-import icon_lupa from '../../../media/icon_lupa.svg'
+import icon_sair from '../../../media/icon_sair.svg';
+import icon_lupa from '../../../media/icon_lupa.svg';
+import icon_warn from "../../../media/icon_warn.svg";
 
 function FrmInventario({
   unidades,
@@ -28,6 +30,8 @@ function FrmInventario({
   getGlobalSprm, setGlobalSprm, globalSprm,
   companyName,
   getInventario,
+  aparelhos,
+  inventario,
 }) {
 
   const user = useRef();
@@ -43,16 +47,21 @@ function FrmInventario({
   const [showModalProcesso, setShowModalProcesso] = useState(false);
   const [showModalRisco, setShowModalRisco] = useState(false);
   const [showModalMedidas, setShowModalMedidas] = useState(false);
+  const [showModalAparelhos, setShowModalAparelhos] = useState(false);
   const [isMedidasSet, setIsMedidasSet] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
+  const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
 
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
   const [processoId, setProcessoId] = useState('');
   const [riscoId, setRiscoId] = useState('');
+  const [aparelhoId, setAparelhoId] = useState('');
   const [nomeUnidade, setNomeUnidade] = useState('');
   const [setorNome, setSetorNome] = useState('');
   const [processoNome, setProcessoNome] = useState('');
   const [riscoNome, setRiscoNome] = useState('');
+  const [aparelhoNome, setAparelhoNome] = useState('');
 
   //Inputs Form
   const [consequencia, setConsequencia] = useState('');
@@ -68,6 +77,7 @@ function FrmInventario({
   const [metodologia, setMetodologia] = useState('');
   const [comentarios, setComentarios] = useState('');
   const [data, setData] = useState('');
+  const [frequencia, setFrequencia] = useState('');
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -76,11 +86,13 @@ function FrmInventario({
   const openModalProcesso = () => setShowModalProcesso(true);
   const openModalRisco = () => setShowModalRisco(true);
   const openModalMedidas = () => setShowModalMedidas(true);
+  const openModalAparelhos = () => setShowModalAparelhos(true);
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
   const closeModalProcesso = () => setShowModalProcesso(false);
   const closeModalRisco = () => setShowModalRisco(false);
+  const closeModalAparelhos = () => setShowModalAparelhos(false);
   const closeModalMedidas = () => {
     getGlobalSprm();
     setShowModalMedidas(false);
@@ -184,6 +196,38 @@ function FrmInventario({
     setFilteredRiscos([]);
   }
 
+  const verify = async (riscoId) => {
+    getInventario();
+    try {
+      const idsUnidades = inventario.map((i) => i.fk_unidade_id);
+      const idsSetores = inventario.map((i) => i.fk_setor_id);
+      const idsProcessos = inventario.map((i) => i.fk_processo_id);
+      const idsRiscos = inventario.map((i) => i.fk_risco_id);
+
+      const filterInventarioUnidade = inventario.filter((i) => i.fk_unidade_id === unidadeId);
+      const filterInventarioSetor = filterInventarioUnidade.filter((i) => i.fk_setor_id === setorId);
+      const filterInventarioProcesso = filterInventarioSetor.filter((i) => i.fk_processo_id === processoId);
+      const filterInventarioRisco = filterInventarioProcesso.find((i) => i.fk_risco_id === riscoId);
+      setFiltereinventarioRisco(filterInventarioRisco)
+
+
+      if (riscoId) {
+        const filterIdUnidade = idsUnidades.includes(unidadeId);
+        const filterIdsSetores = idsSetores.includes(setorId);
+        const filterIdsProcesso = idsProcessos.includes(processoId);
+        const filteridsRicos = idsRiscos.includes(riscoId);
+
+        if (filterIdUnidade === true && filterIdsSetores === true && filterIdsProcesso === true && filteridsRicos === true) {
+          setIsVerify(true);
+        } else {
+          setIsVerify(false);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao verificar cadastro duplicado!", error)
+    }
+  }
+
   // Função para atualizar o Risco
   const handleRiscoSelect = async (RiscoId, RiscoNome) => {
     closeModalRisco();
@@ -204,6 +248,7 @@ function FrmInventario({
     }));
 
     await handleRiscoEscolhido(RiscoId, medidasTipos);
+    await verify(RiscoId);
   };
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
@@ -293,6 +338,18 @@ function FrmInventario({
     setLoading(true);
   };
 
+  const handleAparelhoSelect = (aparelhoId, aparelhoNome) => {
+    closeModalAparelhos();
+    setAparelhoId(aparelhoId);
+    setAparelhoNome(aparelhoNome);
+  }
+
+  const handleClearAparelhos = () => {
+    closeModalAparelhos();
+    setAparelhoId('');
+    setAparelhoNome('');
+  }
+
   const handleProbabilidadeChange = (event) => {
     const selectedProbabilidade = parseInt(event.target.value, 10);
     const severidadeValue = parseInt(severidade, 10);
@@ -332,7 +389,7 @@ function FrmInventario({
       setProbabilidade(onEdit.probabilidade || '');
       setNivel(onEdit.nivel || '');
       setComentarios(onEdit.comentarios || '');
-
+      setAparelhoId(onEdit.fk_aparelho_id || '')
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [onEdit]);
@@ -364,7 +421,9 @@ function FrmInventario({
         probabilidade: probabilidade || '',
         nivel: probabilidade * severidade || '',
         comentarios: comentarios || '',
-        data_inventario: data || ''
+        data_inventario: data || '',
+        frequencia: frequencia || '',
+        fk_aparelho_id: aparelhoId || '',
       };
 
       const url = onEdit
@@ -399,6 +458,7 @@ function FrmInventario({
 
   const handleClear = () => {
     handleClearRisco();
+    handleClearAparelhos();
     setConsequencia('');
     setComentarios('');
     setMedicao('');
@@ -475,12 +535,36 @@ function FrmInventario({
     setSeveridade(e.target.value);
   }
 
+  const handleChangeFrequencia = (e) => {
+    setFrequencia(e.target.value);
+  }
+
   const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
 
   return (
     <>
+      {isVerify && (
+        <>
+          <div className="block m-2 cursor-pointer" onClick={() => setIsVerify(false)}>
+            <div className={`bg-orange-100 text-yellow-400 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'} text-white`}>
+              <div className="flex items-center gap-6">
+                <div className="">
+                  <img src={icon_warn} alt="" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-xl mb-2 mt-2">Risco já Cadastrado - ID: {filteredInventarioRisco.id_inventario} </h2>
+                  <div>
+                    <p>O Risco: <span className="font-bold text-yellow-400">{riscoNome}</span> do Porcesso: <span className="font-bold text-yellow-400">{processoNome}</span> do Setor: <span className="font-bold text-yellow-400">{setorNome}</span> da Unidade: <span className="font-bold text-yellow-400">{nomeUnidade} já está cadastrado na tabela</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )
+      }
       {loading && <LoadingScreen />}
-      <div className="flex justify-center mt-10">
+      <div className={`flex justify-center ${isVerify ? '' : 'mt-10'}`}>
         <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
 
@@ -871,6 +955,76 @@ function FrmInventario({
                   placeholder="Comentários..."
                   value={comentarios}
                   onChange={handleComentariosChange}
+                />
+              </div>
+            </div>
+
+            <div className="w-full">
+              {/* Frequencia */}
+              <div className="w-full md:w-3/12 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Frequência:
+                </label>
+                <select
+                  className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100`}
+                  type="text"
+                  name="frequencia"
+                  value={frequencia}
+                  onChange={handleChangeFrequencia}
+                >
+                  <option value="0"> Selecione uma Frequência</option>
+                  <option value="Diaria">Diária</option>
+                  <option value="Semanal">Semanal</option>
+                  <option value="Quinzenal">Quinzenal</option>
+                  <option value="Mensal">Mensal</option>
+                  <option value="Semestral">Semestral</option>
+                  <option value="Anual">Anual</option>
+                </select>
+              </div>
+              {/* Aparelho */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                  Aparelho:
+                </label>
+                <div className="flex items-center w-full">
+                  {aparelhoNome ? (
+                    <>
+                      <button
+                        className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                        onClick={openModalAparelhos}
+                      >
+                        <p className="font-bold">
+                          {aparelhoNome}
+                        </p>
+                      </button>
+                      <button className="ml-4" onClick={handleClearAparelhos}>
+                        <img src={icon_sair} alt="" className="h-9" />
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      onClick={openModalAparelhos}
+                    >
+                      <p className="px-2 text-sm font-medium">
+                        Nenhum Aparelho Selecionado
+                      </p>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={openModalAparelhos}
+                    className={`flex cursor-pointer ml-4`}
+                  >
+                    <img src={icon_lupa} className="h-9" alt="Icone adicionar Aparelho"></img>
+                  </button>
+                </div>
+                <ModalSearchAparelhos
+                  isOpen={showModalAparelhos}
+                  onCancel={closeModalAparelhos}
+                  children={aparelhos}
+                  onSelect={handleAparelhoSelect}
                 />
               </div>
             </div>

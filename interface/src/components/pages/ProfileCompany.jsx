@@ -22,7 +22,6 @@ function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocia
 
   const [showSetores, setShowSetores] = useState(false);
   const [showSetorData, setShowSetorData] = useState({});
-  const [unidadesData, setUnidadesData] = useState([]);
   const [setoresData, setSetoresData] = useState([]);
   const [cargosData, setCargosData] = useState([]);
   const [processosData, setProcessosData] = useState([]);
@@ -111,8 +110,6 @@ function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocia
           const medidasFiltradas = await handleSetMedida(medData);
 
           setMedidasData(medidasFiltradas)
-
-
         } else {
           console.error("Nenhum risco encontrado para o processo: ", filteredProcesso);
         }
@@ -241,7 +238,7 @@ function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocia
                                       <p>Cargos</p>
                                       <ul className='space-y-2'>
                                         {cargosData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                          <li key={item.id_cargo} className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
                                             {item.nome_cargo}
                                           </li>
                                         ))}
@@ -251,7 +248,7 @@ function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocia
                                       <p>Processos</p>
                                       <ul className='space-y-2'>
                                         {processosData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                          <li key={item.id_processo} className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
                                             {item.nome_processo}
                                           </li>
                                         ))}
@@ -261,7 +258,7 @@ function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocia
                                       <p>Riscos</p>
                                       <ul className='space-y-2'>
                                         {riscosData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                          <li key={item.id_risco} className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
                                             {item.nome_risco}
                                           </li>
                                         ))}
@@ -270,11 +267,17 @@ function ProfileCompany({ isOpen, onCancel, companyName, companyCnpj, razaoSocia
                                     <div className='col-span-1'>
                                       <p>Medidas</p>
                                       <ul className='space-y-2'>
-                                        {medidasData.map((item) => (
-                                          <li className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
-                                            {item.descricao_medida_adm || item.nome_medida || item.descricao_medida}
-                                          </li>
-                                        ))}
+                                        {medidasData.map((item, index) => {
+                                          const key = item.id_medida_adm !== undefined
+                                            ? `${item.id_medida_adm}_${index}`
+                                            : `${item.id_medida}_${index}`;
+
+                                          return (
+                                            <li key={key} className='bg-gray-50 px-4 py-2 font-bold text-sky-600 rounded-sm truncate hover:whitespace-normal'>
+                                              {item.descricao_medida_adm || item.nome_medida || item.descricao_medida}
+                                            </li>
+                                          );
+                                        })}
                                       </ul>
                                     </div>
                                   </div>

@@ -9,7 +9,8 @@ function GridInventario({
   setor,
   processo,
   risco,
-  companyId
+  companyId,
+  aparelhos,
 }) {
 
   const find = (item, tipo) => {
@@ -27,9 +28,13 @@ function GridInventario({
           const setorEncontrado = setor.find((c) => c.id_setor === item);
           return setorEncontrado ? setorEncontrado.nome_setor : 'N/A';
 
-        case 'descricao_processo':
+        case 'nome_processo':
           const processoEncontrado = processo.find((c) => c.id_processo === item);
-          return processoEncontrado ? processoEncontrado.descricao : 'N/A';
+          return processoEncontrado ? processoEncontrado.nome_processo : 'N/A';
+
+        case 'aparelho':
+          const aparelhoEncontrado = aparelhos.find((c) => c.id_aparelho === item);
+          return aparelhoEncontrado ? aparelhoEncontrado.nome_aparelho : 'N/A';
 
         case 'nome_risco':
         case 'grupo_risco':
@@ -93,7 +98,7 @@ function GridInventario({
           {/* <p>Index - Tipo: Medida</p> */}
           <ul>
             {medidasArray.map(({ nome, tipo }, index) => (
-              <li key={index}><span className="font-semibold">{index}</span>{`- ${tipo}: ${nome}.`}</li>
+              <li key={index}><span className="font-semibold">{index}</span><span className="font-semibold">{`- ${tipo}: `} </span>{`${nome}.`}</li>
             ))}
           </ul>
         </>
@@ -103,6 +108,45 @@ function GridInventario({
       return 'N/A';
     }
   };
+
+  const filterProbSev = (item) => {
+    try {
+      switch (item) {
+        case 1:
+          return "Muito Baixa"
+        case 2:
+          return "Baixa"
+        case 3:
+          return "Média"
+        case 4:
+          return "Alta"
+        case 5:
+          return "Muito Alta"
+        default:
+          return "N/A";
+      }
+    } catch (error) {
+      console.log("Erro ao filtrar probablidade", error)
+    }
+  }
+
+  const filterNivel = (item) => {
+    try {
+      if (item >= 1 || item <= 6) {
+        return "Baixo"
+      } else if (item >= 7 || item <= 12) {
+        return "Moderado"
+      } else if (item >= 13 || item <= 16) {
+        return "Alto"
+      } else if (item >= 20 || item <= 25) {
+        return "Crítico"
+      } else {
+        return "N/A"
+      }
+    } catch (error) {
+      console.log("Erro ao filtrar Nivel", error)
+    }
+  }
 
   const filteredInventario = inventario.filter((i) => i.fk_empresa_id === companyId)
 
@@ -131,6 +175,9 @@ function GridInventario({
                 <th scope="col" className="px-4 py-2">
                   Risco
                 </th>
+                <th scope="col" className="px-4 py-2">
+                  Frequencia
+                </th>
                 <th scope="col" className="px-4 py-2 text-center">
                   Tipo
                 </th>
@@ -148,6 +195,9 @@ function GridInventario({
                 </th>
                 <th scope="col" className="px-4 py-2 text-center">
                   Medição
+                </th>
+                <th scope="col" className="px-4 py-2 text-center">
+                  Aparelho
                 </th>
                 <th scope="col" className="px-4 py-2 text-center">
                   Limite de Tolerância
@@ -187,17 +237,20 @@ function GridInventario({
                   <th className="px-4 py-2 text-gray-800 text-center">
                     {formatData(item.data_inventario)}
                   </th>
-                  <th className="px-4 py-2 text-gray-800">
+                  <th className="px-4 py-2 text-gray-800 truncate">
                     {find(item.fk_unidade_id, 'nome_unidade')}
                   </th>
                   <td className="px-4 py-2 text-gray-800">
                     {find(item.fk_setor_id, 'nome_setor')}
                   </td>
                   <td className="px-4 py-2 text-gray-800">
-                    {find(item.fk_processo_id, 'descricao_processo')}
+                    {find(item.fk_processo_id, 'nome_processo')}
                   </td>
                   <td className="px-4 py-2 text-gray-800">
                     {find(item.fk_risco_id, 'nome_risco')}
+                  </td>
+                  <td className="px-4 py-2 text-gray-800">
+                    {item.frequencia || "N/A"}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
                     {find(item.fk_risco_id, 'grupo_risco')}
@@ -206,7 +259,7 @@ function GridInventario({
                     {find(item.fk_risco_id, 'consequencia')}
                   </td>
                   <td className="px-4 py-2 text-gray-800">
-                    {item.fontes}
+                    {item.fontes || "N/A"}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
                     {item.pessoas_expostas}
@@ -218,6 +271,9 @@ function GridInventario({
                     {item.medicao} {find(item.fk_risco_id, 'unidade_medida')}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
+                    {find(item.fk_aparelho_id, 'aparelho')}
+                  </td>
+                  <td className="px-4 py-2 text-gray-800 text-center">
                     {find(item.fk_risco_id, 'limite_tolerancia')} {find(item.fk_risco_id, 'unidade_medida')}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
@@ -227,13 +283,13 @@ function GridInventario({
                     {convertMedidas(item.medidas)}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
-                    {item.probabilidade}
+                    {filterProbSev(item.probabilidade)}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
-                    {find(item.fk_risco_id, 'severidade')}
+                    {filterProbSev(find(item.fk_risco_id, 'severidade'))}
                   </td>
                   <td className="px-4 py-2 text-gray-800 text-center">
-                    {item.nivel}
+                    {filterNivel(item.nivel)}
                   </td>
                   <td className="px-4 py-2 text-gray-800">
                     {item.comentarios}

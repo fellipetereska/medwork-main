@@ -17,7 +17,7 @@ function Navbar() {
     handleClearLocalStorageCompany,
     checkSignIn,
     clearUser,
-    getUsuarios,
+    getUsuarios, usuarios,
     getEmpresas, empresas,
     getContatos, contatos,
     getUnidades, unidades,
@@ -66,18 +66,19 @@ function Navbar() {
   useEffect(() => {
     loadSelectedCompanyFromLocalStorage();
     checkSignIn();
-  }, []);
-
-  useEffect(() => {
-    getEmpresas();
-    getUsuarios();
-    getContatos();
-    getUnidades();
   }, [companyId]);
 
   const handleSetProfile = () => {
+    if (companyId) {
+      getEmpresas();
+      getUnidades();
+      getUsuarios();
+      getContatos();
+    }
+
     try {
       const companyInfo = empresas.find((i) => i.id_empresa === companyId);
+
       if (companyInfo) {
         setCompanyName(companyInfo.nome_empresa);
         setRazaoSocial(companyInfo.razao_social);

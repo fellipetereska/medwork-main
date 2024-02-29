@@ -45,9 +45,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       // setPgr(onEdit.pgr_risco || false)
       // setLtcat(onEdit.ltcat_risco || false)
       // setLip(onEdit.lip_risco || false)
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onEdit]);
 
   const handleSubmit = async (e) => {
@@ -134,6 +133,8 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
     user.codigo_esocial_risco.value = "";
     user.meio_propagacao_risco.value = "";
     user.unidade_medida_risco.value = "";
+    user.classificacao_risco.value = '0';
+    setClassificacao(false);
     user.nivel_acao_risco.value = "";
     user.limite_tolerancia_risco.value = "";
     user.danos_saude_risco.value = "";
@@ -160,9 +161,15 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
   // }
 
   const setClassificacaoChange = (event) => {
+    const user = ref.current;
     const data = event.target.value;
 
     if (data !== "Quantitativo") {
+      user.meio_propagacao_risco.value = "Risco Qualitativo";
+      user.unidade_medida_risco.value = 'Risco Qualitativo';
+      user.nivel_acao_risco.value = '0';
+      user.limite_tolerancia_risco.value = '0';
+      user.metodologia_risco.value = 'Risco Qualitativo';
       setClassificacao(true);
     } else {
       setClassificacao(false);
@@ -170,8 +177,9 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
   }
 
   const handleFormatCodigo = () => {
-
+    // Codgio E-social
   }
+
 
   return (
     <div className="flex justify-center mt-10">
@@ -225,6 +233,39 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               placeholder="Código E-social"
               onChange={handleFormatCodigo}
             />
+          </div>
+
+          {/* Danos a Saúde */}
+          <div className={`w-full md:w-1/3 px-3`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
+              Danos a Saúde:
+            </label>
+            <input
+              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+              type="text"
+              name="danos_saude_risco"
+              placeholder="Danos a Saúde"
+            />
+          </div>
+
+          {/* Severidade */}
+          <div className={`w-full md:w-1/3 px-3`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
+              Severidade
+            </label>
+            <select
+              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              type="text"
+              name="severidade_risco"
+              placeholder="Metodologia"
+            >
+              <option value="0">Selecione uma Severidade</option>
+              <option value="1">Muito Baixa</option>
+              <option value="2">Baixa</option>
+              <option value="3">Média</option>
+              <option value="4">Alta</option>
+              <option value="5">Muito Alta</option>
+            </select>
           </div>
 
           {/* Classificação */}
@@ -302,19 +343,6 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
             />
           </div>
 
-          {/* Danos a Saúde */}
-          <div className={`w-full md:w-1/3 px-3`}>
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
-              Danos a Saúde:
-            </label>
-            <input
-              className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-              type="text"
-              name="danos_saude_risco"
-              placeholder="Danos a Saúde"
-            />
-          </div>
-
           {/* Metodologia */}
           <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
@@ -327,26 +355,6 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               placeholder="Metodologia"
               disabled={classificacao}
             />
-          </div>
-
-          {/* Severidade */}
-          <div className={`w-full md:w-1/3 px-3`}>
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-risco">
-              Severidade
-            </label>
-            <select
-              className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              type="text"
-              name="severidade_risco"
-              placeholder="Metodologia"
-            >
-              <option value="0">Selecione uma Severidade</option>
-              <option value="1">Muito Baixa</option>
-              <option value="2">Baixa</option>
-              <option value="3">Média</option>
-              <option value="4">Alta</option>
-              <option value="5">Muito Alta</option>
-            </select>
           </div>
         </div>
 

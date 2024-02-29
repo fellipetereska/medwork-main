@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { connect } from '../../../../../services/api';
 
 const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidasAdm, medidasEpi, medidasEpc, medidasDefine }) => {
 
-  // console.log(globalSprm);
+  const [selectedStatus, setSelectedStatus] = useState({});
+
+  useEffect(() => {
+    if (globalSprm) {
+      const initialStatus = {};
+      globalSprm.forEach(item => {
+        initialStatus[item.id_global_sprm] = item.status || "0";
+      });
+      setSelectedStatus(initialStatus);
+    }
+  }, [isOpen, globalSprm]);
 
   const find = (item, tipo) => {
     try {
@@ -34,6 +44,12 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
 
   const handleAplicationChange = async (event, itemId) => {
     const selectedApply = event.target.value;
+    let status = "";
+
+    if (selectedApply === "Aplica" || selectedApply === "Não Aplica" || selectedApply === "Não Aplicavel") {
+      status = selectedApply;
+    }
+
     try {
       const response = await fetch(`${connect}/global_sprm/${itemId}`, {
         method: 'PUT',
@@ -41,7 +57,7 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          status: selectedApply === "Aplica" ? "Aplica" : "Não Aplica",
+          status: status,
         }),
       });
 
@@ -52,9 +68,15 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
       const data = await response.json();
       toast.success(`Status atualizado para ${selectedApply} com sucesso`);
     } catch (error) {
-      console.log("Erro ao mudar status da medida!", error)
+      console.error("Erro ao mudar status da medida!", error);
     }
+
+    setSelectedStatus(prevState => ({
+      ...prevState,
+      [itemId]: status,
+    }));
   }
+
 
   if (!isOpen || !globalSprm) {
     return null;
@@ -122,11 +144,12 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
                       name="aplicacao_medida"
                       id="aplicacao_medida"
                       onChange={(event) => handleAplicationChange(event, item.id_global_sprm)}
-                      value={item.status}
+                      value={selectedStatus[item.id_global_sprm] || "0"}
                     >
                       <option value="0">Selecione uma aplicação</option>
                       <option value="Aplica">Aplica</option>
                       <option value="Não Aplica">Não Aplica</option>
+                      <option value="Não Aplica">Não Aplicavel</option>
                     </select>
                   </td>
                 </tr>
@@ -136,7 +159,7 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
         </div>
         <div className='flex justify-end items-center'>
           <button
-          onClick={medidasDefine}
+            onClick={medidasDefine}
             className="shadow mt-4 bg-green-500 hover:bg-green-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit"
           >
             Aplicar

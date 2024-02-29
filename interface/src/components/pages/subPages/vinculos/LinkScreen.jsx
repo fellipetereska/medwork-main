@@ -1,29 +1,10 @@
-import React, { useEffect, useState } from "react";
-import icon_setor from '../../../media/icon_setor.svg'
-import icon_medidas from '../../../media/icon_medidas.svg'
-import icon_riscos from '../../../media/icon_riscos.svg'
-import icon_processos from '../../../media/icon_processos.svg'
-import { toast } from "react-toastify";
-
-import useAuth from '../../../../hooks/useAuth'
-import { IoClose } from "react-icons/io5";
+import React from "react";
 
 import SetoresProcessos from "./setoresProcessos/SetoresProcessos";
 import ProcessosRiscos from './processosRiscos/ProcessosRiscos'
 import RiscosMedidas from "./riscosMedidas/RiscsoMedidas";
 
 function LinkScreen({ selected, setNavValue }) {
-
-  const {getUnidades, getSetores, getRiscos, getMedidasAdm, getMedidasEpi, getMedidasEpc} = useAuth(null);
-
-  useEffect(() => {
-    getUnidades();
-    getSetores();
-    getRiscos();
-    getMedidasAdm();
-    getMedidasEpi();
-    getMedidasEpc();
-  }, [])
 
   const renderContent = () => {
     switch (selected) {

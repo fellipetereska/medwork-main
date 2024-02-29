@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import Back from '../../../layout/Back'
-import useAuth from '../../../../hooks/useAuth'
 import LinkScreen from "./LinkScreen";
 import NavLinked from "../../../layout/NavLinked";
 

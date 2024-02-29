@@ -87,7 +87,7 @@ const ModalSearchSetor = ({ onCancel, isOpen, children, onContactSelect }) => {
                     </p>
                   </div>
                   <div className=''>
-                    <p className='text-xs text-gray-500 truncate'>Unidades:</p>
+                    <p className='text-xs text-gray-500 truncate'>Unidade:</p>
                     <p className='text-base font-bold text-gray-700'>
                       {findUnidade(item.fk_unidade_id)}
                     </p>

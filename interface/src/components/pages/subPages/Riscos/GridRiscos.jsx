@@ -89,20 +89,22 @@ function GridRiscos({ riscos, setOnEdit }) {
                 <td className="px-4 py-4 text-center">
                   {item.severidade_risco}
                 </td>
-                <td className="py-4 gap-4 flex justify-center items-center px-2">
-                  <a className="font-medium text-blue-400 hover:text-blue-800">
-                    <BsFillPencilFill onClick={() => handleEditClick(item)} />
-                  </a>
-                  <a className={`cursor-pointer text-yellow-500 text-lg`} onClick={() => handleSetModal(item)}>
-                    <FiLink />
-                  </a>
+                <td className="py-4 px-2">
+                  <div className="gap-4 flex justify-center items-center">
+                    <a className="font-medium text-blue-400 hover:text-blue-800 cursor-pointer">
+                      <BsFillPencilFill onClick={() => handleEditClick(item)} />
+                    </a>
+                    <a className={`cursor-pointer text-yellow-500 text-lg`} onClick={() => handleSetModal(item)}>
+                      <FiLink />
+                    </a>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <ModalRiscoMedidas 
+      <ModalRiscoMedidas
         onCancel={closeModal}
         isOpen={showModal}
         childId={riscoId}

@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
   const [plano, setPlano] = useState([]);
   const [globalSprm, setGlobalSprm] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [aparelhos, setAparelhos] = useState([]);
   const [companyId, setCompanyId] = useState('');
   const [user, setUser] = useState([]);
 
@@ -389,6 +390,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getAparelhos = async () => {
+    try {
+      const response = await fetch(`${connect}/aparelhos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar Aparelhos. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => a.nome_aparelho.localeCompare(b.nome_aparelho));
+      setAparelhos(data)
+    } catch (error) {
+      console.log(`Erro ao buscar Aparelhos. ${error}`);
+    }
+  };
+
   const loadSelectedCompanyFromLocalStorage = () => {
     try {
       const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -516,6 +533,9 @@ export const AuthProvider = ({ children }) => {
         usuarios,
         user,
         setUser,
+        getAparelhos,
+        setAparelhos,
+        aparelhos,
         handleSignInUser,
         checkSignIn,
         clearUser,

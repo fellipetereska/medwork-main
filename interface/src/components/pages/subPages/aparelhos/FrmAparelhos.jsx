@@ -18,68 +18,16 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
       nome_aparelho.value = onEdit.nome_aparelho || "";
       marca_aparelho.value = onEdit.marca_aparelho || "";
       modelo_aparelho.value = onEdit.modelo_aparelho || "";
-      data_calibracao_aparelho.value = onEdit.data_calibracao_aparelho || "";
+      try {
+        data_calibracao_aparelho.value = onEdit.data_calibracao_aparelho
+          ? new Date(onEdit.data_calibracao_aparelho).toISOString().split('T')[0]
+          : "";
+      } catch (error) {
+        console.log("Erro ao formatar data para input.", error)
+      }
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onEdit]);
-
-
-
-  //Função para adicionar ou atualizar dados
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const user = ref.current;
-
-  //   //Verificandose todos os campos foram preenchidos
-  //   if (
-  //     !user.nome_aparelho.value) {
-  //     return toast.warn("Preencha Todos os Campos!")
-  //   }
-  //   try {
-  //     const aparelhoData = {
-  //       nome_aparelho: user.nome_aparelho.value || null,
-  //       marca_aparelho: user.marca_aparelho.value || null,
-  //       modelo_aparelho: user.modelo_aparelho.value || null,
-  //       data_calibracao_aparelho: user.data_calibracao_aparelho.value || null,
-  //     };
-
-  //     if (onEdit) {
-  //       //Caso já tiver o cadastro ele vai colocar as opções para editar
-  //       await supabase
-  //         .from("aparelhos")
-  //         .upsert([
-  //           {
-  //             id_aparelho: onEdit.id_aparelho,
-  //             ...aparelhoData,
-  //           },
-  //         ]);
-  //       toast.success(`Aparelho: ${onEdit.nome_aparelho} atualizado com sucesso`)
-  //     } else {
-  //       //Caso contrario é uma inserção
-  //       const { error } = await supabase
-  //         .from("aparelhos").upsert([aparelhoData]);
-
-  //       if (error) {
-  //         toast.error("Erro ao inserir aparelho, verifique o console!");
-  //         console.log("Erro ao inserir aparelho! Erro: ", error)
-  //         throw error;
-  //       }
-
-  //       toast.success("Aparelho inserido com sucesso!")
-  //     }
-  //   } catch (error) {
-  //     console.log("Erro ao cadastrar ou editar aparelho: ", error);
-  //   }
-
-  //   //Limpa os campos e reseta o estaodo de edição
-  //   user.nome_aparelho.value = "";
-  //   user.marca_aparelho.value = "";
-  //   user.modelo_aparelho.value = "";
-  //   user.data_calibracao_aparelho.value = "";
-
-  //   //Atualiza os dados
-  //   get();
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,7 +35,8 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
     const user = ref.current;
 
     // Verificando se todos os campos foram preenchidos
-    if (!user.nome_aparelho.value) {
+    if (!user.nome_aparelho.value ||
+      !user.data_calibracao_aparelho.value) {
       return toast.warn("Preencha Todos os Campos!");
     }
 
@@ -119,19 +68,14 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
 
       const responseData = await response.json();
 
-      toast.success(responseData); // Assumindo que sua API retorna uma mensagem de sucesso
+      toast.success(responseData);
     } catch (error) {
       console.log("Erro ao cadastrar ou editar aparelho: ", error);
       toast.error("Erro ao cadastrar ou editar aparelho. Verifique o console!");
     }
 
-    // Limpa os campos e reseta o estado de edição
-    user.nome_aparelho.value = "";
-    user.marca_aparelho.value = "";
-    user.modelo_aparelho.value = "";
-    user.data_calibracao_aparelho.value = "";
+    handleClear();
 
-    // Atualiza os dados
     get();
   };
 
@@ -143,6 +87,7 @@ function CadastroMedidas({ onEdit, setOnEdit, get }) {
     user.marca_aparelho.value = "";
     user.modelo_aparelho.value = "";
     user.data_calibracao_aparelho.value = "";
+    setOnEdit(null);
   };
 
 

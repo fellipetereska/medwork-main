@@ -20,7 +20,9 @@ function Inventario() {
     getRiscosMedidas, setRiscosMedidas, riscosMedidas,
     getInventario, inventario,
     getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId,
+    getAparelhos, aparelhos,
   } = useAuth(null);
+
   const [onEdit, setOnEdit] = useState(null);
   const [nameCompany, setNameCompany] = useState(null);
 
@@ -42,6 +44,7 @@ function Inventario() {
     getMedidasAdm();
     getMedidasEpi();
     getMedidasEpc();
+    getAparelhos();
   }, [companyId]);
 
   const handleEdit = (selectedInventario) => {
@@ -73,6 +76,8 @@ function Inventario() {
         globalSprm={globalSprm}
         getGlobalSprmByRiscoId={getGlobalSprmByRiscoId}
         getInventario={getInventario}
+        aparelhos={aparelhos}
+        inventario={inventario}
       />
 
       <GridInventario
@@ -84,6 +89,7 @@ function Inventario() {
         risco={riscos}
         companyId={companyId}
         companyName={nameCompany}
+        aparelhos={aparelhos}
       />
     </>
   )

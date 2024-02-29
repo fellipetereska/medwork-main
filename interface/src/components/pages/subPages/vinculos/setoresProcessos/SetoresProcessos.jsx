@@ -10,7 +10,7 @@ import GridModalSetorProcessos from '../../components/gridsModal/GridModalSetorP
 
 function SetoresProcessos() {
 
-  const { setores, unidades } = useAuth(null);
+  const { getSetores, setores, getUnidades, unidades, companyId, loadSelectedCompanyFromLocalStorage } = useAuth(null);
 
   const [showModalSetor, setShowModalSetor] = useState(false);
   const [showModalProcessos, setShowModalProcessos] = useState(false);
@@ -20,10 +20,24 @@ function SetoresProcessos() {
   const [filteredSetores, setFilteredSetores] = useState([]);
 
   useEffect(() => {
-    const filterunidades = unidades.map((i) => i.id_unidade);
-    const filtersetor = setores.filter((i) => filterunidades.includes(i.fk_unidade_id));
-    setFilteredSetores(filtersetor);
-  }, [unidades, setores]);
+    loadSelectedCompanyFromLocalStorage();
+  }, [])
+
+  useEffect(() => {
+    getUnidades();
+  }, [companyId])
+
+  useEffect(() => {
+    getSetores();
+    
+    if (setores) {
+      const unidadesMap = unidades.map((i) => i.id_unidade);
+      const filtersetor = setores.filter((i) => unidadesMap.includes(i.fk_unidade_id));
+      setFilteredSetores(filtersetor);
+    } else {
+      console.error("Erro ao filtrar Setores");
+    }
+  }, [unidades]);
 
   const openModalSetor = () => setShowModalSetor(true);
   const closeModalSetor = () => setShowModalSetor(false);

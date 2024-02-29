@@ -34,6 +34,8 @@ function Cadastros() {
 
   return (
     <>
+
+      {/* Popover */}
       <div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
         <div className="flex justify-end w-11/12">
           <div onMouseEnter={() => setVisible(true)}>
@@ -45,7 +47,7 @@ function Cadastros() {
             <h2 className="font-bold text-xl mb-2 text-gray-100 mt-2">Página de Cadastros</h2>
             <div>
               <p className="mb-2 text-justify font-light text-gray-300 flex">
-                A tela de cadastro do nosso sistema segue a mesma abordagem intuitiva e eficiente, proporcionando uma experiência direta aos usuários. Ao acessar essa funcionalidade, os usuários encontrarão duas linhas distintas de botões, cada um representando uma categoria específica.
+                A tela de cadastro do nosso sistema segue a mesma abordagem intuitiva e eficiente, proporcionando uma experiência direta aos usuários. Ao acessar essa funcionalidade, os usuários encontrarão duas linhas distintas de botões, cada um representando uma categoria específica. Caso o usuário não tenha selecionado nenhuma empresa, alguns botões ficam insdisponivel.
               </p>
               <p className="mb-2 text-justify font-light text-gray-300 flex">
                 Na primeira linha, destacamos botões grandes e visualmente atraentes para os cadastros relacionados a contatos, empresas, unidades, setores e cargos. Cada botão é adornado por um ícone representativo, tornando a identificação rápida e fácil. Essa abordagem simplificada permite que os usuários acessem de maneira direta as funcionalidades desejadas sem a necessidade de preenchimento de formulários.
@@ -61,6 +63,7 @@ function Cadastros() {
         </div>
       </div>
 
+      {/* Botões Relacionados a Empresa*/}
       <div className="mt-16 px-12 mb-12">
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
           <figure className="flex flex-col justify-center">
@@ -93,7 +96,11 @@ function Cadastros() {
             </>
           ) : null}
         </div>
+
+        {/* Divider */}
         <div className="border-b border-gray-200 mt-8 mb-8"></div>
+
+        {/* Botões Realcionados aos Processos */}
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_processo">
