@@ -466,7 +466,9 @@ function FrmInventario({
     setNivel('');
     setDescricao('');
     setOnEdit(null);
-    setCheckMedicao(false)
+    setCheckMedicao(false);
+    setIsMedidasSet(false);
+    setFrequencia('');
   }
 
   const handleDescricaoFontesChange = (event) => {
@@ -545,6 +547,7 @@ function FrmInventario({
     <>
       {isVerify && (
         <>
+          {/* PopOver */}
           <div className="block m-2 cursor-pointer" onClick={() => setIsVerify(false)}>
             <div className={`bg-orange-100 text-yellow-400 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'} text-white`}>
               <div className="flex items-center gap-6">
@@ -561,8 +564,9 @@ function FrmInventario({
             </div>
           </div>
         </>
-      )
-      }
+      )}
+
+      {/* Formulário */}
       {loading && <LoadingScreen />}
       <div className={`flex justify-center ${isVerify ? '' : 'mt-10'}`}>
         <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
@@ -811,8 +815,6 @@ function FrmInventario({
               />
             </div>
 
-
-
             {/* Limite de Tolerância */}
             <div className="w-full md:w-3/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -959,7 +961,7 @@ function FrmInventario({
               </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full flex">
               {/* Frequencia */}
               <div className="w-full md:w-3/12 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -1029,6 +1031,45 @@ function FrmInventario({
               </div>
             </div>
 
+            {/* Card */}
+            {riscoId ? (
+              <>
+                <div className="w-full px-3">
+                  <div className="bg-gray-100 rounded">
+                    <div className="grid grid-cols-2 px-4 py-2 text-lg font-bold text-sky-700">
+                      <div>
+                        <div className="flex justify-center">
+                          <p>{nomeUnidade}</p>
+                        </div>
+                        <div className="flex justify-center">
+                          <p>{processoNome}</p>
+                        </div>
+                      </div>
+                      <div> 
+                        <div className="flex justify-center">
+                          <p>{setorNome}</p>
+                        </div>
+                        <div className="flex justify-center">
+                          <p>{riscoNome}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-4 py-2">
+                      <div>
+                        <p>{pessoasExpostas}</p>
+                        <p>{avaliacao}</p>
+                      </div>
+                      <div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              null
+            )}
+
 
             {/* Medidas */}
             <div className="border-b border-gray-200 w-full mt-5"></div>
@@ -1097,7 +1138,7 @@ function FrmInventario({
                 </button>
               </div>
               <div className="px-3 pl-8">
-                <button className="w-full shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+                <button className={`w-full shadow mt-4 bg-green-600  focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded ${isMedidasSet ? 'hover:bg-green-700' : 'cursor-not-allowed opacity-50'}`} type="submit" disabled={!isMedidasSet}>
                   Adicionar
                 </button>
               </div>

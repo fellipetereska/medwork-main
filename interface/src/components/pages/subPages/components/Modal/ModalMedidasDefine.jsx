@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { connect } from '../../../../../services/api';
 
-const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidasAdm, medidasEpi, medidasEpc, medidasDefine }) => {
+const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidasAdm, medidasEpi, medidasEpc, medidasDefine, setMedidasDefine }) => {
 
   const [selectedStatus, setSelectedStatus] = useState({});
 

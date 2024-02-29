@@ -148,7 +148,8 @@ function GridInventario({
     }
   }
 
-  const filteredInventario = inventario.filter((i) => i.fk_empresa_id === companyId)
+  const filteredInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
+  const sortedInventario = [...filteredInventario].sort((a, b) => a.fk_unidade_id - b.fk_unidade_id);
 
   return (
     <>
@@ -226,7 +227,7 @@ function GridInventario({
               </tr>
             </thead>
             <tbody>
-              {inventario && filteredInventario.map((item, i) => (
+              {inventario && sortedInventario.map((item, i) => (
                 <tr
                   key={i}
                   className={`bg-white border-b`}
