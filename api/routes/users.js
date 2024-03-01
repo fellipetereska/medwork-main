@@ -1694,12 +1694,14 @@ router.put("/inventario/:id_inventario", (req, res) => {
     medidas,
     probabilidade,
     nivel,
+    frequencia,
+    fk_aparelho_id,
     comentarios
   } = req.body;
 
   const q = `
     UPDATE inventario
-    SET data = ?,
+    SET data_inventario = ?,
     fk_empresa_id = ?,
     fk_unidade_id = ?,
     fk_setor_id = ?,
@@ -1711,6 +1713,8 @@ router.put("/inventario/:id_inventario", (req, res) => {
     medidas = ?,
     probabilidade = ?,
     nivel = ?,
+    frequencia = ?,
+    fk_aparelho_id = ?,
     comentarios = ?
     WHERE id_inventario = ?
     `;
@@ -1727,6 +1731,8 @@ router.put("/inventario/:id_inventario", (req, res) => {
     medidas,
     probabilidade,
     nivel,
+    frequencia,
+    fk_aparelho_id,
     comentarios,
     id_inventario
   ];

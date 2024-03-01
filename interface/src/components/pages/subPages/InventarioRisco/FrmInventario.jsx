@@ -98,15 +98,15 @@ function FrmInventario({
     setShowModalMedidas(false);
   }
 
-  useEffect(() => {
-    const obterDataFormatada = () => {
-      const dataAtual = new Date();
-      const ano = dataAtual.getFullYear();
-      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-      const dia = String(dataAtual.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
-    };
+  const obterDataFormatada = () => {
+    const dataAtual = new Date();
+    const ano = dataAtual.getFullYear();
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
 
+  useEffect(() => {
     setData(obterDataFormatada)
   }, [])
 
@@ -118,7 +118,7 @@ function FrmInventario({
   }, [showModalSetor, unidadeId, setores]);
 
   // Função para atualizar a Unidade
-  const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
+  const handleUnidadeSelect = async (unidadeId, nomeUnidade) => {
     closeModalUnidade();
     setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
@@ -137,7 +137,7 @@ function FrmInventario({
   };
 
   // Função para atualizar o Setor
-  const handleSetorSelect = (SetorId, SetorName) => {
+  const handleSetorSelect = async (SetorId, SetorName) => {
     closeModalSetor();
     setSetorId(SetorId);
     setSetorNome(SetorName);
@@ -176,7 +176,7 @@ function FrmInventario({
   }
 
   // Função para atualizar o Processo
-  const handleProcessoSelect = (ProcessoId, ProcessoNome) => {
+  const handleProcessoSelect = async (ProcessoId, ProcessoNome) => {
     closeModalProcesso();
     setProcessoId(ProcessoId);
     setProcessoNome(ProcessoNome);
@@ -312,6 +312,7 @@ function FrmInventario({
     setRiscosInput('');
     setDescricao('');
     setCheckMedicao(false);
+    setIsVerify(false);
   }
 
   const setRiscosInput = (risco) => {
@@ -323,14 +324,14 @@ function FrmInventario({
       setSeveridade('');
       setMedicao('');
     } else {
-      setAvaliacao(risco.classificacao_risco || 'N/A');
-      setLimiteTolerancia(risco.limite_tolerancia_risco || 'N/A');
+      setAvaliacao(risco.classificacao_risco);
+      setLimiteTolerancia(risco.limite_tolerancia_risco || '0');
       setConsequencia(risco.danos_saude_risco || 'N/A');
       setMetodologia(risco.metodologia_risco || 'N/A');
-      setSeveridade(risco.severidade_risco || 'N/A');
+      setSeveridade(risco.severidade_risco || '0');
 
       if (risco.classificacao_risco === "Qualitativo") {
-        setMedicao("N/A");
+        setMedicao("0");
       } else {
         setMedicao('');
       }
@@ -338,7 +339,7 @@ function FrmInventario({
     setLoading(true);
   };
 
-  const handleAparelhoSelect = (aparelhoId, aparelhoNome) => {
+  const handleAparelhoSelect = async (aparelhoId, aparelhoNome) => {
     closeModalAparelhos();
     setAparelhoId(aparelhoId);
     setAparelhoNome(aparelhoNome);
@@ -378,20 +379,68 @@ function FrmInventario({
   }
 
   useEffect(() => {
-    if (onEdit) {
-      setUnidadeId(onEdit.fk_unidade_id || '');
-      setSetorId(onEdit.fk_setor_id || '');
-      setPessoasExpostas(onEdit.pessoas_expostas || '');
-      setProcessoId(onEdit.fk_processo_id || '');
-      setRiscoId(onEdit.fk_risco_id || '');
-      setConsequencia(onEdit.fontes || '');
-      setMedicao(onEdit.medicao || '');
-      setProbabilidade(onEdit.probabilidade || '');
-      setNivel(onEdit.nivel || '');
-      setComentarios(onEdit.comentarios || '');
-      setAparelhoId(onEdit.fk_aparelho_id || '')
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const handleOnEdit = async () => {
+      if (onEdit) {
+        try {
+          if (onEdit.fk_unidade_id) {
+            const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
+            await handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
+          }
+          if (onEdit.fk_setor_id) {
+            const setorSelect = setores.find((i) => i.id_setor === onEdit.fk_setor_id);
+            await handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
+          }
+          if (onEdit.fk_processo_id) {
+            const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
+            await handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
+          }
+          if (onEdit.fk_risco_id) {
+            const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
+            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
+          }
+
+          setMedicao(onEdit.medicao || '');
+
+          if (onEdit.fk_aparelho_id) {
+            const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
+            await handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
+          }
+
+          setFrequencia(onEdit.frequencia || '');
+          setProbabilidade(onEdit.probabilidade || '');
+          if (onEdit.nivel) {
+            const nivelValue = onEdit.nivel;
+            if (nivelValue >= 1 && nivelValue <= 6) {
+              setNivel("Baixo");
+            } else if (nivelValue >= 7 && nivelValue <= 12) {
+              setNivel("Moderado");
+            } else if (nivelValue >= 13 && nivelValue <= 16) {
+              setNivel("Alto");
+            } else if (nivelValue >= 20 && nivelValue <= 25) {
+              setNivel("Crítico");
+            } else {
+              setNivel(null);
+            }
+          }
+
+          setDescricao(onEdit.fontes || 'N/A');
+          setComentarios(onEdit.comentarios || 'N/A');
+          if (onEdit.data_inventario) {
+            const data_formatada = new Date(onEdit.data_inventario).toISOString().split('T')[0];
+            setData(data_formatada || '');
+          }
+
+          setIsVerify(false);
+          setIsMedidasSet(true);
+        } catch (error) {
+          toast.error("Erro ao buscar os dados!");
+          console.error("Erro ao buscar dados para edição", error);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
+
+    handleOnEdit();
   }, [onEdit]);
 
   const handleSubmit = async (e) => {
@@ -469,6 +518,8 @@ function FrmInventario({
     setCheckMedicao(false);
     setIsMedidasSet(false);
     setFrequencia('');
+    setIsVerify(false);
+    setData(obterDataFormatada);
   }
 
   const handleDescricaoFontesChange = (event) => {
@@ -549,15 +600,15 @@ function FrmInventario({
         <>
           {/* PopOver */}
           <div className="block m-2 cursor-pointer" onClick={() => setIsVerify(false)}>
-            <div className={`bg-orange-100 text-yellow-400 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'} text-white`}>
+            <div className={`bg-orange-50 text-yellow-300 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'} text-white`}>
               <div className="flex items-center gap-6">
                 <div className="">
                   <img src={icon_warn} alt="" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-xl mb-2 mt-2">Risco já Cadastrado - ID: {filteredInventarioRisco.id_inventario} </h2>
+                  <h2 className="font-bold text-xl mb-2 mt-2">Risco já Cadastrado</h2>
                   <div>
-                    <p>O Risco: <span className="font-bold text-yellow-400">{riscoNome}</span> do Porcesso: <span className="font-bold text-yellow-400">{processoNome}</span> do Setor: <span className="font-bold text-yellow-400">{setorNome}</span> da Unidade: <span className="font-bold text-yellow-400">{nomeUnidade} já está cadastrado na tabela</span></p>
+                    <p className="text-sm">Risco: <span className="text-base font-bold text-yellow-300">{riscoNome}</span> - Porcesso: <span className="text-base font-bold text-yellow-300">{processoNome}</span> - Setor: <span className="text-base font-bold text-yellow-300">{setorNome}</span> - Unidade: <span className="text-base font-bold text-yellow-300">{nomeUnidade}.</span></p>
                   </div>
                 </div>
               </div>
@@ -572,352 +623,268 @@ function FrmInventario({
         <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
 
-
-            {/* Unidade */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                Unidade:
-              </label>
-              <div className="flex items-center w-full">
-                {nomeUnidade ? (
-                  <>
+            <div className="flex w-full items-center">
+              {/* Unidade */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                  Unidade:
+                </label>
+                <div className="flex items-center w-full">
+                  {nomeUnidade ? (
+                    <>
+                      <button
+                        className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                        onClick={openModalUnidade}
+                      >
+                        <p className="font-bold">
+                          {nomeUnidade}
+                        </p>
+                      </button>
+                      <button className="ml-4" onClick={handleClearUnidade}>
+                        <img src={icon_sair} alt="" className="h-9" />
+                      </button>
+                    </>
+                  ) : (
                     <button
-                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                       onClick={openModalUnidade}
                     >
-                      <p className="font-bold">
-                        {nomeUnidade}
+                      <p className="text-sm font-medium">
+                        Nenhuma Unidade Selecionado
                       </p>
                     </button>
-                    <button className="ml-4" onClick={handleClearUnidade}>
-                      <img src={icon_sair} alt="" className="h-9" />
-                    </button>
-                  </>
-                ) : (
+                  )}
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    type="button"
                     onClick={openModalUnidade}
+                    className={`flex cursor-pointer ml-4`}
                   >
-                    <p className="text-sm font-medium">
-                      Nenhuma Unidade Selecionado
-                    </p>
+                    <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
                   </button>
-                )}
-                <button
-                  type="button"
-                  onClick={openModalUnidade}
-                  className={`flex cursor-pointer ml-4`}
-                >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-                </button>
+                </div>
+                <ModalSearchUnidade
+                  isOpen={showModalUnidade}
+                  onCancel={closeModalUnidade}
+                  children={unidades}
+                  onContactSelect={handleUnidadeSelect}
+                />
               </div>
-              <ModalSearchUnidade
-                isOpen={showModalUnidade}
-                onCancel={closeModalUnidade}
-                children={unidades}
-                onContactSelect={handleUnidadeSelect}
-              />
-            </div>
-            {/* Setor */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                Setor:
-              </label>
-              <div className="flex items-center w-full">
-                {setorNome ? (
-                  <>
+              {/* Setor */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                  Setor:
+                </label>
+                <div className="flex items-center w-full">
+                  {setorNome ? (
+                    <>
+                      <button
+                        className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                        onClick={openModalSetor}
+                      >
+                        <p className="font-bold">
+                          {setorNome}
+                        </p>
+                      </button>
+                      <button className="ml-4" onClick={handleClearSetor}>
+                        <img src={icon_sair} alt="" className="h-9" />
+                      </button>
+                    </>
+                  ) : (
                     <button
-                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                       onClick={openModalSetor}
                     >
-                      <p className="font-bold">
-                        {setorNome}
+                      <p className="px-2 text-sm font-medium">
+                        Nenhum Setor Selecionado
                       </p>
                     </button>
-                    <button className="ml-4" onClick={handleClearSetor}>
-                      <img src={icon_sair} alt="" className="h-9" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModalSetor}
-                  >
-                    <p className="px-2 text-sm font-medium">
-                      Nenhum Setor Selecionado
-                    </p>
-                  </button>
-                )}
+                  )}
 
-                <button
-                  type="button"
-                  onClick={openModalSetor}
-                  className={`flex cursor-pointer ml-4`}
-                >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
-                </button>
+                  <button
+                    type="button"
+                    onClick={openModalSetor}
+                    className={`flex cursor-pointer ml-4`}
+                  >
+                    <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
+                  </button>
+                </div>
+                <ModalSearchSetor
+                  isOpen={showModalSetor}
+                  onCancel={closeModalSetor}
+                  children={filteredSetores}
+                  onContactSelect={handleSetorSelect}
+                />
               </div>
-              <ModalSearchSetor
-                isOpen={showModalSetor}
-                onCancel={closeModalSetor}
-                children={filteredSetores}
-                onContactSelect={handleSetorSelect}
-              />
-            </div>
-            {/* Processo */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                Processo:
-              </label>
-              <div className="flex items-center w-full">
-                {processoNome ? (
-                  <>
+              {/* Processo */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                  Processo:
+                </label>
+                <div className="flex items-center w-full">
+                  {processoNome ? (
+                    <>
+                      <button
+                        className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                        onClick={openModalProcesso}
+                      >
+                        <p className="font-bold">
+                          {processoNome}
+                        </p>
+                      </button>
+                      <button className="ml-4" onClick={handleClearProcesso}>
+                        <img src={icon_sair} alt="" className="h-9" />
+                      </button>
+                    </>
+                  ) : (
                     <button
-                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                       onClick={openModalProcesso}
                     >
-                      <p className="font-bold">
-                        {processoNome}
+                      <p className="px-2 text-sm font-medium">
+                        Nenhum Processo Selecionado
                       </p>
                     </button>
-                    <button className="ml-4" onClick={handleClearProcesso}>
-                      <img src={icon_sair} alt="" className="h-9" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModalProcesso}
-                  >
-                    <p className="px-2 text-sm font-medium">
-                      Nenhum Processo Selecionado
-                    </p>
-                  </button>
-                )}
+                  )}
 
-                <button
-                  type="button"
-                  onClick={openModalProcesso}
-                  className={`flex cursor-pointer ml-4`}
-                >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar Processo"></img>
-                </button>
+                  <button
+                    type="button"
+                    onClick={openModalProcesso}
+                    className={`flex cursor-pointer ml-4`}
+                  >
+                    <img src={icon_lupa} className="h-9" alt="Icone adicionar Processo"></img>
+                  </button>
+                </div>
+                <ModalSearchProcesso
+                  isOpen={showModalProcesso}
+                  onCancel={closeModalProcesso}
+                  children={filteredProcessos}
+                  setorName={setorNome}
+                  onSetorSelect={handleProcessoSelect}
+                />
               </div>
-              <ModalSearchProcesso
-                isOpen={showModalProcesso}
-                onCancel={closeModalProcesso}
-                children={filteredProcessos}
-                setorName={setorNome}
-                onSetorSelect={handleProcessoSelect}
-              />
-            </div>
-            {/* Risco */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                Risco:
-              </label>
-              <div className="flex items-center w-full">
-                {riscoNome ? (
-                  <>
+              {/* Risco */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                  Risco:
+                </label>
+                <div className="flex items-center w-full">
+                  {riscoNome ? (
+                    <>
+                      <button
+                        className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                        onClick={openModalRisco}
+                      >
+                        <p className="font-bold">
+                          {riscoNome}
+                        </p>
+                      </button>
+                      <button className="ml-4" onClick={handleClearRisco}>
+                        <img src={icon_sair} alt="" className="h-9" />
+                      </button>
+                    </>
+                  ) : (
                     <button
-                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                       onClick={openModalRisco}
                     >
-                      <p className="font-bold">
-                        {riscoNome}
+                      <p className="px-2 text-sm font-medium">
+                        Nenhum Risco Selecionado
                       </p>
                     </button>
-                    <button className="ml-4" onClick={handleClearRisco}>
-                      <img src={icon_sair} alt="" className="h-9" />
-                    </button>
-                  </>
-                ) : (
+                  )}
+
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    type="button"
                     onClick={openModalRisco}
+                    className={`flex cursor-pointer ml-4`}
                   >
-                    <p className="px-2 text-sm font-medium">
-                      Nenhum Risco Selecionado
-                    </p>
+                    <img src={icon_lupa} className="h-9" alt="Icone adicionar Risco"></img>
                   </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={openModalRisco}
-                  className={`flex cursor-pointer ml-4`}
-                >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar Risco"></img>
-                </button>
-              </div>
-              <ModalSearchRisco
-                isOpen={showModalRisco}
-                onCancel={closeModalRisco}
-                children={filteredRiscos}
-                setorName={riscoNome}
-                onSelect={handleRiscoSelect}
-              />
-            </div>
-
-            {/* Data */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Data:
-              </label>
-              <input
-                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="date"
-                name="data_inventario"
-                value={data}
-                onChange={handleChangeData}
-              />
-            </div>
-            {/* Pessoas Expostas */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Pessoas Expostas:
-              </label>
-              <input
-                className={`${pessoasExpostas ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="tex"
-                name="pessoas_expostas"
-                placeholder="Pessoas Expostas"
-                value={pessoasExpostas}
-                disabled
-              />
-            </div>
-            {/* Consequencias */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Consequências:
-              </label>
-              <input
-                className={`${consequencia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="consequencias"
-                placeholder="Consequências"
-                value={consequencia}
-                disabled
-              />
-            </div>
-            {/* Avaliação */}
-            <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Avaliação
-              </label>
-              <input
-                className={`${avaliacao ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="avaliacao_risco"
-                placeholder="Avaliação do Risco"
-                value={avaliacao}
-                disabled
-              />
-            </div>
-
-            {/* Limite de Tolerância */}
-            <div className="w-full md:w-3/12 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                LT:
-              </label>
-              <input
-                className={`${limiteTolerancia ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="limite_tolerancia"
-                placeholder="LT"
-                value={limiteTolerancia}
-                disabled
-                step="any"
-              />
-            </div>
-            {/* Medição */}
-            <div className="w-full md:w-3/12 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Medição:
-              </label>
-              <input
-                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${medicao === 'N/A' || medicao === "0" ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} ${checkMedicao ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''}`}
-                type="number"
-                name="medicao_risco"
-                placeholder="Medição"
-                value={medicao}
-                disabled={medicao === "0" || medicao === "N/A" || checkMedicao}
-                onChange={handleMedicaoChange}
-                step="any"
-              />
-              <div className={`${medicao === '0' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
-                <input
-                  type="checkbox"
-                  id="medica_risco"
-                  className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
-                  disabled={medicao === "0"}
-                  checked={checkMedicao}
-                  onChange={handleMedicaoCheck}
+                </div>
+                <ModalSearchRisco
+                  isOpen={showModalRisco}
+                  onCancel={closeModalRisco}
+                  children={filteredRiscos}
+                  setorName={riscoNome}
+                  onSelect={handleRiscoSelect}
                 />
-                <label className="text-sm font-ligth text-gray-500" htmlFor="medica_risco">Sem Medição</label>
               </div>
             </div>
-            {/* Probabilidade */}
-            <div className="w-full md:w-2/12 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Probabilidade:
-              </label>
-              <select
-                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                type="text"
-                name="probabilidade_risco"
-                placeholder="Probabilidade"
-                onChange={handleProbabilidadeChange}
-                value={probabilidade}
-                disabled={probabilidade === "N/A"}
-              >
-                <option value="0"> Selecione</option>
-                <option value="1">Muito Baixa</option>
-                <option value="2">Baixa</option>
-                <option value="3">Média</option>
-                <option value="4">Alta</option>
-                <option value="5">Muito Alta</option>
-              </select>
-            </div>
-            {/* Severidade */}
-            <div className="w-full md:w-2/12 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Severidade:
-              </label>
-              <select
-                className={`${severidade ? "opacity-30" : ""} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                type="text"
-                name="severidade_risco"
-                value={severidade}
-                onChange={handleChangeSeveridade}
-                disabled={severidade === '0'}
-              >
-                <option value="0"> Selecione</option>
-                <option value="1">Muito Baixa</option>
-                <option value="2">Baixa</option>
-                <option value="3">Média</option>
-                <option value="4">Alta</option>
-                <option value="5">Muito Alta</option>
-              </select>
-            </div>
-            {/* Nível */}
-            <div className="w-full md:w-2/12 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Nível:
-              </label>
-              <input
-                className={`appearance-none block w-full rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${nivel === "Baixo" ? "bg-green-200" : nivel === "Moderado" ? "bg-yellow-200" : nivel === "Alto" ? "bg-orange-200" : nivel === "Crítico" ? "bg-red-200" : "bg-gray-100"
-                  }`}
-                type="text"
-                name="nivel_risco"
-                placeholder="Nível"
-                disabled
-                value={nivel || ""}
-              />
+
+            <div className="flex w-full items-center">
+              {/* Data */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Data:
+                </label>
+                <input
+                  className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  type="date"
+                  name="data_inventario"
+                  value={data}
+                  onChange={handleChangeData}
+                />
+              </div>
+              {/* Pessoas Expostas */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Pessoas Expostas:
+                </label>
+                <input
+                  className={`${pessoasExpostas ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  type="tex"
+                  name="pessoas_expostas"
+                  placeholder="Pessoas Expostas"
+                  value={pessoasExpostas}
+                  disabled
+                />
+              </div>
+              {/* Consequencias */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Consequências:
+                </label>
+                <input
+                  className={`${consequencia ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  type="text"
+                  name="consequencias"
+                  placeholder="Consequências"
+                  value={consequencia}
+                  disabled
+                />
+              </div>
+              {/* Avaliação */}
+              <div className="w-full md:w-1/4 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Avaliação
+                </label>
+                <input
+                  className={`${avaliacao ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  type="text"
+                  name="avaliacao_risco"
+                  placeholder="Avaliação do Risco"
+                  value={avaliacao}
+                  disabled
+                />
+              </div>
             </div>
 
-
-            <div className="w-full flex">
+            <div className="flex w-full">
+              {/* Limite de Tolerância */}
+              <div className="w-full md:w-3/12 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  LT:
+                </label>
+                <input
+                  className={`${limiteTolerancia ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  type="text"
+                  name="limite_tolerancia"
+                  placeholder="LT"
+                  value={limiteTolerancia}
+                  disabled
+                  step="any"
+                />
+              </div>
               {/* Metodologia */}
               <div className="w-full md:w-1/3 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -931,37 +898,84 @@ function FrmInventario({
                   disabled
                 />
               </div>
-              {/* Descrição das Fontes */}
-              <div className="w-full md:w-1/3 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
-                  Descrição das Fontes:
-                </label>
-                <textarea
-                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                  type="text"
-                  name="descricao_fontes"
-                  value={descricao}
-                  placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
-                  onChange={handleDescricaoFontesChange}
-                />
-              </div>
-              {/* Comentários */}
-              <div className="w-full md:w-1/3 px-3">
+              {/* Medição */}
+              <div className="w-full md:w-3/12 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                  Comentários:
+                  Medição:
                 </label>
-                <textarea
-                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                  type="text"
-                  name="comentarios"
-                  placeholder="Comentários..."
-                  value={comentarios}
-                  onChange={handleComentariosChange}
+                <input
+                  className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${medicao === 'N/A' || medicao === "0" ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} ${checkMedicao ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''}`}
+                  type="number"
+                  name="medicao_risco"
+                  placeholder="Medição"
+                  value={medicao}
+                  disabled={medicao === "0" || medicao === "N/A" || checkMedicao}
+                  onChange={handleMedicaoChange}
+                  step="any"
+                />
+                <div className={`${medicao === '0' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
+                  <input
+                    type="checkbox"
+                    id="medica_risco"
+                    className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
+                    disabled={medicao === "0"}
+                    checked={checkMedicao}
+                    onChange={handleMedicaoCheck}
+                  />
+                  <label className="text-sm font-ligth text-gray-500" htmlFor="medica_risco">Sem Medição</label>
+                </div>
+              </div>
+              {/* Aparelho */}
+              <div className={`w-full md:w-3/12 px-3 ${medicao > 0 ? 'opacity-100' : 'opacity-50'}`}>
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                  Aparelho:
+                </label>
+                <div className="flex items-center w-full">
+                  {aparelhoNome ? (
+                    <>
+                      <button
+                        className={`flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text`}
+                        onClick={openModalAparelhos}
+                      >
+                        <p className="font-bold">
+                          {aparelhoNome}
+                        </p>
+                      </button>
+                      <button className="ml-4" onClick={handleClearAparelhos}>
+                        <img src={icon_sair} alt="" className="h-9" />
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className={`flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text ${medicao > 0 ? '' : 'cursor-auto'}`}
+                      onClick={openModalAparelhos}
+                      disabled={medicao <= 0}
+                    >
+                      <p className="truncate text-sm font-medium">
+                        Nenhum Aparelho Selecionado
+                      </p>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={openModalAparelhos}
+                    className={`flex cursor-pointer ml-4 ${medicao > 0 ? '' : 'cursor-auto'}`}
+                    disabled={medicao <= 0}
+                  >
+                    <img src={icon_lupa} className="h-9" alt="Icone adicionar Aparelho"></img>
+                  </button>
+                </div>
+                <ModalSearchAparelhos
+                  isOpen={showModalAparelhos}
+                  onCancel={closeModalAparelhos}
+                  children={aparelhos}
+                  onSelect={handleAparelhoSelect}
                 />
               </div>
             </div>
 
-            <div className="w-full flex">
+            <div className="flex w-full items-center">
               {/* Frequencia */}
               <div className="w-full md:w-3/12 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -983,56 +997,99 @@ function FrmInventario({
                   <option value="Anual">Anual</option>
                 </select>
               </div>
-              {/* Aparelho */}
-              <div className="w-full md:w-1/4 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                  Aparelho:
+              {/* Probabilidade */}
+              <div className="w-full md:w-3/12 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Probabilidade:
                 </label>
-                <div className="flex items-center w-full">
-                  {aparelhoNome ? (
-                    <>
-                      <button
-                        className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                        onClick={openModalAparelhos}
-                      >
-                        <p className="font-bold">
-                          {aparelhoNome}
-                        </p>
-                      </button>
-                      <button className="ml-4" onClick={handleClearAparelhos}>
-                        <img src={icon_sair} alt="" className="h-9" />
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                      onClick={openModalAparelhos}
-                    >
-                      <p className="px-2 text-sm font-medium">
-                        Nenhum Aparelho Selecionado
-                      </p>
-                    </button>
-                  )}
+                <select
+                  className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  type="text"
+                  name="probabilidade_risco"
+                  placeholder="Probabilidade"
+                  onChange={handleProbabilidadeChange}
+                  value={probabilidade}
+                  disabled={probabilidade === "N/A"}
+                >
+                  <option value="0"> Selecione</option>
+                  <option value="1">Muito Baixa</option>
+                  <option value="2">Baixa</option>
+                  <option value="3">Média</option>
+                  <option value="4">Alta</option>
+                  <option value="5">Muito Alta</option>
+                </select>
+              </div>
+              {/* Severidade */}
+              <div className="w-full md:w-3/12 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Severidade:
+                </label>
+                <select
+                  className={`${severidade ? "opacity-30" : ""} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                  type="text"
+                  name="severidade_risco"
+                  value={severidade}
+                  onChange={handleChangeSeveridade}
+                  disabled={severidade === '0'}
+                >
+                  <option value="0"> Selecione</option>
+                  <option value="1">Muito Baixa</option>
+                  <option value="2">Baixa</option>
+                  <option value="3">Média</option>
+                  <option value="4">Alta</option>
+                  <option value="5">Muito Alta</option>
+                </select>
+              </div>
+              {/* Nível */}
+              <div className="w-full md:w-3/12 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Nível:
+                </label>
+                <input
+                  className={`appearance-none block w-full rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${nivel === "Baixo" ? "bg-green-200" : nivel === "Moderado" ? "bg-yellow-200" : nivel === "Alto" ? "bg-orange-200" : nivel === "Crítico" ? "bg-red-200" : "bg-gray-100"
+                    }`}
+                  type="text"
+                  name="nivel_risco"
+                  placeholder="Nível"
+                  disabled
+                  value={nivel || ""}
+                />
+              </div>
+            </div>
 
-                  <button
-                    type="button"
-                    onClick={openModalAparelhos}
-                    className={`flex cursor-pointer ml-4`}
-                  >
-                    <img src={icon_lupa} className="h-9" alt="Icone adicionar Aparelho"></img>
-                  </button>
-                </div>
-                <ModalSearchAparelhos
-                  isOpen={showModalAparelhos}
-                  onCancel={closeModalAparelhos}
-                  children={aparelhos}
-                  onSelect={handleAparelhoSelect}
+            <div className="w-full flex items-center">
+              {/* Descrição das Fontes */}
+              <div className="w-full md:w-1/2 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                  Descrição das Fontes:
+                </label>
+                <textarea
+                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  type="text"
+                  name="descricao_fontes"
+                  value={descricao}
+                  placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
+                  onChange={handleDescricaoFontesChange}
+                />
+              </div>
+              {/* Comentários */}
+              <div className="w-full md:w-1/2 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Comentários:
+                </label>
+                <textarea
+                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  type="text"
+                  name="comentarios"
+                  placeholder="Comentários..."
+                  value={comentarios}
+                  onChange={handleComentariosChange}
                 />
               </div>
             </div>
 
             {/* Card */}
-            {riscoId ? (
+            {/* {riscoId ? (
               <>
                 <div className="w-full px-3">
                   <div className="bg-gray-100 rounded">
@@ -1068,7 +1125,7 @@ function FrmInventario({
               </>
             ) : (
               null
-            )}
+            )} */}
 
 
             {/* Medidas */}

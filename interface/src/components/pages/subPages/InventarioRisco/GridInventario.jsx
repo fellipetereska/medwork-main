@@ -232,71 +232,71 @@ function GridInventario({
                   key={i}
                   className={`bg-white border-b`}
                 >
-                  <th scope="row" className="px-4 py-2 text-gray-800 text-center">
+                  <th scope="row" className="px-2 py-2 text-gray-800 text-center">
                     {item.id_inventario}
                   </th>
-                  <th className="px-4 py-2 text-gray-800 text-center">
+                  <th className="px-2 py-2 text-gray-800 text-center">
                     {formatData(item.data_inventario)}
                   </th>
-                  <th className="px-4 py-2 text-gray-800 truncate">
+                  <th className="px-2 py-2 text-gray-800 truncate">
                     {find(item.fk_unidade_id, 'nome_unidade')}
                   </th>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {find(item.fk_setor_id, 'nome_setor')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {find(item.fk_processo_id, 'nome_processo')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {find(item.fk_risco_id, 'nome_risco')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {item.frequencia || "N/A"}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {find(item.fk_risco_id, 'grupo_risco')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {find(item.fk_risco_id, 'consequencia')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {item.fontes || "N/A"}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {item.pessoas_expostas}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {find(item.fk_risco_id, 'avaliacao')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {item.medicao} {find(item.fk_risco_id, 'unidade_medida')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {find(item.fk_aparelho_id, 'aparelho')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {find(item.fk_risco_id, 'limite_tolerancia')} {find(item.fk_risco_id, 'unidade_medida')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {find(item.fk_risco_id, 'metodologia')}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 hyphens-auto text-justify whitespace-normal min-w-[300px]">
+                  <td className="px-2 py-2 text-gray-800 hyphens-auto text-justify whitespace-normal min-w-[300px]">
                     {convertMedidas(item.medidas)}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {filterProbSev(item.probabilidade)}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {filterProbSev(find(item.fk_risco_id, 'severidade'))}
                   </td>
-                  <td className="px-4 py-2 text-gray-800 text-center">
+                  <td className="px-2 py-2 text-gray-800 text-center">
                     {filterNivel(item.nivel)}
                   </td>
-                  <td className="px-4 py-2 text-gray-800">
+                  <td className="px-2 py-2 text-gray-800">
                     {item.comentarios}
                   </td>
                   <td className="py-4 gap-4">
-                    <a className="flex justify-center font-medium text-blue-400 cursor-not-allowed">
+                    <a className="flex justify-center font-medium text-blue-400 cursor-pointer hover:text-sky-600">
                       <BsFillPencilFill
                         onClick={handleEditClick(item)}
                       />
