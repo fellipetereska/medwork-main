@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 
 import GerarLaudo from "./subPages/components/GerarLaudo";
+import PdfGenerate from "./subPages/components/PdfGenerate";
 
 function Laudos() {
 
@@ -62,6 +63,8 @@ function Laudos() {
         cargos={cargos}
         getUnidades={getUnidades}
       />
+
+      <PdfGenerate />
     </>
   )
 }

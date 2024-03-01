@@ -175,18 +175,19 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-2/5 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cargo">
               Nome do Cargo
             </label>
             <input
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="cargo"
               type="text"
               name="nome_cargo"
               placeholder="Nome do Cargo"
             />
           </div>
           <div className="w-full md:w-1/5 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2">
               Quantidade de Funcionários
             </label>
             <input
@@ -225,18 +226,19 @@ function FrmCadastroCargo({ onEdit, setOnEdit, getCargo, set, setor, unidades })
             />
           </div>
           <div className="w-full md:w-2/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="descricao">
               Descrição
             </label>
             <textarea
               className="resize-none apperance-none block w-full bg-gray-100 rounded h-20 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="descricao"
               name="descricao"
               placeholder="Descrição do Cargo"
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2">
               Setor:
             </label>
             <div className="flex items-center w-full">

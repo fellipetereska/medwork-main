@@ -273,11 +273,12 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* Nome Empresa */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="nome">
               Nome da Empresa:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="nome"
               type="text"
               name="nome_empresa"
               placeholder="Nome da empresa"
@@ -286,11 +287,12 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* Razão Social */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="razao_social">
               Razão Social:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="razao_social"
               type="text"
               name="razao_social"
               placeholder="Razão Social da Empresa"
@@ -299,11 +301,12 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* CNPJ */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cnpj">
               CNPJ:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="cnpj"
               type="text"
               name="cnpj_empresa"
               value={cnpj}
@@ -316,13 +319,14 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* Incrição Estadual */}
           <div className="w-full md:w-2/12 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-inscricao_estadual_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="inscricao_estadual">
               Inscrição Estadual:
             </label>
             <input
               className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedEstadual ? 'opacity-25' : 'bg-gray-100'}`}
               type="number"
               name="inscricao_estadual_empresa"
+              id="inscricao_estadual"
               placeholder="Inscrição Estadual"
               disabled={checkedEstadual}
               onChange={handleInputChange}
@@ -343,13 +347,14 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* Incrição Municipal */}
           <div className="w-full md:w-2/12 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-inscricao_municipal_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="inscricao_municipal">
               Inscrição Municipal:
             </label>
             <input
               className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'opacity-25' : 'bg-gray-100'}`}
               type="number"
-              name="inscricao_municipal_empresa"
+              name="inscricao_municipal"
+              id="inscricao_estadual"
               placeholder="Inscrição Municipal"
               disabled={checkedMunicipal}
               onChange={handleInputChange}
@@ -370,13 +375,14 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* CNAE */}
           <div className={`w-full px-3 ${grauRisco ? 'md:w-2/12' : 'md:w-4/12'}`}>
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cnae">
               CNAE:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
               name="cnae_empresa"
+              id="cnae"
               value={cnae}
               onChange={handleCnaeChange}
               onPaste={handlePastCnae}
@@ -387,11 +393,12 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
 
           {/* Grau de Risco */}
           <div className={`w-full md:w-2/12 px-3 ${grauRisco ? '' : 'hidden'}`}>
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grau_risco">
               Grau de Risco:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="grau_risco"
               type="text"
               name="grau_risco_empresa"
               value={grauRisco}

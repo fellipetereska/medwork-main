@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { connect } from '../../../../../services/api';
 
-const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidasAdm, medidasEpi, medidasEpc, medidasDefine, setMedidasDefine }) => {
+const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidasAdm, medidasEpi, medidasEpc, medidasDefine, setMedidasDefine, plano }) => {
 
   const [selectedStatus, setSelectedStatus] = useState({});
 
@@ -45,6 +45,10 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
   const handleAplicationChange = async (event, itemId) => {
     const selectedApply = event.target.value;
     let status = "";
+
+    if (plano && selectedApply === "Aplica") {
+      return toast.warn("Medida não pode ser modficada!")
+    }
 
     if (selectedApply === "Aplica" || selectedApply === "Não Aplica" || selectedApply === "Não Aplicavel") {
       status = selectedApply;
@@ -147,7 +151,7 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
                       value={selectedStatus[item.id_global_sprm] || "0"}
                     >
                       <option value="0">Selecione uma aplicação</option>
-                      <option value="Aplica">Aplica</option>
+                      <option value="Aplica" disabled={plano}>Aplica</option>
                       <option value="Não Aplica">Não Aplica</option>
                       <option value="Não Aplica">Não Aplicavel</option>
                     </select>

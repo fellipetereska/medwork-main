@@ -140,12 +140,13 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
             </label>
             <input
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="grid-nome_setor"
               name="nome_setor"
               placeholder="Nome do Setor"
             />
           </div>
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2">
               Unidade:
             </label>
             <div className="flex items-center w-full">
@@ -198,6 +199,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
             <input
               className="apperance-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="grid-observacao_setor"
               name="observacao_setor"
               placeholder="Observação"
             />
@@ -210,6 +212,7 @@ function FrmCadastroSetor({ onEdit, setOnEdit, getSetor, unidades, onCancel, uni
             <textarea
               className="resize-none apperance-none block w-full bg-gray-100 rounded h-24 py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="grid-ambiente_setor"
               name="ambiente_setor"
               placeholder="Descrição do Ambiente"
             />

@@ -78,6 +78,7 @@ function FrmInventario({
   const [comentarios, setComentarios] = useState('');
   const [data, setData] = useState('');
   const [frequencia, setFrequencia] = useState('');
+  const [plano, setPlano] = useState(false);
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -1157,6 +1158,7 @@ function FrmInventario({
                   medidasEpi={medidasEpi}
                   medidasEpc={medidasEpc}
                   medidasDefine={handleMedidaChange}
+                  plano={plano}
                 />
               </div>
               {/* Medidas de Controle Aplicadas*/}

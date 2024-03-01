@@ -54,10 +54,15 @@ function FrmPlano({
   const [processoNome, setProcessoNome] = useState('');
   const [riscoNome, setRiscoNome] = useState('');
   const [responsavel, setResponsavel] = useState('');
+  const [isOk, setIsOk] = useState(false);
+  const [plano, setPlano] = useState(false);
+  const [filterGlobalSprm, setFilterGlobalSprm] = useState(false);
 
   //Inputs Form
   const [data, setData] = useState('');
   const [selectedPrazos, setSelectedPrazos] = useState({});
+  const [existingPrazos, setExistingPrazos] = useState({});
+
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -65,7 +70,10 @@ function FrmPlano({
   const openModalSetor = () => setShowModalSetor(true);
   const openModalProcesso = () => setShowModalProcesso(true);
   const openModalRisco = () => setShowModalRisco(true);
-  const openModalMedidas = () => setShowModalMedidas(true);
+  const openModalMedidas = () => {
+    setPlano(true);
+    setShowModalMedidas(true)
+  };
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
@@ -76,15 +84,15 @@ function FrmPlano({
     setShowModalMedidas(false);
   }
 
-  useEffect(() => {
-    const obterDataFormatada = () => {
-      const dataAtual = new Date();
-      const ano = dataAtual.getFullYear();
-      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-      const dia = String(dataAtual.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
-    };
+  const obterDataFormatada = () => {
+    const dataAtual = new Date();
+    const ano = dataAtual.getFullYear();
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
 
+  useEffect(() => {
     setData(obterDataFormatada)
   }, [])
 
@@ -95,8 +103,38 @@ function FrmPlano({
     }
   }, [showModalSetor, unidadeId, setores]);
 
+  useEffect(() => {
+    const handleEdit = async () => {
+      if (onEdit) {
+        try {
+          if (onEdit.fk_unidade_id) {
+            const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
+            await handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
+          }
+          if (onEdit.fk_setor_id) {
+            const setorSelect = setores.find((i) => i.id_setor === onEdit.fk_setor_id);
+            await handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
+          }
+          if (onEdit.fk_processo_id) {
+            const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
+            await handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
+          }
+          if (onEdit.fk_risco_id) {
+            const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
+            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
+          }
+
+        } catch (error) {
+          console.error("Erro ao buscar dados para edição!", error)
+        }
+      }
+    }
+
+    handleEdit();
+  }, [onEdit])
+
   // Função para atualizar a Unidade
-  const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
+  const handleUnidadeSelect = async (unidadeId, nomeUnidade) => {
     closeModalUnidade();
     setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
@@ -108,11 +146,6 @@ function FrmPlano({
     const nomeResponsavel = arrayResponsavel.nome_contato;
 
     setResponsavel(nomeResponsavel);
-
-    console.log(unidadeId);
-    console.log(unicunidade);
-    console.log(idResponsavel);
-    console.log(nomeResponsavel);
 
     setLoading(false);
     setLoading(true);
@@ -128,7 +161,7 @@ function FrmPlano({
   };
 
   // Função para atualizar o Setor
-  const handleSetorSelect = (SetorId, SetorName) => {
+  const handleSetorSelect = async (SetorId, SetorName) => {
     closeModalSetor();
     setSetorId(SetorId);
     setSetorNome(SetorName);
@@ -150,7 +183,7 @@ function FrmPlano({
   }
 
   // Função para atualizar o Processo
-  const handleProcessoSelect = (ProcessoId, ProcessoNome) => {
+  const handleProcessoSelect = async (ProcessoId, ProcessoNome) => {
     closeModalProcesso();
     setProcessoId(ProcessoId);
     setProcessoNome(ProcessoNome);
@@ -189,6 +222,10 @@ function FrmPlano({
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
     try {
+      if (onEdit) {
+        return
+      }
+
       for (const { medidaId, medidaTipo } of medidasTipos) {
         const verificarResponse = await fetch(
           `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
@@ -210,7 +247,6 @@ function FrmPlano({
         if (verificarData.existeCombinação) {
           continue;
         }
-
 
         // Caso contrário, adicione a nova medida
         const adicionarResponse = await fetch(`${connect}/global_sprm`, {
@@ -246,6 +282,7 @@ function FrmPlano({
   const handleClearRisco = () => {
     setRiscoId(null);
     setRiscoNome(null);
+    setIsOk(false);
   }
 
   const handleSubmit = async (e) => {
@@ -272,8 +309,9 @@ function FrmPlano({
           responsavel: responsavel || '',
           prazo: prazo || '',
           status: 'Não Realizado',
+          data_conclusao: '',
         };
-
+        
         const url = onEdit
           ? `${connect}/plano/${onEdit.id_plano}`
           : `${connect}/plano`;
@@ -308,6 +346,8 @@ function FrmPlano({
   const handleClear = () => {
     handleClearUnidade();
     setOnEdit(null);
+    setIsOk(false);
+    setData(obterDataFormatada);
   }
 
   const handleMedidaChange = () => {
@@ -592,6 +632,7 @@ function FrmPlano({
                 medidasEpi={medidasEpi}
                 medidasEpc={medidasEpc}
                 medidasDefine={handleMedidaChange}
+                plano={plano}
               />
             </div>
             {/* Medidas de Controle Aplicadas*/}
@@ -623,6 +664,9 @@ function FrmPlano({
                                 ...prevPrazos,
                                 [item.fk_medida_id]: e.target.value,
                               }));
+                              const prazosValues = Object.values(selectedPrazos);
+                              const allPrazosSelected = prazosValues.every((prazo) => prazo !== '0');
+                              setIsOk(allPrazosSelected);
                             }}
                           >
                             <option value="0">Selecione um Prazo</option>
@@ -645,7 +689,11 @@ function FrmPlano({
                 </button>
               </div>
               <div className="px-3 pl-8">
-                <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
+                <button
+                  className={`shadow mt-4 bg-green-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded ${isOk ? 'hover:bg-green-700' : 'opacity-50 cursor-not-allowed'}`}
+                  type="submit"
+                  disabled={!isOk}
+                >
                   Adicionar
                 </button>
               </div>

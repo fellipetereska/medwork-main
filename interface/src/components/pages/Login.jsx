@@ -108,15 +108,17 @@ function Login() {
           </div>
           <form className="rounded space-y-4 md:space-y-6" onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="usuario">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                 Email
               </label>
               <input
                 className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                id='email'
                 name='email'
                 type="text"
                 value={email}
                 placeholder="Email"
+                autoComplete='email'
                 onChange={(e) => setEmail(e.target.value)}></input>
             </div>
             <div className="mb-6">
@@ -126,6 +128,7 @@ function Login() {
               <div className='relative'>
                 <input
                   className="appearance-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  id='senha'
                   name='senha'
                   value={password}
                   type={showpasd ? "text" : "password"}

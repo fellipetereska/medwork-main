@@ -1569,6 +1569,7 @@ router.post("/plano", (req, res) => {
 //Update row int table
 router.put("/plano/:id_plano", (req, res) => {
   const id_plano = req.params.id_plano;
+
   const {
     data,
     fk_empresa_id,
@@ -1585,7 +1586,7 @@ router.put("/plano/:id_plano", (req, res) => {
   } = req.body;
 
   const q = `
-    UPDATE inventario
+    UPDATE plano
     SET data = ?,
     fk_empresa_id = ?,
     fk_unidade_id = ?,

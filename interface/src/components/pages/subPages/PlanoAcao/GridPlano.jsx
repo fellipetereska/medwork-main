@@ -199,7 +199,7 @@ function GridPlano({
                     {item.status}
                   </td>
                   <td className="py-4 gap-4">
-                    <a className="flex justify-center font-medium text-blue-400 cursor-not-allowed">
+                    <a className="flex justify-center font-medium text-blue-400 cursor-pointer hover:text-sky-600">
                       <BsFillPencilFill
                         onClick={handleEditClick(item)}
                       />

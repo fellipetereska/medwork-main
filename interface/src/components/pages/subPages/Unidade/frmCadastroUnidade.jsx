@@ -277,11 +277,12 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* Nome Unidade */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="nomw">
               Nome da Unidade:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              is="nome"
               type="text"
               name="nome_unidade"
               placeholder="Nome da Unidade"
@@ -290,12 +291,13 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* CNPJ */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cnpj">
               CNPJ:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="cnpj"
               name="cnpj_unidade"
               value={cnpj}
               onChange={handleCnpjChange}
@@ -307,12 +309,13 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* CEP */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-cnpj_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cep">
               CEP:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="cep"
               name="cep_unidade"
               value={cep}
               onChange={handleCepChange}
@@ -326,12 +329,13 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
           {/* Endereço */}
           <div className="flex w-full md:w-1/3 px-3 gap-4">
             <div className="w-full">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="endereco">
                 Endereço:
               </label>
               <input
                 className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                 type="text"
+                id="endereco"
                 name="endereco_unidade"
                 placeholder="Endereço da Unidade"
                 value={logradouro}
@@ -356,13 +360,14 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
           {/* Complemento */}
           <div className="flex w-full md:w-1/3 px-3 gap-4">
             <div className="w-full">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="complemento">
                 Complemento:
               </label>
               <input
                 className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
                 type="text"
                 name="complemento"
+                id="complemento"
                 placeholder="Complemento da Unidade"
                 value={complemento}
                 onChange={(e) => setComplemento(e.target.value)}
@@ -372,12 +377,13 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* Bairro */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="bairro">
               Bairro:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="bairro"
               name="bairro_unidade"
               placeholder="Bairro da Unidade"
               value={bairro}
@@ -387,11 +393,12 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* Cidade */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cidade">
               Cidade:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+              id="cidade"
               type="text"
               name="cidade_unidade"
               placeholder="Cidade da Unidade"
@@ -402,12 +409,13 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* Estado */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="estado">
               Selecione um Estado:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
+              id="estado"
               name="uf_unidade"
               placeholder="UF da Unidade"
               value={estado}
@@ -417,7 +425,7 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* Contato */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2">
               Contato:
             </label>
             <div className="flex items-center w-full">
