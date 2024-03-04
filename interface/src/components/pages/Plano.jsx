@@ -45,6 +45,7 @@ function Plano() {
     getMedidasEpc();
     getPlano();
     getContatos();
+    getGlobalSprm();
   }, [companyId]);
 
   const handleEdit = (selectedInventario) => {
@@ -81,18 +82,20 @@ function Plano() {
         contatos={contatos}
       />
 
-      <GridPlano
-        setOnEdit={setOnEdit}
-        unidade={unidades}
-        setor={setores}
-        processo={processos}
-        risco={riscos}
-        companyId={companyId}
-        plano={plano}
-        medidasAdm={medidasAdm}
-        medidasEpi={medidasEpi}
-        medidasEpc={medidasEpc}
-      />
+      <div className="mb-10">
+        <GridPlano
+          setOnEdit={setOnEdit}
+          unidade={unidades}
+          setor={setores}
+          processo={processos}
+          risco={riscos}
+          companyId={companyId}
+          plano={plano}
+          medidasAdm={medidasAdm}
+          medidasEpi={medidasEpi}
+          medidasEpc={medidasEpc}
+        />
+      </div>
     </>
   )
 }

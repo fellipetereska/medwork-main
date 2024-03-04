@@ -1,49 +1,138 @@
-import React from "react";
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
 
-import { Page, Text, View, Document, StyleSheet, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
-import ReactPDF from '@react-pdf/renderer';
-import ReactDOM from 'react-dom';
-
-function PdfGenerate() {
-
-  const styles = StyleSheet.create({
+function PdfGenerate({ companyName, inventario }) {
+  const CoverStyles = StyleSheet.create({
     page: {
-      flexDirection: 'row',
-      backgroundColor: '#E4E4E4'
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF',
+      padding: 40,
+      height: '100%',
     },
-    section: {
-      margin: 10,
-      padding: 10,
-      flexGrow: 1
-    }
+
+    topText: {
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+
+    middleText: {
+      fontSize: 24,
+      textAlign: 'center',
+      marginBottom: 20,
+      fontWeight: 'bold',
+    },
+
+    companyContainer: {
+      marginTop: 'auto',
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
+
+    bottomTextContainer: {
+      marginTop: 'auto',
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
+    bottomText: {
+      fontSize: 14,
+    },
   });
 
-  const MyDocument = () => (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text>Section #1</Text>
+  const CoverPage = () => {
+    return (
+      <Page size="A4" style={CoverStyles.page}>
+        <Text style={CoverStyles.topText}>Programa de Gerenciamento de Riscos - PGR</Text>
+        <View style={CoverStyles.companyContainer}>
+          <Text style={CoverStyles.middleText}>{companyName}</Text>
         </View>
-        <View style={styles.section}>
-          <Text>Section #2</Text>
+        <View style={CoverStyles.bottomTextContainer}>
+          <Text style={CoverStyles.bottomText}>Vigência - Data à Data</Text>
         </View>
       </Page>
-    </Document>
-  );
+    )
+  };
 
-  const handleGeneratePdf = () => {
-    ReactDOM.render(<MyDocument />, document.getElementById('root'));
+  const SumaryStyles = StyleSheet.create({
+    page: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF',
+      padding: 40,
+      height: '100%',
+    },
+
+    topText: {
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+
+    bottomTextContainer: {
+      marginTop: 'auto',
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
+
+    bottomText: {
+      fontSize: 14,
+    },
+  });
+
+  const SumaryPage = () => {
+    return (
+      <Page size="A4" style={SumaryStyles.page}>
+        <Text style={SumaryStyles.topText}>Sumário</Text>
+        <View style={SumaryStyles.bottomTextContainer}>
+          <Text style={SumaryStyles.bottomText}>Dados da Empresa</Text>
+        </View>
+      </Page>
+    );
+  };
+
+  const CompanyStyles = StyleSheet.create({
+    page: {
+      flexDirection: 'column',
+      backgroundColor: '#FFFFFF',
+      padding: 40,
+      height: '100%',
+    },
+
+    topText: {
+      fontSize: 16,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+    },
+  });
+
+  const CompanyPage = () => {
+    return(
+      <Page style={CompanyStyles.page}>
+        <Text style={CompanyStyles.topText}>1. Identificação da Empresa</Text>
+        <View>
+
+        </View>
+      </Page>
+    );
   }
 
   return (
-    <>
-      <div className="flex justify-center">
-        <button className="bg-sky-600 text-white px-4 py-2 rounded" onClick={handleGeneratePdf}>Gerar</button>
-      </div>
-    </>
+    <div className="flex justify-center">
+      <PDFViewer width="1000" height="600">
+        <Document>
+          <CoverPage />
+          <SumaryPage />
+          <CompanyPage />
+        </Document>
+      </PDFViewer>
+    </div>
   );
-
-
 }
 
 export default PdfGenerate;

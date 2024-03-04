@@ -56,7 +56,7 @@ function FrmPlano({
   const [responsavel, setResponsavel] = useState('');
   const [isOk, setIsOk] = useState(false);
   const [plano, setPlano] = useState(false);
-  const [filterGlobalSprm, setFilterGlobalSprm] = useState(false);
+  const [filterGlobalSprm, setFilterGlobalSprm] = useState([]);
 
   //Inputs Form
   const [data, setData] = useState('');
@@ -121,9 +121,10 @@ function FrmPlano({
           }
           if (onEdit.fk_risco_id) {
             const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
-            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
+            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco, onEdit.fk_medida_id, onEdit.tipo_medida);
           }
-
+          const sprm = globalSprm.filter((i) => i.fk_setor_id === onEdit.fk_setor_id && i.fk_processo_id === onEdit.fk_processo_id && i.fk_risco_id === onEdit.fk_risco_id && i.fk_medida_id === onEdit.fk_medida_id && i.tipo_medida === onEdit.tipo_medida);
+          setFilterGlobalSprm(sprm);
         } catch (error) {
           console.error("Erro ao buscar dados para edição!", error)
         }
@@ -211,13 +212,17 @@ function FrmPlano({
 
     const filteresRiscosMedidas = riscosMedidas.filter((i) => i.fk_risco_id === RiscoId);
 
-    // Criar um array para armazenar as medidas e tipos
     const medidasTipos = filteresRiscosMedidas.map((filteredRiscosMedidas) => ({
       medidaId: filteredRiscosMedidas.fk_medida_id,
       medidaTipo: filteredRiscosMedidas.tipo,
     }));
 
+
     await handleRiscoEscolhido(RiscoId, medidasTipos);
+
+    const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === RiscoId);
+    const filterApply = sprm.filter((c) => c.status && c.status === "Não Aplica")
+    setFilterGlobalSprm(filterApply);
   };
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
@@ -283,6 +288,7 @@ function FrmPlano({
     setRiscoId(null);
     setRiscoNome(null);
     setIsOk(false);
+    setFilterGlobalSprm([]);
   }
 
   const handleSubmit = async (e) => {
@@ -294,8 +300,8 @@ function FrmPlano({
     }
 
     try {
-      for (const medida of filteredGlobalSprm.filter((item) => item.status === 'Não Aplica')) {
-        const prazo = selectedPrazos[medida.fk_medida_id];
+      for (const medida of filterGlobalSprm) {
+        const prazo = selectedPrazos[`${medida.fk_medida_id}-${medida.tipo_medida}`];
 
         const planoData = {
           data: data || '',
@@ -311,7 +317,7 @@ function FrmPlano({
           status: 'Não Realizado',
           data_conclusao: '',
         };
-        
+
         const url = onEdit
           ? `${connect}/plano/${onEdit.id_plano}`
           : `${connect}/plano`;
@@ -348,6 +354,7 @@ function FrmPlano({
     setOnEdit(null);
     setIsOk(false);
     setData(obterDataFormatada);
+    setFilterGlobalSprm([]);
   }
 
   const handleMedidaChange = () => {
@@ -398,8 +405,6 @@ function FrmPlano({
   const handleChangeData = (event) => {
     setData(event.target.value);
   };
-
-  const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
 
   return (
     <>
@@ -627,7 +632,7 @@ function FrmPlano({
                 isOpen={showModalMedidas}
                 onCancel={closeModalMedidas}
                 companyName={companyName}
-                globalSprm={filteredGlobalSprm}
+                globalSprm={filterGlobalSprm}
                 medidasAdm={medidasAdm}
                 medidasEpi={medidasEpi}
                 medidasEpc={medidasEpc}
@@ -640,45 +645,54 @@ function FrmPlano({
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                 Medidas Aplicadas:
               </label>
-              {filteredGlobalSprm.filter((c) => c.status && c.status === 'Não Aplica')
-                .map((item, i) => (
-                  <ul key={i}>
-                    <li className="pb-3 sm:pb-4">
-                      <div className="grid grid-cols-5 items-center space-x-4 rtl:space-x-reverse border-b border-gray-300 px-4 py-2 hover:bg-gray-50">
-                        <div className="flex-1 min-w-0 pr-4 col-span-2">
-                          <p className="text-sm font-medium text-gray-900 whitespace-break-spaces truncate">
-                            {find(item.fk_medida_id, item.tipo_medida)}
-                          </p>
-                        </div>
-                        <div className="inline-flex justify-center items-center text-base font-semibold text-gray-900">
-                          {tipoDefine(item.tipo_medida)}
-                        </div>
-                        <div className="inline-flex justify-center col-span-2 items-center text-base text-gray-800">
-                          <select
-                            className="appearence-none bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight cursor-pointer"
-                            type="text"
-                            name="probabilidade_risco"
-                            value={selectedPrazos[item.fk_medida_id] || ''}
-                            onChange={(e) => {
-                              setSelectedPrazos((prevPrazos) => ({
-                                ...prevPrazos,
-                                [item.fk_medida_id]: e.target.value,
-                              }));
-                              const prazosValues = Object.values(selectedPrazos);
-                              const allPrazosSelected = prazosValues.every((prazo) => prazo !== '0');
-                              setIsOk(allPrazosSelected);
-                            }}
-                          >
-                            <option value="0">Selecione um Prazo</option>
-                            <option value="6 Meses">6 Meses</option>
-                            <option value="12 Meses">12 Meses</option>
-                            <option value="24 Meses">24 Meses</option>
-                          </select>
-                        </div>
+              {riscoId && filterGlobalSprm.map((item, i) => (
+                <ul key={i}>
+                  <li className="pb-3 sm:pb-4">
+                    <div className="grid grid-cols-5 items-center space-x-4 rtl:space-x-reverse border-b border-gray-300 px-4 py-2 hover:bg-gray-50">
+                      <div className="flex-1 min-w-0 pr-4 col-span-2">
+                        <p className="text-sm font-medium text-gray-900 whitespace-break-spaces truncate">
+                          {find(item.fk_medida_id, item.tipo_medida)}
+                        </p>
                       </div>
-                    </li>
-                  </ul>
-                ))}
+                      <div className="inline-flex justify-center items-center text-base font-semibold text-gray-900">
+                        {tipoDefine(item.tipo_medida)}
+                      </div>
+                      <div className="inline-flex justify-center col-span-2 items-center text-base text-gray-800">
+                        <select
+                          className="appearence-none bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight cursor-pointer"
+                          type="text"
+                          name="prazo_medida"
+                          value={
+                            onEdit
+                              ? onEdit.prazo || '0'
+                              : selectedPrazos[`${item.fk_medida_id}-${item.tipo_medida}`] || '0'
+                          }
+                          onChange={(e) => {
+                            const key = `${item.fk_medida_id}-${item.tipo_medida}`;
+                            setSelectedPrazos((prevPrazos) => ({
+                              ...prevPrazos,
+                              [key]: onEdit ? e.target.value : e.target.value,
+                            }));
+
+                            const prazosValues = Object.values({
+                              ...selectedPrazos,
+                              [key]: onEdit ? e.target.value : e.target.value,
+                            });
+
+                            const allPrazosSelected = prazosValues.every((prazo) => prazo !== '0');
+                            setIsOk(allPrazosSelected);
+                          }}
+                        >
+                          <option value="0">Selecione um Prazo</option>
+                          <option value="6 Meses">6 Meses</option>
+                          <option value="12 Meses">12 Meses</option>
+                          <option value="24 Meses">24 Meses</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              ))}
             </div>
 
 

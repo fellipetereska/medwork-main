@@ -64,7 +64,10 @@ function Laudos() {
         getUnidades={getUnidades}
       />
 
-      <PdfGenerate />
+      <PdfGenerate
+        companyName={nameCompany}
+        inventario={inventario}
+      />
     </>
   )
 }

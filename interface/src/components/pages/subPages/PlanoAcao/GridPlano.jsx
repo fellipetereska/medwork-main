@@ -30,7 +30,7 @@ function GridPlano({
 
         case 'descricao_processo':
           const processoEncontrado = processo.find((c) => c.id_processo === item);
-          return processoEncontrado ? processoEncontrado.descricao : 'N/A';
+          return processoEncontrado ? processoEncontrado.nome_processo : 'N/A';
 
         case 'nome_risco':
         case 'grupo_risco':
