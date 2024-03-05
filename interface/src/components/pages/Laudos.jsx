@@ -9,6 +9,8 @@ import ModalSearchUnidade from "./subPages/components/Modal/ModalSearchUnidade"
 
 import icon_sair from '../media/icon_sair.svg'
 import icon_lupa from '../media/icon_lupa.svg'
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { saveAs } from "file-saver";
 
 
 function Laudos() {
@@ -17,6 +19,7 @@ function Laudos() {
     loadSelectedCompanyFromLocalStorage, companyId, selectedCompany,
     getUnidades, unidades,
     getSetores, setores, setSetores,
+    getEmpresas, empresas,
     getCargos, cargos,
     getProcessos, processos,
     getRiscos, riscos,
@@ -26,16 +29,34 @@ function Laudos() {
     getRiscosMedidas, setRiscosMedidas, riscosMedidas,
     getInventario, inventario,
     getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId,
-    getPlano, setPlano, plano
+    getPlano, setPlano, plano,
+    getUsuarios, usuarios,
+    getContatos, contatos,
+    checkSignIn, user,
   } = useAuth(null);
-  const [onEdit, setOnEdit] = useState(null);
+
+  const [filteredInventario, setFilteredInventario] = useState([]);
+  const [filteredPlano, setFilteredPlano] = useState([]);
+  const [filteredSetores, setFilteredSetores] = useState([]);
+  const [filteredUnidade, setFilteredUnidades] = useState([]);
+  const [pdfComponent, setPdfComponent] = useState(null);
+  
+  const [showModalUnidade, setShowModalUnidade] = useState(false);
+  const [showModalSetor, setShowModalSetor] = useState(false);
+  
   const [nameCompany, setNameCompany] = useState(null);
+  const [unidadeId, setUnidadeId] = useState('');
+  const [setorId, setSetorId] = useState('');
+  const [nomeUnidade, setNomeUnidade] = useState('');
+  const [setorNome, setSetorNome] = useState('');
+
+  const [company, setCompany] = useState([]);
 
   useEffect(() => {
     loadSelectedCompanyFromLocalStorage();
   }, []);
 
-  useEffect(() => {
+  const handleGet = async () => {
     setNameCompany(selectedCompany ? selectedCompany.nome_empresa : '');
     getUnidades();
     getSetores();
@@ -50,20 +71,15 @@ function Laudos() {
     getMedidasEpi();
     getMedidasEpc();
     getPlano();
+    getUsuarios();
+    getContatos();
+    getEmpresas();
+  };
+
+  useEffect(() => {
+    handleGet();
   }, [companyId]);
 
-  const [filteredInventario, setFilteredInventario] = useState([]);
-  const [filteredPlano, setFilteredPlano] = useState([]);
-  const [filteredSetores, setFilteredSetores] = useState([]);
-  const [filteredUnidade, setFilteredUnidades] = useState([]);
-
-  const [showModalUnidade, setShowModalUnidade] = useState(false);
-  const [showModalSetor, setShowModalSetor] = useState(false);
-
-  const [unidadeId, setUnidadeId] = useState('');
-  const [setorId, setSetorId] = useState('');
-  const [nomeUnidade, setNomeUnidade] = useState('');
-  const [setorNome, setSetorNome] = useState('');
 
   useEffect(() => {
     try {
@@ -88,7 +104,7 @@ function Laudos() {
     }
   }, [showModalSetor, unidadeId, setores]);
 
-    //Funções do Modal
+  //Funções do Modal
   //Função para abrir o Modal
   const openModalUnidade = () => setShowModalUnidade(true);
   const openModalSetor = () => setShowModalSetor(true);
@@ -133,11 +149,62 @@ function Laudos() {
   const handleClearSetor = () => {
     setSetorId(null);
     setSetorNome(null);
-  }
+  };
+
+  const generateFilteredPdf = (filterCompany, filterContato, user, filterSetor, filterCargo) => {
+    const pdfComponent = (
+      <PDFDownloadLink
+        document={
+          <PdfGenerate
+            companyName={nameCompany}
+            companyId={companyId}
+            unidades={unidades}
+            setores={filterSetor}
+            cargos={filterCargo}
+            inventario={inventario}
+            plano={plano}
+            contatos={filterContato}
+            riscos={riscos}
+            medidasAdm={medidasAdm}
+            medidasEpi={medidasEpi}
+            medidasEpc={medidasEpc}
+            processos={processos}
+            company={filterCompany}
+            user={user}
+          />
+        }
+        fileName="relatorio.pdf"
+      >
+        {({ blob, url, loading, error }) =>
+          loading ? "Carregando o PDF..." : "Baixar o PDF"
+        }
+      </PDFDownloadLink>
+    );
+
+    setPdfComponent(pdfComponent);
+  };
+
+  const handleGenerate = async () => {
+    await handleGet();
+    try {
+      const filterCompany = empresas.find((i) => i.id_empresa === companyId);
+      const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
+      const users = await checkSignIn();
+      const mapUnidade = unidades.map((i) => i.id_unidade);
+      const filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
+      const mapSetor = filterSetor.map((i) => i.id_setor);
+      const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
+
+      generateFilteredPdf(filterCompany, filterContato, user, filterSetor, filterCargo);
+    } catch (error) {
+      console.log("Erro ao filtrad dados!", error)
+    }
+  };
+
 
   return (
     <>
-      <GerarLaudo
+      {/* <GerarLaudo
         inventario={inventario}
         processos={processos}
         riscos={riscos}
@@ -151,7 +218,7 @@ function Laudos() {
         medidasEpc={medidasEpc}
         cargos={cargos}
         getUnidades={getUnidades}
-      />
+      /> */}
 
       <div className="flex justify-center items-center mt-12 mb-10">
         <h1 className="text-3xl font-extrabold text-sky-700">PGR</h1>
@@ -253,14 +320,14 @@ function Laudos() {
                 onContactSelect={handleSetorSelect}
               />
             </div>
+
           </div>
+          {pdfComponent}
+          <button type="button" onClick={handleGenerate}>
+            Gerar
+          </button>
         </form>
       </div>
-
-      <PdfGenerate
-        companyName={nameCompany}
-        inventario={inventario}
-      />
     </>
   )
 }
