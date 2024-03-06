@@ -33,6 +33,7 @@ function Laudos() {
     getUsuarios, usuarios,
     getContatos, contatos,
     checkSignIn, user,
+    getAparelhos, aparelhos,
   } = useAuth(null);
 
   const [filteredInventario, setFilteredInventario] = useState([]);
@@ -40,15 +41,16 @@ function Laudos() {
   const [filteredSetores, setFilteredSetores] = useState([]);
   const [filteredUnidade, setFilteredUnidades] = useState([]);
   const [pdfComponent, setPdfComponent] = useState(null);
-  
+
   const [showModalUnidade, setShowModalUnidade] = useState(false);
   const [showModalSetor, setShowModalSetor] = useState(false);
-  
+
   const [nameCompany, setNameCompany] = useState(null);
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
   const [nomeUnidade, setNomeUnidade] = useState('');
   const [setorNome, setSetorNome] = useState('');
+  const [data, setData] = useState('');
 
   const [company, setCompany] = useState([]);
 
@@ -74,6 +76,7 @@ function Laudos() {
     getUsuarios();
     getContatos();
     getEmpresas();
+    getAparelhos();
   };
 
   useEffect(() => {
@@ -151,8 +154,8 @@ function Laudos() {
     setSetorNome(null);
   };
 
-  const generateFilteredPdf = (filterCompany, filterContato, user, filterSetor, filterCargo) => {
-    const pdfComponent = (
+  const generateFilteredPdf = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano) => {
+    const pdfGenerated = (
       <PDFDownloadLink
         document={
           <PdfGenerate
@@ -161,8 +164,8 @@ function Laudos() {
             unidades={unidades}
             setores={filterSetor}
             cargos={filterCargo}
-            inventario={inventario}
-            plano={plano}
+            inventario={filterInventario}
+            plano={filterPlano}
             contatos={filterContato}
             riscos={riscos}
             medidasAdm={medidasAdm}
@@ -171,17 +174,26 @@ function Laudos() {
             processos={processos}
             company={filterCompany}
             user={user}
+            aparelhos={aparelhos}
+            data={data}
           />
         }
-        fileName="relatorio.pdf"
+        fileName={`PGR - ${company}` || 'Programa de Gerenciamento de Riscos'}
       >
         {({ blob, url, loading, error }) =>
-          loading ? "Carregando o PDF..." : "Baixar o PDF"
+          loading ?
+            <button disabled className={`bg-yellow-600 py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-yellow-700}`}>
+              Baixar PDF
+            </button>
+            :
+            <button type="button" disabled={loading} className={`bg-green-600 py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700}`}>
+              Baixar PDF
+            </button>
         }
       </PDFDownloadLink>
     );
 
-    setPdfComponent(pdfComponent);
+    setPdfComponent(pdfGenerated);
   };
 
   const handleGenerate = async () => {
@@ -194,13 +206,38 @@ function Laudos() {
       const filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
       const mapSetor = filterSetor.map((i) => i.id_setor);
       const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
+      const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
+      const filterPlano = plano.filter((i) => i.fk_empresa_id === companyId);
 
-      generateFilteredPdf(filterCompany, filterContato, user, filterSetor, filterCargo);
+      await generateFilteredPdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano);
     } catch (error) {
       console.log("Erro ao filtrad dados!", error)
     }
   };
 
+  const handleClear = () => {
+    setPdfComponent(null);
+  };
+
+  const handleChangeData = async (event) => {
+    const res = new Date(event).toLocaleDateString('pr-BR');
+    console.log(res);
+    setData(res);
+  };
+
+  const obterDataFormatada = async () => {
+    const dataAtual = new Date();
+    const ano = dataAtual.getFullYear();
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  useEffect(() => {
+    obterDataFormatada().then((dataFormatada) => {
+      setData(dataFormatada);
+    });
+  }, []);
 
   return (
     <>
@@ -221,7 +258,7 @@ function Laudos() {
       /> */}
 
       <div className="flex justify-center items-center mt-12 mb-10">
-        <h1 className="text-3xl font-extrabold text-sky-700">PGR</h1>
+        <h1 className="text-3xl font-extrabold text-sky-700">Laudos</h1>
       </div>
 
       {/* Form */}
@@ -229,8 +266,21 @@ function Laudos() {
         <form className="w-full max-w-7xl">
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
 
-            {/* Unidade */}
-            <div className="w-full md:w-1/2 px-3">
+            {/* Data */}
+            <div className="w-full md:w-1/3 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Data:
+              </label>
+              <input
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 `}
+                type="date"
+                name="data_inventario"
+                value={data}
+                onChange={handleChangeData}
+              />
+            </div>
+
+            <div className="w-full md:w-1/3 px-3 opacity-25">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
                 Unidade:
               </label>
@@ -238,21 +288,22 @@ function Laudos() {
                 {nomeUnidade ? (
                   <>
                     <button
-                      className="flex appearance-none w-full hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                      onClick={openModalUnidade}
+                      className="flex appearance-none w-full hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed"
+                      onClick={openModalUnidade} disabled
                     >
                       <p className="font-bold w-full">
                         {nomeUnidade}
                       </p>
                     </button>
-                    <button className="ml-4" onClick={handleClearUnidade}>
+                    <button className="ml-4 cursor-not-allowed" onClick={handleClearUnidade} disabled>
                       <img src={icon_sair} alt="" className="h-9" />
                     </button>
                   </>
                 ) : (
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed"
                     onClick={openModalUnidade}
+                    disabled
                   >
                     <p className="text-sm font-medium w-full">
                       Nenhuma Unidade Selecionado
@@ -262,9 +313,10 @@ function Laudos() {
                 <button
                   type="button"
                   onClick={openModalUnidade}
-                  className={`flex cursor-pointer ml-4`}
+                  disabled
+                  className={`flex cursor-not-allowed ml-4 `}
                 >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
+                  <img src={icon_lupa} className="h-9 cursor-not-allowed" alt="Icone adicionar unidade"></img>
                 </button>
               </div>
               <ModalSearchUnidade
@@ -274,8 +326,7 @@ function Laudos() {
                 onContactSelect={handleUnidadeSelect}
               />
             </div>
-            {/* Setor */}
-            <div className="w-full md:w-1/2 px-3">
+            <div className="w-full md:w-1/3 px-3 opacity-25">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
                 Setor:
               </label>
@@ -283,21 +334,21 @@ function Laudos() {
                 {setorNome ? (
                   <>
                     <button
-                      className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                      onClick={openModalSetor}
+                      className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed"
+                      onClick={openModalSetor} disabled
                     >
                       <p className="font-bold w-full">
                         {setorNome}
                       </p>
                     </button>
-                    <button className="ml-4" onClick={handleClearSetor}>
+                    <button className="ml-4 cursor-not-allowed" onClick={handleClearSetor} disabled>
                       <img src={icon_sair} alt="" className="h-9" />
                     </button>
                   </>
                 ) : (
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                    onClick={openModalSetor}
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed  "
+                    onClick={openModalSetor} disabled
                   >
                     <p className="px-2 text-sm font-medium w-full">
                       Nenhum Setor Selecionado
@@ -307,10 +358,10 @@ function Laudos() {
 
                 <button
                   type="button"
-                  onClick={openModalSetor}
-                  className={`flex cursor-pointer ml-4`}
+                  onClick={openModalSetor} disabled
+                  className={`flex cursor-not-allowed ml-4`}
                 >
-                  <img src={icon_lupa} className="h-9" alt="Icone adicionar unidade"></img>
+                  <img src={icon_lupa} className="h-9 cursor-not-allowed" alt="Icone adicionar unidade"></img>
                 </button>
               </div>
               <ModalSearchSetor
@@ -322,10 +373,18 @@ function Laudos() {
             </div>
 
           </div>
-          {pdfComponent}
-          <button type="button" onClick={handleGenerate}>
-            Gerar
-          </button>
+          <div className="flex justify-end mb-20 mt-10 gap-4">
+            <button type="button" className="bg-red-600 py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-red-700" onClick={handleClear}>
+              Limpar
+            </button>
+            {pdfComponent ? (
+              pdfComponent
+            ) : (
+              <button type="button" className="bg-green-600 py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700" onClick={handleGenerate}>
+                Gerar PDF
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </>

@@ -6,7 +6,7 @@ function PdfGenerate({
   inventario, plano,
   company, unidades, setores, cargos, contatos,
   processos, riscos, medidasAdm, medidasEpi, medidasEpc,
-  user,
+  user, aparelhos, data,
 }) {
 
   const findSetor = (item) => {
@@ -32,7 +32,235 @@ function PdfGenerate({
     const funcMenor = cargos.reduce((total, cargo) => total + cargo.func_menor, 0);
 
     return funcMasc + funcFem + funcMenor;
-  }
+  };
+
+  const find = (item, tipo) => {
+    try {
+      if (!item) {
+        return 'N/A';
+      }
+
+      switch (tipo) {
+        case 'nome_unidade':
+          const unidadeEncontrada = unidades.find((c) => c.id_unidade === item);
+          return unidadeEncontrada ? unidadeEncontrada.nome_unidade : 'N/A';
+
+        case 'nome_setor':
+          const setorEncontrado = setores.find((c) => c.id_setor === item);
+          return setorEncontrado ? setorEncontrado.nome_setor : 'N/A';
+
+        case 'nome_processo':
+          const processoEncontrado = processos.find((c) => c.id_processo === item);
+          return processoEncontrado ? processoEncontrado.nome_processo : 'N/A';
+
+        case 'nome_aparelho':
+          const aparelhosEncontrado = aparelhos.find((c) => c.id_aparelho === item);
+          const aparelho = `${aparelhosEncontrado.nome_aparelho} - ${aparelhosEncontrado.marca_aparelho} (${formatData(aparelhosEncontrado.data_calibracao_aparelho)})`
+          return aparelho;
+
+        case 'nome_risco':
+        case 'grupo_risco':
+        case 'consequencia':
+        case 'avaliacao':
+        case 'limite_tolerancia':
+        case 'metodologia':
+        case 'severidade':
+        case 'unidade_medida':
+          const riscoEncontrado = riscos.find((c) => c.id_risco === item);
+          if (riscoEncontrado) {
+            switch (tipo) {
+              case 'nome_risco':
+                return riscoEncontrado.nome_risco || "N/A";
+              case 'grupo_risco':
+                return riscoEncontrado.grupo_risco || "N/A";
+              case 'consequencia':
+                return riscoEncontrado.danos_saude_risco || "N/A";
+              case 'avaliacao':
+                return riscoEncontrado.classificacao_risco || "N/A";
+              case 'limite_tolerancia':
+                return riscoEncontrado.limite_tolerancia_risco || "0";
+              case 'metodologia':
+                return riscoEncontrado.metodologia_risco || "N/A";
+              case 'severidade':
+                return riscoEncontrado.severidade_risco || "N/A";
+              case 'unidade_medida':
+                return riscoEncontrado.unidade_medida_risco;
+            }
+          } else {
+            return 'N/A';
+          }
+        default:
+          return 'N/A';
+      }
+    } catch (error) {
+      console.log("Erro ao buscar Dados!", error);
+      return 'N/A';
+    }
+  };
+
+  const formatData = (item) => {
+    try {
+      const data_formatada = new Date(item).toLocaleDateString('pr-BR');
+      return data_formatada || 'N/A';
+    } catch (error) {
+      console.log("Erro ao formatar data!", error);
+    }
+  };
+
+  const convertMedidas = (item) => {
+    try {
+      const medidasArray = JSON.parse(item);
+      return medidasArray.map(({ nome, tipo }) => `${tipo}: ${nome}`).join('\n');
+    } catch (error) {
+      console.error("Erro ao converter medidas:", error);
+      return 'N/A';
+    }
+  };
+
+  const convertProbSev = (item) => {
+    try {
+      switch (item) {
+        case 1:
+          return "Muito Baixa";
+        case 2:
+          return "Baixa";
+        case 3:
+          return "Média";
+        case 4:
+          return "Alta";
+        case 5:
+          return "Muito Alta";
+        default:
+          return "N/A";
+      }
+    } catch (error) {
+      console.log("Erro ao converter Probabilidade/Severidade!", error);
+    }
+  };
+
+  const convertNivel = (item) => {
+    try {
+      if (item >= 1 && item <= 6) {
+        return "Baixo";
+      } else if (item >= 8 && item <= 12) {
+        return "Moderado"
+      } else if (item >= 15 && item <= 16) {
+        return "Alto"
+      } else if (item >= 19) {
+        return "Crítico"
+      } else {
+        return "N/A"
+      }
+    } catch (error) {
+      console.log("Erro ao converter Nível!", error);
+    }
+  };
+
+  const findMedidas = (medida, tipo) => {
+    try {
+      switch (tipo) {
+        case 1:
+          const filterMedidaAdm = medidasAdm.find((i) => i.id_medida_adm === medida);
+          return filterMedidaAdm.descricao_medida_adm;
+        case 2:
+          const filterMedidaEpi = medidasEpi.find((i) => i.id_medida === medida);
+          const medidaEpi = `${filterMedidaEpi.nome_medida} - ${filterMedidaEpi.certificado_medida} (${filterMedidaEpi.vencimento_certificado_medida})`
+          return medidaEpi;
+        case 3:
+          const filterMedidaEpc = medidasEpc.find((i) => i.id_medida === medida);
+          return filterMedidaEpc.descricao_medida;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar medida!", error)
+    }
+  };
+
+  const findTipo = (tipo) => {
+    try {
+      switch (tipo) {
+        case 1:
+          return "Adm"
+        case 2:
+          return "Epi"
+        case 3:
+          return "Epc"
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Erro ao filtrar tipo de medida", error)
+    }
+  };
+
+  const getColor = (item) => {
+    try {
+      switch (item) {
+        case 1:
+          return '#d8f3dc'
+        case 2:
+          return '#caf0f8'
+        case 3:
+          return '#fff6cc'
+        case 4:
+          return '#ffc971'
+        case 5:
+          return '#fcb9b2'
+        case 0:
+          return '#e9ecef'
+        default:
+          return '#e9ecef'
+      }
+    } catch (error) {
+      console.log("Erro ao modificar cor de fundo!", error)
+    }
+  };
+
+  const getColorStatus = (item) => {
+    try {
+      switch (item) {
+        case 'Não Realizado':
+          return '#ffc971'
+        default:
+          return '#e9ecef'
+      }
+    } catch (error) {
+      console.log("Erro ao modificar cor de fundo!", error)
+    }
+  };
+
+  const getColorNivel = (item) => {
+    try {
+      if (item >= 1 && item <= 6) {
+        return "#d8f3dc";
+      } else if (item >= 8 && item <= 12) {
+        return "#fff6cc"
+      } else if (item >= 15 && item <= 16) {
+        return "#ffc971"
+      } else if (item >= 19) {
+        return "#fcb9b2"
+      } else {
+        return "#e9ecef"
+      }
+    } catch (error) {
+      console.log("Erro ao converter Nível!", error);
+    }
+  };
+
+  const setVigencia = (item) => {
+    try {
+      const dataCalculada = new Date(item);
+
+      dataCalculada.setFullYear(dataCalculada.getFullYear() + 2);
+      return formatData(dataCalculada);
+    } catch (error) {
+      console.log("Erro ao calcular data", error)
+    }
+  };
+
+
+
 
   const PageStyles = StyleSheet.create({
     pageCenter: {
@@ -84,7 +312,7 @@ function PdfGenerate({
     },
 
     SignatureDate: {
-      fontSize: 12,
+      fontSize: 10,
       textAlign: 'left',
       color: '#343a40',
     },
@@ -100,6 +328,10 @@ function PdfGenerate({
 
     smallText: {
       fontSize: 12,
+    },
+
+    smallTextVigencia: {
+      fontSize: 10,
     },
 
     subTitleSumary: {
@@ -166,6 +398,14 @@ function PdfGenerate({
     bottomContainer: {
       marginTop: 'auto',
       width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
+
+    bottomContainerVigencia: {
+      marginTop: 'auto',
+      width: '100%',
+      marginBottom: 10,
       flexDirection: 'row',
       justifyContent: 'flex-end',
     },
@@ -279,8 +519,8 @@ function PdfGenerate({
         <View style={ContainerStyles.centerContainer}>
           <Text style={TextStyles.centerText}>{companyName}</Text>
         </View>
-        <View style={ContainerStyles.bottomContainer}>
-          <Text style={TextStyles.smallText}>Vigência - Data à Data</Text>
+        <View style={ContainerStyles.bottomContainerVigencia}>
+          <Text style={TextStyles.smallTextVigencia}>Londrina, {formatData(data)} - Vigência: {setVigencia(data)}</Text>
         </View>
       </Page>
     )
@@ -291,9 +531,7 @@ function PdfGenerate({
       <Page size="A4" style={PageStyles.pageCenter}>
         <HeaderPage />
         <Text style={TextStyles.topText}>Sumário</Text>
-        <View style={ContainerStyles.bottomContainer}>
-          <Text style={TextStyles.smallText}>Dados da Empresa</Text>
-        </View>
+        <FooterPage />
       </Page>
     );
   };
@@ -322,6 +560,12 @@ function PdfGenerate({
         justifyContent: 'center',
         alignItems: 'center',
       },
+
+      signatureLine: {
+        height: '20%',
+        borderBottom: '1 solida #343a40'
+      },
+
     });
 
     return (
@@ -357,22 +601,11 @@ function PdfGenerate({
               <Text style={TextStyles.valueText}>Serviços de manutenção e reparação mecânica de veículos automotores</Text>
             </View>
           </View>
-          {/* <View style={TableStyles.tableRow}>
-            <View style={TableStyles.twentyFiveRow}>
-              <Text style={TextStyles.prefixText}>Cep:</Text>
-              <Text style={TextStyles.valueText}>86020-410</Text>
-            </View>
-            <View style={TableStyles.seventyFiveRow}>
-              <Text style={TextStyles.prefixText}>Endereço:</Text>
-              <Text style={TextStyles.valueText}>Rua Goias 1914 - apto 301</Text>
-              <Text style={TextStyles.valueText}>Centro - Londrina/PR</Text>
-            </View>
-          </View> */}
         </View>
 
         {/* Signature Table */}
         <View style={ContainerStyles.signatureContainer}>
-          <Text style={TextStyles.SignatureDate}>Londrina, Dia de Mês de Ano</Text>
+          <Text style={TextStyles.SignatureDate}>Londrina, {formatData(data)}</Text>
 
           {/* Assinatura do Técnico */}
           <View style={TableStyles.table}>
@@ -389,12 +622,13 @@ function PdfGenerate({
                 <Text style={TextStyles.officeText}>{user.nome_usuario}</Text>
               </View>
               <View style={TableStyles.fiftyRow}>
+                <View style={CompanyStyles.signatureLine}></View>
               </View>
             </View>
           </View>
 
-          {/* Assinatura do Reponsável */}
-          <View style={CompanyStyles.table}>
+          {/* Signature Table */}
+          <View style={TableStyles.table}>
             <View style={CompanyStyles.headerSignatureContentCell}>
               <View style={CompanyStyles.headerSignatureCell}>
                 <Text style={TextStyles.valueTextSignatureTitle}>Responsável</Text>
@@ -403,12 +637,13 @@ function PdfGenerate({
                 <Text style={TextStyles.valueTextSignatureTitle}>Assinatura</Text>
               </View>
             </View>
-            <View style={CompanyStyles.tableRow}>
+            <View style={TableStyles.tableRow}>
               <View style={CompanyStyles.officeFiftyRow}>
                 <Text style={TextStyles.officeText}>{contatos.nome_contato}</Text>
                 <Text style={TextStyles.officeSmallText}>{contatos.email_contato}</Text>
               </View>
-              <View style={CompanyStyles.fiftyRow}>
+              <View style={TableStyles.fiftyRow}>
+                <View style={CompanyStyles.signatureLine}></View>
               </View>
             </View>
           </View>
@@ -421,6 +656,40 @@ function PdfGenerate({
       </Page>
     );
   };
+
+  const UnidadesPage = () => {
+    return (
+      <Page style={PageStyles.Page}>
+
+        <Text style={TextStyles.subTitleSumary}>2. Unidades da empresa</Text>
+
+        {/* Unidades */}
+        {unidades.map((item, i) => (
+          <View key={i} style={TableStyles.table}>
+            <View style={TableStyles.headerCell}>
+              <Text style={TextStyles.prefixTextTitle}>Unidade: </Text>
+              <Text style={TextStyles.valueTextTitle}>{item.nome_unidade}</Text>
+            </View>
+            <View style={TableStyles.tableRow}>
+              <View style={TableStyles.twentyFiveRow}>
+                <Text style={TextStyles.prefixText}>CNPJ:</Text>
+                <Text style={TextStyles.valueText}>{item.cnpj_unidade || "N/A"}</Text>
+              </View>
+              <View style={TableStyles.twentyFiveRow}>
+                <Text style={TextStyles.prefixText}>Cep:</Text>
+                <Text style={TextStyles.valueText}>{item.cep_unidade}</Text>
+              </View>
+              <View style={TableStyles.fiftyRow}>
+                <Text style={TextStyles.prefixText}>Endereço:</Text>
+                <Text style={TextStyles.valueText}>{item.endereco_unidade}, {item.numero_unidade} - {item.complemento}</Text>
+                <Text style={TextStyles.valueText}>{item.bairro_unidade} - {item.cidade_unidade}/{item.uf_unidade}</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+      </Page>
+    );
+  }
 
   const PostPage = () => {
 
@@ -579,20 +848,20 @@ function PdfGenerate({
                 <Text style={TextStyles.valueTextSignatureTitle}>Total</Text>
               </View>
             </View>
-              <View style={PostStyles.tableRow}>
-                <View style={PostStyles.row}>
-                  <Text style={PostStyles.postText}>{getTotalFuncMasc()}</Text>
-                </View>
-                <View style={PostStyles.row}>
-                  <Text style={PostStyles.postText}>{getTotalFuncFem()}</Text>
-                </View>
-                <View style={PostStyles.row}>
-                  <Text style={PostStyles.postText}>{getTotalFuncMenor()}</Text>
-                </View>
-                <View style={PostStyles.row}>
-                  <Text style={PostStyles.postText}>{getTotalFunc()}</Text>
-                </View>
+            <View style={PostStyles.tableRow}>
+              <View style={PostStyles.row}>
+                <Text style={PostStyles.postText}>{getTotalFuncMasc()}</Text>
               </View>
+              <View style={PostStyles.row}>
+                <Text style={PostStyles.postText}>{getTotalFuncFem()}</Text>
+              </View>
+              <View style={PostStyles.row}>
+                <Text style={PostStyles.postText}>{getTotalFuncMenor()}</Text>
+              </View>
+              <View style={PostStyles.row}>
+                <Text style={PostStyles.postText}>{getTotalFunc()}</Text>
+              </View>
+            </View>
           </View>
         </View>
 
@@ -606,6 +875,7 @@ function PdfGenerate({
 
     const RiskInventoryStyles = StyleSheet.create({
       headerRow: {
+        gap: 2,
         paddingHorizontal: 3,
         paddingVertical: 3,
         backgroundColor: '#0077b6',
@@ -622,18 +892,19 @@ function PdfGenerate({
         flexDirection: 'row',
         width: '100%',
         alignItems: 'center',
+        justifyContent: 'center',
       },
 
       headerCellCenter: {
         width: '10%',
         textAlign: 'center',
-        fontSize: 7,
+        fontSize: 6,
       },
 
       headerCell: {
         width: '10%',
         textAlign: 'left',
-        fontSize: 7,
+        fontSize: 6,
       },
 
       dataCell: {
@@ -642,7 +913,7 @@ function PdfGenerate({
         width: '10%',
         textAlign: 'left',
         flexDirection: 'row',
-        fontSize: 7,
+        fontSize: 6,
       },
 
       dataCellCenter: {
@@ -651,7 +922,17 @@ function PdfGenerate({
         width: '10%',
         textAlign: 'center',
         flexDirection: 'row',
-        fontSize: 7,
+        fontSize: 6,
+        alignItems: 'center',
+      },
+
+      dataCellColor: {
+        width: '10%',
+        textAlign: 'center',
+        fontSize: 6,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
 
     });
@@ -680,7 +961,9 @@ function PdfGenerate({
             <Text style={RiskInventoryStyles.headerCell}>Fontes</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Pessoas Expostas</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Avaliação</Text>
+            <Text style={RiskInventoryStyles.headerCellCenter}>Frequência</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Medição</Text>
+            <Text style={RiskInventoryStyles.headerCell}>Aparelho</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Limite de Tolerância</Text>
             <Text style={RiskInventoryStyles.headerCell}>Metodologia</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Medidas</Text>
@@ -690,27 +973,39 @@ function PdfGenerate({
             <Text style={RiskInventoryStyles.headerCell}>Comentários</Text>
           </View>
           {/* Body */}
-          <View style={RiskInventoryStyles.dataRow}>
-            <Text style={RiskInventoryStyles.dataCellCenter}>1</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>05/02/2024</Text>
-            <Text style={RiskInventoryStyles.dataCell}>RVS</Text>
-            <Text style={RiskInventoryStyles.dataCell}>Funilaria</Text>
-            <Text style={RiskInventoryStyles.dataCell}>N/A</Text>
-            <Text style={RiskInventoryStyles.dataCell}>Ruido</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>Fisico</Text>
-            <Text style={RiskInventoryStyles.dataCell}>Possibilidade de desenvolver traumas lombares</Text>
-            <Text style={RiskInventoryStyles.dataCell}>Ferramentas</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>2</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>Qualitativo</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>N/A</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>N/A</Text>
-            <Text style={RiskInventoryStyles.dataCell}>N/A</Text>
-            <Text style={RiskInventoryStyles.dataCell}>EPC: Paleteira e carrinhos</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>Baixa</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>Média</Text>
-            <Text style={RiskInventoryStyles.dataCellCenter}>Baixo</Text>
-            <Text style={RiskInventoryStyles.dataCell}>Sem indicadores de incidentes</Text>
-          </View>
+          {inventario.map((item, i) => (
+            <View key={i} style={RiskInventoryStyles.dataRow}>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{item.id_inventario || ''}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{formatData(item.data_inventario) || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_unidade_id, 'nome_unidade')}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_setor_id, 'nome_setor')}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_processo_id, 'nome_processo')}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_risco_id, 'nome_risco') || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{find(item.fk_risco_id, 'grupo_risco') || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_risco_id, 'consequencia') || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{item.fontes || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{item.pessoas_expostas || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{find(item.fk_risco_id, 'avaliacao') || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{item.frequencia || '0'}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{item.medicao + " " + find(item.fk_risco_id, 'unidade_medida') || '0'}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_aparelho_id, 'nome_aparelho') || 'N/A'}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{find(item.fk_risco_id, 'limite_tolerancia') + " " + find(item.fk_risco_id, 'unidade_medida') || '0'}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_risco_id, 'metodologia') || 'N/A'}</Text>
+              <View style={RiskInventoryStyles.dataCell}>
+                <Text>{convertMedidas(item.medidas) || 'N/A'}</Text>
+              </View>
+              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(item.probabilidade) }}>
+                <Text>{convertProbSev(item.probabilidade) || 'N/A'}</Text>
+              </View>
+              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(item.fk_risco_id) }}>
+                <Text>{convertProbSev(find(item.fk_risco_id, 'severidade')) || 'N/A'}</Text>
+              </View>
+              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColorNivel(item.nivel) }}>
+                <Text>{convertNivel(item.nivel) || 'N/A'}</Text>
+              </View>
+              <Text style={RiskInventoryStyles.dataCell}>{item.comentarios || ''}</Text>
+            </View>
+          ))}
         </View>
 
         {/* Footer */}
@@ -771,6 +1066,14 @@ function PdfGenerate({
         fontSize: 8,
       },
 
+      dataCellColor: {
+        width: '10%',
+        textAlign: 'center',
+        fontSize: 8,
+        height: '100%',
+        justifyContent: 'center',
+      },
+
     });
 
     return (
@@ -793,25 +1096,31 @@ function PdfGenerate({
             <Text style={PlanStyles.headerCell}>Responsável</Text>
             <Text style={PlanStyles.headerCell}>Processo</Text>
             <Text style={PlanStyles.headerCell}>Risco</Text>
+            <Text style={PlanStyles.headerCellCenter}>Tipo</Text>
             <Text style={PlanStyles.headerCell}>Medida</Text>
             <Text style={PlanStyles.headerCellCenter}>Prazo</Text>
             <Text style={PlanStyles.headerCellCenter}>Data de Conclusão</Text>
             <Text style={PlanStyles.headerCellCenter}>Status</Text>
           </View>
           {/* Body */}
-          <View style={PlanStyles.dataRow}>
-            <Text style={PlanStyles.dataCellCenter}>1</Text>
-            <Text style={PlanStyles.dataCellCenter}>05/02/2024</Text>
-            <Text style={PlanStyles.dataCell}>RVS</Text>
-            <Text style={PlanStyles.dataCell}>Funilaria</Text>
-            <Text style={PlanStyles.dataCell}>Fellipe Tereska</Text>
-            <Text style={PlanStyles.dataCell}>N/A</Text>
-            <Text style={PlanStyles.dataCell}>Ruido</Text>
-            <Text style={PlanStyles.dataCell}>Medida</Text>
-            <Text style={PlanStyles.dataCellCenter}>6 Meses</Text>
-            <Text style={PlanStyles.dataCellCenter}>00/00/0000</Text>
-            <Text style={PlanStyles.dataCellCenter}>Status</Text>
-          </View>
+          {plano.map((item, i) => (
+            <View key={i} style={PlanStyles.dataRow}>
+              <Text style={PlanStyles.dataCellCenter}>{item.id_plano}</Text>
+              <Text style={PlanStyles.dataCellCenter}>{formatData(item.data) || ""}</Text>
+              <Text style={PlanStyles.dataCell}>{find(item.fk_unidade_id, 'nome_unidade')}</Text>
+              <Text style={PlanStyles.dataCell}>{find(item.fk_setor_id, 'nome_setor')}</Text>
+              <Text style={PlanStyles.dataCell}>{item.responsavel || 'N/A'}</Text>
+              <Text style={PlanStyles.dataCell}>{find(item.fk_processo_id, 'nome_processo')}</Text>
+              <Text style={PlanStyles.dataCell}>{find(item.fk_risco_id, 'nome_risco') || 'N/A'}</Text>
+              <Text style={PlanStyles.dataCellCenter}>{findTipo(item.tipo_medida) || 'N/A'}</Text>
+              <Text style={PlanStyles.dataCell}>{findMedidas(item.fk_medida_id, item.tipo_medida) || 'N/A'}</Text>
+              <Text style={PlanStyles.dataCellCenter}>{item.prazo}</Text>
+              <Text style={PlanStyles.dataCellCenter}></Text>
+              <View style={{ ...PlanStyles.dataCellColor, backgroundColor: getColorStatus(item.status) }}>
+                <Text>{item.status || 'N/A'}</Text>
+              </View>
+            </View>
+          ))}
         </View>
 
         {/* Footer */}
@@ -826,6 +1135,7 @@ function PdfGenerate({
         <CoverPage />
         <SumaryPage />
         <CompanyPage />
+        <UnidadesPage />
         <PostPage />
         <RiskInventoryPage />
         <PlanPage />
