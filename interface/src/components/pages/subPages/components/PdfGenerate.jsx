@@ -661,6 +661,8 @@ function PdfGenerate({
     return (
       <Page style={PageStyles.Page}>
 
+        <HeaderPage />
+
         <Text style={TextStyles.subTitleSumary}>2. Unidades da empresa</Text>
 
         {/* Unidades */}
@@ -687,6 +689,8 @@ function PdfGenerate({
             </View>
           </View>
         ))}
+
+        <FooterPage />
       </Page>
     );
   }
@@ -997,7 +1001,7 @@ function PdfGenerate({
               <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(item.probabilidade) }}>
                 <Text>{convertProbSev(item.probabilidade) || 'N/A'}</Text>
               </View>
-              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(item.fk_risco_id) }}>
+              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(find(item.fk_risco_id, 'severidade')) }}>
                 <Text>{convertProbSev(find(item.fk_risco_id, 'severidade')) || 'N/A'}</Text>
               </View>
               <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColorNivel(item.nivel) }}>
