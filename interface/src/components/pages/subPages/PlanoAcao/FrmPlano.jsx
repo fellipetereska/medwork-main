@@ -57,6 +57,7 @@ function FrmPlano({
   const [isOk, setIsOk] = useState(false);
   const [plano, setPlano] = useState(false);
   const [filterGlobalSprm, setFilterGlobalSprm] = useState([]);
+  const [medidasDefineKey, setMedidasDefineKey] = useState(false)
 
   //Inputs Form
   const [data, setData] = useState('');
@@ -355,12 +356,19 @@ function FrmPlano({
     setIsOk(false);
     setData(obterDataFormatada);
     setFilterGlobalSprm([]);
-  }
+  };
 
   const handleMedidaChange = () => {
     getGlobalSprm();
     closeModalMedidas();
-  }
+    setMedidasDefineKey(true);
+  };
+
+  useEffect(() => {
+    const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === riscoId);
+    const filterApply = sprm.filter((c) => c.status && c.status === "Não Aplica")
+    setFilterGlobalSprm(filterApply);
+  }, [filterGlobalSprm, medidasDefineKey])
 
   const find = (item, tipo) => {
     try {
@@ -400,7 +408,7 @@ function FrmPlano({
       default:
         return 'N/A'
     }
-  }
+  };
 
   const handleChangeData = (event) => {
     setData(event.target.value);
@@ -645,7 +653,7 @@ function FrmPlano({
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                 Medidas Aplicadas:
               </label>
-              {riscoId && filterGlobalSprm.map((item, i) => (
+              {riscoId && filterGlobalSprm.filter((i) => i.status === "Não Aplica").map((item, i) => (
                 <ul key={i}>
                   <li className="pb-3 sm:pb-4">
                     <div className="grid grid-cols-5 items-center space-x-4 rtl:space-x-reverse border-b border-gray-300 px-4 py-2 hover:bg-gray-50">
@@ -680,7 +688,7 @@ function FrmPlano({
                             });
 
                             const allPrazosSelected = prazosValues.every((prazo) => prazo !== '0');
-                            setIsOk(allPrazosSelected);
+                            setIsOk(true);
                           }}
                         >
                           <option value="0">Selecione um Prazo</option>

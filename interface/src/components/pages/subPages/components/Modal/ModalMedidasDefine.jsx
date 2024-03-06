@@ -79,8 +79,7 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
       ...prevState,
       [itemId]: status,
     }));
-  }
-
+  };
 
   if (!isOpen || !globalSprm) {
     return null;
@@ -153,7 +152,7 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
                       <option value="0">Selecione uma aplicação</option>
                       <option value="Aplica" disabled={plano}>Aplica</option>
                       <option value="Não Aplica">Não Aplica</option>
-                      <option value="Não Aplica">Não Aplicavel</option>
+                      <option value="Não Aplicavel">Não Aplicavel</option>
                     </select>
                   </td>
                 </tr>
