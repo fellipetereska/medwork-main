@@ -178,7 +178,7 @@ function Laudos() {
             data={data}
           />
         }
-        fileName={`PGR - ${company}` || 'Programa de Gerenciamento de Riscos'}
+        fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
       >
         {({ blob, url, loading, error }) =>
           loading ?
