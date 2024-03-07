@@ -57,7 +57,6 @@ function FrmPlano({
   const [isOk, setIsOk] = useState(false);
   const [plano, setPlano] = useState(false);
   const [filterGlobalSprm, setFilterGlobalSprm] = useState([]);
-  const [medidasDefineKey, setMedidasDefineKey] = useState(false)
 
   //Inputs Form
   const [data, setData] = useState('');
@@ -361,14 +360,13 @@ function FrmPlano({
   const handleMedidaChange = () => {
     getGlobalSprm();
     closeModalMedidas();
-    setMedidasDefineKey(true);
   };
 
   useEffect(() => {
     const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === riscoId);
     const filterApply = sprm.filter((c) => c.status && c.status === "Não Aplica")
     setFilterGlobalSprm(filterApply);
-  }, [filterGlobalSprm, medidasDefineKey])
+  }, [globalSprm])
 
   const find = (item, tipo) => {
     try {
