@@ -14,7 +14,7 @@ const ModalMedidasDefine = ({ onCancel, isOpen, companyName, globalSprm, medidas
       });
       setSelectedStatus(initialStatus);
     }
-  }, [isOpen, globalSprm]);
+  }, [globalSprm]);
 
   const find = (item, tipo) => {
     try {
