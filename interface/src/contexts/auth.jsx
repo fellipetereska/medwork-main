@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [aparelhos, setAparelhos] = useState([]);
   const [companyId, setCompanyId] = useState('');
   const [user, setUser] = useState([]);
+  const [pdfVersion, setPdfVersion] = useState([]);
 
   const handleSetCompanyId = () => {
     try {
@@ -406,6 +407,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getPdfVersion = async () => {
+    try {
+      const response = await fetch(`${connect}/pdf_version`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar PDF. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      data.sort((a, b) => a.data_versao < b.data_versao);
+      setPdfVersion(data)
+    } catch (error) {
+      console.log(`Erro ao buscar Aparelhos. ${error}`);
+    }
+  };
+
   const loadSelectedCompanyFromLocalStorage = () => {
     try {
       const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -539,6 +556,9 @@ export const AuthProvider = ({ children }) => {
         handleSignInUser,
         checkSignIn,
         clearUser,
+        getPdfVersion,
+        setPdfVersion,
+        pdfVersion,
       }}>
       {children}
     </AuthContext.Provider>
