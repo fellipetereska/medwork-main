@@ -214,10 +214,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     return value.replace(/\D/g, '').replace(/(\d{4})(\d{1})(\d{2})/, '$1-$2/$3');
   }
 
-  const handlePastCnae = (event) => {
-    const inputCnae = event.clipboardData.getData('text/plain');
-    const cnaeFormated = handleFormatCnae(inputCnae);
-    setCnae(cnaeFormated);
+  const handlePastCnae = async (event) => {
+    await handleCnaeChange(event);
   };
 
   const handleCnaeChange = async (e) => {
@@ -227,9 +225,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     const formatedCnae = handleFormatCnae(truncatedValue);
     setCnae(formatedCnae);
 
-    if (truncatedValue.length === 7) {
+    if (truncatedValue.length === 9) {
       const cnaeInfo = await ObterInfoCnae(truncatedValue);
-      console.log(cnaeInfo);
       setGrauRisco(cnaeInfo.risco)
     }
   };
@@ -254,7 +251,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCheckedEstadual(false);
     }
-  }
+  };
 
   const handleBlurMunicipal = (e) => {
     const inputValue = e.target.value;
@@ -264,7 +261,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCheckedMunicipal(false);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center mt-10">
@@ -353,8 +350,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
             <input
               className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'opacity-25' : 'bg-gray-100'}`}
               type="number"
-              name="inscricao_municipal"
-              id="inscricao_estadual"
+              name="inscricao_municipal_empresa"
+              id="inscricao_municipal"
               placeholder="Inscrição Municipal"
               disabled={checkedMunicipal}
               onChange={handleInputChange}

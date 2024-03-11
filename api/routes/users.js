@@ -1214,11 +1214,10 @@ router.post("/pgr_version", (req, res) => {
   const data = req.body;
 
   const q = "INSERT INTO pgr_version SET ?"
+router.post("/pdf_version", (req, res) => {
+  const data = req.body;
 
-  pool.getConnection((err, con) => {
-
-    if (err) return next(err);
-
+  const q = "INSERT INTO pdf_version SET ?"
     con.query(q, data, (err, result) => {
       if (err) {
         console.error("Erro ao inserir pdf na tabela", err);
