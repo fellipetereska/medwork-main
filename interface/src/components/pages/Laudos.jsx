@@ -303,7 +303,7 @@ function Laudos() {
         const res = await generatePdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, filterpdf, data, filterVersion);
         handleDownloadPGR(res)
         setGeneratedPdf(res)
-        handleSubmit(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, data);
+        // handleSubmit(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, data);
       }
 
     } catch (error) {
