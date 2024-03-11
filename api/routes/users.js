@@ -1192,6 +1192,47 @@ router.put("/aparelhos/:id_aparelho", (req, res) => {
 });
 
 
+//Tabela de Versões do PDF
+//Get Table
+router.get("/pgr_version", (req, res) => {
+  const q = `SELECT * FROM pgr_version`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+      con.release();
+      return res.status(200).json(data);
+    });
+  })
+
+});
+
+//Add rows in table
+router.post("/pgr_version", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO pgr_version SET ?"
+
+  pool.getConnection((err, con) => {
+
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir pdf na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Versão Criada com sucesso!`);
+    })
+  })
+
+});
+
+
+
 
 // Verifica Usuário para Logar
 import admin from 'firebase-admin'
