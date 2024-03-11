@@ -11,6 +11,8 @@ import icon_sair from '../media/icon_sair.svg'
 import icon_lupa from '../media/icon_lupa.svg'
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
+import { connect } from "../../services/api";
+import GridLaudos from "./subPages/GridLaudos";
 
 
 function Laudos() {
@@ -34,6 +36,7 @@ function Laudos() {
     getContatos, contatos,
     checkSignIn, user,
     getAparelhos, aparelhos,
+    getPdfVersion, pdfVersion,
   } = useAuth(null);
 
   const [filteredInventario, setFilteredInventario] = useState([]);
@@ -51,6 +54,7 @@ function Laudos() {
   const [nomeUnidade, setNomeUnidade] = useState('');
   const [setorNome, setSetorNome] = useState('');
   const [data, setData] = useState('');
+  const [pdfBlob, setPdfBlob] = useState(null);
 
   const [company, setCompany] = useState([]);
 
@@ -154,54 +158,87 @@ function Laudos() {
     setSetorNome(null);
   };
 
-  const generateFilteredPdf = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano) => {
-    const pdfGenerated = (
-      <PDFDownloadLink
-        document={
-          <PdfGenerate
-            companyName={nameCompany}
-            companyId={companyId}
-            unidades={unidades}
-            setores={filterSetor}
-            cargos={filterCargo}
-            inventario={filterInventario}
-            plano={filterPlano}
-            contatos={filterContato}
-            riscos={riscos}
-            medidasAdm={medidasAdm}
-            medidasEpi={medidasEpi}
-            medidasEpc={medidasEpc}
-            processos={processos}
-            company={filterCompany}
-            user={user}
-            aparelhos={aparelhos}
-            data={data}
-          />
-        }
-        fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
-      >
-        {({ blob, url, loading, error }) =>
-          loading ?
-            <button disabled className={`bg-yellow-600 py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-yellow-700}`}>
-              Baixar PDF
-            </button>
-            :
-            <button type="button" disabled={loading} className={`bg-green-600 py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700}`}>
-              Baixar PDF
-            </button>
-        }
-      </PDFDownloadLink>
-    );
+  const handleSubmit = async (blob) => {
+    // try {
+    //   const formData = new FormData();
 
-    setPdfComponent(pdfGenerated);
+    //   formData.append("pdfFile", blob, "pgr_document.pdf");
+
+    //   const response = await fetch(`${connect}/pdf_version`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/pdf",
+    //     },
+    //     body: formData,
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error("Erro ao salvar PDF no banco de dados");
+    //   }
+
+    //   toast.success("PDF Salvo com sucesso!")
+
+    //   getPdfVersion();
+    // } catch (error) {
+    //   console.error("Erro ao adicionar versão do pdf!", error)
+    // }
   };
+
+  const generateFilteredPdf = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano) => {
+    const { blob } = await new Promise((resolve, reject) => {
+      const pdfGenerated = (
+        <PDFDownloadLink
+          document={
+            <PdfGenerate
+              companyName={nameCompany}
+              companyId={companyId}
+              unidades={unidades}
+              setores={filterSetor}
+              cargos={filterCargo}
+              inventario={filterInventario}
+              plano={filterPlano}
+              contatos={filterContato}
+              riscos={riscos}
+              medidasAdm={medidasAdm}
+              medidasEpi={medidasEpi}
+              medidasEpc={medidasEpc}
+              processos={processos}
+              company={filterCompany}
+              user={user}
+              aparelhos={aparelhos}
+              data={data}
+            />
+          }
+          fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
+        >
+          {({ blob, url, loading, error }) => (
+            <button
+              type="button"
+              disabled={loading}
+              className={`${loading ? 'bg-yellow-600' : 'bg-green-600'
+                } py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700`}
+              onClick={() => {
+                if (!loading && blob) {
+                  handleSubmit(blob);
+                }
+              }}
+            >
+              {loading ? 'Gerando PDF...' : 'Baixar PDF'}
+            </button>
+          )}
+        </PDFDownloadLink>
+      );
+
+      setPdfComponent(pdfGenerated);
+    });
+  }
 
   const handleGenerate = async () => {
     await handleGet();
     try {
       const filterCompany = empresas.find((i) => i.id_empresa === companyId);
       const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
-      const users = await checkSignIn();
+      await checkSignIn();
       const mapUnidade = unidades.map((i) => i.id_unidade);
       const filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
       const mapSetor = filterSetor.map((i) => i.id_setor);
@@ -210,6 +247,7 @@ function Laudos() {
       const filterPlano = plano.filter((i) => i.fk_empresa_id === companyId);
 
       await generateFilteredPdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano);
+      handleSubmit();
     } catch (error) {
       console.log("Erro ao filtrad dados!", error)
     }
@@ -387,6 +425,11 @@ function Laudos() {
           </div>
         </form>
       </div>
+
+      <GridLaudos
+        children={pdfVersion}
+
+      />
     </>
   )
 }

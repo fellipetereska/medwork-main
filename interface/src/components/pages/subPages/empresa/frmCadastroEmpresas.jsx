@@ -225,7 +225,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     const formatedCnae = handleFormatCnae(truncatedValue);
     setCnae(formatedCnae);
 
-    if (truncatedValue.length === 7) {
+    if (truncatedValue.length === 9) {
       const cnaeInfo = await ObterInfoCnae(truncatedValue);
       setGrauRisco(cnaeInfo.risco)
     }
@@ -251,7 +251,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCheckedEstadual(false);
     }
-  }
+  };
 
   const handleBlurMunicipal = (e) => {
     const inputValue = e.target.value;
@@ -261,7 +261,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCheckedMunicipal(false);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center mt-10">
