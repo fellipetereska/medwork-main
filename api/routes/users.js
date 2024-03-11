@@ -1194,8 +1194,8 @@ router.put("/aparelhos/:id_aparelho", (req, res) => {
 
 //Tabela de Versões do PDF
 //Get Table
-router.get("/pdf_version", (req, res) => {
-  const q = `SELECT * FROM pdf_version`;
+router.get("/pgr_version", (req, res) => {
+  const q = `SELECT * FROM pgr_version`;
 
   pool.getConnection((err, con) => {
     if (err) return next(err);
@@ -1210,15 +1210,14 @@ router.get("/pdf_version", (req, res) => {
 });
 
 //Add rows in table
+router.post("/pgr_version", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO pgr_version SET ?"
 router.post("/pdf_version", (req, res) => {
   const data = req.body;
 
   const q = "INSERT INTO pdf_version SET ?"
-
-  pool.getConnection((err, con) => {
-
-    if (err) return next(err);
-
     con.query(q, data, (err, result) => {
       if (err) {
         console.error("Erro ao inserir pdf na tabela", err);

@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 
 function PdfGenerate({
-  companyName, companyId,
   inventario, plano,
   company, unidades, setores, cargos, contatos,
   processos, riscos, medidasAdm, medidasEpi, medidasEpc,
-  user, aparelhos, data,
+  user, aparelhos, data, versao, pdfVersion,
 }) {
 
   const findSetor = (item) => {
@@ -261,6 +260,7 @@ function PdfGenerate({
 
 
 
+  
 
   const PageStyles = StyleSheet.create({
     pageCenter: {
@@ -328,6 +328,11 @@ function PdfGenerate({
 
     smallText: {
       fontSize: 12,
+    },
+
+    littleText: {
+      fontSize: 10,
+      textAlign: 'center',
     },
 
     smallTextVigencia: {
@@ -499,6 +504,7 @@ function PdfGenerate({
     return (
       <View style={ContainerStyles.headerContainer}>
         <Text style={TextStyles.headerText}>PGR - Programa de Gerenciamento de Riscos - NR1</Text>
+        <Text style={TextStyles.littleText}>{company.nome_empresa} - Versão: {versao ? versao : '1'}</Text>
       </View>
     );
   }
@@ -506,7 +512,7 @@ function PdfGenerate({
   const FooterPage = () => {
     return (
       <View style={ContainerStyles.footerContainer}>
-        <Text style={TextStyles.footerText}>{companyName}</Text>
+        <Text style={TextStyles.footerText}>{company.nome_empresa}</Text>
         <Text style={TextStyles.footerAddresText}>Rua Goias, 1914 - apto 301 - Londrina/PR 86020-410</Text>
       </View>
     );
@@ -517,7 +523,7 @@ function PdfGenerate({
       <Page size="A4" style={PageStyles.pageCenter}>
         <Text style={TextStyles.headerText}>Programa de Gerenciamento de Riscos - PGR</Text>
         <View style={ContainerStyles.centerContainer}>
-          <Text style={TextStyles.centerText}>{companyName}</Text>
+          <Text style={TextStyles.centerText}>{company.nome_empresa}</Text>
         </View>
         <View style={ContainerStyles.bottomContainerVigencia}>
           <Text style={TextStyles.smallTextVigencia}>Londrina, {formatData(data)} - Vigência: {setVigencia(data)}</Text>
@@ -532,6 +538,88 @@ function PdfGenerate({
         <HeaderPage />
         <Text style={TextStyles.topText}>Sumário</Text>
         <FooterPage />
+      </Page>
+    );
+  };
+
+  const VersionTable = () => {
+
+    const RiskInventoryStyles = StyleSheet.create({
+      headerRow: {
+        gap: 2,
+        paddingHorizontal: 3,
+        paddingVertical: 3,
+        backgroundColor: '#0077b6',
+        flexDirection: 'row',
+        color: '#f8f9fa',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      dataRow: {
+        paddingHorizontal: 3,
+        borderBottom: '1 solid #343a40',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'center',
+      },
+
+      headerCellCenter: {
+        textAlign: 'center',
+        fontSize: 10,
+        width: '15%',
+      },
+
+      headerCell: {
+        textAlign: 'center',
+        fontSize: 10,
+        width: '45%',
+      },
+
+      dataCell: {
+        paddingHorizontal: 3,
+        paddingVertical: 3,
+        textAlign: 'left',
+        flexDirection: 'row',
+        fontSize: 10,
+        width: '45%',
+      },
+
+      dataCellCenter: {
+        paddingHorizontal: 3,
+        paddingVertical: 3,
+        textAlign: 'center',
+        flexDirection: 'row',
+        fontSize: 10,
+        alignItems: 'center',
+        width: '15%',
+      },
+
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <Text style={TextStyles.subTitleSumary}>0. Versões do PGR</Text>
+
+        {/* Versões */}
+        <View style={TableStyles.table}>
+          <View style={RiskInventoryStyles.headerRow}>
+            <Text style={RiskInventoryStyles.headerCellCenter}>ID</Text>
+            <Text style={RiskInventoryStyles.headerCellCenter}>Versão</Text>
+            <Text style={RiskInventoryStyles.headerCell}>Empresa</Text>
+            <Text style={RiskInventoryStyles.headerCellCenter}>Data</Text>
+          </View>
+          {pdfVersion.map((item, i) => (
+            <View key={i} style={RiskInventoryStyles.dataRow}>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{item.id_versao || ''}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{item.versao}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{company.nome_empresa}</Text>
+              <Text style={RiskInventoryStyles.dataCellCenter}>{formatData(item.data)}</Text>
+            </View>
+          ))}
+        </View>
       </Page>
     );
   };
@@ -581,7 +669,7 @@ function PdfGenerate({
         <View style={TableStyles.table}>
           <View style={TableStyles.headerCell}>
             <Text style={TextStyles.prefixTextTitle}>Empresa: </Text>
-            <Text style={TextStyles.valueTextTitle}>{companyName || "N/A"}</Text>
+            <Text style={TextStyles.valueTextTitle}>{company.nome_empresa || "N/A"}</Text>
           </View>
           <View style={TableStyles.tableRow}>
             <View style={TableStyles.twentyFiveRow}>
@@ -1138,6 +1226,7 @@ function PdfGenerate({
       <Document>
         <CoverPage />
         <SumaryPage />
+        <VersionTable />
         <CompanyPage />
         <UnidadesPage />
         <PostPage />

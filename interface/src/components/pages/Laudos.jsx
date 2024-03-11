@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
+import ReactDOM from 'react-dom';
 
 import GerarLaudo from "./subPages/components/GerarLaudo";
 import PdfGenerate from "./subPages/components/PdfGenerate";
@@ -13,6 +14,7 @@ import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { connect } from "../../services/api";
 import GridLaudos from "./subPages/GridLaudos";
+import { FaDownload } from "react-icons/fa6";
 
 
 function Laudos() {
@@ -55,8 +57,8 @@ function Laudos() {
   const [setorNome, setSetorNome] = useState('');
   const [data, setData] = useState('');
   const [pdfBlob, setPdfBlob] = useState(null);
-
-  const [company, setCompany] = useState([]);
+  const [pdfGrid, setPdfGrid] = useState(false);
+  const [generatedPdf, setGeneratedPdf] = useState(null);
 
   useEffect(() => {
     loadSelectedCompanyFromLocalStorage();
@@ -81,12 +83,12 @@ function Laudos() {
     getContatos();
     getEmpresas();
     getAparelhos();
+    getPdfVersion();
   };
 
   useEffect(() => {
     handleGet();
   }, [companyId]);
-
 
   useEffect(() => {
     try {
@@ -158,103 +160,161 @@ function Laudos() {
     setSetorNome(null);
   };
 
-  const handleSubmit = async (blob) => {
-    // try {
-    //   const formData = new FormData();
+  const handleSubmit = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades) => {
+    await getPdfVersion();
+    try {
+      const pdfExists = pdfVersion.filter((i) => i.fk_empresa_id === companyId);
+      let versaoPgr = pdfExists.length + 1 || 1;
+      let pgrId = null;
 
-    //   formData.append("pdfFile", blob, "pgr_document.pdf");
+      const pdfVersionData = {
+        data: data,
+        fk_empresa_id: companyId,
+        unidades: JSON.stringify(filterUnidades),
+        setores: JSON.stringify(filterSetor),
+        cargos: JSON.stringify(filterCargo),
+        inventarios: JSON.stringify(filterInventario),
+        planos: JSON.stringify(filterPlano),
+        contatos: JSON.stringify(filterContato),
+        empresas: JSON.stringify(filterCompany),
+        usuarios: JSON.stringify(user),
+        versao: versaoPgr,
+        id_pgr: pgrId,
+      }
 
-    //   const response = await fetch(`${connect}/pdf_version`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/pdf",
-    //     },
-    //     body: formData,
-    //   });
+      const response = await fetch(`${connect}/pgr_version`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(pdfVersionData),
+      });
 
-    //   if (!response.ok) {
-    //     throw new Error("Erro ao salvar PDF no banco de dados");
-    //   }
 
-    //   toast.success("PDF Salvo com sucesso!")
+      if (!response.ok) {
+        throw new Error(`Erro ao gerar versão do PGR`);
+      };
 
-    //   getPdfVersion();
-    // } catch (error) {
-    //   console.error("Erro ao adicionar versão do pdf!", error)
-    // }
+      toast.success(`PGR Gerado com sucesso, Versão: ${versaoPgr}`);
+      getPdfVersion();
+    } catch (error) {
+      console.error("Erro ao adicionar versão do pdf!", error)
+    }
   };
 
-  const generateFilteredPdf = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano) => {
-    const { blob } = await new Promise((resolve, reject) => {
-      const pdfGenerated = (
-        <PDFDownloadLink
-          document={
-            <PdfGenerate
-              companyName={nameCompany}
-              companyId={companyId}
-              unidades={unidades}
-              setores={filterSetor}
-              cargos={filterCargo}
-              inventario={filterInventario}
-              plano={filterPlano}
-              contatos={filterContato}
-              riscos={riscos}
-              medidasAdm={medidasAdm}
-              medidasEpi={medidasEpi}
-              medidasEpc={medidasEpc}
-              processos={processos}
-              company={filterCompany}
-              user={user}
-              aparelhos={aparelhos}
-              data={data}
-            />
-          }
-          fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
-        >
-          {({ blob, url, loading, error }) => (
-            <button
-              type="button"
-              disabled={loading}
-              className={`${loading ? 'bg-yellow-600' : 'bg-green-600'
-                } py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700`}
-              onClick={() => {
-                if (!loading && blob) {
-                  handleSubmit(blob);
-                }
-              }}
-            >
-              {loading ? 'Gerando PDF...' : 'Baixar PDF'}
-            </button>
-          )}
-        </PDFDownloadLink>
-      );
+  const generatePdf = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, unidades, filterpdf, data, versao) => {
+    return (
+      <PdfGenerate
+        unidades={unidades}
+        setores={filterSetor}
+        cargos={filterCargo}
+        inventario={filterInventario}
+        plano={filterPlano}
+        contatos={filterContato}
+        riscos={riscos}
+        medidasAdm={medidasAdm}
+        medidasEpi={medidasEpi}
+        medidasEpc={medidasEpc}
+        processos={processos}
+        company={filterCompany}
+        user={user}
+        aparelhos={aparelhos}
+        data={data}
+        versao={versao}
+        pdfVersion={filterpdf}
+      />
+    );
+  };
 
-      setPdfComponent(pdfGenerated);
-    });
-  }
+  const handleDownloadPGR = async (pgr, grid) => {
+    if (grid) {
+      const { blob } = await new Promise((resolve, reject) => {
+        const pdfGenerated = (
+          <PDFDownloadLink
+            document={pgr}
+            fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
+          >
+            {({ blob, url, loading, error }) => (
+              loading ? (<p className="text-sm text-gray-400 font-light cursor-not-allowed" disabled>Carregando PGR ...</p>) : (<FaDownload />)
+            )}
+          </PDFDownloadLink>
+        );
+        setPdfGrid(pdfGenerated)
+      })
+    } else {
+      const { blob } = await new Promise((resolve, reject) => {
+        const pdfGenerated = (
+          <PDFDownloadLink
+            document={pgr}
+            fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
+          >
+            {({ blob, url, loading, error }) => (
+              <button
+                type="button"
+                disabled={loading}
+                className={`${loading ? 'bg-gray-200 hover:bg-gray-200 text-gray-700' : 'bg-green-600'
+                  } py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700`}>
+                {loading ? 'Gerando PDF...' : 'Baixar PDF'}
+              </button>
+            )}
+          </PDFDownloadLink>
+        );
+        setPdfComponent(pdfGenerated)
+      })
+    }
+  };
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (companys, contacts, users, sectors, departaments, inventarios, planos, units, date, grid, versao) => {
     await handleGet();
     try {
+
+      let filterUnidades;
+      let filterSetor;
+
+      if (unidadeId) {
+        filterUnidades = unidades.filter((i) => i.id_unidade === unidadeId);
+        filterSetor = setores.filter((i) => i.fk_unidade_id === unidadeId);
+      } else {
+        filterUnidades = unidades;
+        const mapUnidade = filterUnidades.map((i) => i.id_unidade);
+        filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
+      }
+
+      if (setorId) {
+        filterSetor = setores.filter((i) => i.id_setor === setorId);
+      }
+
       const filterCompany = empresas.find((i) => i.id_empresa === companyId);
       const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
       await checkSignIn();
       const mapUnidade = unidades.map((i) => i.id_unidade);
-      const filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
       const mapSetor = filterSetor.map((i) => i.id_setor);
       const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
       const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
       const filterPlano = plano.filter((i) => i.fk_empresa_id === companyId);
+      const filterpdf = pdfVersion.filter((i) => i.fk_empresa_id === companyId);
+      const filterVersion = filterpdf.length + 1;
 
-      await generateFilteredPdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano);
-      handleSubmit();
+      if (grid) {
+        const res = await generatePdf(companys, contacts, users, sectors, departaments, inventarios, planos, units, filterpdf, date, versao);
+        handleDownloadPGR(res, grid)
+        setGeneratedPdf(res)
+      } else {
+        const res = await generatePdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, filterpdf, data, filterVersion);
+        handleDownloadPGR(res)
+        setGeneratedPdf(res)
+        handleSubmit(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, data);
+      }
+
     } catch (error) {
-      console.log("Erro ao filtrad dados!", error)
+      console.log("Erro ao filtrar dados!", error)
     }
   };
 
   const handleClear = () => {
     setPdfComponent(null);
+    setPdfGrid(null);
+    window.location.reload();
   };
 
   const handleChangeData = async (event) => {
@@ -271,6 +331,17 @@ function Laudos() {
     return `${ano}-${mes}-${dia}`;
   };
 
+  const openPdfInNewTab = (pdfComponent) => {
+    const newWindow = window.open();
+
+    ReactDOM.render(
+      <PDFViewer style={{ width: '100%', height: '100vh', margin: '0', padding: '0' }}>
+        {pdfComponent}
+      </PDFViewer>,
+      newWindow.document.body
+    );
+  };
+
   useEffect(() => {
     obterDataFormatada().then((dataFormatada) => {
       setData(dataFormatada);
@@ -279,22 +350,6 @@ function Laudos() {
 
   return (
     <>
-      {/* <GerarLaudo
-        inventario={inventario}
-        processos={processos}
-        riscos={riscos}
-        empresa={nameCompany}
-        unidades={unidades}
-        setores={setores}
-        empresaId={companyId}
-        plano={plano}
-        medidasAdm={medidasAdm}
-        medidasEpi={medidasEpi}
-        medidasEpc={medidasEpc}
-        cargos={cargos}
-        getUnidades={getUnidades}
-      /> */}
-
       <div className="flex justify-center items-center mt-12 mb-10">
         <h1 className="text-3xl font-extrabold text-sky-700">Laudos</h1>
       </div>
@@ -318,30 +373,30 @@ function Laudos() {
               />
             </div>
 
-            <div className="w-full md:w-1/3 px-3 opacity-25">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+            {/* Unidade */}
+            <div className="w-full md:w-1/3 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_unidade_id">
                 Unidade:
               </label>
-              <div className="flex items-center w-full">
+              <div className="flex items-center w-full" id="grid-fk_unidade_id">
                 {nomeUnidade ? (
                   <>
                     <button
-                      className="flex appearance-none w-full hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed"
-                      onClick={openModalUnidade} disabled
+                      className="flex appearance-none w-full hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      onClick={openModalUnidade}
                     >
                       <p className="font-bold w-full">
                         {nomeUnidade}
                       </p>
                     </button>
-                    <button className="ml-4 cursor-not-allowed" onClick={handleClearUnidade} disabled>
+                    <button className="ml-4" onClick={handleClearUnidade}>
                       <img src={icon_sair} alt="" className="h-9" />
                     </button>
                   </>
                 ) : (
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed"
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                     onClick={openModalUnidade}
-                    disabled
                   >
                     <p className="text-sm font-medium w-full">
                       Nenhuma Unidade Selecionado
@@ -351,10 +406,9 @@ function Laudos() {
                 <button
                   type="button"
                   onClick={openModalUnidade}
-                  disabled
-                  className={`flex cursor-not-allowed ml-4 `}
+                  className={`flex cursor-pointer ml-4 `}
                 >
-                  <img src={icon_lupa} className="h-9 cursor-not-allowed" alt="Icone adicionar unidade"></img>
+                  <img src={icon_lupa} className="h-9 cursor-pointer" alt="Icone adicionar unidade"></img>
                 </button>
               </div>
               <ModalSearchUnidade
@@ -364,29 +418,31 @@ function Laudos() {
                 onContactSelect={handleUnidadeSelect}
               />
             </div>
-            <div className="w-full md:w-1/3 px-3 opacity-25">
-              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+
+            {/* Setor */}
+            <div className="w-full md:w-1/3 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_setor_id">
                 Setor:
               </label>
-              <div className="flex items-center w-full">
+              <div className="flex items-center w-full" id="grid-fk_setor_id">
                 {setorNome ? (
                   <>
                     <button
-                      className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed"
-                      onClick={openModalSetor} disabled
+                      className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      onClick={openModalSetor}
                     >
                       <p className="font-bold w-full">
                         {setorNome}
                       </p>
                     </button>
-                    <button className="ml-4 cursor-not-allowed" onClick={handleClearSetor} disabled>
+                    <button className="ml-4 cursor-pointer" onClick={handleClearSetor}>
                       <img src={icon_sair} alt="" className="h-9" />
                     </button>
                   </>
                 ) : (
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text cursor-not-allowed  "
-                    onClick={openModalSetor} disabled
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModalSetor}
                   >
                     <p className="px-2 text-sm font-medium w-full">
                       Nenhum Setor Selecionado
@@ -396,10 +452,10 @@ function Laudos() {
 
                 <button
                   type="button"
-                  onClick={openModalSetor} disabled
-                  className={`flex cursor-not-allowed ml-4`}
+                  onClick={openModalSetor}
+                  className={`flex cursor-pointer ml-4`}
                 >
-                  <img src={icon_lupa} className="h-9 cursor-not-allowed" alt="Icone adicionar unidade"></img>
+                  <img src={icon_lupa} className="h-9 cursor-pointer" alt="Icone adicionar unidade"></img>
                 </button>
               </div>
               <ModalSearchSetor
@@ -426,10 +482,27 @@ function Laudos() {
         </form>
       </div>
 
+      {generatedPdf && (
+        <div className="w-full flex justify-center">
+          <div className="flex justify-end items-center mt-4 w-5/6">
+            <button
+              className="bg-teal-600 py-2 px-4 rounded font-bold text-white hover:bg-teal-700 cursor-pointer"
+              onClick={() => openPdfInNewTab(generatedPdf)}
+            >
+              Abrir em Nova Aba
+            </button>
+          </div>
+        </div>
+      )}
+
       <GridLaudos
         children={pdfVersion}
-
+        empresas={empresas}
+        handleGenerate={handleGenerate}
+        pdf={pdfGrid}
+        companyId={companyId}
       />
+
     </>
   )
 }

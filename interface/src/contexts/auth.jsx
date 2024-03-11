@@ -409,17 +409,17 @@ export const AuthProvider = ({ children }) => {
 
   const getPdfVersion = async () => {
     try {
-      const response = await fetch(`${connect}/pdf_version`);
+      const response = await fetch(`${connect}/pgr_version`);
 
       if (!response.ok) {
-        throw new Error(`Erro ao buscar PDF. Status: ${response.status}`)
+        throw new Error(`Erro ao buscar PGR. Status: ${response.status}`)
       }
 
       const data = await response.json();
       data.sort((a, b) => a.data_versao < b.data_versao);
       setPdfVersion(data)
     } catch (error) {
-      console.log(`Erro ao buscar Aparelhos. ${error}`);
+      console.log(`Erro ao buscar Versões do PGR. ${error}`);
     }
   };
 
