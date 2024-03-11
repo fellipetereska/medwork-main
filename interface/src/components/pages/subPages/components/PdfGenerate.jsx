@@ -260,7 +260,7 @@ function PdfGenerate({
 
 
 
-  
+
 
   const PageStyles = StyleSheet.create({
     pageCenter: {
@@ -384,6 +384,18 @@ function PdfGenerate({
       marginTop: 2,
       color: '#adb5bd',
     },
+
+    title: {
+      fontSize: 13,
+      marginTop: 10,
+    },
+
+    paragraph: {
+      fontSize: 11,
+      textAlign: 'justify',
+      textTransform: 'none',
+      marginBottom: 10,
+    },
   });
 
   const ContainerStyles = StyleSheet.create({
@@ -426,6 +438,9 @@ function PdfGenerate({
       borderTop: '1 solid #e5e5e5',
     },
 
+    textContainer: {
+      marginTop: 20,
+    },
   });
 
   const TableStyles = StyleSheet.create({
@@ -601,7 +616,7 @@ function PdfGenerate({
 
     return (
       <Page style={PageStyles.Page}>
-        <Text style={TextStyles.subTitleSumary}>0. Versões do PGR</Text>
+        <Text style={TextStyles.subTitleSumary}>1. Versões do PGR</Text>
 
         {/* Versões */}
         <View style={TableStyles.table}>
@@ -663,7 +678,7 @@ function PdfGenerate({
         <HeaderPage />
 
         {/* Sumário */}
-        <Text style={TextStyles.subTitleSumary}>1. Identificação da Empresa</Text>
+        <Text style={TextStyles.subTitleSumary}>2. Identificação da Empresa</Text>
 
         {/* Company Table */}
         <View style={TableStyles.table}>
@@ -745,6 +760,416 @@ function PdfGenerate({
     );
   };
 
+  const IntroductionPage = () => {
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>3. Introdução</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            Este Documento foi elaborado de acordo com as diretrizes da NR 1, Portaria SEPRT nº 6.730, de 9 de março de 2020, DOU 12/03/20.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            O GRO (Gerenciamento de Riscos Ocupacionais) deve constituir o PGR (Programa de Gerenciamento de Riscos), deve contemplar ou estar integrado com planos, programas e outros documentos previstos na legislação de segurança e saúde no trabalho e faz parte de um conjunto de medidas mais amplas contidas nas demais normas regulamentadoras, o qual se articula, principalmente, com a NR 07, PCMSO (Programa de Controle Médico de Saúde Ocupacional).
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Este Documento contém o Inventário Geral dos Riscos relacionados às atividades existentes na empresa, compreendendo todas as categorias de riscos à segurança e saúde dos trabalhadores e constitui um dos documentos básicos do Programa de Gestão de Riscos, no que diz respeito ao reconhecimento e avaliação de riscos relacionados a agentes físicos, químicos, biológicos, ergonômicos e mecânicos.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Atende às exigências da Norma Regulamentadora 09, no que diz respeito ao reconhecimento e avaliação de riscos relacionados a agentes químicos, físicos e biológicos.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Atende as exigências da Norma Regulamentadora 17 – Ergonomia, indicando situações nas quais se faz necessário a realização de Análise Ergonômica do Trabalho complementares.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Os dados constantes neste documento servem de base para a elaboração do Plano de Ação Anual de Segurança e Saúde do Trabalho, que contempla as ações de controle a serem mantidas, implementadas ou melhoradas, assim como as atividades de monitoramento das exposições.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Os riscos identificados para cada grupo de Grupo de Trabalhadores irão subsidiar a elaboração ou reformulação do PCMSO (Programa de Controle Médico de Saúde Ocupacional).
+          </Text>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const ObjectPage = () => {
+
+    const styles = StyleSheet.create({
+      page: {
+        padding: 20,
+      },
+      textContainer: {
+        marginTop: 10,
+      },
+      listItem: {
+        flexDirection: 'row',
+        marginBottom: 5,
+      },
+      bullet: {
+        width: 10,
+        marginRight: 5,
+      },
+      listItemText: {
+        flex: 1,
+        fontSize: 11,
+        textAlign: 'justify',
+      },
+    });
+
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>4. Objetivos</Text>
+
+        <Text style={TextStyles.title}>Os objetivos deste Inventário Geral de Riscos são:</Text>
+
+        <View style={styles.textContainer}>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Caracterizar exposições a todas as condições perigosas e aos agentes potencialmente
+              nocivos – químicos, físicos, biológicos e outros fatores estressores que constituem cargas de trabalho
+              física e mental significativas;</Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Caracterizar a intensidade e a variação temporal das exposições para todos os
+              trabalhadores próprios e de contratadas que atuem em atividades dentro dos limites da empresa;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Avaliar os riscos potenciais à segurança e saúde de todos os trabalhadores;</Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Priorizar e recomendar ações para controlar exposições que representem riscos
+              inaceitáveis e intoleráveis;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Registrar as avaliações ambientais realizadas na empresa;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Comunicar os resultados do processo de levantamento de perigos e avaliação de riscos
+              para todos os trabalhadores envolvidos;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Manter o registro histórico das exposições para todos os trabalhadores de forma que
+              problemas futuros de saúde possam ser analisados e gerenciados com base em informações reais de
+              exposição;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>Manter o registro histórico das exposições para todos os trabalhadores de forma que
+              problemas futuros de saúde possam ser analisados e gerenciados com base em informações reais de
+              exposição.
+            </Text>
+          </View>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const AbrangencePage = () => {
+
+    const AbrangenceStyles = StyleSheet.create({
+      row: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottom: '1 solida #495057',
+      },
+
+      cellTitle: {
+        flex: 1,
+        width: '30%',
+        backgroundColor: '#0077b6',
+        color: '#ffffff',
+        padding: 5,
+        fontSize: 12,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      cellBody: {
+        width: '70%',
+        flex: 2,
+        padding: 5,
+        fontSize: 10,
+        textAlign: 'justify',
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>3. Introdução</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            Este Programa abrangerá os riscos identificados no ambiente de trabalho da empresa, conforme
+            estabelecido na NR 1 da Portaria 3214/78.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            O processo se inicia com a caracterização básica de cada unidade – processo e ambiente de
+            trabalho, força de trabalho e agentes ambientais e estressores. Esses dados servem de base para definir
+            os grupos homogêneos de exposição (GHE) e atividades não rotineiras ou de empresas contratadas,
+            para os quais os riscos serão reconhecidos e avaliados.
+          </Text>
+
+          <View style={TableStyles.table}>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>FÍSICOS</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>ruído, vibrações, temperaturas anormais, pressões anormais, radiações ionizantes, radiações não ionizantes e umidade, entre outros.</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>QUÍMICOS</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>névoa, neblinas, poeiras, fumos, gase, vapores, entre outros. Considerando o tipo de exposição e os resultados da avaliação quantitativa, através da varredura de múltiplos compostos, quando o agente em questão está precedido do sinal "&lt;", ou seja, abaixo do limite de quantificação, significa "a menor quantidade que um procedimento de análise consegue medir com confiabilidade estatística". Assim, de acordo com o laboratório de análises não existe o "zero absoluto" para qualquer tipo de agente mensurado, portanto, conclui-se tecnicamente que o agente não obteve a menor concentração necessária para sua avaliação, considerando assim, a inexistência do agente no ambiente de trabalho para fins de classificação de perigo/risco/agente nocivo.</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>BIOLÓGICOS</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>bactérias, fungos, protozoários, vírus, entre outros.</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>MECÂNICOS</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>São potencialmente geradores de acidentes, como o arranjo físico
+                  deficiente; máquinas e equipamentos sem proteção; ferramentas inadequadas; ou defeituosas;
+                  eletricidade; incêndio ou explosão; animais peçonhentos; armazenamento inadequado, dentre outros.</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>ERGONÔMICOS</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>são todas as condições que afetam o bem-estar do indivíduo,
+                  sejam elas físicas, mentais ou organizacionais. Podem ser compreendidas como fatores que interferem
+                  nas características psicofisiológicas do profissional, provocando desconfortos e problemas de saúde. São
+                  exemplos de riscos ergonômicos: levantamento de peso, ritmo excessivo de trabalho, monotonia,
+                  repetitividade, postura inadequada.</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const DefinePage = () => {
+
+    const AbrangenceStyles = StyleSheet.create({
+      row: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottom: '1 solida #495057',
+      },
+
+      cellTitle: {
+        flex: 1,
+        width: '30%',
+        backgroundColor: '#0077b6',
+        color: '#ffffff',
+        padding: 5,
+        fontSize: 11,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+      },
+
+      cellBody: {
+        width: '70%',
+        flex: 2,
+        padding: 5,
+        fontSize: 9,
+        textAlign: 'justify',
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>3. Introdução</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            Este Programa abrangerá os riscos identificados no ambiente de trabalho da empresa, conforme
+            estabelecido na NR 1 da Portaria 3214/78.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            O processo se inicia com a caracterização básica de cada unidade – processo e ambiente de
+            trabalho, força de trabalho e agentes ambientais e estressores. Esses dados servem de base para definir
+            os grupos homogêneos de exposição (GHE) e atividades não rotineiras ou de empresas contratadas,
+            para os quais os riscos serão reconhecidos e avaliados.
+          </Text>
+
+          <View style={TableStyles.table}>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Dano</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text> É a consequência de um perigo em termos de lesão, doença, ou uma combinação desses. </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Perigo</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Fonte, situação ou ato com potencial para provocar danos humanos em termos de lesão, ou uma combinação dessas.</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Identificação de Perigos</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Processo de reconhecimento que um perigo existe, e de definição de suas características</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Risco</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>São potencialmente geradores de acidentes, como o arranjo físico
+                  deficiente; máquinas e equipamentos sem proteção; ferramentas inadequadas; ou defeituosas;
+                  eletricidade; incêndio ou explosão; animais peçonhentos; armazenamento inadequado, dentre outros.</Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Avaliação de Riscos</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Processo de avaliação de risco proveniente de perigo, levando em consideração a adequação de qualquer controle existente, e decidindo se o risco é ou não aceitável.
+                </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Risco Aceitável</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Risco que foi reduzido a um nível que pode ser tolerado pela empresa, levando em consideração suas obrigações legais e sua própria política de SST.
+                </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Estimativa de Risco</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Processo para determinar a frequência ou a probabilidade e as consequências de um perigo
+                </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Nível de Ação - N.A</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Corresponde a um valor a partir do qual devem ser iniciadas medidas
+                  preventivas de forma a minimizar a probabilidade de que as exposições à agentes ambientais ultrapasse
+                  os limites de tolerância. Agentes Químicos + 50% do LT (limite de tolerância), Ruído= dose 0,5.
+                </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Limite de Tolerância - L.T</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Concentração ou intensidade máxima ou mínimas,
+                  relacionadas à natureza e o tempo de exposição ao agente, que não causará danos à saúde do trabalho,
+                  durante sua vida laboral (item 15.1.5 da NR 15, Portaria 3214).
+                </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Valor Teto</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>Concentração que não pode ser excedida durante nenhum momento da exposição do trabalhador.
+                </Text>
+              </View>
+            </View>
+            <View style={AbrangenceStyles.row}>
+              <View style={AbrangenceStyles.cellTitle}>
+                <Text>Grupo Homogêneo de Exposição (GHE)</Text>
+              </View>
+              <View style={AbrangenceStyles.cellBody}>
+                <Text>A “Caracterização Básica” é um conceito
+                  presente nas Estratégias de Amostragem da AIHA, e representa um processo inicial de conhecimentos,
+                  em Higiene Ocupacional, que vai permitir a estruturação das amostragens para todos os trabalhadores
+                  da empresa.
+                  Trata-se de conhecer as três vertentes da questão: os ambientes de trabalho, os Grupo de
+                  Trabalhadores e os agentes ambientais. A partir desse estudo integrado, o profissional responsável pelos
+                  levantamentos será capaz de definir a unidade de trabalho, que são os grupos exposição similar – GES.
+                  Ou seja, depois de observar e conhecer as exposições, reunir os trabalhadores em grupos que
+                  possuem as mesmas chances de exposição a um dado agente. Essa “igualdade” provém do
+                  desenvolvimento de rotinas e tarefas essencialmente idênticas ou similares do ponto de vista da
+                  exposição.
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
   const UnidadesPage = () => {
     return (
       <Page style={PageStyles.Page}>
@@ -781,7 +1206,7 @@ function PdfGenerate({
         <FooterPage />
       </Page>
     );
-  }
+  };
 
   const PostPage = () => {
 
@@ -1228,6 +1653,11 @@ function PdfGenerate({
         <SumaryPage />
         <VersionTable />
         <CompanyPage />
+        <IntroductionPage />
+        <ObjectPage />
+        <AbrangencePage />
+        <DefinePage />
+
         <UnidadesPage />
         <PostPage />
         <RiskInventoryPage />
