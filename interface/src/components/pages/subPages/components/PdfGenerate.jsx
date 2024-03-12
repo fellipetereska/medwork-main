@@ -345,6 +345,14 @@ function PdfGenerate({
       alignItems: 'flex-start',
     },
 
+    subSubTitleSumary: {
+      fontSize: 12,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      marginLeft: 10,
+      marginTop: 10,
+    },
+
     prefixText: {
       fontSize: 8,
       color: '#6c757d',
@@ -616,7 +624,10 @@ function PdfGenerate({
 
     return (
       <Page style={PageStyles.Page}>
-        <Text style={TextStyles.subTitleSumary}>1. Versões do PGR</Text>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>1. Versões do Laudo</Text>
 
         {/* Versões */}
         <View style={TableStyles.table}>
@@ -635,6 +646,9 @@ function PdfGenerate({
             </View>
           ))}
         </View>
+
+        <FooterPage />
+
       </Page>
     );
   };
@@ -761,13 +775,41 @@ function PdfGenerate({
   };
 
   const IntroductionPage = () => {
+
+    const styles = StyleSheet.create({
+      page: {
+        padding: 20,
+      },
+      textContainer: {
+        marginTop: 10,
+      },
+      listItem: {
+        flexDirection: 'row',
+        marginBottom: 5,
+      },
+      bullet: {
+        width: 10,
+        marginRight: 5,
+      },
+      listItemText: {
+        flex: 1,
+        fontSize: 11,
+        textAlign: 'justify',
+      },
+
+      textContainer: {
+        marginTop: 20,
+        marginBottom: 20,
+      }
+    });
+
     return (
       <Page style={PageStyles.Page}>
         <HeaderPage />
 
         <Text style={TextStyles.subTitleSumary}>3. Introdução</Text>
 
-        <View style={ContainerStyles.textContainer}>
+        <View style={styles.textContainer}>
           <Text style={TextStyles.paragraph}>
             Este Documento foi elaborado de acordo com as diretrizes da NR 1, Portaria SEPRT nº 6.730, de 9 de março de 2020, DOU 12/03/20.
           </Text>
@@ -797,44 +839,7 @@ function PdfGenerate({
           </Text>
         </View>
 
-        <FooterPage />
-      </Page>
-
-    );
-  };
-
-  const ObjectPage = () => {
-
-    const styles = StyleSheet.create({
-      page: {
-        padding: 20,
-      },
-      textContainer: {
-        marginTop: 10,
-      },
-      listItem: {
-        flexDirection: 'row',
-        marginBottom: 5,
-      },
-      bullet: {
-        width: 10,
-        marginRight: 5,
-      },
-      listItemText: {
-        flex: 1,
-        fontSize: 11,
-        textAlign: 'justify',
-      },
-    });
-
-
-    return (
-      <Page style={PageStyles.Page}>
-        <HeaderPage />
-
         <Text style={TextStyles.subTitleSumary}>4. Objetivos</Text>
-
-        <Text style={TextStyles.title}>Os objetivos deste Inventário Geral de Riscos são:</Text>
 
         <View style={styles.textContainer}>
           <View style={styles.listItem}>
@@ -927,7 +932,7 @@ function PdfGenerate({
       <Page style={PageStyles.Page}>
         <HeaderPage />
 
-        <Text style={TextStyles.subTitleSumary}>3. Introdução</Text>
+        <Text style={TextStyles.subTitleSumary}>5. Abrangência</Text>
 
         <View style={ContainerStyles.textContainer}>
           <Text style={TextStyles.paragraph}>
@@ -1034,7 +1039,7 @@ function PdfGenerate({
       <Page style={PageStyles.Page}>
         <HeaderPage />
 
-        <Text style={TextStyles.subTitleSumary}>3. Introdução</Text>
+        <Text style={TextStyles.subTitleSumary}>6. Definições</Text>
 
         <View style={ContainerStyles.textContainer}>
           <Text style={TextStyles.paragraph}>
@@ -1169,6 +1174,1901 @@ function PdfGenerate({
 
     );
   };
+
+  const StrategyPage = () => {
+
+    const styles = StyleSheet.create({
+      page: {
+        padding: 20,
+      },
+      textContainer: {
+        marginTop: 10,
+      },
+      listItem: {
+        flexDirection: 'row',
+        marginBottom: 5,
+      },
+      bullet: {
+        width: 10,
+        marginRight: 5,
+      },
+      listItemText: {
+        flex: 1,
+        fontSize: 10,
+        textAlign: 'justify',
+      },
+
+      textContainer: {
+        marginTop: 20,
+        marginBottom: 20,
+      },
+
+      titleText: {
+        fontSize: 11,
+        marginTop: 20,
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>7. Estratégia e Metodologia de Ação</Text>
+        <Text style={styles.titleText}>A estratégia e metodologia de ação visam garantir a adoção de medidas de controle nos
+          ambientes de trabalho para a efetiva proteção dos trabalhadores, obedecendo hierarquicamente</Text>
+
+        <View style={styles.textContainer}>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>
+              Eliminação ou redução da utilização ou formação de agentes prejudiciais à saúde ou à
+              integridade física dos trabalhadores;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>
+              Prevenção do aparecimento, liberação ou disseminação de agentes prejudiciais à saúde
+              no ambiente de trabalho;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>
+              Redução dos níveis ou concentração de agentes prejudiciais à saúde no ambiente de
+              trabalho;
+            </Text>
+          </View>
+          <View style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.listItemText}>
+              Treinamento aos trabalhadores informando-os sobre a agressividade dos riscos
+              identificados (físicos, químicos, biológicos, mecânicos/acidentes e ergonômicos).
+            </Text>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>8. Levantamento Preliminar de Perigos</Text>
+
+        <View style={styles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            O responsável da empresa deverá assegurar que toda modificação e/ou novo projeto a ser implantado seja avaliado preliminarmente com relação a identificação de perigos e avaliação dos riscos potencialmente presentes.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            O levantamento preliminar de perigos é realizado através da análise dos processos existentes ou futuros, visita de campo, bem como, estudos técnicos e epidemiológicos, notas técnicas, publicações e outros materiais relacionados com o processo/atividade envolvido. Neste levantamento preliminar de riscos poderão ser utilizados documentos técnicos, programas ou laudos elaborados anteriormente, para os processos já existentes, com objetivo de comparar a evolução da classificação e nível do risco, bem como, acompanhar a eficácia das medidas existentes.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Quando o risco não puder ser evitado na fase de levantamento preliminar serão seguidas as
+            etapas de identificação de perigos e avaliação de riscos. Importante: Os setores constantes no inventário
+            de riscos – descrição de atividades e cargos e que não constarem na matriz de risco serão classificados
+            como: Ausência de Agente Nocivo
+          </Text>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const RiskIdentificationPage = () => {
+
+    const styles = StyleSheet.create({
+      page: {
+        padding: 20,
+      },
+      textContainer: {
+        marginTop: 10,
+      },
+      listItem: {
+        flexDirection: 'row',
+        marginBottom: 5,
+      },
+      bullet: {
+        width: 10,
+        marginRight: 5,
+      },
+      listItemText: {
+        flex: 1,
+        fontSize: 11,
+        textAlign: 'justify',
+      },
+
+      textContainer: {
+        marginTop: 10,
+        marginBottom: 10,
+      }
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>9. Identificação de Perigos</Text>
+
+        <View style={styles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            Para elaboração do reconhecimento foi realizada a caracterização de todos os trabalhadores: nome, cargo, função na empresa, atividades que realizam, setores onde estão lotados, datas de admissão no setor, regime de revezamento, com o objetivo de estudar como eles se relacionam com os processos e com os agentes /perigos presentes nestes processos e no ambiente.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Para cada setor da empresa então é feito um mapeamento dos processos e atividades existentes com o objetivo de identificar os grupos de trabalhadores que realizam atividades similares visando facilitar a identificação de perigos na empresa. A estes grupos de trabalhadores damos o nome de GES.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Cada processo pode ser constituído de um ou mais GES, isto será determinado levando-se em conta a similaridade de cada atividade realizada e consequentemente quanto a exposição aos mesmos perigos
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Em seguida caracteriza-se o ambiente de trabalho para cada GES: setor (local físico onde realiza suas atividades), verificando-se as condições sanitárias, iluminação, ventilação, estado de conservação, etc
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Para cada GES então é realizado a identificação dos perigos levando em conta as atividades, máquinas equipamentos, ferramentas, toxicidade dos produtos químicos que utilizam, agentes e perigos presentes e a eficácia das medidas de proteção existentes. Em seguida realiza-se a avaliação qualitativa dos riscos e a priorização de ações e/ou avaliações necessárias ao seu controle.
+          </Text>
+
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>10. Percepção de Riscos Ocupacionais</Text>
+
+        <View style={styles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            A metodologia proposta ocorre durante a visita técnica de campo. O profissional elaborador do PGR promove entrevistas com o grupo de trabalhadores de cada GHE, encarregados e responsáveis aplicando perguntas e questionamentos relacionados a situações, ações ou condições, que tenham potencial direta ou indiretamente, de causar danos a pessoas, patrimônio ou meio ambiente. O trabalhador é estimulado a apontar situações de perigos aplicando os seguintes questionamentos:
+          </Text>
+
+          <View style={styles.textContainer}>
+            <View style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.listItemText}>No seu dia a dia de trabalho há fatores que você tem a percepção que prejudicam os processos operacionais?;</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.listItemText}>No seu dia a dia de trabalho há situações ou condições que contribuem para ocasionar incidentes?;</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.listItemText}>Há alguma situação no seu trabalho que gera desconforto físico ou mental?;</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.listItemText}>Dentro do seu setor de trabalho há situações que você indicaria alguma melhoria?;</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.listItemText}>Há algum canal de comunicação entre você e seu imediato superior para apontar alguma situação de risco?;</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.listItemText}>Dentro dos processos que são desenvolvidos diariamente na sua rotina, há alguma situação ou condição de risco ou perigo que não foi mapeada na matriz de risco apresentada?</Text>
+            </View>
+          </View>
+
+          <Text style={TextStyles.paragraph}>
+            Outros questionamentos são realizados conforme dinâmica da visita técnica de campo e novas situações do ponto de vista do reconhecimento dos riscos.
+          </Text>
+
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const AssessmentPage = () => {
+
+    const styles = StyleSheet.create({
+      textContainer: {
+        marginTop: 20,
+        marginBottom: 20,
+      }
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>11. Avaliação do Risco - Critérios adotados e tomada de decisão</Text>
+
+        <View style={styles.textContainer}>
+          <Text style={TextStyles.paragraph}>
+            Para cada risco deve será indicado o nível de risco ocupacional, determinado pela combinação da severidade das possíveis lesões ou agravos à saúde com a probabilidade ou chance de sua ocorrência, aplicando a metodologia de MULHAUSEN & DAMIANO (1998) e pelo apêndice D da BS 8800 (BSI, 1996).
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Em conformidade com o item 9.4.2 da NR-09, item 17.3.1.2 da NR-17 e demais NR aplicáveis, as avaliações preliminares dos perigos estão contempladas nesta metodologia, nas etapas do processo de identificação de perigos e de avaliação dos riscos descritos no item 1.5.4 NR-01, seguindo os critérios técnicos aplicáveis e registrada no Inventário de Riscos.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            O levantamento preliminar de perigos é realizado para todas as categorias de fatores de riscos (físico, químicos, biológicos, ergonômicos e mecânicos) levando em consideração as particularidades de cada situação, empregando os critérios técnicos mais adequados para cada perigo, bem como a referência técnica e legal das normas regulamentadoras aplicáveis. O levantamento preliminar de perigos foi contemplado na etapa de identificação de perigos, conforme disposto a seguir.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            A identificação dos perigos foi realizada por meio da caracterização dos processos desenvolvidos pelos trabalhadores com informações sobre sua ocupação na organização, atividades que realizam, setores onde estão lotados, com o objetivo de estudar como eles se relacionam com os agentes (perigos) presentes nestes processos e no ambiente.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Os processos realizados na organização foram mapeados por unidade operacional, setor e atividade, com o objetivo de identificar os grupos de trabalhadores expostos a fatores de risco similares. Os perigos foram inventariados e avaliados por Grupo de Exposição Similar (GES).
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Grupo de Exposição Similar (GES), também conhecido por Grupo Homogêneo de Exposição (GHE), corresponde ao grupo de trabalhadores expostos de forma semelhante aos agentes de riscos, de tal forma que a avaliação da exposição de qualquer trabalhador do grupo seja representativa da exposição de todos que pertencerem ao mesmo grupo.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Para tanto, os profissionais realizam a observação aberta das atividades realizadas pelo trabalhador, coletando dados por meio de entrevistas, análise da documentação e observações dos ambientes de trabalho, relacionando os aspectos do processo produtivo aos perigos potencialmente presentes.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Como esse processo deve ser realizado de forma contínua, o responsável da organização deverá assegurar que toda modificação e/ou novo projeto a ser implantado seja avaliado preliminarmente com relação a identificação dos perigos e avaliação dos riscos potencialmente presentes.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Após a identificação dos perigos realiza-se a avaliação qualitativa, semi-quantitativa ou quantitativa dos riscos, conforme necessidade, para definição do nível de riscos e priorização de ações, podendo serem previstas novas avaliações quantitativas necessárias à avaliação ou seu controle.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            A avaliação de riscos ocupacionais se define como um processo global de estimar o nível de risco ocupacional e decidir se ele é aceitável ou necessita de controles adicionais, priorizando as ações de acordo com a classificação de riscos. Entende-se por:
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Perigo ou fator de risco ocupacional: Fonte ou situação com o potencial de causar lesões ou agravos à saúde. Elemento que isoladamente ou em combinação com outros tem o potencial intrínseco de dar origem a lesões ou agravos à saúde.
+          </Text>
+
+          <Text style={TextStyles.paragraph}>
+            Risco ocupacional: Resultado da combinação da probabilidade de ocorrer lesão ou agravo à saúde causados por um evento perigoso, exposição a agente nocivo ou exigência da atividade de trabalho e da severidade dessa lesão ou agravo à saúde.
+          </Text>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const AssessmentTable = () => {
+
+    const style = StyleSheet.create({
+      row: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottom: '1 solida #495057',
+      },
+
+      cellTitle: {
+        flex: 1,
+        width: '30%',
+        backgroundColor: '#0077b6',
+        color: '#ffffff',
+        padding: 5,
+        fontSize: 11,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+      },
+
+      cellBody: {
+        width: '70%',
+        flex: 2,
+        padding: 5,
+        fontSize: 9,
+        textAlign: 'justify',
+      },
+
+      listItem: {
+        marginBottom: 5,
+        fontSize: 9,
+      },
+
+      list: {
+        marginLeft: 20,
+      },
+
+      text: {
+        marginBottom: 5,
+      },
+
+      finalyText: {
+        fontSize: 10,
+        marginTop: 10,
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>Avaliação do Risco - Tabela</Text>
+
+        <View style={ContainerStyles.textContainer}>
+
+          <View style={TableStyles.table}>
+            <View style={style.row}>
+              <View style={style.cellTitle}>
+                <Text>Probabilidade (P)</Text>
+              </View>
+              <View style={style.cellBody}>
+                <Text style={style.text}>A gradação da probabilidade (P) da ocorrência de lesões ou agravos à saúde levou em conta: </Text>
+                <Text style={style.text}>Os requisitos estabelecidos nas normas regulamentadoras: </Text>
+                <View style={style.list}>
+                  <Text style={style.listItem}>{'\u2022'} As medidas de prevenção implementadas;</Text>
+                  <Text style={style.listItem}>{'\u2022'} As exigências da atividade de trabalho;</Text>
+                  <Text style={style.listItem}>{'\u2022'}  A comparação do perfil de exposição ocupacional com valores de referência estabelecidos na legislação vigente;</Text>
+                  <Text style={style.listItem}>{'\u2022'} Para sua gradação foi levado em conta o tipo do fator de risco reconhecido, o qual teve condições específicas a serem consideradas;</Text>
+                  <Text style={style.listItem}>{'\u2022'} A probabilidade (P) foi calculada para cada fator de risco reconhecido, de acordo com a metodologia que se empregou, seguindo-se os critérios relacionados nos quadros 3, 4 e 5, com base na exposição e nos controles adotados pela organização;</Text>
+                  <Text style={style.listItem}>{'\u2022'} A gradação da probabilidade da ocorrência do dano (efeito crítico) é feita atribuindo-se um índice de probabilidade (P) variando de 1 a 4, cujo significado está relacionado no quadro;</Text>
+                  <Text style={style.listItem}>{'\u2022'} As medidas de prevenção implementadas;</Text>
+                </View>
+              </View>
+            </View>
+            <View style={style.row}>
+              <View style={style.cellTitle}>
+                <Text>Exposição</Text>
+              </View>
+              <View style={style.cellBody}>
+                <Text style={style.text}>Para os fatores de riscos ambientais (físicos, químicos e biológicos) a atribuição do índice de exposição foi feita analisando-se as seguintes condições:</Text>
+                <View style={style.list}>
+                  <Text style={style.listItem}>{'\u2022'} Perfil de exposição qualitativo identificando as variáveis de tempo e frequência de exposição; </Text>
+                  <Text style={style.listItem}>{'\u2022'} Perfil de exposição quantitativo (quando há avaliações quantitativas), levando em consideração intensidade/concentração, tempo de exposição e frequência da exposição, comparando-o com valores de referência estabelecidos na NR-09. Caso existirem medidas de proteção coletivas instaladas, a quantificação da exposição deverá considera-las.</Text>
+                </View>
+              </View>
+            </View>
+            <View style={style.row}>
+              <View style={style.cellTitle}>
+                <Text>Controle</Text>
+              </View>
+              <View style={style.cellBody}>
+                <Text style={style.text}>O componente “controle” foi identificado por meio da verificação da existência de medidas de prevenção implementadas, levando em conta, além de sua necessidade e existência, a adequação às exigências previstas em Normas Regulamentadoras, nas determinações dos dispositivos legais e sua eficácia no controle e mitigação do risco ocupacional.</Text>
+                <Text style={style.text}>A verificação da eficácia na mitigação da exposição ao risco pode ser feita com base em evidências de associação, por meio de controle médico da saúde, entre as lesões e os agravos à saúde dos trabalhadores com os riscos e as situações de trabalho identificados. A existência de ocorrências de incidentes e/ou acidentes também é levada em consideração na avaliação do controle. </Text>
+                <Text style={style.text}>Para os riscos ambientais (físicos, químicos ou biológicos) a atribuição do índice de controle foi feita analisando-se as seguintes condições: </Text>
+                <View style={style.list}>
+                  <Text style={style.listItem}>{'\u2022'} Perfil de exposição qualitativo identificando as variáveis: medidas de prevenção (medidas administrativas), reclamações por parte dos trabalhadores e histórico de incidentes/acidentes; </Text>
+                  <Text style={style.listItem}>{'\u2022'} Perfil de exposição quantitativo (quando há avaliações quantitativas), comparando-se o nível de exposição com valores de referência estabelecidos na legislação vigente, considerando-se a adoção de medidas de prevenção eficazes. Neste caso foi considerado, para efeito de análise do controle, somente as medidas de prevenção individuais, uma vez que as medidas de prevenção coletivas já foram consideradas anteriormente;</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <Text style={style.finalyText}>O índice resultante de controle para os fatores de riscos ambientais, para o cálculo da probabilidade (P), foi o de maior valor encontrado entre os perfis de exposição qualitativo e quantitativo.</Text>
+          <Text style={style.finalyText}>O índice de controle dos fatores de riscos ergonômicos ou mecânicos (acidentes), para o cálculo da probabilidade (P), foi resultado de uma análise preliminar com base nas seguintes variáveis: queixas por parte dos trabalhadores, histórico de incidentes/acidentes e medidas de prevenção existentes..</Text>
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const AssessmentFrame = () => {
+
+    const style = StyleSheet.create({
+      rowTitleTable: {
+        width: '100%',
+        display: 'row',
+        backgroundColor: '#006d77',
+      },
+
+      cellTitle: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #fff',
+      },
+
+      rowSubTitleTable: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#006d77',
+      },
+
+      rowSubTitle: {
+        width: '85%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitlefifty: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitletwentyFive: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowBody: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellSubTitlefifty: {
+        width: '50%',
+        border: '0.3 solid #fff',
+      },
+
+      cellSubTitletwentyFive: {
+        width: '25%',
+        border: '0.3 solid #fff',
+      },
+
+      cellIndice: {
+        width: '15%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellBodyTitle: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#006d77',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #fff',
+      },
+
+      cellBody: {
+        width: '25%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #6c757d',
+      },
+
+      cellBodyTwo: {
+        width: '50%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #6c757d',
+      },
+
+      textTitle: {
+        fontSize: 9,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 5,
+      },
+
+      textSubTitle: {
+        fontSize: 8,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 3,
+      },
+
+      textBody: {
+        fontSize: 8,
+        padding: 5,
+        textAlign: 'justify',
+      },
+
+      textBodyTitle: {
+        fontSize: 8,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 5,
+      },
+
+      cellBodyContainer: {
+        flexDirection: 'row',
+        width: '15%',
+        height: '100%',
+      },
+
+      cellBodyContainerText: {
+        flexDirection: 'row',
+        width: '85%',
+        height: '100%',
+      },
+
+      container: {
+        paddingHorizontal: 10,
+      },
+
+      space: {
+        margin: 5,
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>Avaliação do Risco - Quadros</Text>
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 1 - Probabilidade para os fatores de riscos ambientais (físico, químicos e biológicos)</Text>
+
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            <View style={style.rowTitleTable}>
+              <View style={style.cellTitle}>
+                <Text style={style.textTitle}>Probabilidade ( P = (( E + C X 2 ) / 3 ) + 1 )</Text>
+              </View>
+            </View>
+            <View style={style.rowSubTitleTable}>
+              <View style={style.cellIndice}>
+                <Text style={style.textTitle}>Índice</Text>
+              </View>
+              <View style={style.rowSubTitle}>
+                <View style={style.rowSubTitlefifty}>
+                  <View style={style.cellSubTitlefifty}>
+                    <Text style={style.textSubTitle}>Exposição (E)</Text>
+                  </View>
+                  <View style={style.cellSubTitlefifty}>
+                    <Text style={style.textSubTitle}>Controle (C)</Text>
+                  </View>
+                </View>
+                <View style={style.rowSubTitletwentyFive}>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Perfil Qualitativo</Text>
+                  </View>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Perfil Quantitativo</Text>
+                  </View>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Perfil Qualitativo</Text>
+                  </View>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Perfil Quantitativo</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>1 - Baixo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível baixo de exposição ocupacional ao agente de risco ou tipo de exposição eventual ou em tempo muito curto.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição menor que 50% do limite de tolerância. E "&lt;" 50% do limite de tolerância (abaixo do nível de ação)</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Medidas de prevenção não necessárias ou adequadas e com garantia de continuidade desta situação e não há histórico de incidentes/acidentes relacionados ao perigo avaliado.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>As medidas de prevenção individuais adotadas garantem que o nível de exposição esteja abaixo do nível de ação (E "&lt;" 50% do limite de tolerância).</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>2 - Médio</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível moderado de exposição e/ou tipo de exposição intermitente e/ou tempo de exposição médio.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição entre 50% e 100% do limite de tolerância. 50% "&lt;" E "&lt;" 100% do limite de tolerância (no nível de ação)</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Medidas de prevenção adequadas, mas não há garantia de sua manutenção a longo prazo e/ou existem reclamações em termos de verbalizações e/ou histórico de incidentes relacionados ao perigo avaliado</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>As medidas de prevenção individuais adotadas garantem que o nível de exposição esteja no nível de ação (50% "&lt;" E "&lt;" 100% do limite de tolerância).</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>3 - Alto</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível significativo de exposição e/ou tipo de exposição permanente e/ou tempo de exposição alto.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição entre o limite de tolerância e seu dobro. 100% "&lt;" E "&lt;" 200% do limite de tolerância (acima do limite de tolerância).</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Medidas de prevenção com desvios ou problemas significativos e não há garantia de sua manutenção e/ou há histórico de acidentes com afastamentos temporários relacionados ao perigo avaliado.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Mesmo com a adoção de medidas de prevenção individuais o nível de exposição encontra-se acima do limite de tolerância. (100% "&lt;" E "&lt;" 200% do limite de tolerância).</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>4 - Excessivo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível excessivo de exposição e/ou tipo de exposição permanente e/ou tempo de exposição muito alto.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição acima do dobro do limite de tolerância. E "&lt;" 200% do limite de tolerância (bem acima do limite de tolerância).</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Medidas de prevenção inexistentes ou reconhecidamente inadequadas e/ou há histórico de acidentes com afastamentos permanentes relacionados ao perigo avaliado.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Mesmo com a adoção de medidas de prevenção individuais o nível de exposição encontra-se bem acima do limite de tolerância (E "&lt;" 200% do limite de tolerância).</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <View style={style.space}></View>
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 2 - Probabilidade para os fatores de riscos ergonômicos ou mecânicos (acidentes)</Text>
+
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            <View style={style.rowTitleTable}>
+              <View style={style.cellTitle}>
+                <Text style={style.textTitle}>Probabilidade ( P = (( E + C X 2 ) / 3 ) + 1 )</Text>
+              </View>
+            </View>
+            <View style={style.rowSubTitleTable}>
+              <View style={style.cellIndice}>
+                <Text style={style.textTitle}>Índice</Text>
+              </View>
+              <View style={style.rowSubTitle}>
+                <View style={style.rowSubTitlefifty}>
+                  <View style={style.cellSubTitlefifty}>
+                    <Text style={style.textSubTitle}>Exposição (E)</Text>
+                  </View>
+                  <View style={style.cellSubTitlefifty}>
+                    <Text style={style.textSubTitle}>Controle (C)</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>1 - Baixo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Pouco tempo, menos de 10% do tempo amostral (jornada ou ciclo).</Text>
+                </View>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Medidas de prevenção não necessárias ou adequadas e com garantia de continuidade desta situação e não há histórico de incidentes/acidentes relacionados ao perigo avaliado.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>2 - Médio</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Entre 10% e 40% do tempo amostral (jornada ou ciclo).</Text>
+                </View>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Medidas de prevenção adequadas, mas não há garantia de sua manutenção a longo prazo e/ou existem queixas em termos de verbalizações e/ou histórico de incidentes relacionados ao perigo avaliado.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>3 - Alto</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Entre 40% e 70% do tempo amostral (jornada ou ciclo).</Text>
+                </View>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Medidas de prevenção com desvios ou problemas significativos e não há garantia de sua manutenção e/ou há histórico de acidentes com afastamentos temporários relacionados ao perigo avaliado.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>4 - Excessivo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Acima de 70% do tempo amostral (jornada ou ciclo).</Text>
+                </View>
+                <View style={style.cellBodyTwo}>
+                  <Text style={style.textBody}>Medidas de prevenção inexistentes ou reconhecidamente inadequadas e/ou há histórico de acidentes com afastamentos permanentes relacionados ao perigo avaliado.</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page>
+
+    );
+  };
+
+  const AssessmentText = () => {
+
+    const styles = StyleSheet.create({
+      textContainer: {
+        marginTop: 10,
+        marginBottom: 20,
+      },
+
+      textTitle: {
+        fontSize: 12,
+        marginBottom: 10,
+        marginTop: 10,
+      },
+
+      paragraph: {
+        fontSize: 10,
+        textAlign: 'justify',
+        marginBottom: 10,
+        marginLeft: 5,
+      },
+
+      listItem: {
+        marginBottom: 5,
+        fontSize: 9,
+      },
+
+      list: {
+        marginLeft: 10,
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <View style={styles.textContainer}>
+          <Text style={styles.textTitle}>Cálculo da Probabilidade (P)</Text>
+          <Text style={styles.paragraph}>
+            A combinação entre o índice (1 a 4) de cada componente avaliado (exposição e controle) resulta na gradação “P” (“Improvável”, “Pouco Provável”, “Provável” ou “Altamente Provável”) da probabilidade, a qual corresponde a uma linha na matriz de classificação dos perigos, conforme ilustrado no quadro 6.
+          </Text>
+
+          <Text style={styles.textTitle}>Severidade (S)</Text>
+          <Text style={styles.paragraph}>
+            A gradação da severidade (S) das possíveis lesões ou agravos à saúde considerou os critérios especiais relacionados com o potencial do perigo em causar lesões ou agravos à saúde, como por exemplo:
+          </Text>
+
+          <View style={styles.list}>
+            <Text style={styles.listItem}>{'\u2022'} Toxicidade, o potencial carcinogênico, mutagênico e teratogênico de agentes químicos e físicos tendo por base a classificação da ACGIH e da LINACH;</Text>
+            <Text style={styles.listItem}>{'\u2022'} Potencial de agentes químicos causarem lesões quando em contato com os olhos, mucosa e pele;</Text>
+            <Text style={styles.listItem}>{'\u2022'}  Classificação para agentes biológicos de acordo com dados da secretaria de saúde, dados da CCIH - Comissão de Controle de Infecção Hospitalar, consulta com profissionais médicos, ou outros documentos técnicos disponíveis.</Text>
+          </View>
+
+          <Text style={styles.paragraph}>
+            Da mesma forma que na probabilidade, para sua gradação também foi levado em conta o tipo do fator de risco que estava sendo avaliado, o qual tem condições específicas a serem consideradas. Em virtude desta especificidade de análise e reconhecimento dos fatores de risco, eles foram classificados em dois tipos: os ambientais, que compreendem os fatores de riscos físicos, químicos e biológicos, e os ergonômicos e mecânicos (acidentes). A severidade (S) foi calculada para cada fator de risco reconhecido, levando-se em consideração a gravidade de uma possível lesão e o percentual de pessoas expostas, de acordo com os quadros 3, 4 e 5. Considera-se neste documento o termo “Nº. De Pessoas Expostas” como sendo o número de trabalhadores possivelmente afetados pelo perigo avaliado.
+          </Text>
+
+          <Text style={styles.textTitle}>Gravidade</Text>
+          <Text style={styles.paragraph}>
+            Com relação aos fatores de riscos ambientais (físicos, químicos e biológicos), o índice para a “gravidade” é atribuído após análise de uma das seguintes condições:
+          </Text>
+
+          <View style={styles.list}>
+            <Text style={styles.listItem}>{'\u2022'} Critério qualitativo do dano para perigos físicos e biológicos e/ou se carcinogênicos LINACH ou ACGIH;</Text>
+            <Text style={styles.listItem}>{'\u2022'} Toxicidade do contaminante químico baseada nos limites de tolerância (LT) aplicáveis, para “Gás ou Vapor” ou “Particulados”.</Text>
+          </View>
+
+          <Text style={styles.paragraph}>
+            Para aqueles fatores de risco ambientais considerados carcinogênicos, este índice é atribuído diretamente pelo “Critério qualitativo do dano e/ou se carcinogênicos LINACH ou ACGIH”, independentemente de o tipo ser “Gás ou Vapor” ou “Particulados”. A atribuição do índice para a “gravidade” dos fatores de risco ergonômicos e mecânicos (acidentes) ocorre a partir da análise das seguintes condições:
+          </Text>
+
+          <View style={styles.list}>
+            <Text style={styles.listItem}>{'\u2022'} Humanas (baseada na gravidade de uma possível lesão e seus efeitos);</Text>
+            <Text style={styles.listItem}>{'\u2022'} Organização (baseada no grau de interferência no processo produtivo);</Text>
+          </View>
+
+          <Text style={styles.paragraph}>
+            Sempre será atribuído para este índice o valor encontrado entre a condição “humanas” e “organização”, referente ao fator de risco analisado.
+          </Text>
+
+          <Text style={styles.textTitle}>Pessoas Expostas</Text>
+          <Text style={styles.paragraph}>
+            O índice relativo às “Pessoas Expostas” é definido pela porcentagem da razão entre o total de trabalhadores do grupo de exposição ao perigo avaliado e o total de trabalhadores do estabelecimento.
+          </Text>
+
+          <Text style={styles.textTitle}>Magnitude</Text>
+          <Text style={styles.paragraph}>
+            Relação entre a gravidade da consequência das lesões ou agravos à saúde e o número de pessoas expostas.
+          </Text>
+
+        </View>
+
+        <FooterPage />
+      </Page>
+
+    );
+  };
+
+  const AssessmentFrameSeverity = () => {
+
+    const style = StyleSheet.create({
+      rowTitleTable: {
+        width: '100%',
+        display: 'row',
+        backgroundColor: '#006d77',
+      },
+
+      cellTitle: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #fff',
+      },
+
+      rowSubTitleTable: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#006d77',
+      },
+
+      rowSubTitle: {
+        width: '70%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitleFrame: {
+        width: '90%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitlefifty: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitletwentyFive: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowBody: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowTitleSubTable: {
+        width: '100%',
+      },
+
+      cellSubTitle: {
+        width: '100%',
+        border: '0.3 solid #fff',
+      },
+
+      cellSubTitletwentyFive: {
+        width: '100%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellSubTitletwenty: {
+        width: '100%',
+        height: '100%',
+        border: '0.3 solid #fff',
+      },
+
+      cellIndice: {
+        width: '10%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellPessoasExpostas: {
+        width: '20%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellBodyTitle: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #fff',
+        backgroundColor: '#006d77',
+      },
+
+      cellBodyTitlePE: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #6c757d',
+      },
+
+      cellBody: {
+        width: '33.33%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #6c757d',
+      },
+
+      textTitle: {
+        fontSize: 9,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 5,
+      },
+
+      textSubTitle: {
+        fontSize: 8,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 3,
+      },
+
+      textBody: {
+        fontSize: 8,
+        padding: 5,
+        textAlign: 'justify',
+      },
+
+      textBodyTitle: {
+        fontSize: 8,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 5,
+      },
+
+      cellBodyContainer: {
+        flexDirection: 'row',
+        width: '10%',
+        height: '100%',
+      },
+
+      cellBodyContainerPessoasExpostas: {
+        flexDirection: 'row',
+        width: '20%',
+        height: '100%',
+      },
+
+      cellBodyContainerText: {
+        flexDirection: 'row',
+        width: '70%',
+        height: '100%',
+      },
+
+      cellBodyContainerTextQ4: {
+        flexDirection: 'row',
+        width: '90%',
+        height: '100%',
+      },
+
+      container: {
+        paddingHorizontal: 10,
+      },
+
+      space: {
+        margin: 5,
+      },
+
+      subRow: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      subRowCell: {
+        width: '50%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 3 - Severidade para os fatores de risco ambientais (químicos).</Text>
+
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            {/* Titulo */}
+            <View style={style.rowTitleTable}>
+              <View style={style.cellTitle}>
+                <Text style={style.textTitle}>Severidade (S = (( G x 2 + PE ) / 3 ) + 1 )</Text>
+              </View>
+            </View>
+
+            <View style={style.rowSubTitleTable}>
+              {/* Índice */}
+              <View style={style.cellIndice}>
+                <Text style={style.textTitle}>Índice</Text>
+              </View>
+
+              {/* Subtitulos */}
+              <View style={style.rowSubTitle}>
+                <View style={style.rowSubTitlefifty}>
+                  <View style={style.cellSubTitle}>
+                    <Text style={style.textSubTitle}>Gravidade (G)</Text>
+                  </View>
+                </View>
+                <View style={style.rowTitleSubTable}>
+                  <View style={style.rowSubTitletwentyFive}>
+                    {/* Critério... */}
+                    <View style={style.cellSubTitletwentyFive}>
+                      <Text style={style.textSubTitle}>Critério qualitativo ao dado ou carcinogênicos confirmados LINACH Grupo 1 / ACGIH A1</Text>
+                    </View>
+                    {/* Toxicidade */}
+                    <View style={style.cellSubTitletwenty}>
+                      <View style={style.subRow}>
+                        <View style={style.cellSubTitletwentyFive}>
+                          <Text style={style.textSubTitle}>Toxicidade do contaminante químico baseada nos limites de tolerância aplicáveis</Text>
+                        </View>
+                      </View>
+
+                      {/* Gás / Particulados */}
+                      <View style={style.subRow}>
+                        <View style={style.subRowCell}>
+                          <Text style={style.textSubTitle}>Gás ou Vapor</Text>
+                        </View>
+                        <View style={style.subRowCell}>
+                          <Text style={style.textSubTitle}>Particulados</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+              </View>
+
+              {/* Pessoas Expostas */}
+              <View style={style.cellPessoasExpostas}>
+                <Text style={style.textTitle}>Pessoas Expostas</Text>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>1 - Baixo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Agente classificado como irritante leve para a pele, olhos e mucosas. Lesão ou doença leve, com efeitos reversíveis.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Até 10% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Limite de tolerância "&lt;"= 10 mg/m³</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Até 10% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>2 - Médio</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Agente classificado como irritante para a pele, olhos, mucosas e sistema respiratório superior. Lesão ou doença moderada, com efeitos reversíveis.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>100 "&lt;" limite de tolerância "&lt;"= 500 ppm</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>1 "&lt;" limite de tolerância "&lt;" 10 mg/m³ </Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Entre 10% e 30% do total de trabalhadores do estabelecimento</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>3 - Alto</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Agente altamente irritante ou corrosivo para mucosas, pele, sistema respiratório e digestivo, resultando em lesões irreversíveis limitantes da capacidade funcional. Lesão ou doença, com efeitos irreversíveis.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>10 "&lt;" limite de tolerância "&lt;"= 100 ppm</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>0,1 "&lt;" limite de tolerância "&lt;"= 1 mg/m³ </Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Entre 30% e 60% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>3 - Excessivo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Cancerígenos LINACH Grupo 1 /ACGIH A1, ou agente com efeito cáustico sobre a pele, olhos (ameaça de causar perda da visão) e mucosas, podendo resultar em morte ou lesões incapacitantes.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Limite de tolerância "&lt;"= 10 ppm</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Limite de tolerância "&lt;"= 1 mg/m³ </Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Acima de 60% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+          </View>
+        </View>
+
+
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 4 - Severidade para os fatores de risco ambientais (Físico: Ruído, Calor, Vibração).</Text>
+
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            <View style={style.rowTitleTable}>
+              <View style={style.cellTitle}>
+                <Text style={style.textTitle}>Severidade (S = inteiro (( G x 2 + PE ) / 3 ) + 1 )</Text>
+              </View>
+            </View>
+            <View style={style.rowSubTitleTable}>
+              <View style={style.cellIndice}>
+                <Text style={style.textTitle}>Índice</Text>
+              </View>
+              <View style={style.rowSubTitleFrame}>
+                <View style={style.rowSubTitlefifty}>
+                  <View style={style.subRow}>
+                    <Text style={style.textSubTitle}>Gravidade (G)</Text>
+                  </View>
+                </View>
+                <View style={style.rowSubTitletwentyFive}>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Perfil Qualitativo</Text>
+                  </View>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Perfil Quantitativo</Text>
+                  </View>
+                  <View style={style.cellSubTitletwentyFive}>
+                    <Text style={style.textSubTitle}>Pessoas Expostas (PE)</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>1 - Baixo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerTextQ4}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível baixo de exposição ocupacional ao agente de risco ou tipo de exposição eventual ou em tempo muito curto.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição menor que 50% do limite de tolerância. E "&lt;" 50% do limite de tolerância (abaixo do nível de ação)</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Até 10% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>2 - Médio</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerTextQ4}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível moderado de exposição e/ou tipo de exposição intermitente e/ou tempo de exposição médio.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição entre 50% e 100% do limite de tolerância. 50% "&lt;"= E "&lt;"= 100% do limite de tolerância (no nível de ação)</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Entre 10% e 30% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>3 - Alto</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerTextQ4}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível significativo de exposição e/ou tipo de exposição permanente e/ou tempo de exposição alto.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição entre o limite de tolerância e seu dobro. 100% "&lt;" E "&lt;" 200% do limite de tolerância (acima do limite de tolerância).</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Entre 30% e 60% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>4 - Excessivo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerTextQ4}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Nível excessivo de exposição e/ou tipo de exposição permanente e/ou tempo de exposição muito alto.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Exposição acima do dobro do limite de tolerância. E "&lt;" 200% do limite de tolerância (bem acima do limite de tolerância).</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Acima de 60% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page>
+
+    );
+  };
+
+  const AssessmentFrameText = () => {
+
+    const style = StyleSheet.create({
+      container: {
+        paddingHorizontal: 10,
+      },
+
+      rowTitleTable: {
+        width: '100%',
+        display: 'row',
+        backgroundColor: '#006d77',
+      },
+
+      cellTitle: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #fff',
+      },
+
+      textTitle: {
+        fontSize: 9,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 5,
+      },
+
+      rowSubTitleTable: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#006d77',
+      },
+
+      cellIndice: {
+        width: '10%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitle: {
+        width: '70%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowSubTitlefifty: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellSubTitle: {
+        width: '100%',
+        border: '0.3 solid #fff',
+      },
+
+      textSubTitle: {
+        fontSize: 8,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 3,
+      },
+
+      rowTitleSubTable: {
+        width: '100%',
+      },
+
+      rowSubTitletwentyFive: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellSubTitletwentyFive: {
+        width: '100%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellSubTitletwenty: {
+        width: '100%',
+        height: '100%',
+        border: '0.3 solid #fff',
+      },
+
+      subRow: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      subRowCell: {
+        width: '50%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellPessoasExpostas: {
+        width: '20%',
+        height: '100%',
+        border: '0.3 solid #fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      rowBody: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+
+      cellBodyContainer: {
+        flexDirection: 'row',
+        width: '10%',
+        height: '100%',
+      },
+
+      cellBodyTitle: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #fff',
+        backgroundColor: '#006d77',
+      },
+
+      textBodyTitle: {
+        fontSize: 8,
+        color: '#fff',
+        textAlign: 'center',
+        padding: 5,
+      },
+
+      cellBodyContainerText: {
+        flexDirection: 'row',
+        width: '70%',
+        height: '100%',
+      },
+
+      cellBody: {
+        width: '50%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #6c757d',
+      },
+
+      textBody: {
+        fontSize: 8,
+        padding: 5,
+        textAlign: 'justify',
+      },
+
+      cellBodyContainerPessoasExpostas: {
+        flexDirection: 'row',
+        width: '20%',
+        height: '100%',
+      },
+
+      cellBodyTitlePE: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '0.3 solid #6c757d',
+      },
+
+      containerText: {
+        margin: 10,
+      },
+
+      title: {
+        fontSize: 12,
+      },
+
+      paragraph: {
+        fontSize: 10,
+      },
+
+      probContainer: {
+        width: '5%',
+        backgroundColor: '#006d77',
+      },
+
+      probText: {
+        fontSize: 9,
+        color: '#fff',
+        padding: 5,
+      },
+
+      probCell: {
+        transform: 'rotate(-90deg)',
+      },
+
+      contentContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+      },
+
+      rowContent: {
+        width: '100%',
+        flexDirection: 'row',
+      },
+
+      contentCell: {
+        width: '20%',
+        justifyContent: 'center',
+        border: '0.3 solida #000',
+      },
+
+      contentCellY: {
+        width: '20%',
+        justifyContent: 'center',
+        backgroundColor: '#fcefb4',
+      },
+
+      contentCellO: {
+        width: '20%',
+        justifyContent: 'center',
+        backgroundColor: '#fb8b24',
+      },
+
+      contentCellR: {
+        width: '20%',
+        justifyContent: 'center',
+        backgroundColor: '#e5383b',
+      },
+
+      contentCellG: {
+        width: '20%',
+        justifyContent: 'center',
+        backgroundColor: '#57cc99',
+      },
+
+      contentCellB: {
+        width: '20%',
+        justifyContent: 'center',
+        backgroundColor: '#8ecae6',
+      },
+
+      sevCell: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#006d77',
+      },
+
+      sevText: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: 11,
+        padding: 5,
+      },
+
+      sevContainer: {
+        width: '100%',
+      },
+
+      textContent: {
+        fontSize: 8,
+        padding: 5,
+        textAlign: 'center',
+      },
+
+      probText: {
+        color: '#fff',
+        padding: 5,
+        textAlign: 'center',
+        height: '100%',
+      },
+
+      contentContainerGlobal: {
+        width: '100%',
+      },
+
+      tableContainer: {
+        width: '100%',
+        flexDirection: 'row',
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+        <HeaderPage />
+
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 5 - Severidade para os fatores de risco ergonômicos ou mecânicos (acidentes).</Text>
+
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            {/* Titulo */}
+            <View style={style.rowTitleTable}>
+              <View style={style.cellTitle}>
+                <Text style={style.textTitle}>Severidade (S = (( G x 2 + PE ) / 3 ) + 1 )</Text>
+              </View>
+            </View>
+
+            <View style={style.rowSubTitleTable}>
+              {/* Índice */}
+              <View style={style.cellIndice}>
+                <Text style={style.textTitle}>Índice</Text>
+              </View>
+
+              {/* Subtitulos */}
+              <View style={style.rowSubTitle}>
+                <View style={style.rowSubTitlefifty}>
+                  <View style={style.cellSubTitle}>
+                    <Text style={style.textSubTitle}>Gravidade (G)</Text>
+                  </View>
+                </View>
+                <View style={style.rowTitleSubTable}>
+                  <View style={style.rowSubTitletwentyFive}>
+                    <View style={style.cellSubTitletwentyFive}>
+                      <Text style={style.textSubTitle}>Humanas</Text>
+                    </View>
+                    <View style={style.cellSubTitletwentyFive}>
+                      <Text style={style.textSubTitle}>Organização</Text>
+                    </View>
+                  </View>
+                </View>
+
+              </View>
+
+              {/* Pessoas Expostas */}
+              <View style={style.cellPessoasExpostas}>
+                <Text style={style.textTitle}>Pessoas Expostas</Text>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>1 - Baixo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Podem gerar desconforto, sobrecarga ou lesões leves, sem afastamento.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Pouca ou nenhuma interferência no processo.</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Até 10% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>2 - Médio</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Podem gerar desconforto, lesões moderadas, lesões reversíveis e/ou afastamento de até 15 dias.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Implica em paradas momentâneas e pequenas perdas na produtividade.</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Entre 10% e 30% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>3 - Alto</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Podem gerar lesões graves, lesões irreversíveis e/ou afastamento temporário maior que 15 dias.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Implica em paradas com moderada perda de produtividade.</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Entre 30% e 60% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={style.rowBody}>
+              <View style={style.cellBodyContainer}>
+                <View style={style.cellBodyTitle}>
+                  <Text style={style.textBodyTitle}>4 - Excessivo</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerText}>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Podem gerar lesões graves, lesões irreversíveis e incapacitantes e/ou afastamento permanente.</Text>
+                </View>
+                <View style={style.cellBody}>
+                  <Text style={style.textBody}>Implica em paradas significativas com grande perda de produtividade.</Text>
+                </View>
+              </View>
+              <View style={style.cellBodyContainerPessoasExpostas}>
+                <View style={style.cellBodyTitlePE}>
+                  <Text style={style.textBody}>Acima de 60% do total de trabalhadores do estabelecimento.</Text>
+                </View>
+              </View>
+            </View>
+
+          </View>
+        </View>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>Cálculo da Severidade (S)</Text>
+          <Text style={style.paragraph}>A combinação entre o índice (1 a 4) de cada componente avaliado (gravidade e pessoas expostas) resulta na gradação “S” (“mínima”, “mediana”, “considerável” ou “crítica”) da severidade, a qual corresponde a uma coluna na matriz de priorização dos perigos, conforme ilustrado no quadro 6.</Text>
+        </View>
+        <View style={style.containerText}>
+          <Text style={style.title}>Determinação do Nivel de Risco (S)</Text>
+          <Text style={style.paragraph}>A determinação do nível de risco (parâmetro N), de cada perigo reconhecido, foi realizada a partir da combinação dos valores calculados para a severidade (S) e probabilidade (P) da ocorrência da lesão ou agravo à saúde, utilizando a matriz apresentada no quadro 6.</Text>
+        </View>
+
+
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 6 - Matriz de classificação dos perigos por categorias conforme seus níveis de risco.</Text>
+
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            <View style={style.tableContainer}>
+              <View style={style.probContainer}>
+                {/* Content */}
+                <View style={style.probCell}>
+                  <Text style={style.textContent}>Probabilidade (P)</Text>
+                </View>
+              </View>
+              <View style={style.contentContainerGlobal}>
+                <View style={style.contentContainer}>
+                  {/* Content */}
+                  <View style={style.rowContent}>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Altamente Provável</Text>
+                    </View>
+                    <View style={style.contentCellY}>
+                      <Text style={style.textContent}>Moderado (PR3)</Text>
+                    </View>
+                    <View style={style.contentCellO}>
+                      <Text style={style.textContent}>Alto (PR2)</Text>
+                    </View>
+                    <View style={style.contentCellO}>
+                      <Text style={style.textContent}>Alto (PR2)</Text>
+                    </View>
+                    <View style={style.contentCellR}>
+                      <Text style={style.textContent}>Intolerável (PR1)</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={style.contentContainer}>
+                  <View style={style.rowContent}>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Provável</Text>
+                    </View>
+                    <View style={style.contentCellG}>
+                      <Text style={style.textContent}>Tolerável (PR4)</Text>
+                    </View>
+                    <View style={style.contentCellY}>
+                      <Text style={style.textContent}>Moderado (PR3) </Text>
+                    </View>
+                    <View style={style.contentCellO}>
+                      <Text style={style.textContent}>Alto (PR2)</Text>
+                    </View>
+                    <View style={style.contentCellO}>
+                      <Text style={style.textContent}>Alto (PR2)</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={style.contentContainer}>
+                  <View style={style.rowContent}>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Pouco Provável</Text>
+                    </View>
+                    <View style={style.contentCellG}>
+                      <Text style={style.textContent}>Tolerável (PR4)</Text>
+                    </View>
+                    <View style={style.contentCellG}>
+                      <Text style={style.textContent}>Tolerável (PR4)</Text>
+                    </View>
+                    <View style={style.contentCellY}>
+                      <Text style={style.textContent}>Moderado (PR3)</Text>
+                    </View>
+                    <View style={style.contentCellO}>
+                      <Text style={style.textContent}>Alto (PR2)</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={style.contentContainer}>
+                  <View style={style.rowContent}>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Improvável</Text>
+                    </View>
+                    <View style={style.contentCellB}>
+                      <Text style={style.textContent}>Irrelevante (NA)</Text>
+                    </View>
+                    <View style={style.contentCellG}>
+                      <Text style={style.textContent}>Tolerável (PR4)</Text>
+                    </View>
+                    <View style={style.contentCellG}>
+                      <Text style={style.textContent}>Tolerável (PR4) </Text>
+                    </View>
+                    <View style={style.contentCellY}>
+                      <Text style={style.textContent}>Moderado (PR3)</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={style.contentContainer}>
+                  <View style={style.rowContent}>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}></Text>
+                    </View>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Mínima</Text>
+                    </View>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Mediana</Text>
+                    </View>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Considerável</Text>
+                    </View>
+                    <View style={style.contentCell}>
+                      <Text style={style.textContent}>Crítica</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={style.sevContainer}>
+                  <View style={style.rowContent}>
+                    <View style={style.sevCell}>
+                      <Text style={style.sevText}>Severidade (S)</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+
+        </View>
+
+        <FooterPage />
+
+      </Page>
+    );
+
+  }
+
 
   const UnidadesPage = () => {
     return (
@@ -1654,9 +3554,16 @@ function PdfGenerate({
         <VersionTable />
         <CompanyPage />
         <IntroductionPage />
-        <ObjectPage />
         <AbrangencePage />
         <DefinePage />
+        <StrategyPage />
+        <RiskIdentificationPage />
+        <AssessmentPage />
+        <AssessmentTable />
+        <AssessmentFrame />
+        <AssessmentText />
+        <AssessmentFrameSeverity />
+        <AssessmentFrameText />
 
         <UnidadesPage />
         <PostPage />
