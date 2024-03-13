@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import OpenSansLight from '../../../media/fonts/OpenSans-Light.ttf';
+import OpenSansRegular from '../../../media/fonts/OpenSans-Regular.ttf';
+import OpenSansMedium from '../../../media/fonts/OpenSans-Medium.ttf';
+import OpenSansSemiBold from '../../../media/fonts/OpenSans-SemiBold.ttf';
+import OpenSansBold from '../../../media/fonts/OpenSans-Bold.ttf';
+import OpenSansExtraBold from '../../../media/fonts/OpenSans-ExtraBold.ttf';
 
 function PdfGenerate({
   inventario, plano,
@@ -259,7 +265,12 @@ function PdfGenerate({
   };
 
 
-
+  Font.register({ family: 'OpenSansLight', src: OpenSansLight });
+  Font.register({ family: 'OpenSansRegular', src: OpenSansRegular });
+  Font.register({ family: 'OpenSansMedium', src: OpenSansMedium });
+  Font.register({ family: 'OpenSansSemiBold', src: OpenSansSemiBold });
+  Font.register({ family: 'OpenSansBold', src: OpenSansBold });
+  Font.register({ family: 'OpenSansExtraBold', src: OpenSansExtraBold });
 
 
   const PageStyles = StyleSheet.create({
@@ -288,6 +299,12 @@ function PdfGenerate({
       paddingVertical: 10,
       height: '100%',
     },
+
+    coverPage: {
+      backgroundColor: '#ad2831',
+      padding: 10,
+      color: '#fff',
+    },
   });
 
   const TextStyles = StyleSheet.create({
@@ -296,6 +313,7 @@ function PdfGenerate({
       textAlign: 'center',
       marginBottom: 5,
       paddingTop: 10,
+      fontFamily: 'OpenSansBold',
     },
 
     topText: {
@@ -308,22 +326,25 @@ function PdfGenerate({
       fontSize: 24,
       textAlign: 'center',
       marginBottom: 20,
-      fontWeight: 'bold',
+      fontFamily: 'OpenSansExtraBold',
     },
 
     SignatureDate: {
       fontSize: 10,
       textAlign: 'left',
       color: '#343a40',
+      fontFamily: 'OpenSansLight',
     },
 
     officeText: {
       fontSize: 12,
+      fontFamily: 'OpenSansRegular',
     },
 
     officeSmallText: {
       fontSize: 10,
       color: '#6c757d',
+      fontFamily: 'OpenSansLight',
     },
 
     smallText: {
@@ -333,6 +354,7 @@ function PdfGenerate({
     littleText: {
       fontSize: 10,
       textAlign: 'center',
+      fontFamily: 'OpenSansRegular',
     },
 
     smallTextVigencia: {
@@ -343,6 +365,7 @@ function PdfGenerate({
       fontSize: 16,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
+      fontFamily: 'OpenSansBold',
     },
 
     subSubTitleSumary: {
@@ -357,52 +380,60 @@ function PdfGenerate({
       fontSize: 8,
       color: '#6c757d',
       marginRight: 5,
+      fontFamily: 'OpenSansLight',
     },
 
     prefixTextTitle: {
       fontSize: 8,
       color: '#ced4da',
       marginRight: 5,
+      fontFamily: 'OpenSansLight',
     },
 
     valueText: {
       fontSize: 12,
       color: '#495057',
+      fontFamily: 'OpenSansRegular',
     },
 
     valueTextTitle: {
       fontSize: 14,
       color: '#f8f9fa',
+      fontFamily: 'OpenSansMedium',
     },
 
     valueTextSignatureTitle: {
       fontSize: 12,
       color: '#f8f9fa',
+      fontFamily: 'OpenSansBold',
     },
 
     footerText: {
       fontSize: 10,
       textAlign: 'center',
       marginTop: 5,
+      fontFamily: 'OpenSansBold',
     },
 
     footerAddresText: {
       fontSize: 10,
       textAlign: 'center',
       marginTop: 2,
-      color: '#adb5bd',
+      color: '#6c757d',
+      fontFamily: 'OpenSansLight',
     },
 
     title: {
-      fontSize: 13,
+      fontSize: 11,
       marginTop: 10,
     },
 
     paragraph: {
-      fontSize: 11,
+      fontSize: 10,
       textAlign: 'justify',
       textTransform: 'none',
       marginBottom: 10,
+      fontFamily: 'OpenSansRegular',
     },
   });
 
@@ -447,7 +478,8 @@ function PdfGenerate({
     },
 
     textContainer: {
-      marginTop: 20,
+      marginTop: 10,
+      marginLeft: 10,
     },
   });
 
@@ -543,7 +575,7 @@ function PdfGenerate({
 
   const CoverPage = () => {
     return (
-      <Page size="A4" style={PageStyles.pageCenter}>
+      <Page size="A4" style={PageStyles.coverPage}>
         <Text style={TextStyles.headerText}>Programa de Gerenciamento de Riscos - PGR</Text>
         <View style={ContainerStyles.centerContainer}>
           <Text style={TextStyles.centerText}>{company.nome_empresa}</Text>
@@ -593,12 +625,14 @@ function PdfGenerate({
         textAlign: 'center',
         fontSize: 10,
         width: '15%',
+        fontFamily: 'OpenSansBold',
       },
 
       headerCell: {
         textAlign: 'center',
         fontSize: 10,
         width: '45%',
+        fontFamily: 'OpenSansBold',
       },
 
       dataCell: {
@@ -608,16 +642,16 @@ function PdfGenerate({
         flexDirection: 'row',
         fontSize: 10,
         width: '45%',
+        fontFamily: 'OpenSansRegular',
       },
 
       dataCellCenter: {
         paddingHorizontal: 3,
         paddingVertical: 3,
         textAlign: 'center',
-        flexDirection: 'row',
         fontSize: 10,
-        alignItems: 'center',
         width: '15%',
+        fontFamily: 'OpenSansRegular',
       },
 
     });
@@ -780,21 +814,27 @@ function PdfGenerate({
       page: {
         padding: 20,
       },
+
       textContainer: {
         marginTop: 10,
+        marginLeft: 10,
       },
+
       listItem: {
         flexDirection: 'row',
         marginBottom: 5,
       },
+
       bullet: {
         width: 10,
         marginRight: 5,
       },
+
       listItemText: {
         flex: 1,
-        fontSize: 11,
+        fontSize: 9,
         textAlign: 'justify',
+        fontFamily: 'OpenSansLight',
       },
 
       textContainer: {
@@ -827,7 +867,7 @@ function PdfGenerate({
           </Text>
 
           <Text style={TextStyles.paragraph}>
-            Atende as exigências da Norma Regulamentadora 17 – Ergonomia, indicando situações nas quais se faz necessário a realização de Análise Ergonômica do Trabalho complementares.
+            Atende as exigências da Norma Regulamentadora 17 - Ergonomia, indicando situações nas quais se faz necessário a realização de Análise Ergonômica do Trabalho complementares.
           </Text>
 
           <Text style={TextStyles.paragraph}>
@@ -845,7 +885,7 @@ function PdfGenerate({
           <View style={styles.listItem}>
             <Text style={styles.bullet}>•</Text>
             <Text style={styles.listItemText}>Caracterizar exposições a todas as condições perigosas e aos agentes potencialmente
-              nocivos – químicos, físicos, biológicos e outros fatores estressores que constituem cargas de trabalho
+              nocivos - químicos, físicos, biológicos e outros fatores estressores que constituem cargas de trabalho
               física e mental significativas;</Text>
           </View>
           <View style={styles.listItem}>
@@ -917,14 +957,16 @@ function PdfGenerate({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        fontFamily: 'OpenSansBold',
       },
 
       cellBody: {
         width: '70%',
         flex: 2,
         padding: 5,
-        fontSize: 10,
+        fontSize: 9,
         textAlign: 'justify',
+        fontFamily: 'OpenSansRegular',
       },
     });
 
@@ -941,7 +983,7 @@ function PdfGenerate({
           </Text>
 
           <Text style={TextStyles.paragraph}>
-            O processo se inicia com a caracterização básica de cada unidade – processo e ambiente de
+            O processo se inicia com a caracterização básica de cada unidade - processo e ambiente de
             trabalho, força de trabalho e agentes ambientais e estressores. Esses dados servem de base para definir
             os grupos homogêneos de exposição (GHE) e atividades não rotineiras ou de empresas contratadas,
             para os quais os riscos serão reconhecidos e avaliados.
@@ -1019,24 +1061,27 @@ function PdfGenerate({
         backgroundColor: '#0077b6',
         color: '#ffffff',
         padding: 5,
-        fontSize: 11,
+        fontSize: 10,
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
+        fontFamily: 'OpenSansBold',
       },
 
       cellBody: {
         width: '70%',
         flex: 2,
         padding: 5,
-        fontSize: 9,
+        fontSize: 8,
         textAlign: 'justify',
+        fontFamily: 'OpenSansRegular',
       },
     });
 
     return (
       <Page style={PageStyles.Page}>
+
         <HeaderPage />
 
         <Text style={TextStyles.subTitleSumary}>6. Definições</Text>
@@ -1048,7 +1093,7 @@ function PdfGenerate({
           </Text>
 
           <Text style={TextStyles.paragraph}>
-            O processo se inicia com a caracterização básica de cada unidade – processo e ambiente de
+            O processo se inicia com a caracterização básica de cada unidade - processo e ambiente de
             trabalho, força de trabalho e agentes ambientais e estressores. Esses dados servem de base para definir
             os grupos homogêneos de exposição (GHE) e atividades não rotineiras ou de empresas contratadas,
             para os quais os riscos serão reconhecidos e avaliados.
@@ -1181,31 +1226,28 @@ function PdfGenerate({
       page: {
         padding: 20,
       },
-      textContainer: {
-        marginTop: 10,
-      },
+
       listItem: {
         flexDirection: 'row',
         marginBottom: 5,
       },
+
       bullet: {
         width: 10,
         marginRight: 5,
       },
+
       listItemText: {
         flex: 1,
-        fontSize: 10,
+        fontSize: 9,
         textAlign: 'justify',
+        fontFamily: 'OpenSansLight',
       },
 
       textContainer: {
         marginTop: 20,
         marginBottom: 20,
-      },
-
-      titleText: {
-        fontSize: 11,
-        marginTop: 20,
+        marginLeft: 10,
       },
     });
 
@@ -1214,7 +1256,7 @@ function PdfGenerate({
         <HeaderPage />
 
         <Text style={TextStyles.subTitleSumary}>7. Estratégia e Metodologia de Ação</Text>
-        <Text style={styles.titleText}>A estratégia e metodologia de ação visam garantir a adoção de medidas de controle nos
+        <Text style={TextStyles.paragraph}>A estratégia e metodologia de ação visam garantir a adoção de medidas de controle nos
           ambientes de trabalho para a efetiva proteção dos trabalhadores, obedecendo hierarquicamente</Text>
 
         <View style={styles.textContainer}>
@@ -1262,7 +1304,7 @@ function PdfGenerate({
           <Text style={TextStyles.paragraph}>
             Quando o risco não puder ser evitado na fase de levantamento preliminar serão seguidas as
             etapas de identificação de perigos e avaliação de riscos. Importante: Os setores constantes no inventário
-            de riscos – descrição de atividades e cargos e que não constarem na matriz de risco serão classificados
+            de riscos - descrição de atividades e cargos e que não constarem na matriz de risco serão classificados
             como: Ausência de Agente Nocivo
           </Text>
         </View>
@@ -1279,26 +1321,28 @@ function PdfGenerate({
       page: {
         padding: 20,
       },
-      textContainer: {
-        marginTop: 10,
-      },
+
       listItem: {
         flexDirection: 'row',
         marginBottom: 5,
       },
+
       bullet: {
         width: 10,
         marginRight: 5,
       },
+
       listItemText: {
         flex: 1,
-        fontSize: 11,
+        fontSize: 9,
         textAlign: 'justify',
+        fontFamily: 'OpenSansLight',
       },
 
       textContainer: {
         marginTop: 10,
         marginBottom: 10,
+        marginLeft: 10,
       }
     });
 
@@ -1392,7 +1436,7 @@ function PdfGenerate({
 
         <Text style={TextStyles.subTitleSumary}>11. Avaliação do Risco - Critérios adotados e tomada de decisão</Text>
 
-        <View style={styles.textContainer}>
+        <View style={TextStyles.textContainer}>
           <Text style={TextStyles.paragraph}>
             Para cada risco deve será indicado o nível de risco ocupacional, determinado pela combinação da severidade das possíveis lesões ou agravos à saúde com a probabilidade ou chance de sua ocorrência, aplicando a metodologia de MULHAUSEN & DAMIANO (1998) e pelo apêndice D da BS 8800 (BSI, 1996).
           </Text>
@@ -1464,24 +1508,27 @@ function PdfGenerate({
         backgroundColor: '#0077b6',
         color: '#ffffff',
         padding: 5,
-        fontSize: 11,
+        fontSize: 10,
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
+        fontFamily: 'OpenSansBold',
       },
 
       cellBody: {
         width: '70%',
         flex: 2,
         padding: 5,
-        fontSize: 9,
+        fontSize: 8,
         textAlign: 'justify',
+        fontFamily: 'OpenSansRegular',
       },
 
       listItem: {
         marginBottom: 5,
-        fontSize: 9,
+        fontSize: 7,
+        fontFamily: 'OpenSansLight',
       },
 
       list: {
@@ -1495,6 +1542,7 @@ function PdfGenerate({
       finalyText: {
         fontSize: 10,
         marginTop: 10,
+        fontFamily: 'OpenSansRegular',
       },
     });
 
@@ -1504,7 +1552,7 @@ function PdfGenerate({
 
         <Text style={TextStyles.subTitleSumary}>Avaliação do Risco - Tabela</Text>
 
-        <View style={ContainerStyles.textContainer}>
+        <View style={TextStyles.textContainer}>
 
           <View style={TableStyles.table}>
             <View style={style.row}>
@@ -1614,7 +1662,6 @@ function PdfGenerate({
 
       cellSubTitlefifty: {
         width: '50%',
-        border: '0.3 solid #fff',
       },
 
       cellSubTitletwentyFive: {
@@ -1660,6 +1707,7 @@ function PdfGenerate({
         color: '#fff',
         textAlign: 'center',
         padding: 5,
+        fontFamily: 'OpenSansBold',
       },
 
       textSubTitle: {
@@ -1667,12 +1715,14 @@ function PdfGenerate({
         color: '#fff',
         textAlign: 'center',
         padding: 3,
+        fontFamily: 'OpenSansBold',
       },
 
       textBody: {
         fontSize: 8,
         padding: 5,
         textAlign: 'justify',
+        fontFamily: 'OpenSansRegular',
       },
 
       textBodyTitle: {
@@ -1680,6 +1730,7 @@ function PdfGenerate({
         color: '#fff',
         textAlign: 'center',
         padding: 5,
+        fontFamily: 'OpenSansBold',
       },
 
       cellBodyContainer: {
@@ -1838,6 +1889,7 @@ function PdfGenerate({
         </View>
 
         <View style={style.space}></View>
+
         <Text style={TextStyles.subSubTitleSumary}>Quadro 2 - Probabilidade para os fatores de riscos ergonômicos ou mecânicos (acidentes)</Text>
 
         <View style={style.container}>
@@ -1945,21 +1997,24 @@ function PdfGenerate({
       },
 
       textTitle: {
-        fontSize: 12,
+        fontSize: 11,
         marginBottom: 10,
         marginTop: 10,
+        fontFamily: 'OpenSansBold',
       },
 
       paragraph: {
-        fontSize: 10,
+        fontSize: 9,
         textAlign: 'justify',
         marginBottom: 10,
         marginLeft: 5,
+        fontFamily: 'OpenSansRegular',
       },
 
       listItem: {
         marginBottom: 5,
-        fontSize: 9,
+        fontSize: 8,
+        fontFamily: 'OpenSansLight',
       },
 
       list: {
@@ -2157,6 +2212,7 @@ function PdfGenerate({
         color: '#fff',
         textAlign: 'center',
         padding: 5,
+        fontFamily: 'OpenSansBold',
       },
 
       textSubTitle: {
@@ -2164,12 +2220,14 @@ function PdfGenerate({
         color: '#fff',
         textAlign: 'center',
         padding: 3,
+        fontFamily: 'OpenSansBold',
       },
 
       textBody: {
         fontSize: 8,
         padding: 5,
         textAlign: 'justify',
+        fontFamily: 'OpenSansRegular',
       },
 
       textBodyTitle: {
@@ -2177,6 +2235,7 @@ function PdfGenerate({
         color: '#fff',
         textAlign: 'center',
         padding: 5,
+        fontFamily: 'OpenSansBold',
       },
 
       cellBodyContainer: {
@@ -2667,6 +2726,7 @@ function PdfGenerate({
         fontSize: 8,
         padding: 5,
         textAlign: 'justify',
+        fontFamily: 'OpenSansRegular',
       },
 
       cellBodyContainerPessoasExpostas: {
@@ -2681,6 +2741,7 @@ function PdfGenerate({
         alignItems: 'center',
         justifyContent: 'center',
         border: '0.3 solid #6c757d',
+        fontFamily: 'OpenSansBold',
       },
 
       containerText: {
@@ -2689,25 +2750,26 @@ function PdfGenerate({
 
       title: {
         fontSize: 12,
+        fontFamily: 'OpenSansBold',
       },
 
       paragraph: {
         fontSize: 10,
+        fontFamily: 'OpenSansRegular',
       },
 
       probContainer: {
-        width: '5%',
         backgroundColor: '#006d77',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '5%',
       },
 
       probText: {
-        fontSize: 9,
         color: '#fff',
+        fontSize: 9,
         padding: 5,
-      },
-
-      probCell: {
-        transform: 'rotate(-90deg)',
+        fontFamily: 'OpenSansBold',
       },
 
       contentContainer: {
@@ -2757,43 +2819,72 @@ function PdfGenerate({
       },
 
       sevCell: {
-        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#006d77',
       },
 
       sevText: {
         textAlign: 'center',
         color: '#fff',
         fontSize: 11,
-        padding: 5,
+        padding: 3,
+        fontFamily: 'OpenSansBold',
       },
 
       sevContainer: {
         width: '100%',
+        backgroundColor: '#006d77',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
 
       textContent: {
         fontSize: 8,
         padding: 5,
         textAlign: 'center',
+        fontFamily: 'OpenSansRegular',
       },
 
-      probText: {
-        color: '#fff',
+      textContentW: {
+        fontSize: 8,
         padding: 5,
         textAlign: 'center',
-        height: '100%',
+        color: '#fff',
+        fontFamily: 'OpenSansRegular',
       },
 
       contentContainerGlobal: {
-        width: '100%',
       },
 
       tableContainer: {
-        width: '100%',
         flexDirection: 'row',
+      },
+
+      matrizContainer: {
+        flexDirection: 'row',
+      },
+
+      legend: {
+        fontSize: 8,
+        textAlign: 'right',
+        fontFamily: 'OpenSansLight',
+      },
+
+      contentCellGr: {
+        backgroundColor: '#e7ecef',
+        width: '20%',
+        justifyContent: 'center',
+        border: '0.5 solid #adb5bd'
+      },
+
+      listItem: {
+        marginBottom: 5,
+        fontSize: 8,
+        fontFamily: 'OpenSansLight',
+      },
+
+      list: {
+        marginLeft: 20,
       },
     });
 
@@ -2945,37 +3036,37 @@ function PdfGenerate({
 
         <View style={style.container}>
           <View style={TableStyles.table}>
-            <View style={style.tableContainer}>
+            <View style={style.matrizContainer}>
               <View style={style.probContainer}>
-                {/* Content */}
                 <View style={style.probCell}>
-                  <Text style={style.textContent}>Probabilidade (P)</Text>
+                  <Text style={style.probText}>(P)</Text>
                 </View>
+                {/* Content */}
               </View>
               <View style={style.contentContainerGlobal}>
                 <View style={style.contentContainer}>
                   {/* Content */}
                   <View style={style.rowContent}>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Altamente Provável</Text>
                     </View>
                     <View style={style.contentCellY}>
                       <Text style={style.textContent}>Moderado (PR3)</Text>
                     </View>
                     <View style={style.contentCellO}>
-                      <Text style={style.textContent}>Alto (PR2)</Text>
+                      <Text style={style.textContentW}>Alto (PR2)</Text>
                     </View>
                     <View style={style.contentCellO}>
-                      <Text style={style.textContent}>Alto (PR2)</Text>
+                      <Text style={style.textContentW}>Alto (PR2)</Text>
                     </View>
                     <View style={style.contentCellR}>
-                      <Text style={style.textContent}>Intolerável (PR1)</Text>
+                      <Text style={style.textContentW}>Intolerável (PR1)</Text>
                     </View>
                   </View>
                 </View>
                 <View style={style.contentContainer}>
                   <View style={style.rowContent}>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Provável</Text>
                     </View>
                     <View style={style.contentCellG}>
@@ -2985,16 +3076,16 @@ function PdfGenerate({
                       <Text style={style.textContent}>Moderado (PR3) </Text>
                     </View>
                     <View style={style.contentCellO}>
-                      <Text style={style.textContent}>Alto (PR2)</Text>
+                      <Text style={style.textContentW}>Alto (PR2)</Text>
                     </View>
                     <View style={style.contentCellO}>
-                      <Text style={style.textContent}>Alto (PR2)</Text>
+                      <Text style={style.textContentW}>Alto (PR2)</Text>
                     </View>
                   </View>
                 </View>
                 <View style={style.contentContainer}>
                   <View style={style.rowContent}>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Pouco Provável</Text>
                     </View>
                     <View style={style.contentCellG}>
@@ -3007,13 +3098,13 @@ function PdfGenerate({
                       <Text style={style.textContent}>Moderado (PR3)</Text>
                     </View>
                     <View style={style.contentCellO}>
-                      <Text style={style.textContent}>Alto (PR2)</Text>
+                      <Text style={style.textContentW}>Alto (PR2)</Text>
                     </View>
                   </View>
                 </View>
                 <View style={style.contentContainer}>
                   <View style={style.rowContent}>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Improvável</Text>
                     </View>
                     <View style={style.contentCellB}>
@@ -3035,29 +3126,43 @@ function PdfGenerate({
                     <View style={style.contentCell}>
                       <Text style={style.textContent}></Text>
                     </View>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Mínima</Text>
                     </View>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Mediana</Text>
                     </View>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Considerável</Text>
                     </View>
-                    <View style={style.contentCell}>
+                    <View style={style.contentCellGr}>
                       <Text style={style.textContent}>Crítica</Text>
                     </View>
                   </View>
                 </View>
                 <View style={style.sevContainer}>
-                  <View style={style.rowContent}>
-                    <View style={style.sevCell}>
-                      <Text style={style.sevText}>Severidade (S)</Text>
-                    </View>
+                  <View style={style.sevCell}>
+                    <Text style={style.sevText}>(S)</Text>
                   </View>
                 </View>
               </View>
             </View>
+            <Text style={style.legend}>Legenda: (P) - Probabilidade | (S) - Severidade</Text>
+          </View>
+
+          <View style={style.containerText}>
+            <Text style={style.title}>Classificação de Prioridade (PR)</Text>
+            <Text style={style.paragraph}>A priorização das ações foi estabelecida pelo nível de risco calculado (N). Foram definidas 4 (quatro) categorias de priorização de ações (PR1, PR2, PR3 e PR4), de acordo com a classificação de prioridade do risco:</Text>
+          </View>
+
+          <View style={style.list}>
+            <Text style={style.listItem}>{'\u2022'} Toxicidade, o potencial carcinogênico, mutagênico e teratogênico de agentes químicos e físicos tendo por base a classificação da ACGIH e da LINACH;</Text>
+            <Text style={style.listItem}>{'\u2022'} Potencial de agentes químicos causarem lesões quando em contato com os olhos, mucosa e pele;</Text>
+            <Text style={style.listItem}>{'\u2022'}  Classificação para agentes biológicos de acordo com dados da secretaria de saúde, dados da CCIH - Comissão de Controle de Infecção Hospitalar, consulta com profissionais médicos, ou outros documentos técnicos disponíveis.</Text>
+          </View>
+
+          <View style={style.containerText}>
+            <Text style={style.paragraph}>Para o perigo avaliado no nível de risco “irrelevante”, a priorização de ações não será aplicável, sendo representado como “NA”. No quadro 7 são apresentadas, para cada classificação, as recomendações de conduta administrativo a serem avaliadas pela organização.</Text>
           </View>
 
         </View>
@@ -3067,8 +3172,437 @@ function PdfGenerate({
       </Page>
     );
 
-  }
+  };
 
+  const AssessmentFrameSeven = () => {
+
+    const style = StyleSheet.create({
+      container: {
+        paddingHorizontal: 10,
+      },
+
+      titleContainer: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#006d77',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      titleText: {
+        padding: 5,
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: 11,
+        fontFamily: 'OpenSansBold',
+      },
+
+      subTitleContainer: {
+        flexDirection: 'row',
+        backgroundColor: '#006d77',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        border: '1 solid #42999b',
+      },
+
+      subTitleCell: {
+        width: '20%',
+        border: '0.5 solid #42999b',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      subTitleCellLast: {
+        width: '40%',
+        border: '0.5 solid #42999b',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      subTitleText: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: 10,
+        padding: 5,
+        fontFamily: 'OpenSansBold',
+      },
+
+      contentRow: {
+        width: '100%',
+        justifyContent: 'center',
+        textAlign: 'center',
+        flexDirection: 'row',
+      },
+
+      contentCell: {
+        width: '20%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      contentCellLast: {
+        width: '40%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      contentCellBlue: {
+        width: '20%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        backgroundColor: '#8ECAE6',
+      },
+
+      contentCellGreen: {
+        width: '20%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        backgroundColor: '#57CC99',
+      },
+
+      contentCellYellow: {
+        width: '20%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        backgroundColor: '#FCEFB4',
+      },
+
+      contentCellOrange: {
+        width: '20%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        backgroundColor: '#FB8B24',
+      },
+
+      contentCellRed: {
+        width: '20%',
+        border: '0.5 solid #6c757d',
+        height: '100%',
+        backgroundColor: '#E5383B',
+      },
+
+      contentText: {
+        textAlign: 'justify',
+        fontSize: 9,
+        padding: 5,
+        fontFamily: 'OpenSansRegular',
+      },
+
+      listItem: {
+        marginBottom: 5,
+        fontSize: 8,
+        fontFamily: 'OpenSansLight',
+      },
+
+      list: {
+        marginLeft: 20,
+      },
+
+      containerText: {
+        margin: 10,
+      },
+
+      title: {
+        fontSize: 12,
+        fontFamily: 'OpenSansBold',
+      },
+
+      paragraph: {
+        fontSize: 10,
+        fontFamily: 'OpenSansRegular',
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subSubTitleSumary}>Quadro 7 - Determinação dos níveis de risco (parâmetro N) e classificação de prioridades.</Text>
+        <View style={style.container}>
+          <View style={TableStyles.table}>
+            {/* Title */}
+            <View style={style.titleContainer}>
+              <Text style={style.titleText}>Determinação e Classificação dos Níveis de Risco</Text>
+            </View>
+            {/* SubTitle */}
+            <View style={style.subTitleContainer}>
+              <View style={style.subTitleCell}>
+                <Text style={style.subTitleText}>Parâmetro N</Text>
+              </View>
+              <View style={style.subTitleCell}>
+                <Text style={style.subTitleText}>Níveis de Risco</Text>
+              </View>
+              <View style={style.subTitleCell}>
+                <Text style={style.subTitleText}>Classificação</Text>
+              </View>
+              <View style={style.subTitleCellLast}>
+                <Text style={style.subTitleText}>Conduta Adminitrativa</Text>
+              </View>
+            </View>
+            {/* Line 1 */}
+            <View style={style.contentRow}>
+              <View style={style.contentCellBlue}>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>Irrelevante</Text>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>N/A</Text>
+              </View>
+              <View style={style.contentCellLast}>
+                <Text style={style.contentText}>Não há necessidade de estabelecer nova ação de controle. Os controles existentes deverão ser mantidos.</Text>
+              </View>
+            </View>
+            {/* Line 2 */}
+            <View style={style.contentRow}>
+              <View style={style.contentCellGreen}>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>Tolerável</Text>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>PR4</Text>
+              </View>
+              <View style={style.contentCellLast}>
+                <Text style={style.contentText}>Poderá ser mantido o controle existente e avaliar a necessidade de medidas corretivas ou adicionais. A necessidade de estabelecer monitoramento deve ser avaliada, quando necessário.</Text>
+              </View>
+            </View>
+            {/* Line 3 */}
+            <View style={style.contentRow}>
+              <View style={style.contentCellYellow}>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>Moderado</Text>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>PR3</Text>
+              </View>
+              <View style={style.contentCellLast}>
+                <Text style={style.contentText}>Um planejamento a médio e longo prazo deve ser elaborado. As rotinas e controles existentes devem ser monitorado e a necessidade de implantação de novos controles e ações deve ser avaliada.</Text>
+              </View>
+            </View>
+            {/* Line 4 */}
+            <View style={style.contentRow}>
+              <View style={style.contentCellOrange}>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>Alto</Text>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>PR2</Text>
+              </View>
+              <View style={style.contentCellLast}>
+                <Text style={style.contentText}>Um planejamento a curto prazo deve ser elaborado. As rotinas e controles quando existentes devem ser reavaliadas e novos controles e ações devem ser implantados sempre que necessário.</Text>
+              </View>
+            </View>
+            {/* Line 5 */}
+            <View style={style.contentRow}>
+              <View style={style.contentCellRed}>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>Intolerável</Text>
+              </View>
+              <View style={style.contentCell}>
+                <Text style={style.contentText}>PR1</Text>
+              </View>
+              <View style={style.contentCellLast}>
+                <Text style={style.contentText}>Ações corretivas devem ser adotadas imediatamente. O nível de risco deverá ser reavaliado após as medidas terem sidos adotadas ou implantadas.</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>Observações</Text>
+        </View>
+
+        <View style={style.list}>
+          <Text style={style.listItem}>{'\u2022'}A organização manterá as rotinas de avaliações ambientais, quando aplicável, e monitoramento das medidas de controle existentes, para todos os perigos reconhecidos, independente da classificação do risco;</Text>
+          <Text style={style.listItem}>{'\u2022'}Para os perigos, cujos riscos foram classificados como PR1, PR2 ou PR3, a organização implantará controles operacionais de acordo com o plano de ação previamente definido;</Text>
+          <Text style={style.listItem}>{'\u2022'}Para os riscos classificados como PR1, a organização aumentará o rigor no monitoramento de seus controles;</Text>
+          <Text style={style.listItem}>{'\u2022'}Para os perigos, cujos os riscos foram classificados como PR3 que apresentem severidade “crítica” e probabilidade “improvável”, a organização também aumentará o rigor no monitoramento de seus controles.</Text>
+        </View>
+
+        <FooterPage />
+
+      </Page>
+    );
+  };
+
+  const FrequencyPage = () => {
+
+    const style = StyleSheet.create({
+      listItem: {
+        marginBottom: 5,
+        fontSize: 8,
+        fontFamily: 'OpenSansLight',
+      },
+
+      list: {
+        marginLeft: 20,
+      },
+
+      containerText: {
+        margin: 10,
+      },
+
+      title: {
+        fontSize: 12,
+        fontFamily: 'OpenSansBold',
+      },
+
+      paragraph: {
+        fontSize: 10,
+        fontFamily: 'OpenSansRegular',
+      },
+
+      space: {
+        padding: 20,
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>12. Periodicidade e Forma de Avaliação do Desenvolvimento do PGR</Text>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>A avaliação de riscos deve constituir um processo contínuo e ser revista a cada dois anos ou quando da ocorrência das seguintes situações:</Text>
+        </View>
+
+        <View style={style.list}>
+          <Text style={style.listItem}>{'\u2022'}Após implementação das medidas de prevenção, para avaliação de riscos residuais;</Text>
+          <Text style={style.listItem}>{'\u2022'}Após inovações e modificações nas tecnologias, ambientes, processos;</Text>
+          <Text style={style.listItem}>{'\u2022'}Condições, procedimentos e organização do trabalho que impliquem em novos riscos ou
+            modifiquem os riscos existentes;</Text>
+          <Text style={style.listItem}>{'\u2022'}Quando identificadas inadequações, insuficiências ou ineficácias das medidas de prevenção;</Text>
+          <Text style={style.listItem}>{'\u2022'}Na ocorrência de acidentes ou doenças relacionadas ao trabalho;</Text>
+          <Text style={style.listItem}>{'\u2022'}Quando houver mudança nos requisitos legais aplicáveis.</Text>
+        </View>
+
+        <View style={style.space}></View>
+
+        <Text style={TextStyles.subTitleSumary}>13. Plano de Ação</Text>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>O plano de ação consta no corpo deste documento (após o inventário de riscos), contendo:</Text>
+        </View>
+
+        <View style={style.list}>
+          <Text style={style.listItem}>{'\u2022'}Setor;</Text>
+          <Text style={style.listItem}>{'\u2022'}Descrição dos perigos/fatores de riscos;</Text>
+          <Text style={style.listItem}>{'\u2022'}Tipo de Perigo;</Text>
+          <Text style={style.listItem}>{'\u2022'}Responsável Categoria/Prioridade;</Text>
+          <Text style={style.listItem}>{'\u2022'}Ação;</Text>
+          <Text style={style.listItem}>{'\u2022'}Responsável;</Text>
+          <Text style={style.listItem}>{'\u2022'}Prazo Previsto;</Text>
+          <Text style={style.listItem}>{'\u2022'}Data de Conclusão Prevista;</Text>
+          <Text style={style.listItem}>{'\u2022'}Status.</Text>
+        </View>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>Forma de acompanhamento: Através de reuniões mensais envolvendo a assessoria de segurança do trabalho, gerência, recursos humanos e encarregados de setores com o objetivo de acompanhar o andamento das ações propostas e corrigir desvios. Deve ser feito um registro dessas reuniões e arquivado de forma digital.</Text>
+        </View>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>Aferição dos Resultados: A aferição dos resultados deve ser feita anualmente e levar em conta os indicadores: afastamentos relacionados aos riscos, incidentes, acidentes e agravamento no relatório anual do PCMSO. Deve ser feita uma análise global das ações propostas, realizadas, não realizadas e os respectivos desvios. Deve ser gerado um relatório e arquivado de forma digital.</Text>
+        </View>
+
+        <FooterPage />
+      </Page>
+    );
+  };
+
+  const GROPage = () => {
+    const style = StyleSheet.create({
+      listItem: {
+        marginBottom: 5,
+        fontSize: 8,
+        fontFamily: 'OpenSansLight',
+      },
+
+      list: {
+        marginLeft: 20,
+      },
+
+      containerText: {
+        margin: 10,
+      },
+
+      title: {
+        fontSize: 12,
+        fontFamily: 'OpenSansBold',
+      },
+
+      paragraph: {
+        fontSize: 10,
+        fontFamily: 'OpenSansRegular',
+      },
+
+      space: {
+        padding: 20,
+      },
+    });
+
+    return (
+      <Page style={PageStyles.Page}>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>14. Outros Documentos que Compõe o GRO (Gerenciamento de Riscos Ocupacionais)</Text>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>Para elaboração do inventário dos riscos e determinar a graduação de riscos foram analisados os seguintes documentos/indicadores:</Text>
+        </View>
+
+        <View style={style.list}>
+          <Text style={style.listItem}>{'\u2022'}Afastamentos;</Text>
+          <Text style={style.listItem}>{'\u2022'}CAT abertas;</Text>
+          <Text style={style.listItem}>{'\u2022'}Indicadores de incidentes e acidentes;</Text>
+          <Text style={style.listItem}>{'\u2022'}Relatório anual do PCMSO;</Text>
+          <Text style={style.listItem}>{'\u2022'}Relatório anual do PCMSO;</Text>
+          <Text style={style.listItem}>{'\u2022'}Inventário de máquinas e equipamentos da NR 12;</Text>
+          <Text style={style.listItem}>{'\u2022'}ASOs - Atestados de Saúde Ocupacional;</Text>
+          <Text style={style.listItem}>{'\u2022'}Treinamentos NRs 11, 35;</Text>
+          <Text style={style.listItem}>{'\u2022'}Avaliação Ergonômica Preliminar (SOC) NR 17;</Text>
+          <Text style={style.listItem}>{'\u2022'}Condições sanitárias conforme NR 24.</Text>
+        </View>
+
+        <View style={style.space}></View>
+
+        <Text style={TextStyles.subTitleSumary}>15. Percepção de Riscos Ocupacionais</Text>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>A metodologia proposta ocorre durante a visita técnica de campo. O profissional elaborador do PGR promove entrevistas com o grupo de trabalhadores de cada GHE, encarregados e responsáveis aplicando perguntas e questionamentos relacionados a situações, ações ou condições, que tenham potencial direta ou indiretamente, de causar danos a pessoas, patrimônio ou meio ambiente. O trabalhador é estimulado a apontar situações de perigos aplicando os seguintes questionamentos:</Text>
+        </View>
+
+        <View style={style.list}>
+          <Text style={style.listItem}>{'\u2022'}No seu dia a dia de trabalho há fatores que você tem a percepção que prejudicam os processos operacionais?;</Text>
+          <Text style={style.listItem}>{'\u2022'}No seu dia a dia de trabalho há situações ou condições que contribuem para ocasionar incidentes?;</Text>
+          <Text style={style.listItem}>{'\u2022'}Há alguma situação no seu trabalho que gera desconforto físico ou mental?;</Text>
+          <Text style={style.listItem}>{'\u2022'}Dentro do seu setor de trabalho há situações que você indicaria alguma melhoria?;</Text>
+          <Text style={style.listItem}>{'\u2022'}Há algum canal de comunicação entre você e seu imediato superior para apontar alguma situação de risco?;</Text>
+          <Text style={style.listItem}>{'\u2022'}Dentro dos processos que são desenvolvidos diariamente na sua rotina, há alguma situação ou condição de risco ou perigo que não foi mapeada na matriz de risco apresentada?</Text>
+        </View>
+
+        <View style={style.containerText}>
+          <Text style={style.title}>Outros questionamentos são realizados conforme dinâmica da visita técnica de campo e novas situações do ponto de vista do reconhecimento dos riscos</Text>
+        </View>
+
+        <FooterPage />
+      </Page>
+    );
+  };
 
   const UnidadesPage = () => {
     return (
@@ -3076,7 +3610,7 @@ function PdfGenerate({
 
         <HeaderPage />
 
-        <Text style={TextStyles.subTitleSumary}>2. Unidades da empresa</Text>
+        <Text style={TextStyles.subTitleSumary}>16. Unidades da empresa</Text>
 
         {/* Unidades */}
         {unidades.map((item, i) => (
@@ -3205,7 +3739,7 @@ function PdfGenerate({
         <HeaderPage />
 
         {/* Sumário */}
-        <Text style={TextStyles.subTitleSumary}>16. Caracterização das Atividades e Cargos</Text>
+        <Text style={TextStyles.subTitleSumary}>17. Caracterização das Atividades e Cargos</Text>
 
         {/* Tabela de Setores e Cargos */}
         <View style={TableStyles.table}>
@@ -3361,7 +3895,7 @@ function PdfGenerate({
         <HeaderPage />
 
         {/* Sumário */}
-        <Text style={TextStyles.subTitleSumary}>17. Inventário de Riscos</Text>
+        <Text style={TextStyles.subTitleSumary}>18. Inventário de Riscos</Text>
 
         {/* Tabela do Inventário */}
         <View style={TableStyles.table}>
@@ -3500,7 +4034,7 @@ function PdfGenerate({
         <HeaderPage />
 
         {/* Sumário */}
-        <Text style={TextStyles.subTitleSumary}>18. Plano de Ação</Text>
+        <Text style={TextStyles.subTitleSumary}>19. Plano de Ação</Text>
 
         {/* Tabela do Inventário */}
         <View style={TableStyles.table}>
@@ -3550,7 +4084,7 @@ function PdfGenerate({
     return (
       <Document>
         <CoverPage />
-        <SumaryPage />
+        {/* <SumaryPage /> */}
         <VersionTable />
         <CompanyPage />
         <IntroductionPage />
@@ -3564,7 +4098,9 @@ function PdfGenerate({
         <AssessmentText />
         <AssessmentFrameSeverity />
         <AssessmentFrameText />
-
+        <AssessmentFrameSeven />
+        <FrequencyPage />
+        <GROPage />
         <UnidadesPage />
         <PostPage />
         <RiskInventoryPage />
