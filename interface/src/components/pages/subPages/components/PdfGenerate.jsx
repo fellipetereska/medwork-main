@@ -449,6 +449,7 @@ function PdfGenerate({
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'center',
+      paddingHorizontal: 20,
     },
 
     bottomContainer: {
@@ -575,7 +576,7 @@ function PdfGenerate({
 
   const CoverPage = () => {
     return (
-      <Page size="A4" style={PageStyles.coverPage}>
+      <Page size="A4" style={PageStyles.Page}>
         <Text style={TextStyles.headerText}>Programa de Gerenciamento de Riscos - PGR</Text>
         <View style={ContainerStyles.centerContainer}>
           <Text style={TextStyles.centerText}>{company.nome_empresa}</Text>
@@ -1427,6 +1428,7 @@ function PdfGenerate({
       textContainer: {
         marginTop: 20,
         marginBottom: 20,
+        marginLeft: 10,
       }
     });
 
@@ -1719,7 +1721,7 @@ function PdfGenerate({
       },
 
       textBody: {
-        fontSize: 8,
+        fontSize: 7,
         padding: 5,
         textAlign: 'justify',
         fontFamily: 'OpenSansRegular',
@@ -2224,7 +2226,7 @@ function PdfGenerate({
       },
 
       textBody: {
-        fontSize: 8,
+        fontSize: 7,
         padding: 5,
         textAlign: 'justify',
         fontFamily: 'OpenSansRegular',
@@ -2723,7 +2725,7 @@ function PdfGenerate({
       },
 
       textBody: {
-        fontSize: 8,
+        fontSize: 7,
         padding: 5,
         textAlign: 'justify',
         fontFamily: 'OpenSansRegular',
@@ -3290,7 +3292,7 @@ function PdfGenerate({
 
       contentText: {
         textAlign: 'justify',
-        fontSize: 9,
+        fontSize: 7,
         padding: 5,
         fontFamily: 'OpenSansRegular',
       },
@@ -3456,7 +3458,7 @@ function PdfGenerate({
 
       title: {
         fontSize: 12,
-        fontFamily: 'OpenSansBold',
+        fontFamily: 'OpenSansRegular',
       },
 
       paragraph: {
@@ -3541,7 +3543,7 @@ function PdfGenerate({
 
       title: {
         fontSize: 12,
-        fontFamily: 'OpenSansBold',
+        fontFamily: 'OpenSansRegular',
       },
 
       paragraph: {
