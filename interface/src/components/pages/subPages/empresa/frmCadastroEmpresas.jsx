@@ -192,21 +192,22 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
   };
 
   const ObterInfoCnae = async (cnae) => {
-    try {
-      const response = await fetch(`https://api-grau-de-risco.onrender.com/cnae/${cnae}`);
-      const data = await response.json();
+    // try {
+    //   const response = await fetch(`https://api-grau-de-risco.onrender.com/cnae/${cnae}`);
+    //   const data = await response.json();
+    //   console.log(data)
 
-      // Verifica se há um erro na resposta
-      if (response.ok) {
-        return data;
-      } else {
-        console.error("Erro ao obter informações do CNAE:", data);
-        return null;
-      }
-    } catch (error) {
-      console.error("Erro ao obter informações do CNAE:", error);
-      return null;
-    }
+    //   // Verifica se há um erro na resposta
+    //   if (response.ok) {
+    //     return data;
+    //   } else {
+    //     console.error("Erro ao obter informações do CNAE:", data);
+    //     return null;
+    //   }
+    // } catch (error) {
+    //   console.error("Erro ao obter informações do CNAE:", error);
+    //   return null;
+    // }
   };
 
   //Funções para formatação do CNPJ
@@ -224,11 +225,10 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     const truncatedValue = numericValue.slice(0, 7);
     const formatedCnae = handleFormatCnae(truncatedValue);
     setCnae(formatedCnae);
-
-    if (truncatedValue.length === 9) {
-      const cnaeInfo = await ObterInfoCnae(truncatedValue);
-      setGrauRisco(cnaeInfo.risco)
-    }
+    // if (formatedCnae.length === 9) {
+    //   const cnaeInfo = await ObterInfoCnae(e.target.value);
+    //   setGrauRisco(cnaeInfo.risco)
+    // }
   };
 
   const handleInputChange = (e) => {

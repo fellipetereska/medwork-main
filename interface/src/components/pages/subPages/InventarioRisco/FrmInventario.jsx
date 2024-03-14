@@ -1089,45 +1089,6 @@ function FrmInventario({
               </div>
             </div>
 
-            {/* Card */}
-            {/* {riscoId ? (
-              <>
-                <div className="w-full px-3">
-                  <div className="bg-gray-100 rounded">
-                    <div className="grid grid-cols-2 px-4 py-2 text-lg font-bold text-sky-700">
-                      <div>
-                        <div className="flex justify-center">
-                          <p>{nomeUnidade}</p>
-                        </div>
-                        <div className="flex justify-center">
-                          <p>{processoNome}</p>
-                        </div>
-                      </div>
-                      <div> 
-                        <div className="flex justify-center">
-                          <p>{setorNome}</p>
-                        </div>
-                        <div className="flex justify-center">
-                          <p>{riscoNome}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="px-4 py-2">
-                      <div>
-                        <p>{pessoasExpostas}</p>
-                        <p>{avaliacao}</p>
-                      </div>
-                      <div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              null
-            )} */}
-
 
             {/* Medidas */}
             <div className="border-b border-gray-200 w-full mt-5"></div>

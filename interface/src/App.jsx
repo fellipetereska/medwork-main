@@ -1,8 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { AuthProvider } from './contexts/auth';
-import useAuth from './hooks/useAuth';
-// import PrivateRoute from './components/pages/subPages/components/PrivateRoute';
 import "react-toastify/dist/ReactToastify.css";
 
 // Importante as Paginas
@@ -11,7 +9,7 @@ import Gestao from './components/pages/Gestao';
 import Cadastros from './components/pages/Cadastros';
 import Inventario from './components/pages/Inventario';
 import Plano from './components/pages/Plano';
-import Laudos from './components/pages/Laudos';
+import Laudos from './components/pages/Laudos'
 import Empresa from './components/pages/subPages/empresa/Empresa';
 import Unidade from './components/pages/subPages/Unidade/CadastroUnidade';
 import Setor from './components/pages/subPages/setor/CadastroSetor';
@@ -25,6 +23,9 @@ import Medidas from './components/pages/subPages/CadastroMedidas'
 import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
 import ImportXlsx from './components/pages/subPages/components/ImportXlsx';
 import Vinculos from './components/pages/subPages/vinculos/Vinculos';
+import LaudoPgr from './components/pages/subPages/Laudos/LaudoPgr';
+import LaudoLtcat from './components/pages/subPages/Laudos/LaudoLtcat';
+import LaudoLip from './components/pages/subPages/Laudos/LaudoLip';
 
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
@@ -63,6 +64,9 @@ function App() {
           <Route path='/cadastro_aparelhos' element={<PrivateRoute requiredPermission={2}><Aparelhos /></PrivateRoute>} />
           <Route path='/importxlsx' element={<PrivateRoute requiredPermission={1}><ImportXlsx /></PrivateRoute>} />
           <Route path='/vinculos' element={<PrivateRoute requiredPermission={2}><Vinculos /></PrivateRoute>} />
+          <Route path='/gerar_pgr' element={<PrivateRoute requiredPermission={2}><LaudoPgr /></PrivateRoute>} />
+          <Route path='/gerar_ltcat' element={<PrivateRoute requiredPermission={2}><LaudoLtcat /></PrivateRoute>} />
+          <Route path='/gerar_lip' element={<PrivateRoute requiredPermission={2}><LaudoLip /></PrivateRoute>} />
           <Route path='/*' element={<Navigate to='/' />} />
         </Routes>
 

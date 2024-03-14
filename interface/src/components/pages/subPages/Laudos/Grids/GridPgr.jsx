@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { FaDownload } from "react-icons/fa6";
 import { MdNoteAdd } from "react-icons/md";
 
-function GridLaudos({ children, companyId, empresas, handleGenerate, pdf }) {
+function GridPgr({ children, companyId, empresas, handleGenerate, pdf }) {
 
   const [grid, setGrid] = useState(true);
   const [pdfComponents, setPdfComponents] = useState([]);
@@ -107,4 +107,4 @@ function GridLaudos({ children, companyId, empresas, handleGenerate, pdf }) {
   );
 }
 
-export default GridLaudos;
+export default GridPgr;

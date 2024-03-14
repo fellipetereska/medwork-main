@@ -3,14 +3,20 @@ import { useRef, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { connect } from '../../../../services/api';
 
+import { MdCleaningServices } from "react-icons/md";
+import { BiSolidMessageAdd } from "react-icons/bi";
+
 
 function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
 
-  // const [pgr, setPgr] = useState(false);
-  // const [ltcat, setLtcat] = useState(false);
-  // const [lip, setLip] = useState(false);
+  const [pgr, setPgr] = useState(false);
+  const [ltcat, setLtcat] = useState(false);
+  const [lip, setLip] = useState(false);
   const [classificacao, setClassificacao] = useState(false);
   const [avaliacao, setAvaliacao] = useState("0");
+  const [comentarios, setComentarios] = useState('');
+  const [esocial, setEsocial] = useState('');
+  const [teste, setTeste] = useState(false);
 
   const ref = useRef(null);
 
@@ -42,11 +48,11 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       danos_saude_risco.value = onEdit.danos_saude_risco || "";
       metodologia_risco.value = onEdit.metodologia_risco || "";
       severidade_risco.value = onEdit.severidade_risco || "0";
-      // setPgr(onEdit.pgr_risco || false)
-      // setLtcat(onEdit.ltcat_risco || false)
-      // setLip(onEdit.lip_risco || false)
+      setPgr(onEdit.pgr_risco || false)
+      setLtcat(onEdit.ltcat_risco || false)
+      setLip(onEdit.lip_risco || false)
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' 
   }, [onEdit]);
 
   const handleSubmit = async (e) => {
@@ -61,6 +67,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       !user.classificacao_risco) {
       toast.warn("Preencha todos os campos!");
     }
+
     try {
       const riscoData = {
         nome_risco: user.nome_risco.value || "N/A",
@@ -74,9 +81,9 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
         danos_saude_risco: user.danos_saude_risco.value || "N/A",
         metodologia_risco: user.metodologia_risco.value || "Risco Qualitativo",
         severidade_risco: user.severidade_risco.value || "0",
-        // pgr_risco: pgr,
-        // ltcat_risco: ltcat,
-        // lip_risco: lip,
+        pgr_risco: pgr,
+        ltcat_risco: ltcat,
+        lip_risco: lip,
       };
 
       const url = onEdit
@@ -105,23 +112,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
       console.log("Erro ao inserir risco: ", error)
     }
 
-    user.nome_risco.value = "";
-    user.codigo_esocial_risco.value = "";
-    user.meio_propagacao_risco.value = "";
-    user.unidade_medida_risco.value = "";
-    user.nivel_acao_risco.value = "";
-    user.limite_tolerancia_risco.value = "";
-    user.danos_saude_risco.value = "";
-    user.metodologia_risco.value = "";
-    user.severidade_risco.value = "0";
-    setAvaliacao("0");
-
-    // setPgr(false);
-    // setLtcat(false);
-    // setLip(false);
-    setOnEdit(null);
-    setClassificacao('')
-
+    handleClear();
     getRiscos();
   }
 
@@ -142,23 +133,23 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
     user.severidade_risco.value = "0";
     setAvaliacao("0");
 
-    // setPgr(false);
-    // setLtcat(false);
-    // setLip(false);
+    setPgr(false);
+    setLtcat(false);
+    setLip(false);
     setOnEdit(null);
   }
 
-  // const checkedPgr = () => {
-  //   setPgr(!pgr);
-  // }
+  const checkedPgr = () => {
+    setPgr(!pgr);
+  }
 
-  // const checkedLtcat = () => {
-  //   setLtcat(!ltcat);
-  // }
+  const checkedLtcat = () => {
+    setLtcat(!ltcat);
+  }
 
-  // const checkedLip = () => {
-  //   setLip(!lip);
-  // }
+  const checkedLip = () => {
+    setLip(!lip);
+  }
 
   const setClassificacaoChange = (event) => {
     const user = ref.current;
@@ -176,15 +167,19 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
     }
   }
 
-  const handleFormatCodigo = () => {
-    // Codgio E-social
+  const handleFormatCodigo = (event) => {
+    setEsocial(event.target.value);
   }
+
+  const handleComentariosChange = (event) => {
+    setComentarios(event.target.value);
+  };
 
 
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
-        <div className="flex flex-wrap -mx-3 mb-6 p-3">
+        <div className="flex flex-wrap -mx-3 p-3">
           {/* Campos do Formulário */}
 
           {/* Nome Risco */}
@@ -232,6 +227,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               name="codigo_esocial_risco"
               placeholder="Código E-social"
               onChange={handleFormatCodigo}
+              value={esocial}
             />
           </div>
 
@@ -356,48 +352,212 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos }) {
               disabled={classificacao}
             />
           </div>
+
+          {/* Laudo */}
+          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2">
+              Laudo:
+            </label>
+            <div className="bg-gray-100 mt-1 h-11 rounded p-2">
+              <div className="grid grid-cols-3 h-full rounded">
+
+                {/* PGR */}
+                <div htmlFor="cbxPgr" className="flex justify-center items-center gap-2 hover:bg-gray-50 rounded hover:shadow">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    checked={pgr}
+                    onChange={checkedPgr}
+                    id="cbxPgr"
+                  />
+                  <label
+                    htmlFor="cbxPgr"
+                    className="font-medium text-gray-700 text-sm"
+                  >
+                    PGR
+                  </label>
+                </div>
+
+                {/* LTCAT */}
+                <div htmlFor="cbxLtcat" className="flex justify-center items-center gap-2 hover:bg-gray-50 rounded hover:shadow">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    checked={ltcat}
+                    onChange={checkedLtcat}
+                    id="cbxLtcat"
+                  />
+                  <label
+                    htmlFor="cbxLtcat"
+                    className="font-medium text-gray-700 text-sm"
+                  >
+                    LTCAT
+                  </label>
+                </div>
+
+                {/* LIP */}
+                <div htmlFor="cbxLip" className="flex justify-center items-center gap-2 hover:bg-gray-50 rounded hover:shadow">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    checked={lip}
+                    onChange={checkedLip}
+                    id="cbxLip"
+                  />
+                  <label
+                    htmlFor="cbxLip"
+                    className="font-medium text-gray-700 text-sm"
+                  >
+                    LIP
+                  </label>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        {/* Relatórios */}
-        {/* <div className="border-b bg-gray-200"></div>
-        <h3 className="flex justify-center text-sky-700 text-2xl font-bold mt-4">Relatórios</h3>
-        <div className="flex flex-col -mx-3 mb-6 p-3">
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-              checked={pgr}
-              onChange={checkedPgr}
-            />
-            <label className="text-sm font-medium ms-2 text-gray-900">PGR <span className="font-light">(Porgrama de Gerenciamento de Riscos)</span></label>
-          </div>
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-              checked={ltcat}
-              onChange={checkedLtcat}
-            />
-            <label className="text-sm font-medium ms-2 text-gray-900">LTCAT <span className="font-light">(Laudo Técnico das Condições do Ambiente de Trabalho)</span></label>
-          </div>
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-              checked={lip}
-              onChange={checkedLip}
-            />
-            <label className="text-sm font-medium ms-2 text-gray-900">LIP <span className="font-light">(Laudo de Insalubridade e Periculosidade)</span></label>
-          </div>
-        </div> */}
+        {/* Conclusões */}
+        {teste && (
+          < div className="bg-gray-50 px-4 py-2 rounded-md shadow mb-6 mx-3">
+            <h3 className="flex justify-center text-sky-700 text-2xl font-bold mt-4 mb-1">Conclusões</h3>
+            <div className="border-b bg-sky-200 mb-2"></div>
+            <div className="grid grid-cols-2 gap-4">
 
-        <div className="w-full px-3 pl-8 flex justify-end mb-6">
+              {/* Conclusão LTCAT */}
+              <div className=" px-1 py-1">
+                <h1 className="text-lg font-bold text-sky-700">Conclusão</h1>
+                <p className="text-sm text-gray-600 font-light -mt-1">Laudo Técnico das Condições do Ambiente de Trabalho</p>
+                <div className="border-b border-gray-200"></div>
+                <div className="flex gap-3">
+                  {/* Nome */}
+                  <div className={`w-full md:w-3/4`}>
+                    <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="nome_conclusao_ltcat">
+                      Nome:
+                    </label>
+                    <input
+                      className={`appearence-none block w-full bg-white rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                      type="text"
+                      name="nome_conclusao_ltcat"
+                      placeholder="Nome da conclusão"
+                    />
+                  </div>
+                  {/* Anexo */}
+                  <div className={`w-full md:w-1/4`}>
+                    <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="anexo_conclusao_ltcat">
+                      E-social:
+                    </label>
+                    <input
+                      className={`appearence-none block w-full bg-white rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white text-gray-400`}
+                      type="number"
+                      name="esocial_conclusao_ltcat"
+                      placeholder="E-social"
+                      disabled
+                      value={esocial}
+                    />
+                  </div>
+                </div>
+                {/* conclusão */}
+                <div className="w-full ">
+                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusao_ltcat">
+                    Conclusão:
+                  </label>
+                  <textarea
+                    className="resize-none appearence-none block w-full bg-white rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                    type="text"
+                    name="conclusao_ltcat"
+                    placeholder="Conclusão..."
+                  />
+                </div>
+
+                {/* Botões */}
+                <div className="w-full flex justify-end gap-2">
+                  <div>
+                    <button onClick={handleClear} className="shadow bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-gray-50 font-bold py-2 px-3 rounded" type="button">
+                      <MdCleaningServices />
+                    </button>
+                  </div>
+                  <div className="">
+                    <button className="shadow bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-gray-50 font-bold py-2 px-3 rounded" type="button">
+                      <BiSolidMessageAdd />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Conclusão LIP */}
+              <div className=" px-1 py-1">
+                <h1 className="text-lg font-bold text-sky-700">Conclusão</h1>
+                <p className="text-sm text-gray-600 font-light -mt-1">Laudo de Insalubridade e Periculosidade</p>
+                <div className="border-b border-gray-200"></div>
+                <div className="flex gap-3">
+                  {/* Nome */}
+                  <div className={`w-full md:w-3/4`}>
+                    <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="nome_conclusao_lip">
+                      Nome:
+                    </label>
+                    <input
+                      className={`appearence-none block w-full bg-gray-white rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                      type="text"
+                      name="nome_conclusao_lip"
+                      placeholder="Nome da conclusão"
+                    />
+                  </div>
+                  {/* Anexo */}
+                  <div className={`w-full md:w-1/4`}>
+                    <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="anexo_conclusao_ltcat">
+                      Anexo:
+                    </label>
+                    <input
+                      className={`appearence-none block w-full bg-gray-white rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                      type="number"
+                      name="anexo_lip"
+                      placeholder="Anexo"
+                    />
+                  </div>
+                </div>
+                {/* conclusão */}
+                <div className="w-full ">
+                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusao_lip">
+                    Conclusão:
+                  </label>
+                  <textarea
+                    className="resize-none appearence-none block w-full bg-gray-white rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                    type="text"
+                    name="conclusao_lip"
+                    placeholder="Conclusão..."
+                  />
+                </div>
+
+                {/* Botões */}
+                <div className="w-full flex justify-end gap-2">
+                  <div>
+                    <button onClick={handleClear} className="shadow bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-gray-50 font-bold py-2 px-3 rounded" type="button">
+                      <MdCleaningServices />
+                    </button>
+                  </div>
+                  <div className="">
+                    <button className="shadow bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-gray-50 font-bold py-2 px-3 rounded" type="button">
+                      <BiSolidMessageAdd />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        <div className="w-full flex justify-end mb-6 gap-3">
           <div>
-            <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+            <button onClick={handleClear} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-5 rounded" type="button">
               Limpar
             </button>
           </div>
-          <div className="px-3 pl-8">
+          <div className="">
             <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
               Cadastrar
             </button>
