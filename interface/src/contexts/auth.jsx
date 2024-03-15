@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
   const [companyId, setCompanyId] = useState('');
   const [user, setUser] = useState([]);
   const [pdfVersion, setPdfVersion] = useState([]);
+  const [conclusoes, setConclusoes] = useState([]);
 
   const handleSetCompanyId = () => {
     try {
@@ -423,6 +424,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getconclusoes = async () => {
+    try {
+      const response = await fetch(`${connect}/conclusoes`);
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar conclusões. Status: ${response.status}`)
+      }
+
+      const data = await response.json();
+      setConclusoes(data)
+    } catch (error) {
+      console.log(`Erro ao buscar conclusões. ${error}`);
+    }
+  };
+
   const loadSelectedCompanyFromLocalStorage = () => {
     try {
       const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
@@ -559,6 +575,9 @@ export const AuthProvider = ({ children }) => {
         getPdfVersion,
         setPdfVersion,
         pdfVersion,
+        getconclusoes,
+        setConclusoes,
+        conclusoes,
       }}>
       {children}
     </AuthContext.Provider>
