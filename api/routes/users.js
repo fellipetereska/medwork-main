@@ -708,8 +708,8 @@ router.post("/riscos", (req, res) => {
         console.error("Erro ao inserir risco na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
-
-      return res.status(200).json(`Risco cadastrado com sucesso!`);
+      const id = result.insertId;
+      return res.status(200).json({ message: `Risco cadastrado com sucesso!`, id});
     });
 
     con.release();
@@ -784,6 +784,96 @@ router.put("/riscos/:id_risco", (req, res) => {
       }
 
       return res.status(200).json("Risco atualizado com sucesso!");
+    });
+
+    con.release();
+  })
+
+});
+
+
+// Tabela de Conclusões
+// Get Table
+router.get("/conclusoes", (req, res) => {
+  const q = `SELECT * FROM conclusoes`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  })
+
+});
+
+// Add rows in table
+router.post("/conclusoes", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO conclusoes SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir conclusão na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Conclusão cadastrado com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+//Update row int table
+router.put("/conclusoes/:id_conclusao", (req, res) => {
+  const id_conclusao = req.params.id_conclusao; // Obtém o ID da empresa da URL
+  const {
+    fk_risco_id,
+    nome_conclusao,
+    anexo,
+    conclusao,
+    laudo
+  } = req.body;
+
+  const q = `
+    UPDATE conclusoes
+    SET fk_risco_id = ?,
+    nome_conclusao = ?,
+    anexo = ?,
+    conclusao = ?,
+    laudo = ?
+    WHERE id_conclusao = ?
+    `;
+
+  const values = [
+    fk_risco_id,
+    nome_conclusao,
+    anexo,
+    conclusao,
+    laudo,
+    id_conclusao
+  ];
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, values, (err) => {
+      if (err) {
+        console.error("Erro ao atualizar conclusão na tabela", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json("Conclusão atualizado com sucesso!");
     });
 
     con.release();
@@ -1214,10 +1304,10 @@ router.post("/pgr_version", (req, res) => {
   const data = req.body;
 
   const q = "INSERT INTO pgr_version SET ?"
-router.post("/pdf_version", (req, res) => {
-  const data = req.body;
+  router.post("/pdf_version", (req, res) => {
+    const data = req.body;
 
-  const q = "INSERT INTO pdf_version SET ?"
+    const q = "INSERT INTO pdf_version SET ?"
     con.query(q, data, (err, result) => {
       if (err) {
         console.error("Erro ao inserir pdf na tabela", err);
