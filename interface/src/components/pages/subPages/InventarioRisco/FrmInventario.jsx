@@ -9,6 +9,7 @@ import ModalSearchProcesso from '../components/Modal/ModalSearchProcesso';
 import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
 import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 import ModalSearchAparelhos from '../components/Modal/ModalSearchAparelhos';
+import ModalConclusao from '../components/Modal/ModalConclusao';
 
 import icon_sair from '../../../media/icon_sair.svg';
 import icon_lupa from '../../../media/icon_lupa.svg';
@@ -32,14 +33,15 @@ function FrmInventario({
   getInventario,
   aparelhos,
   inventario,
+  conclusoes,
 }) {
 
   const user = useRef();
 
   const [loading, setLoading] = useState(false);
 
-  const [filteredSetores, setFilteredSetores] = useState([])
-  const [filteredProcessos, setFilteredProcessos] = useState([])
+  const [filteredSetores, setFilteredSetores] = useState([]);
+  const [filteredProcessos, setFilteredProcessos] = useState([]);
   const [filteredRiscos, setFilteredRiscos] = useState([]);
 
   const [showModalUnidade, setShowModalUnidade] = useState(false);
@@ -48,6 +50,7 @@ function FrmInventario({
   const [showModalRisco, setShowModalRisco] = useState(false);
   const [showModalMedidas, setShowModalMedidas] = useState(false);
   const [showModalAparelhos, setShowModalAparelhos] = useState(false);
+  const [showModalConclusoes, setShowModalConclusoes] = useState(false);
   const [isMedidasSet, setIsMedidasSet] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
   const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
@@ -76,9 +79,14 @@ function FrmInventario({
   const [nivel, setNivel] = useState('');
   const [metodologia, setMetodologia] = useState('');
   const [comentarios, setComentarios] = useState('');
+  const [conclusao, setConclusao] = useState('');
+  const [anexo, setAnexo] = useState('');
   const [data, setData] = useState('');
   const [frequencia, setFrequencia] = useState('');
   const [plano, setPlano] = useState(false);
+  const [ltcat, setLtcat] = useState(true);
+  const [lip, setLip] = useState(true);
+  const [invent, setInvent] = useState(true);
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -88,16 +96,18 @@ function FrmInventario({
   const openModalRisco = () => setShowModalRisco(true);
   const openModalMedidas = () => setShowModalMedidas(true);
   const openModalAparelhos = () => setShowModalAparelhos(true);
+  const openModalConclusoes = () => setShowModalConclusoes(true);
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
   const closeModalProcesso = () => setShowModalProcesso(false);
   const closeModalRisco = () => setShowModalRisco(false);
   const closeModalAparelhos = () => setShowModalAparelhos(false);
+  const closeModalConclusoes = () => setShowModalConclusoes(false);
   const closeModalMedidas = () => {
     getGlobalSprm();
     setShowModalMedidas(false);
-  }
+  };
 
   const obterDataFormatada = () => {
     const dataAtual = new Date();
@@ -174,7 +184,7 @@ function FrmInventario({
     handleClearProcesso();
     handleClearRisco();
     setFilteredProcessos([]);
-  }
+  };
 
   // Função para atualizar o Processo
   const handleProcessoSelect = async (ProcessoId, ProcessoNome) => {
@@ -195,7 +205,7 @@ function FrmInventario({
     setProcessoNome(null);
     handleClearRisco();
     setFilteredRiscos([]);
-  }
+  };
 
   const verify = async (riscoId) => {
     getInventario();
@@ -227,7 +237,7 @@ function FrmInventario({
     } catch (error) {
       console.error("Erro ao verificar cadastro duplicado!", error)
     }
-  }
+  };
 
   // Função para atualizar o Risco
   const handleRiscoSelect = async (RiscoId, RiscoNome) => {
@@ -314,7 +324,7 @@ function FrmInventario({
     setDescricao('');
     setCheckMedicao(false);
     setIsVerify(false);
-  }
+  };
 
   const setRiscosInput = (risco) => {
     if (!risco) {
@@ -344,13 +354,13 @@ function FrmInventario({
     closeModalAparelhos();
     setAparelhoId(aparelhoId);
     setAparelhoNome(aparelhoNome);
-  }
+  };
 
   const handleClearAparelhos = () => {
     closeModalAparelhos();
     setAparelhoId('');
     setAparelhoNome('');
-  }
+  };
 
   const handleProbabilidadeChange = (event) => {
     const selectedProbabilidade = parseInt(event.target.value, 10);
@@ -376,8 +386,12 @@ function FrmInventario({
 
   const handleMedicaoCheck = () => {
     setCheckMedicao(!checkMedicao);
-    setMedicao('');
-  }
+    if (medicao === '0') {
+      setMedicao('');
+    } else {
+      setMedicao('0');
+    }
+  };
 
   useEffect(() => {
     const handleOnEdit = async () => {
@@ -456,6 +470,7 @@ function FrmInventario({
 
     if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !medicao || !data) {
       toast.warn("Preencha todos os campos!");
+      return
     }
     try {
       const inventarioData = {
@@ -474,6 +489,8 @@ function FrmInventario({
         data_inventario: data || '',
         frequencia: frequencia || '',
         fk_aparelho_id: aparelhoId || '',
+        conclusao: conclusao || '',
+        anexo: anexo || '',
       };
 
       const url = onEdit
@@ -504,7 +521,7 @@ function FrmInventario({
     }
 
     handleClear();
-  }
+  };
 
   const handleClear = () => {
     handleClearRisco();
@@ -521,7 +538,8 @@ function FrmInventario({
     setFrequencia('');
     setIsVerify(false);
     setData(obterDataFormatada);
-  }
+    handleClearConclusao();
+  };
 
   const handleDescricaoFontesChange = (event) => {
     setDescricao(event.target.value);
@@ -539,7 +557,7 @@ function FrmInventario({
     getGlobalSprm();
     closeModalMedidas();
     setIsMedidasSet(true);
-  }
+  };
 
   const find = (item, tipo) => {
     try {
@@ -579,7 +597,7 @@ function FrmInventario({
       default:
         return 'N/A'
     }
-  }
+  };
 
   const handleChangeData = (event) => {
     setData(event.target.value);
@@ -587,11 +605,29 @@ function FrmInventario({
 
   const handleChangeSeveridade = (e) => {
     setSeveridade(e.target.value);
-  }
+  };
 
   const handleChangeFrequencia = (e) => {
     setFrequencia(e.target.value);
-  }
+  };
+
+  const handleConclusaoChange = (event) => {
+    setConclusao(event.target.value);
+  };
+
+  const handleConclusaoSelect = (item) => {
+    if (!item) {
+      return toast.warn("Nenhuma conclusão selecionada");
+    }
+    closeModalConclusoes();
+    setConclusao(item.conclusao);
+    setAnexo(item.anexo);
+  };
+
+  const handleClearConclusao = () => {
+    setConclusao('');
+    setAnexo('');
+  };
 
   const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
 
@@ -914,12 +950,11 @@ function FrmInventario({
                   onChange={handleMedicaoChange}
                   step="any"
                 />
-                <div className={`${medicao === '0' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
+                <div className={`${medicao === '0' ? '' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
                   <input
                     type="checkbox"
                     id="medica_risco"
                     className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
-                    disabled={medicao === "0"}
                     checked={checkMedicao}
                     onChange={handleMedicaoCheck}
                   />
@@ -961,7 +996,7 @@ function FrmInventario({
                   <button
                     type="button"
                     onClick={openModalAparelhos}
-                    className={`flex cursor-pointer ml-4 ${medicao > 0 ? '' : 'cursor-auto'}`}
+                    className={`flex ml-4 ${medicao <= 0 ? 'cursor-auto' : 'cursor-pointer'}`}
                     disabled={medicao <= 0}
                   >
                     <img src={icon_lupa} className="h-9" alt="Icone adicionar Aparelho"></img>
@@ -1060,7 +1095,7 @@ function FrmInventario({
 
             <div className="w-full flex items-center">
               {/* Descrição das Fontes */}
-              <div className="w-full md:w-1/2 px-3">
+              <div className={`w-full ${riscoId ? 'md:w-1/3' : 'md:w-1/2'} px-3"`}>
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                   Descrição das Fontes:
                 </label>
@@ -1074,8 +1109,8 @@ function FrmInventario({
                 />
               </div>
               {/* Comentários */}
-              <div className="w-full md:w-1/2 px-3">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+              <div className={`w-full ${riscoId ? 'md:w-1/3' : 'md:w-1/2'} px-3`}>
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="gcomentarios">
                   Comentários:
                 </label>
                 <textarea
@@ -1087,6 +1122,50 @@ function FrmInventario({
                   onChange={handleComentariosChange}
                 />
               </div>
+              {/* Comentários */}
+              {riscoId && (
+                <div className="w-full md:w-1/3 px-3">
+                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                    Conclusão:
+                  </label>
+                  <div className="flex items-center w-full">
+                    {conclusao ? (
+                      <>
+                        <textarea
+                          className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                          type="text"
+                          name="conclusao"
+                          placeholder="conclusão..."
+                          value={conclusao}
+                          onChange={handleConclusaoChange}
+                        />
+                        <button type="button" className="ml-4" onClick={handleClearConclusao}>
+                          <img src={icon_sair} alt="" className="h-9" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                          onClick={openModalConclusoes}
+                          type="button"
+                        >
+                          <p className="px-2 text-sm font-medium">
+                            Nenhuma Conclusão Selecionada
+                          </p>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={openModalConclusoes}
+                          className={`flex cursor-pointer ml-4`}
+                        >
+                          <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
 
@@ -1166,6 +1245,16 @@ function FrmInventario({
 
           </div>
         </form >
+        <ModalConclusao
+          isOpen={showModalConclusoes}
+          onCancel={closeModalConclusoes}
+          riscoId={riscoId}
+          riscos={riscos}
+          onSelect={handleConclusaoSelect}
+          ltcat={ltcat}
+          lip={lip}
+          inventario={invent}
+        />
       </div >
     </>
   );

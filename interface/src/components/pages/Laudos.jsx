@@ -5,7 +5,7 @@ import useAuth from '../../hooks/useAuth'
 
 import BotaoPgr from '../pages/subPages/buttons/Laudos/BotaoGerarPgr'
 import BotaoLtcat from '../pages/subPages/buttons/Laudos/BotaoGerarLtcat'
-import BotaoLip from '../pages/subPages/buttons/Laudos/BotaoGerarLip'
+import BotaoLip from './subPages/buttons/Laudos/BotaoGerarLip'
 
 function Laudos() {
 

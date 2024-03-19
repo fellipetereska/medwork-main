@@ -8,9 +8,9 @@ import useAuth from '../../../../../hooks/useAuth'
 
 import GridModalConclusao from '../gridsModal/GridModalConclusao';
 
-const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat }) => {
+const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, inventario, onSelect }) => {
 
-  const { getconclusoes, conclusoes } = useAuth(null);
+  const { getConclusoes, conclusoes } = useAuth(null);
 
   const [nome, setNome] = useState('');
   const [conclusao, setConclusao] = useState('');
@@ -20,7 +20,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat }) 
   const [att, setAtt] = useState(false);
 
   useEffect(() => {
-    getconclusoes();
+    getConclusoes();
   }, [isOpen])
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat }) 
       console.log("Erro ao adicionar conclusão", error)
     }
     handleClear();
-    getconclusoes();
+    getConclusoes();
     setAtt(!att);
   };
 
@@ -189,7 +189,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat }) 
                   </label>
                   <input
                     className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                    type="number"
+                    type="text"
                     id='anexo'
                     name="anexo"
                     placeholder="Anexo"
@@ -221,6 +221,8 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat }) 
             childId={riscoId}
             conclusoes={conclusoes}
             setOnEdit={setOnEdit}
+            onSelect={onSelect}
+            invent={inventario}
           />
         </div>
 

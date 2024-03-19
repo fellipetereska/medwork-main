@@ -424,7 +424,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getconclusoes = async () => {
+  const getConclusoes = async () => {
     try {
       const response = await fetch(`${connect}/conclusoes`);
 
@@ -575,7 +575,7 @@ export const AuthProvider = ({ children }) => {
         getPdfVersion,
         setPdfVersion,
         pdfVersion,
-        getconclusoes,
+        getConclusoes,
         setConclusoes,
         conclusoes,
       }}>
