@@ -3,23 +3,52 @@ import useAuth from "../../../../hooks/useAuth";
 import { toast } from "react-toastify";
 import ReactDOM from 'react-dom';
 import { Link } from "react-router-dom";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+
+import LtcatGenerate from "../components/LaudoGenerate/LtcatGenerate";
+import ModalSearchSetor from "../../subPages/components/Modal/ModalSearchSetor";
+import ModalSearchUnidade from "../../subPages/components/Modal/ModalSearchUnidade"
 
 import Back from '../../../layout/Back';
 import { IoInformationCircleSharp } from "react-icons/io5";
-
-import LtcatGenerate from "../components/LaudoGenerate/LtcatGenerate";
-import { PDFViewer } from "@react-pdf/renderer";
+import icon_sair from '../../../media/icon_sair.svg'
+import icon_lupa from '../../../media/icon_lupa.svg'
 
 function LaudoPgr() {
 
   const {
-    loadSelectedCompanyFromLocalStorage, companyId, selectedCompany
+    loadSelectedCompanyFromLocalStorage, companyId, selectedCompany,
+    getUnidades, unidades,
+    getSetores, setores, setSetores,
+    getEmpresas, empresas,
+    getCargos, cargos,
+    getProcessos, processos,
+    getRiscos, riscos,
+    getMedidasAdm, medidasAdm, getMedidasEpi, medidasEpi, getMedidasEpc, medidasEpc,
+    getSetoresProcessos, setSetoresProcessos, setoresProcessos,
+    getProcessosRiscos, setProcessosRiscos, processosRiscos,
+    getRiscosMedidas, setRiscosMedidas, riscosMedidas,
+    getInventario, inventario,
+    getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId,
+    getPlano, setPlano, plano,
+    getUsuarios, usuarios,
+    getContatos, contatos,
+    checkSignIn, user,
+    getAparelhos, aparelhos,
+    getPdfVersion, pdfVersion,
   } = useAuth(null);
 
 
   const [nameCompany, setNameCompany] = useState(null);
+  const [filteredInventario, setFilteredInventario] = useState([]);
+  const [filteredSetores, setFilteredSetores] = useState([]);
+  const [filteredUnidade, setFilteredUnidades] = useState([]);
 
   // Inputs Form
+  const [unidadeId, setUnidadeId] = useState('');
+  const [setorId, setSetorId] = useState('');
+  const [nomeUnidade, setNomeUnidade] = useState('');
+  const [setorNome, setSetorNome] = useState('');
   const [data, setData] = useState(false);
 
   // Laudo
@@ -30,6 +59,10 @@ function LaudoPgr() {
   // Popover
   const [visible, setVisible] = useState(false);
 
+  // Modal
+  const [showModalUnidade, setShowModalUnidade] = useState(false);
+  const [showModalSetor, setShowModalSetor] = useState(false);
+
 
 
   useEffect(() => {
@@ -38,67 +71,158 @@ function LaudoPgr() {
 
   const handleGet = async () => {
     setNameCompany(selectedCompany ? selectedCompany.nome_empresa : '');
+    getUnidades();
+    getSetores();
+    getCargos();
+    getProcessos();
+    getRiscos();
+    getSetoresProcessos();
+    getProcessosRiscos();
+    getInventario();
+    getRiscosMedidas();
+    getMedidasAdm();
+    getMedidasEpi();
+    getMedidasEpc();
+    getPlano();
+    getUsuarios();
+    getContatos();
+    getEmpresas();
+    getAparelhos();
+    getPdfVersion();
   };
 
   useEffect(() => {
     handleGet();
   }, [companyId]);
 
+  useEffect(() => {
+    if (showModalSetor && unidadeId) {
+      const filtered = setores.filter((i) => i.fk_unidade_id === unidadeId);
+      setFilteredSetores(filtered);
+    }
+  }, [showModalSetor, unidadeId, setores]);
 
+  //Funções do Modal
+  //Função para abrir o Modal
+  const openModalUnidade = () => setShowModalUnidade(true);
+  const openModalSetor = () => setShowModalSetor(true);
+  //Função para fechar o Modal
+  const closeModalUnidade = () => setShowModalUnidade(false);
+  const closeModalSetor = () => setShowModalSetor(false);
+
+  // Função para atualizar a Unidade
+  // Função para atualizar a Unidade
+  const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
+    closeModalUnidade();
+    setUnidadeId(unidadeId)
+    setNomeUnidade(nomeUnidade)
+    handleClearSetor();
+    const inventarioFilter = inventario.filter((i) => i.fk_unidade_id === unidadeId);
+    setFilteredInventario(inventarioFilter);
+    const unidadesFilter = unidades.filter((i) => i.id_unidade === unidadeId);
+    setFilteredUnidades(unidadesFilter);
+  };
+
+  const handleClearUnidade = () => {
+    setUnidadeId(null);
+    setNomeUnidade(null);
+    handleClearSetor();
+    setFilteredSetores([]);
+  };
+
+  const handleSetorSelect = (SetorId, SetorName) => {
+    closeModalSetor();
+    setSetorId(SetorId);
+    setSetorNome(SetorName);
+
+    const inventarioFilter = inventario.filter((i) => i.fk_setor_id === setorId);
+    setFilteredInventario(inventarioFilter);
+    const setorFilter = setores.filter((i) => i.id_setor === SetorId);
+    setFilteredSetores(setorFilter);
+  };
+
+  const handleClearSetor = () => {
+    setSetorId(null);
+    setSetorNome(null);
+  };
 
 
   const handleGenerate = async () => {
-    // await handleGet();
-    // try {
+    await handleGet();
+    try {
 
-    //   let filterUnidades;
-    //   let filterSetor;
+      let filterUnidades;
+      let filterSetor;
 
-    //   if (unidadeId) {
-    //     filterUnidades = unidades.filter((i) => i.id_unidade === unidadeId);
-    //     filterSetor = setores.filter((i) => i.fk_unidade_id === unidadeId);
-    //   } else {
-    //     filterUnidades = unidades;
-    //     const mapUnidade = filterUnidades.map((i) => i.id_unidade);
-    //     filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
-    //   }
+      if (unidadeId) {
+        filterUnidades = unidades.filter((i) => i.id_unidade === unidadeId);
+        filterSetor = setores.filter((i) => i.fk_unidade_id === unidadeId);
+      } else {
+        filterUnidades = unidades;
+        const mapUnidade = filterUnidades.map((i) => i.id_unidade);
+        filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
+      }
 
-    //   if (setorId) {
-    //     filterSetor = setores.filter((i) => i.id_setor === setorId);
-    //   }
+      if (setorId) {
+        filterSetor = setores.filter((i) => i.id_setor === setorId);
+      }
 
-    //   const filterCompany = empresas.find((i) => i.id_empresa === companyId);
-    //   const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
-    //   await checkSignIn();
-    //   const mapUnidade = unidades.map((i) => i.id_unidade);
-    //   const mapSetor = filterSetor.map((i) => i.id_setor);
-    //   const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
-    //   const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
-    //   const filterPlano = plano.filter((i) => i.fk_empresa_id === companyId);
-    //   const filterpdf = pdfVersion.filter((i) => i.fk_empresa_id === companyId);
-    //   const filterVersion = filterpdf.length + 1;
+      const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
+      const filterCompany = empresas.find((i) => i.id_empresa === companyId);
+      const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
+      await checkSignIn();
+      const mapSetor = filterSetor.map((i) => i.id_setor);
+      const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
 
-    //   if (grid) {
-    //     const res = await generatePdf(companys, contacts, users, sectors, departaments, inventarios, planos, units, filterpdf, date, versao);
-    //     handleDownloadPGR(res, grid)
-    //     setGeneratedPdf(res)
-    //   } else {
-    //     const res = await generatePdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, filterpdf, data, filterVersion);
-    //     handleDownloadPGR(res)
-    //     setGeneratedPdf(res)
-    //     handleSubmit(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, data);
-    //   }  
-    // } catch (error) {
-    //   console.log("Erro ao filtrar dados!", error)
-    // }
+
+      const res = await generatePdf(filterInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
+      handleDownloadLtcat(res);
+      setGeneratedPdf(res);
+    } catch (error) {
+      console.log("Erro ao filtrar dados!", error)
+    }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const generatePdf = async () => {
+  const generatePdf = async (filterInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data) => {
     return (
-      <LtcatGenerate />
+      <LtcatGenerate
+        inventario={filterInventario}
+        unidades={filterUnidades}
+        setores={filterSetor}
+        processos={processos}
+        riscos={riscos}
+        aparelhos={aparelhos}
+        company={filterCompany}
+        user={user}
+        data={data}
+        contatos={filterContato}
+        cargos={filterCargo}
+      />
     );
+  };
+
+  const handleDownloadLtcat = async (pgr) => {
+    const { blob } = await new Promise((resolve, reject) => {
+      const pdfGenerated = (
+        <PDFDownloadLink
+          document={pgr}
+          fileName={`PGR - ${nameCompany}` || 'Programa de Gerenciamento de Riscos'}
+        >
+          {({ blob, url, loading, error }) => (
+            <button
+              type="button"
+              disabled={loading}
+              className={`${loading ? 'bg-gray-200 hover:bg-gray-200 text-gray-700' : 'bg-green-600'
+                } py-2 px-8 font-bold text-lg text-white rounded cursor-pointer hover:bg-green-700`}>
+              {loading ? 'Gerando PDF...' : 'Baixar PDF'}
+            </button>
+          )}
+        </PDFDownloadLink>
+      );
+      setPdfComponent(pdfGenerated)
+    })
   };
 
 
@@ -110,14 +234,14 @@ function LaudoPgr() {
   };
 
   const openPdfInNewTab = (pdfComponent) => {
-    // const newWindow = window.open();
+    const newWindow = window.open();
 
-    // ReactDOM.render(
-    //   <PDFViewer style={{ width: '100%', height: '100vh', margin: '0', padding: '0' }}>
-    //     {pdfComponent}
-    //   </PDFViewer>,
-    //   newWindow.document.body
-    // );
+    ReactDOM.render(
+      <PDFViewer style={{ width: '100%', height: '100vh', margin: '0', padding: '0' }}>
+        {pdfComponent}
+      </PDFViewer>,
+      newWindow.document.body
+    );
   };
 
 
@@ -149,12 +273,6 @@ function LaudoPgr() {
 
   return (
     <>
-
-      {/* <div>
-        <PDFViewer style={{ width: '100%', height: '100vh', margin: '0', padding: '0' }}>
-          <LtcatGenerate />
-        </PDFViewer>
-      </div> */}
 
       {/* Popover */}
       <div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
@@ -213,7 +331,7 @@ function LaudoPgr() {
             </div>
 
             {/* Unidade */}
-            {/* <div className="w-full md:w-1/3 px-3">
+            <div className="w-full md:w-1/3 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_unidade_id">
                 Unidade:
               </label>
@@ -256,10 +374,10 @@ function LaudoPgr() {
                 children={unidades}
                 onContactSelect={handleUnidadeSelect}
               />
-            </div> */}
+            </div>
 
             {/* Setor */}
-            {/* <div className="w-full md:w-1/3 px-3">
+            <div className="w-full md:w-1/3 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_setor_id">
                 Setor:
               </label>
@@ -303,7 +421,7 @@ function LaudoPgr() {
                 children={filteredSetores}
                 onContactSelect={handleSetorSelect}
               />
-            </div> */}
+            </div>
 
           </div>
 

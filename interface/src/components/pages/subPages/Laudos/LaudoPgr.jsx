@@ -289,7 +289,6 @@ function LaudoPgr() {
       const filterCompany = empresas.find((i) => i.id_empresa === companyId);
       const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
       await checkSignIn();
-      const mapUnidade = unidades.map((i) => i.id_unidade);
       const mapSetor = filterSetor.map((i) => i.id_setor);
       const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
       const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);

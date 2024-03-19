@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import { BsFillPencilFill } from 'react-icons/bs';
+import { GiClick } from "react-icons/gi";
 
-function GridModalConclusao({ childId, conclusoes, setOnEdit }) {
+function GridModalConclusao({ childId, conclusoes, setOnEdit, onSelect, invent }) {
 
   const find = (item) => {
     switch (item) {
@@ -59,10 +60,15 @@ function GridModalConclusao({ childId, conclusoes, setOnEdit }) {
                   <td className="px-4 py-4">
                     {find(item.laudo)}
                   </td>
-                  <td className="px-4 py-4 flex justify-center">
+                  <td className="px-4 py-4 flex justify-center gap-3">
                     <a className="font-medium text-blue-400 hover:text-blue-800 cursor-pointer">
                       <BsFillPencilFill onClick={() => setOnEdit(item)} />
                     </a>
+                    {invent && (
+                      <a className="font-medium text-green-600 hover:text-green-800 cursor-pointer">
+                        <GiClick onClick={() => onSelect(item)} />
+                      </a>
+                    )}
                   </td>
                 </tr>
               ))}
