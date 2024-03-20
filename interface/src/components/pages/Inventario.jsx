@@ -48,15 +48,10 @@ function Inventario() {
     getConclusoes();
   }, [companyId]);
 
-  const handleEdit = (selectedInventario) => {
-    setOnEdit(selectedInventario);
-  };
 
   return (
     <>
-      
-
-      <FrmInventario  
+      <FrmInventario
         unidades={unidades}
         cargos={cargos}
         setores={setores}

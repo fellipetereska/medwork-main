@@ -15,7 +15,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
   const [nome, setNome] = useState('');
   const [conclusao, setConclusao] = useState('');
   const [laudo, setLaudo] = useState('0');
-  const [anexo, setAnexo] = useState('');
+  const [tipo, setTipo] = useState('');
   const [onEdit, setOnEdit] = useState(null);
   const [att, setAtt] = useState(false);
 
@@ -29,8 +29,8 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
       setConclusao(onEdit.conclusao);
       setLaudo(onEdit.laudo)
 
-      if (onEdit.anexo && onEdit.laudo === 'lip') {
-        setAnexo(onEdit.Anexo)
+      if (onEdit.tipo && onEdit.laudo === 'lip') {
+        setTipo(onEdit.tipo)
       }
 
     }
@@ -44,7 +44,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
     setNome('');
     setConclusao('');
     setLaudo('');
-    setAnexo('');
+    setTipo('');
   };
 
   const handleSubmit = async (e) => {
@@ -60,7 +60,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
         nome_conclusao: nome,
         conclusao: conclusao,
         laudo: laudo,
-        anexo: anexo || '',
+        tipo: tipo || '',
       }
 
       const url = onEdit
@@ -90,6 +90,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
     handleClear();
     getConclusoes();
     setAtt(!att);
+    setOnEdit(null);
   };
 
   const find = (item) => {
@@ -163,11 +164,33 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
                 </select>
               </div>
 
+              {/* Tipo */}
+              {(laudo === "lip" || laudo === "ambos") && (
+                <div className={`w-full md:w-1/4`}>
+                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="tipo">
+                    Tipo:
+                  </label>
+                  <select
+                    className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                    id='tipo'
+                    name="tipo"
+                    value={tipo}
+                    onChange={(e) => setTipo(e.target.value)}
+                  >
+                    <option value="0">Selecione um tipo</option>
+                    <option value="Insalubridade">Insalubridade</option>
+                    <option value="Periculosidade">Periculosidade</option>
+                    <option value="Ambos">Ambos</option>
+                  </select>
+
+                </div>
+              )}
+
             </div>
 
             <div className='flex items-center gap-3'>
               {/* conclusão */}
-              <div className={`${laudo !== 'lip' ? 'w-full' : 'w-3/4'}`}>
+              <div className={`w-full`}>
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusao_ltcat">
                   Conclusão:
                 </label>
@@ -181,23 +204,7 @@ const ModalConclusaoLtcat = ({ onCancel, isOpen, riscoId, riscos, lip, ltcat, in
                 />
               </div>
 
-              {/* Anexo */}
-              {laudo === "lip" && (
-                <div className={`w-full md:w-1/4`}>
-                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="anexo">
-                    Anexo:
-                  </label>
-                  <input
-                    className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
-                    type="text"
-                    id='anexo'
-                    name="anexo"
-                    placeholder="Anexo"
-                    value={anexo}
-                    onChange={(e) => setAnexo(e.target.value)}
-                  />
-                </div>
-              )}
+
             </div>
 
             {/* Botões */}

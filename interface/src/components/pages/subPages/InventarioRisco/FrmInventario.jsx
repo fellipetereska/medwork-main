@@ -80,7 +80,7 @@ function FrmInventario({
   const [metodologia, setMetodologia] = useState('');
   const [comentarios, setComentarios] = useState('');
   const [conclusao, setConclusao] = useState('');
-  const [anexo, setAnexo] = useState('');
+  const [laudoTipo, setLaudoTipo] = useState('');
   const [data, setData] = useState('');
   const [frequencia, setFrequencia] = useState('');
   const [plano, setPlano] = useState(false);
@@ -257,7 +257,6 @@ function FrmInventario({
       medidaId: filteredRiscosMedidas.fk_medida_id,
       medidaTipo: filteredRiscosMedidas.tipo,
     }));
-
     await handleRiscoEscolhido(RiscoId, medidasTipos);
     await verify(RiscoId);
   };
@@ -394,24 +393,41 @@ function FrmInventario({
   };
 
   useEffect(() => {
-    const handleOnEdit = async () => {
+    const handleEdit = () => {
       if (onEdit) {
         try {
-          if (onEdit.fk_unidade_id) {
-            const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
-            await handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
+          setUnidadeId(onEdit.fk_unidade_id);
+          setSetorId(onEdit.fk_setor_id);
+          setProcessoId(onEdit.fk_processo_id);
+          setRiscoId(onEdit.fk_risco_id);
+        } catch (error) {
+          console.error("Erro ao setar ids para edição!", error)
+        }
+      }
+    }
+
+    handleEdit();
+  }, [onEdit])
+
+  useEffect(() => {
+    const handleOnEdit = async () => {
+      if (onEdit, unidadeId, setorId, processoId, riscoId) {
+        try {
+          if (unidadeId) {
+            const unidadeSelect = unidades.find((i) => i.id_unidade === unidadeId);
+            await handleUnidadeSelect(unidadeId, unidadeSelect.nome_unidade);
           }
-          if (onEdit.fk_setor_id) {
-            const setorSelect = setores.find((i) => i.id_setor === onEdit.fk_setor_id);
-            await handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
+          if (setorId) {
+            const setorSelect = setores.find((i) => i.id_setor === setorId);
+            await handleSetorSelect(setorId, setorSelect.nome_setor);
           }
-          if (onEdit.fk_processo_id) {
-            const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
-            await handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
+          if (processoId) {
+            const processoSelect = processos.find((i) => i.id_processo === processoId);
+            await handleProcessoSelect(processoId, processoSelect.nome_processo);
           }
-          if (onEdit.fk_risco_id) {
-            const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
-            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
+          if (riscoId) {
+            const riscoSelect = riscos.find((i) => i.id_risco === riscoId);
+            await handleRiscoSelect(riscoId, riscoSelect.nome_risco);
           }
 
           setMedicao(onEdit.medicao || '');
@@ -445,6 +461,9 @@ function FrmInventario({
             setData(data_formatada || '');
           }
 
+          setConclusao(onEdit.conclusao);
+          setLaudoTipo(onEdit.tipo_laudo);
+
           setIsVerify(false);
           setIsMedidasSet(true);
         } catch (error) {
@@ -456,7 +475,7 @@ function FrmInventario({
     }
 
     handleOnEdit();
-  }, [onEdit]);
+  }, [onEdit, setorId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -490,7 +509,7 @@ function FrmInventario({
         frequencia: frequencia || '',
         fk_aparelho_id: aparelhoId || '',
         conclusao: conclusao || '',
-        anexo: anexo || '',
+        tipo_laudo: laudoTipo || '',
       };
 
       const url = onEdit
@@ -621,12 +640,12 @@ function FrmInventario({
     }
     closeModalConclusoes();
     setConclusao(item.conclusao);
-    setAnexo(item.anexo);
+    setLaudoTipo(item.tipo);
   };
 
   const handleClearConclusao = () => {
     setConclusao('');
-    setAnexo('');
+    setLaudoTipo('');
   };
 
   const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)

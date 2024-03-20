@@ -36,6 +36,9 @@ function GridModalConclusao({ childId, conclusoes, setOnEdit, onSelect, invent }
               <th scope="col" className="px-4 py-3">
                 Laudo
               </th>
+              <th scope="col" className="px-4 py-3">
+                Tipo
+              </th>
               <th scope="col" className="px-4 py-3 flex justify-center">
                 Ações
               </th>
@@ -59,6 +62,9 @@ function GridModalConclusao({ childId, conclusoes, setOnEdit, onSelect, invent }
                   </td>
                   <td className="px-4 py-4">
                     {find(item.laudo)}
+                  </td>
+                  <td className="px-4 py-4">
+                    {item.tipo}
                   </td>
                   <td className="px-4 py-4 flex justify-center gap-3">
                     <a className="font-medium text-blue-400 hover:text-blue-800 cursor-pointer">
