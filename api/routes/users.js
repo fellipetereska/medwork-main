@@ -840,7 +840,7 @@ router.put("/conclusoes/:id_conclusao", (req, res) => {
   const {
     fk_risco_id,
     nome_conclusao,
-    anexo,
+    tipo,
     conclusao,
     laudo
   } = req.body;
@@ -849,7 +849,7 @@ router.put("/conclusoes/:id_conclusao", (req, res) => {
     UPDATE conclusoes
     SET fk_risco_id = ?,
     nome_conclusao = ?,
-    anexo = ?,
+    tipo = ?,
     conclusao = ?,
     laudo = ?
     WHERE id_conclusao = ?
@@ -858,7 +858,7 @@ router.put("/conclusoes/:id_conclusao", (req, res) => {
   const values = [
     fk_risco_id,
     nome_conclusao,
-    anexo,
+    tipo,
     conclusao,
     laudo,
     id_conclusao
@@ -1827,8 +1827,11 @@ router.put("/inventario/:id_inventario", (req, res) => {
     nivel,
     frequencia,
     fk_aparelho_id,
-    comentarios
+    comentarios,
+    conclusao,
+    tipo_laudo,
   } = req.body;
+  console.log(req.body);
 
   const q = `
     UPDATE inventario
@@ -1846,7 +1849,9 @@ router.put("/inventario/:id_inventario", (req, res) => {
     nivel = ?,
     frequencia = ?,
     fk_aparelho_id = ?,
-    comentarios = ?
+    comentarios = ?,
+    conclusao = ?,
+    tipo_laudo = ?
     WHERE id_inventario = ?
     `;
 
@@ -1865,7 +1870,9 @@ router.put("/inventario/:id_inventario", (req, res) => {
     frequencia,
     fk_aparelho_id,
     comentarios,
-    id_inventario
+    id_inventario,
+    conclusao,
+    tipo_laudo,
   ];
 
   pool.getConnection((err, con) => {
