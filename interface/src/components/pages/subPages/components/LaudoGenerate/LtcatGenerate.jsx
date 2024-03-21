@@ -32,7 +32,7 @@ function LtcatGenerate({ inventario, plano,
 
         case 'nome_aparelho':
           const aparelhosEncontrado = aparelhos.find((c) => c.id_aparelho === item);
-          const aparelho = `${aparelhosEncontrado.nome_aparelho} - ${aparelhosEncontrado.marca_aparelho} (${formatData(aparelhosEncontrado.data_calibracao_aparelho)})`
+          const aparelho = `${aparelhosEncontrado.nome_aparelho} - ${aparelhosEncontrado.marca_aparelho} (${formatData(aparelhosEncontrado.data_calibracao_aparelho)})`;
           return aparelho;
 
         case 'nome_risco':

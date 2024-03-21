@@ -146,32 +146,47 @@ function LaudoPgr() {
     setSetorNome(null);
   };
 
-
   const handleGenerate = async () => {
     await handleGet();
     try {
 
+      const filterRisco = riscos.filter((i) => i.ltcat_risco === 1);
+      const mapRisk = filterRisco.map((i) => i.id_risco);
+
       let filterUnidades;
       let filterSetor;
+      let mapUnidades;
+      let mapSetor;
+      let filterInventario;
 
       if (unidadeId) {
         filterUnidades = unidades.filter((i) => i.id_unidade === unidadeId);
+        mapUnidades = filterUnidades.map((i) => i.id_unidade);
         filterSetor = setores.filter((i) => i.fk_unidade_id === unidadeId);
+        mapSetor = filterSetor.map((i) => i.id_setor);
+
+
+        if (setorId) {
+          filterSetor = setores.filter((i) => i.id_setor === setorId);
+          mapSetor = filterSetor.map((i) => i.id_setor);
+        }
       } else {
         filterUnidades = unidades;
-        const mapUnidade = filterUnidades.map((i) => i.id_unidade);
-        filterSetor = setores.filter((i) => mapUnidade.includes(i.fk_unidade_id));
+        mapUnidades = filterUnidades.map((i) => i.id_unidade);
+        filterSetor = setores.filter((i) => mapUnidades.includes(i.fk_unidade_id));
+        mapSetor = filterSetor.map((i) => i.id_setor);
       }
 
-      if (setorId) {
-        filterSetor = setores.filter((i) => i.id_setor === setorId);
+      filterInventario = inventario.filter((i) => mapRisk.includes(i.fk_risco_id) && i.fk_empresa_id === companyId && mapUnidades.includes(i.fk_unidade_id) && mapSetor.includes(i.fk_setor_id));
+      console.log(filterInventario);
+
+      if (filterInventario.length === 0) {
+        return toast.warn("Selecione outro setor ou outra unidade!");
       }
 
-      const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
       const filterCompany = empresas.find((i) => i.id_empresa === companyId);
       const filterContato = contatos.find((i) => i.id_contato === filterCompany.fk_contato_id);
       await checkSignIn();
-      const mapSetor = filterSetor.map((i) => i.id_setor);
       const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
 
 
