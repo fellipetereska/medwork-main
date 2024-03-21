@@ -44,7 +44,6 @@ function LaudoPgr() {
   const [nameCompany, setNameCompany] = useState(null);
   const [filteredInventario, setFilteredInventario] = useState([]);
   const [filteredSetores, setFilteredSetores] = useState([]);
-  const [filteredUnidade, setFilteredUnidades] = useState([]);
 
   // Inputs Form
   const [unidadeId, setUnidadeId] = useState('');
@@ -120,10 +119,6 @@ function LaudoPgr() {
     setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
     handleClearSetor();
-    const inventarioFilter = inventario.filter((i) => i.fk_unidade_id === unidadeId);
-    setFilteredInventario(inventarioFilter);
-    const unidadesFilter = unidades.filter((i) => i.id_unidade === unidadeId);
-    setFilteredUnidades(unidadesFilter);
   };
 
   const handleClearUnidade = () => {
@@ -138,8 +133,6 @@ function LaudoPgr() {
     setSetorId(SetorId);
     setSetorNome(SetorName);
 
-    const inventarioFilter = inventario.filter((i) => i.fk_setor_id === setorId);
-    setFilteredInventario(inventarioFilter);
     const setorFilter = setores.filter((i) => i.id_setor === SetorId);
     setFilteredSetores(setorFilter);
   };
@@ -181,12 +174,7 @@ function LaudoPgr() {
         mapSetor = filterSetor.map((i) => i.id_setor);
       }
 
-
-      // Stoped Here
-      if (laudo === "LI") {
-        filterInventario = inventario.filter((i) => mapRisk.includes(i.fk_risco_id) && i.fk_empresa_id === companyId && mapUnidades.includes(i.fk_unidade_id) && mapSetor.includes(i.fk_setor_id));
-      }
-      console.log("Inventario filtrado", filterInventario);
+      filterInventario = inventario.filter((i) => mapRisk.includes(i.fk_risco_id) && i.fk_empresa_id === companyId && mapUnidades.includes(i.fk_unidade_id) && mapSetor.includes(i.fk_setor_id));
 
       if (filterInventario.length === 0) {
         return toast.warn("Selecione outro setor ou outra unidade!");
@@ -199,11 +187,13 @@ function LaudoPgr() {
 
 
       if (laudo === "LP") {
-        const res = await generateLP(filterInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
+        const filteredInventario = filterInventario.filter((i) => i.tipo_laudo === 'Periculosidade');
+        const res = await generateLP(filteredInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
         handleDownloadLtcat(res);
         setGeneratedPdf(res);
       } else if (laudo === "LI") {
-        const res = await generateLI(filterInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
+        const filteredInventario = filterInventario.filter((i) => i.tipo_laudo === 'Insalubridade');
+        const res = await generateLI(filteredInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
         handleDownloadLtcat(res);
         setGeneratedPdf(res);
       } else {

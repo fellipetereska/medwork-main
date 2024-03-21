@@ -9,7 +9,7 @@ import ModalSearchProcesso from '../components/Modal/ModalSearchProcesso';
 import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
 import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 import ModalSearchAparelhos from '../components/Modal/ModalSearchAparelhos';
-import ModalConclusao from '../components/Modal/ModalConclusao';
+import ModalSearchConclusao from '../components/Modal/ModalSearchConclusao';
 
 import icon_sair from '../../../media/icon_sair.svg';
 import icon_lupa from '../../../media/icon_lupa.svg';
@@ -84,9 +84,9 @@ function FrmInventario({
   const [data, setData] = useState('');
   const [frequencia, setFrequencia] = useState('');
   const [plano, setPlano] = useState(false);
-  const [ltcat, setLtcat] = useState(true);
-  const [lip, setLip] = useState(true);
-  const [invent, setInvent] = useState(true);
+  const [ltcat, setLtcat] = useState(false);
+  const [lip, setLip] = useState(false);
+  const [laudo, setLaudo] = useState('');
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -333,12 +333,15 @@ function FrmInventario({
       setMetodologia('');
       setSeveridade('');
       setMedicao('');
+      setLtcat('');
     } else {
       setAvaliacao(risco.classificacao_risco);
       setLimiteTolerancia(risco.limite_tolerancia_risco || '0');
       setConsequencia(risco.danos_saude_risco || 'N/A');
       setMetodologia(risco.metodologia_risco || 'N/A');
       setSeveridade(risco.severidade_risco || '0');
+      risco.ltcat_risco > 0 ? setLtcat(true) : setLtcat(false);
+      risco.lip_risco > 0 ? setLip(true) : setLip(false);
 
       if (risco.classificacao_risco === "Qualitativo") {
         setMedicao("0");
@@ -430,7 +433,7 @@ function FrmInventario({
             await handleRiscoSelect(riscoId, riscoSelect.nome_risco);
           }
 
-          setMedicao(onEdit.medicao || '');
+          setMedicao(onEdit.medicao || '0');
 
           if (onEdit.fk_aparelho_id) {
             const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
@@ -475,7 +478,7 @@ function FrmInventario({
     }
 
     handleOnEdit();
-  }, [onEdit, setorId]);
+  }, [onEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1114,7 +1117,7 @@ function FrmInventario({
 
             <div className="w-full flex items-center">
               {/* Descrição das Fontes */}
-              <div className={`w-full ${riscoId ? 'md:w-1/3' : 'md:w-1/2'} px-3"`}>
+              <div className={`w-full md:w-1/2 px-3`}>
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                   Descrição das Fontes:
                 </label>
@@ -1128,7 +1131,7 @@ function FrmInventario({
                 />
               </div>
               {/* Comentários */}
-              <div className={`w-full ${riscoId ? 'md:w-1/3' : 'md:w-1/2'} px-3`}>
+              <div className={`w-full md:w-1/2 px-3`}>
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="gcomentarios">
                   Comentários:
                 </label>
@@ -1141,52 +1144,155 @@ function FrmInventario({
                   onChange={handleComentariosChange}
                 />
               </div>
-              {/* Comentários */}
-              {riscoId && (
-                <div className="w-full md:w-1/3 px-3">
-                  <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
-                    Conclusão:
-                  </label>
-                  <div className="flex items-center w-full">
-                    {conclusao ? (
-                      <>
-                        <textarea
-                          className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                          type="text"
-                          name="conclusao"
-                          placeholder="conclusão..."
-                          value={conclusao}
-                          onChange={handleConclusaoChange}
-                        />
-                        <button type="button" className="ml-4" onClick={handleClearConclusao}>
-                          <img src={icon_sair} alt="" className="h-9" />
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                          onClick={openModalConclusoes}
-                          type="button"
-                        >
-                          <p className="px-2 text-sm font-medium">
-                            Nenhuma Conclusão Selecionada
-                          </p>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={openModalConclusoes}
-                          className={`flex cursor-pointer ml-4`}
-                        >
-                          <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
 
+            {/* Conclusões */}
+            {(riscoId && ltcat || lip) && (
+              <>
+                <div className="border-b border-gray-200 w-full mt-5"></div>
+                <div className="text-4xl font-bold text-sky-700 mt-5 mb-5 w-full flex justify-center">
+                  <h1>Conclusões</h1>
+                </div>
+                <div className="w-full flex">
+                  
+                  {/* Conclusão LTCAT */}
+                  {ltcat && (
+                    <div className="w-full md:w-1/3 px-3">
+                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                        Conclusão LTCAT:
+                      </label>
+                      <div className="flex items-center w-full">
+                        {conclusao ? (
+                          <>
+                            <textarea
+                              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                              type="text"
+                              name="conclusao"
+                              placeholder="conclusão..."
+                              value={conclusao}
+                              onChange={handleConclusaoChange}
+                            />
+                            <button type="button" className="ml-4" onClick={handleClearConclusao}>
+                              <img src={icon_sair} alt="" className="h-9" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                              onClick={openModalConclusoes}
+                              type="button"
+                            >
+                              <p className="px-2 text-sm font-medium">
+                                Nenhuma Conclusão Selecionada
+                              </p>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={openModalConclusoes}
+                              className={`flex cursor-pointer ml-4`}
+                            >
+                              <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Conclusão LI */}
+                  {lip && (
+                    <div className="w-full md:w-1/3 px-3">
+                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                        Conclusão Insalubridade:
+                      </label>
+                      <div className="flex items-center w-full">
+                        {conclusao ? (
+                          <>
+                            <textarea
+                              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                              type="text"
+                              name="conclusao"
+                              placeholder="conclusão..."
+                              value={conclusao}
+                              onChange={handleConclusaoChange}
+                            />
+                            <button type="button" className="ml-4" onClick={handleClearConclusao}>
+                              <img src={icon_sair} alt="" className="h-9" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                              onClick={openModalConclusoes}
+                              type="button"
+                            >
+                              <p className="px-2 text-sm font-medium">
+                                Nenhuma Conclusão Selecionada
+                              </p>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={openModalConclusoes}
+                              className={`flex cursor-pointer ml-4`}
+                            >
+                              <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Conclusão LP */}
+                  {lip && (
+                    <div className="w-full md:w-1/3 px-3">
+                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                        Conclusão Periculosidade:
+                      </label>
+                      <div className="flex items-center w-full">
+                        {conclusao ? (
+                          <>
+                            <textarea
+                              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                              type="text"
+                              name="conclusao"
+                              placeholder="conclusão..."
+                              value={conclusao}
+                              onChange={handleConclusaoChange}
+                            />
+                            <button type="button" className="ml-4" onClick={handleClearConclusao}>
+                              <img src={icon_sair} alt="" className="h-9" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                              onClick={openModalConclusoes}
+                              type="button"
+                            >
+                              <p className="px-2 text-sm font-medium">
+                                Nenhuma Conclusão Selecionada
+                              </p>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={openModalConclusoes}
+                              className={`flex cursor-pointer ml-4`}
+                            >
+                              <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              </>
+            )}
 
             {/* Medidas */}
             <div className="border-b border-gray-200 w-full mt-5"></div>
@@ -1264,15 +1370,12 @@ function FrmInventario({
 
           </div>
         </form >
-        <ModalConclusao
+        <ModalSearchConclusao
           isOpen={showModalConclusoes}
           onCancel={closeModalConclusoes}
-          riscoId={riscoId}
-          riscos={riscos}
           onSelect={handleConclusaoSelect}
-          ltcat={ltcat}
-          lip={lip}
-          inventario={invent}
+          laudo={laudo}
+          conclusao={conclusoes}
         />
       </div >
     </>

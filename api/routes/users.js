@@ -1993,6 +1993,47 @@ router.put("/global_sprm/:id_global_sprm", (req, res) => {
 });
 
 
+//Get Table
+router.get("/conclusao_inventario", (req, res) => {
+  const q = `SELECT * FROM conclusao_inventario`;
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json(data);
+    });
+
+    con.release();
+  });
+});
+
+//Add rows in table
+router.post("/conclusao_inventario", (req, res) => {
+  const data = req.body;
+
+  const q = "INSERT INTO conclusao_inventario SET ?"
+
+  pool.getConnection((err, con) => {
+    if (err) return next(err);
+
+    con.query(q, data, (err, result) => {
+      if (err) {
+        console.error("Erro ao cadastrar conclusão no inventário", err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`Conclusões adicionadas com sucesso!`);
+    });
+
+    con.release();
+  })
+
+});
+
+
 
 
 export default router;
