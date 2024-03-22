@@ -51,7 +51,7 @@ function FrmInventario({
   const [showModalMedidas, setShowModalMedidas] = useState(false);
   const [showModalAparelhos, setShowModalAparelhos] = useState(false);
   const [showModalConclusoes, setShowModalConclusoes] = useState(false);
-  const [isMedidasSet, setIsMedidasSet] = useState(false);
+  const [isMedidasSet, setIsMedidasSet] = useState(true);
   const [isVerify, setIsVerify] = useState(false);
   const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
 
@@ -79,14 +79,23 @@ function FrmInventario({
   const [nivel, setNivel] = useState('');
   const [metodologia, setMetodologia] = useState('');
   const [comentarios, setComentarios] = useState('');
-  const [conclusao, setConclusao] = useState('');
-  const [laudoTipo, setLaudoTipo] = useState('');
   const [data, setData] = useState('');
   const [frequencia, setFrequencia] = useState('');
   const [plano, setPlano] = useState(false);
+  const [filterConclusao, setFilterConclusao] = useState([]);
+  const [filterConclusaoLtcat, setFilterConclusaoLtcat] = useState([]);
+  const [filterConclusaoLi, setFilterConclusaoLi] = useState([]);
+  const [filterConclusaoLp, setFilterConclusaoLp] = useState([]);
+  const [conclusaoLtcat, setConclusaoLtcat] = useState('');
+  const [conclusaoLtcatNome, setConclusaoLtcatNome] = useState('');
+  const [conclusaoLi, setConclusaoLi] = useState('');
+  const [conclusaoLiNome, setConclusaoLiNome] = useState('');
+  const [conclusaoLp, setConclusaoLp] = useState('');
+  const [conclusaoLpNome, setConclusaoLpNome] = useState('');
   const [ltcat, setLtcat] = useState(false);
   const [lip, setLip] = useState(false);
   const [laudo, setLaudo] = useState('');
+  const [laudoTipo, setLaudoTipo] = useState('');
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -97,13 +106,30 @@ function FrmInventario({
   const openModalMedidas = () => setShowModalMedidas(true);
   const openModalAparelhos = () => setShowModalAparelhos(true);
   const openModalConclusoes = () => setShowModalConclusoes(true);
+  const openModalConclusaoLtcat = () => {
+    setLaudo('ltcat');
+    setShowModalConclusoes(true);
+    setFilterConclusao(filterConclusaoLtcat);
+  }
+  const openModalConclusaoLi = () => {
+    setLaudo('insalubridade');
+    setFilterConclusao(filterConclusaoLi);
+    setShowModalConclusoes(true);
+  }
+  const openModalConclusaoLp = () => {
+    setLaudo('periculosidade');
+    setFilterConclusao(filterConclusaoLp);
+    setShowModalConclusoes(true);
+  }
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
   const closeModalProcesso = () => setShowModalProcesso(false);
   const closeModalRisco = () => setShowModalRisco(false);
   const closeModalAparelhos = () => setShowModalAparelhos(false);
-  const closeModalConclusoes = () => setShowModalConclusoes(false);
+  const closeModalConclusoes = () => {
+    setShowModalConclusoes(false);
+  }
   const closeModalMedidas = () => {
     getGlobalSprm();
     setShowModalMedidas(false);
@@ -252,6 +278,25 @@ function FrmInventario({
       setRiscosInput(riscoSelecionado);
     }
 
+    const filteredConclusao = conclusoes.filter((i) => i.fk_risco_id === RiscoId);
+
+    const filterLtcat = filteredConclusao.filter((i) => i.laudo === 'ltcat');
+    const filterLip = filteredConclusao.filter((i) => i.laudo === 'lip');
+    const filterLi = filterLip.filter((i) => i.tipo === "Insalubridade" || i.tipo === "Ambos");
+    const filterLp = filterLip.filter((i) => i.tipo === "Periculosidade" || i.tipo === "Ambos");
+
+    if (filterLtcat) {
+      setFilterConclusaoLtcat(filterLtcat);
+    }
+
+    if (filterLi) {
+      setFilterConclusaoLi(filterLi);
+    }
+
+    if (filterLp) {
+      setFilterConclusaoLp(filterLp);
+    }
+
     // Criar um array para armazenar as medidas e tipos
     const medidasTipos = filteresRiscosMedidas.map((filteredRiscosMedidas) => ({
       medidaId: filteredRiscosMedidas.fk_medida_id,
@@ -395,90 +440,87 @@ function FrmInventario({
     }
   };
 
-  useEffect(() => {
-    const handleEdit = () => {
-      if (onEdit) {
-        try {
-          setUnidadeId(onEdit.fk_unidade_id);
-          setSetorId(onEdit.fk_setor_id);
-          setProcessoId(onEdit.fk_processo_id);
-          setRiscoId(onEdit.fk_risco_id);
-        } catch (error) {
-          console.error("Erro ao setar ids para edição!", error)
-        }
-      }
-    }
+  // useEffect(() => {
+  //   const handleEdit = () => {
+  //     if (onEdit) {
+  //       try {
+  //         setUnidadeId(onEdit.fk_unidade_id);
+  //         setSetorId(onEdit.fk_setor_id);
+  //         setProcessoId(onEdit.fk_processo_id);
+  //         setRiscoId(onEdit.fk_risco_id);
+  //       } catch (error) {
+  //         console.error("Erro ao setar ids para edição!", error)
+  //       }
+  //     }
+  //   }
 
-    handleEdit();
-  }, [onEdit])
+  //   handleEdit();
+  // }, [onEdit])
 
-  useEffect(() => {
-    const handleOnEdit = async () => {
-      if (onEdit, unidadeId, setorId, processoId, riscoId) {
-        try {
-          if (unidadeId) {
-            const unidadeSelect = unidades.find((i) => i.id_unidade === unidadeId);
-            await handleUnidadeSelect(unidadeId, unidadeSelect.nome_unidade);
-          }
-          if (setorId) {
-            const setorSelect = setores.find((i) => i.id_setor === setorId);
-            await handleSetorSelect(setorId, setorSelect.nome_setor);
-          }
-          if (processoId) {
-            const processoSelect = processos.find((i) => i.id_processo === processoId);
-            await handleProcessoSelect(processoId, processoSelect.nome_processo);
-          }
-          if (riscoId) {
-            const riscoSelect = riscos.find((i) => i.id_risco === riscoId);
-            await handleRiscoSelect(riscoId, riscoSelect.nome_risco);
-          }
+  // useEffect(() => {
+  //   const handleOnEdit = async () => {
+  //     if (onEdit, unidadeId, setorId, processoId, riscoId) {
+  //       try {
+  //         if (unidadeId) {
+  //           const unidadeSelect = unidades.find((i) => i.id_unidade === unidadeId);
+  //           await handleUnidadeSelect(unidadeId, unidadeSelect.nome_unidade);
+  //         }
+  //         if (setorId) {
+  //           const setorSelect = setores.find((i) => i.id_setor === setorId);
+  //           await handleSetorSelect(setorId, setorSelect.nome_setor);
+  //         }
+  //         if (processoId) {
+  //           const processoSelect = processos.find((i) => i.id_processo === processoId);
+  //           await handleProcessoSelect(processoId, processoSelect.nome_processo);
+  //         }
+  //         if (riscoId) {
+  //           const riscoSelect = riscos.find((i) => i.id_risco === riscoId);
+  //           await handleRiscoSelect(riscoId, riscoSelect.nome_risco);
+  //         }
 
-          setMedicao(onEdit.medicao || '0');
+  //         setMedicao(onEdit.medicao || '0');
 
-          if (onEdit.fk_aparelho_id) {
-            const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
-            await handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
-          }
+  //         if (onEdit.fk_aparelho_id) {
+  //           const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
+  //           await handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
+  //         }
 
-          setFrequencia(onEdit.frequencia || '');
-          setProbabilidade(onEdit.probabilidade || '');
-          if (onEdit.nivel) {
-            const nivelValue = onEdit.nivel;
-            if (nivelValue >= 1 && nivelValue <= 6) {
-              setNivel("Baixo");
-            } else if (nivelValue >= 7 && nivelValue <= 12) {
-              setNivel("Moderado");
-            } else if (nivelValue >= 13 && nivelValue <= 16) {
-              setNivel("Alto");
-            } else if (nivelValue >= 20 && nivelValue <= 25) {
-              setNivel("Crítico");
-            } else {
-              setNivel(null);
-            }
-          }
+  //         setFrequencia(onEdit.frequencia || '');
+  //         setProbabilidade(onEdit.probabilidade || '');
+  //         if (onEdit.nivel) {
+  //           const nivelValue = onEdit.nivel;
+  //           if (nivelValue >= 1 && nivelValue <= 6) {
+  //             setNivel("Baixo");
+  //           } else if (nivelValue >= 7 && nivelValue <= 12) {
+  //             setNivel("Moderado");
+  //           } else if (nivelValue >= 13 && nivelValue <= 16) {
+  //             setNivel("Alto");
+  //           } else if (nivelValue >= 20 && nivelValue <= 25) {
+  //             setNivel("Crítico");
+  //           } else {
+  //             setNivel(null);
+  //           }
+  //         }
 
-          setDescricao(onEdit.fontes || 'N/A');
-          setComentarios(onEdit.comentarios || 'N/A');
-          if (onEdit.data_inventario) {
-            const data_formatada = new Date(onEdit.data_inventario).toISOString().split('T')[0];
-            setData(data_formatada || '');
-          }
+  //         setDescricao(onEdit.fontes || 'N/A');
+  //         setComentarios(onEdit.comentarios || 'N/A');
+  //         if (onEdit.data_inventario) {
+  //           const data_formatada = new Date(onEdit.data_inventario).toISOString().split('T')[0];
+  //           setData(data_formatada || '');
+  //         }
 
-          setConclusao(onEdit.conclusao);
-          setLaudoTipo(onEdit.tipo_laudo);
+  //         setIsVerify(false);
+  //         setIsMedidasSet(true);
+  //       } catch (error) {
+  //         toast.error("Erro ao buscar os dados!");
+  //         console.error("Erro ao buscar dados para edição", error);
+  //       }
+  //       window.scrollTo({ top: 0, behavior: 'smooth' });
+  //     }
+  //   }
 
-          setIsVerify(false);
-          setIsMedidasSet(true);
-        } catch (error) {
-          toast.error("Erro ao buscar os dados!");
-          console.error("Erro ao buscar dados para edição", error);
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-
-    handleOnEdit();
-  }, [onEdit]);
+  //   handleOnEdit();
+  // }, [onEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -511,8 +553,9 @@ function FrmInventario({
         data_inventario: data || '',
         frequencia: frequencia || '',
         fk_aparelho_id: aparelhoId || '',
-        conclusao: conclusao || '',
-        tipo_laudo: laudoTipo || '',
+        conclusao_ltcat: conclusaoLtcat || '',
+        conclusao_li: conclusaoLi || '',
+        conclusao_lp: conclusaoLp || '',
       };
 
       const url = onEdit
@@ -560,7 +603,9 @@ function FrmInventario({
     setFrequencia('');
     setIsVerify(false);
     setData(obterDataFormatada);
-    handleClearConclusao();
+    handleClearConclusaoLtcat();
+    handleClearConclusaoLi();
+    handleClearConclusaoLp();
   };
 
   const handleDescricaoFontesChange = (event) => {
@@ -633,22 +678,64 @@ function FrmInventario({
     setFrequencia(e.target.value);
   };
 
-  const handleConclusaoChange = (event) => {
-    setConclusao(event.target.value);
+  const handleConclusaoLtcatChange = (event) => {
+    setConclusaoLtcat(event.target.value);
   };
 
-  const handleConclusaoSelect = (item) => {
-    if (!item) {
+  const handleConclusaoLiChange = (event) => {
+    setConclusaoLi(event.target.value);
+  };
+
+  const handleConclusaoLpChange = (event) => {
+    setConclusaoLp(event.target.value);
+  };
+
+  const handleConclusaoLtcatSelect = (conclusao, nome) => {
+    if (!conclusao) {
       return toast.warn("Nenhuma conclusão selecionada");
     }
+
+    setConclusaoLtcatNome(nome)
+    setConclusaoLtcat(conclusao);
     closeModalConclusoes();
-    setConclusao(item.conclusao);
-    setLaudoTipo(item.tipo);
+    setLaudo('');
   };
 
-  const handleClearConclusao = () => {
-    setConclusao('');
-    setLaudoTipo('');
+  const handleConclusaoLiSelect = (conclusao, nome) => {
+    if (!conclusao) {
+      return toast.warn("Nenhuma conclusão selecionada");
+    }
+
+    setConclusaoLiNome(nome)
+    setConclusaoLi(conclusao);
+    closeModalConclusoes();
+    setLaudo('');
+  };
+
+  const handleConclusaoLpSelect = (conclusao, nome) => {
+    if (!conclusao) {
+      return toast.warn("Nenhuma conclusão selecionada");
+    }
+
+    setConclusaoLpNome(nome);
+    setConclusaoLp(conclusao);
+    closeModalConclusoes();
+    setLaudo('');
+  };
+
+  const handleClearConclusaoLtcat = () => {
+    setConclusaoLtcat('');
+
+  };
+
+  const handleClearConclusaoLi = () => {
+    setConclusaoLi('');
+
+  };
+
+  const handleClearConclusaoLp = () => {
+    setConclusaoLp('');
+
   };
 
   const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
@@ -1154,33 +1241,38 @@ function FrmInventario({
                   <h1>Conclusões</h1>
                 </div>
                 <div className="w-full flex">
-                  
+
                   {/* Conclusão LTCAT */}
                   {ltcat && (
                     <div className="w-full md:w-1/3 px-3">
-                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusaoLtcat">
                         Conclusão LTCAT:
                       </label>
                       <div className="flex items-center w-full">
-                        {conclusao ? (
+                        {conclusaoLtcat ? (
                           <>
-                            <textarea
-                              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                              type="text"
-                              name="conclusao"
-                              placeholder="conclusão..."
-                              value={conclusao}
-                              onChange={handleConclusaoChange}
-                            />
-                            <button type="button" className="ml-4" onClick={handleClearConclusao}>
-                              <img src={icon_sair} alt="" className="h-9" />
-                            </button>
+                            <div className="w-full">
+                              <p className="text-xs">Conclusão: <span className="text-sm font-semibold">{conclusaoLtcatNome}</span></p>
+                              <div className="flex w-full">
+                                <textarea
+                                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                                  type="text"
+                                  id="conclusaoLtcat"
+                                  name="conclusaoLtcat"
+                                  value={conclusaoLtcat}
+                                  onChange={handleConclusaoLtcatChange}
+                                />
+                                <button type="button" className="ml-4" onClick={handleClearConclusaoLtcat}>
+                                  <img src={icon_sair} alt="" className="h-9" />
+                                </button>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <>
                             <button
                               className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                              onClick={openModalConclusoes}
+                              onClick={openModalConclusaoLtcat}
                               type="button"
                             >
                               <p className="px-2 text-sm font-medium">
@@ -1189,7 +1281,7 @@ function FrmInventario({
                             </button>
                             <button
                               type="button"
-                              onClick={openModalConclusoes}
+                              onClick={openModalConclusaoLtcat}
                               className={`flex cursor-pointer ml-4`}
                             >
                               <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
@@ -1199,33 +1291,38 @@ function FrmInventario({
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Conclusão LI */}
                   {lip && (
                     <div className="w-full md:w-1/3 px-3">
-                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusaoLi">
                         Conclusão Insalubridade:
                       </label>
                       <div className="flex items-center w-full">
-                        {conclusao ? (
+                        {conclusaoLi ? (
                           <>
-                            <textarea
-                              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                              type="text"
-                              name="conclusao"
-                              placeholder="conclusão..."
-                              value={conclusao}
-                              onChange={handleConclusaoChange}
-                            />
-                            <button type="button" className="ml-4" onClick={handleClearConclusao}>
-                              <img src={icon_sair} alt="" className="h-9" />
-                            </button>
+                            <div className="w-full">
+                              <p className="text-xs">Conclusão: <span className="text-sm font-semibold">{conclusaoLiNome}</span></p>
+                              <div className="flex w-full">
+                                <textarea
+                                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                                  type="text"
+                                  id="conclusaoLi"
+                                  name="conclusaoLi"
+                                  value={conclusaoLi}
+                                  onChange={handleConclusaoLiChange}
+                                />
+                                <button type="button" className="ml-4" onClick={handleClearConclusaoLi}>
+                                  <img src={icon_sair} alt="" className="h-9" />
+                                </button>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <>
                             <button
                               className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                              onClick={openModalConclusoes}
+                              onClick={openModalConclusaoLi}
                               type="button"
                             >
                               <p className="px-2 text-sm font-medium">
@@ -1234,7 +1331,7 @@ function FrmInventario({
                             </button>
                             <button
                               type="button"
-                              onClick={openModalConclusoes}
+                              onClick={openModalConclusaoLi}
                               className={`flex cursor-pointer ml-4`}
                             >
                               <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
@@ -1244,33 +1341,38 @@ function FrmInventario({
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Conclusão LP */}
                   {lip && (
                     <div className="w-full md:w-1/3 px-3">
-                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
+                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusaoLp">
                         Conclusão Periculosidade:
                       </label>
                       <div className="flex items-center w-full">
-                        {conclusao ? (
+                        {conclusaoLp ? (
                           <>
-                            <textarea
-                              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                              type="text"
-                              name="conclusao"
-                              placeholder="conclusão..."
-                              value={conclusao}
-                              onChange={handleConclusaoChange}
-                            />
-                            <button type="button" className="ml-4" onClick={handleClearConclusao}>
-                              <img src={icon_sair} alt="" className="h-9" />
-                            </button>
+                            <div className="w-full">
+                              <p className="text-xs">Conclusão: <span className="text-sm font-semibold">{conclusaoLpNome}</span></p>
+                              <div className="flex w-full">
+                                <textarea
+                                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                                  type="text"
+                                  id="conclusaoLp"
+                                  name="conclusaoLp"
+                                  value={conclusaoLp}
+                                  onChange={handleConclusaoLpChange}
+                                />
+                                <button type="button" className="ml-4" onClick={handleClearConclusaoLp}>
+                                  <img src={icon_sair} alt="" className="h-9" />
+                                </button>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <>
                             <button
                               className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                              onClick={openModalConclusoes}
+                              onClick={openModalConclusaoLp}
                               type="button"
                             >
                               <p className="px-2 text-sm font-medium">
@@ -1279,7 +1381,7 @@ function FrmInventario({
                             </button>
                             <button
                               type="button"
-                              onClick={openModalConclusoes}
+                              onClick={openModalConclusaoLp}
                               className={`flex cursor-pointer ml-4`}
                             >
                               <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
@@ -1373,9 +1475,11 @@ function FrmInventario({
         <ModalSearchConclusao
           isOpen={showModalConclusoes}
           onCancel={closeModalConclusoes}
-          onSelect={handleConclusaoSelect}
+          onSelectLtcat={handleConclusaoLtcatSelect}
+          onSelectLi={handleConclusaoLiSelect}
+          onSelectLp={handleConclusaoLpSelect}
           laudo={laudo}
-          conclusao={conclusoes}
+          conclusao={filterConclusao}
         />
       </div >
     </>
