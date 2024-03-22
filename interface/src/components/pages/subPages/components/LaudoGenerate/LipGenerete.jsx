@@ -1,11 +1,13 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import OpenSansLight from '../../../../media/fonts/OpenSans-Light.ttf';
 import OpenSansRegular from '../../../../media/fonts/OpenSans-Regular.ttf';
 import OpenSansMedium from '../../../../media/fonts/OpenSans-Medium.ttf';
 import OpenSansSemiBold from '../../../../media/fonts/OpenSans-SemiBold.ttf';
 import OpenSansBold from '../../../../media/fonts/OpenSans-Bold.ttf';
 import OpenSansExtraBold from '../../../../media/fonts/OpenSans-ExtraBold.ttf';
+import formula_m from '../../../../media/laudos/lip/formula_m.png'
+import formula_ibutg from '../../../../media/laudos/lip/formula_ibutg.png'
 
 function LipGenerate({ inventario, plano,
   company, unidades, setores, cargos, contatos,
@@ -240,8 +242,7 @@ function LipGenerate({ inventario, plano,
       fontSize: 12,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
-      marginLeft: 10,
-      marginTop: 10,
+      fontFamily: 'OpenSansBold'
     },
 
     prefixText: {
@@ -425,9 +426,9 @@ function LipGenerate({ inventario, plano,
     },
 
     headerCellTable: {
-      width: '33%',
       justifyContent: 'center',
       alignItems: 'center',
+      flexDirection: 'row',
     },
 
     tableRow: {
@@ -586,144 +587,6 @@ function LipGenerate({ inventario, plano,
     );
   };
 
-  const IntroductionPage = () => {
-    return (
-      <Page style={PageStyles.Page} wrap>
-
-        <HeaderPage />
-
-        <Text style={TextStyles.subTitleSumary}>2. Introdução</Text>
-
-        <View style={ContainerStyles.textContainer} wrap={true}>
-          <Text style={TextStyles.paragraph}>
-            A primeira referência legal a laudo técnico foi na Lei nº 5.431 de 3 de maio de 1968, que acrescentou o § 5º no então artigo 209 da Consolidação das Leis do Trabalho - CLT, para fins de caracterização de insalubridade.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            Para fins de instrução de processo judicial, a caracterização e classificação de insalubridade serão feitas exclusivamente por médico perito, preferencialmente especializado em saúde pública ou higiene industrial, designado pela autoridade judiciária, observadas as normas fixadas no presente artigo.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            A Lei nº 6.514 de 22 de dezembro de 1977 modifica o Capítulo V da CLT - Da Segurança e da Medicina do Trabalho, prevendo no seu artigo 195, que:
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            A caracterização e a classificação da insalubridade e da periculosidade, segundo as normas do Ministério do Trabalho, far-se-ão através de perícia a cargo de Médico do Trabalho ou Engenheiro do Trabalho, registrados no Ministério do Trabalho. 21 A CLT antecede a Lei nº 8.213 de 1991 e regulamenta o laudo técnico para fins de caracterização de atividades e operações insalubres e/ou perigosas, passíveis de concessão dos adicionais previstos na Norma Regulamentadora (NR) 15 e na Norma Regulamentadora 16, da Portaria nº 3214 de 1978 do Ministério do Trabalho e Emprego (MTE).
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            O Laudo Técnico de Condições Ambientais do Trabalho - LTCAT, previsto na Lei nº 8.213 de 1991, tem finalidade previdenciária na concessão da aposentadoria especial.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            Portanto, não se deve confundir a finalidade do laudo técnico de insalubridade e/ou periculosidade com o LTCAT para avaliação de caracterização de condições especiais previstas na aposentadoria especial. Os laudos técnicos acima referenciados são documentos elaborados a partir de um conjunto de procedimentos que tem por objetivo concluir, mediante exame, vistoria, indagação, investigação, avaliação, se existem condições insalubres e/ou perigosas ou se existe efetiva exposição a fatores de riscos nocivos, de acordo com a legislação pertinente. É importante o caráter técnico pericial comum a esses laudos.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            Porém, alguns dos conceitos neles contidos são distintos. O laudo trabalhista versa sobre periculosidade, nas condições previstas na NR-16 da Portaria nº 3214 de 1978, e/ou insalubridade quando as atividades se desenvolverem acima dos limites de tolerância para os fatores de riscos previstos nos Anexos I, II, III, V, XI e XII; nas atividades mencionadas nos Anexos VI, XIII e XIV; e comprovadas através de laudo de inspeção do local de trabalho, constantes dos Anexos VII, VIII, IX e X da NR-15.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            O laudo para fins previdenciários depende de duas definições básicas: a nocividade e a permanência. A nocividade é relativa aos fatores de riscos físicos, químicos, biológicos ou associação de fatores de riscos capazes de causar danos à saúde ou à integridade física do trabalhador, previstos nos diversos anexos dos decretos previdenciários.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            A permanência diz respeito à necessidade, para caracterização de condições especiais, de que o trabalho exposto aos fatores de riscos nocivos ocorra de modo permanente, não ocasional nem intermitente, indissociável da produção do bem ou da prestação do serviço.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            No entanto, a primeira legislação sobre aposentadoria especial, a Lei nº 3.807 de 1960, normatiza a concessão do benefício para o “segurado que exerça ou tenha exercido atividade profissional em serviços considerados insalubres, perigosos ou penosos”. O Laudo Técnico de Condições Ambientais do Trabalho - LTCAT está previsto na legislação brasileira a partir da Medida Provisória nº 1.523 de 1996, que se transformou na Lei nº 9.528 de 1997 e modificou a Lei nº 8.213 de 1991 que trata dos Planos de Benefícios da Previdência Social, no seu Artigo 58, acrescentando que a:
-          </Text>
-        </View>
-        <FooterPage />
-
-      </Page>
-    );
-  };
-
-  const IntroductionPageContinue = () => {
-    return (
-      <Page style={PageStyles.Page} wrap>
-
-        <HeaderPage />
-
-        <View style={ContainerStyles.textContainer} wrap={true}>
-          <Text style={TextStyles.paragraph}>
-            Comprovação da efetiva exposição do segurado aos fatores de riscos nocivos será feita mediante formulário, na forma estabelecida pelo Instituto Nacional do Seguro Social - INSS, emitido pela empresa ou seu preposto, com base em laudo técnico de condições ambientais do trabalho expedido por médico do trabalho ou engenheiro de segurança do trabalho.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            O Decreto nº 3.048 de 1999, no Parágrafo 2º do seu Art. 68, também determina que a comprovação da efetiva exposição do segurado aos fatores de riscos nocivos será feita mediante formulário denominado perfil profissiográfico previdenciário, na forma 23 estabelecida pelo Instituto Nacional do Seguro Social, emitido pela empresa ou seu preposto, com base em laudo técnico de condições ambientais do trabalho expedido por médico do trabalho ou engenheiro de segurança do trabalho. Outros documentos previstos nas Normas Regulamentadoras da Portaria nº 3.214 de 1978 do MTE podem ser utilizados como substitutos do LTCAT, como o Programa de Controle Médico de Saúde Ocupacional - PCMSO, o Programa de Prevenção de Riscos Ambientais - PPRA, o Programa de Condições do Meio Ambiente de Trabalho - PCMAT e o Programa de Gerenciamento de Riscos - PGR, desde que assinados por engenheiro de segurança ou médico do trabalho.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            Desse modo, há que se observar que, a própria evolução histórica da legislação resultou em diferenciação temporal entre a intervenção indenizatória antecipada dos adicionais e a intervenção propositiva futura da aposentadoria especial.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            E apesar de conclusões diferentes, ambas as políticas têm finalidade prevencionista no momento em que penalizam a má gestão em saúde, segurança e ambiente de trabalho prejudicial à saúde do trabalhador, com a obrigatoriedade do pagamento dos adicionais trabalhistas ou dos recolhimentos previdenciários custeadores da aposentadoria especial. Estrutura do LTCAT Fundamentação legal: Lei nº 8.213/1991 com alterações posteriores e Decreto nº 3.048/1999 com alterações posteriores.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            O LTCAT e demais Demonstrações Ambientais fundamentarão tecnicamente o preenchimento dos formulários de reconhecimento de períodos laborados em condições especiais - PPP e seus precursores (§ 1º do artigo 58 da Lei nº 8.213/1991 e §2º e §7º do artigo 68 do Decreto nº 3.048/1999).
-          </Text>
-          {/* List */}
-          <Text style={TextStyles.paragraph}>São consideradas Demonstrações Ambientais:</Text>
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}>{'\u2022'} Programa de Prevenção de Riscos Ambientais - PPRA (NR-9 do MTE - Portaria nº 3.214/1978);</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} Programa de Gerenciamento de Riscos - PGR (NR-22 do MTE - Portaria nº 3.214/1978);</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} Programa de Condições e Meio Ambiente de Trabalho na Indústria da Construção - PCMAT (NR-18 do MTE - Portaria nº 3.214/1978);</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} Programa de Controle Médico de Saúde Ocupacional - PCMSO; (NR-7 do MTE - Portaria nº 3.214/1978); </Text>
-          </View>
-          <Text style={TextStyles.paragraph}>
-            Laudo Técnico de Condições Ambientais do Trabalho - LTCAT; Art. 58 da Lei nº 8.213/1991, Art. 68 do Decreto nº 3.048/1999. O LTCAT e as demais Demonstrações Ambientais deverão considerar:
-          </Text>
-          {/* List */}
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}>{'\u2022'} A efetiva exposição aos fatores de riscos nocivos químicos, físicos, biológicos ou associação de fatores de riscos prejudiciais à saúde ou à integridade física;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} As condições especiais que prejudicam a saúde ou integridade física conforme definido no Anexo IV do Decreto nº 3.048/1999, com exposição a fatores de riscos nocivos em concentração ou intensidade e tempo de exposição que ultrapasse os limites de tolerância ou que, dependendo do fator de risco, torne a simples exposição em condição especial prejudicial à saúde; </Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} O conceito de nocividade como situação combinada ou não de substâncias, energias e demais fatores de riscos reconhecidos, presentes no ambiente de trabalho, capazes de trazer ou ocasionar danos à saúde ou à integridade física do trabalhador; </Text>
-          </View>
-        </View>
-        <FooterPage />
-
-      </Page>
-    );
-  };
-
-  const IntroductionPageContinueTwo = () => {
-    return (
-      <Page style={PageStyles.Page} wrap>
-
-        <HeaderPage />
-
-        <View style={ContainerStyles.textContainer} wrap={true}>
-
-          {/* List */}
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}>{'\u2022'} O conceito de permanência como aquele em que a exposição ao fator de risco nocivo ocorre de forma não ocasional nem intermitente, no qual a exposição do empregado, do trabalhador avulso ou do cooperado ao fator de risco nocivo seja indissociável da produção do bem ou da prestação do serviço;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A avaliação dos fatores de riscos nocivos, conforme o caso, pode ser de modo qualitativo, quando a nocividade ocorre pela simples presença do fator de risco no ambiente de trabalho, descrito no Anexo IV do Decreto nº 3.048/1999 e corroborado nos Anexos VI, XIII, XIII-A e XIV da NR-15 do MTE; ou quantitativo, no qual a nocividade acontece pela ultrapassagem dos limites de tolerância ou doses previstos, no Anexo IV do Decreto nº 3.048/1999 e nos Anexos I, II, III, IV, VIII, XI e XII da NR-15 do MTE;</Text>
-          </View>
-          <Text style={TextStyles.paragraph}>
-            A partir de 19.11.2003 (data da publicação no D.O.U. do Decreto nº 4.882/2003) os procedimentos de levantamento ambiental devem estar de acordo com a metodologia das Normas de Higiene Ocupacional - NHO da FUNDACENTRO, observando-se os limites de tolerância estabelecidos na NR-15 do MTE.
-          </Text>
-          <Text style={TextStyles.paragraph}>
-            O LTCAT e as demais Demonstrações Ambientais deverão conter as seguintes informações:
-          </Text>
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>I. </Text> Identificação da empresa, cooperativa de trabalho ou de produção, OGMO (trabalhador avulso portuário), sindicato da categoria (trabalhador avulso não portuário);</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>II. </Text> Se individual ou coletivo;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>III. </Text> Identificação do setor e da função;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>IV. </Text> Descrição da atividade (profissiografia); </Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>V. </Text> Descrição dos fatores de riscos nocivos capazes de causar danos à saúde e integridade física, arrolados na legislação previdenciária;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>VI. </Text> Localização das possíveis fontes geradoras;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>VII. </Text> Via e periodicidade de exposição ao fator de risco nocivo;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>VIII. </Text> Metodologia e procedimentos de avaliação do fator de risco nocivo;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>IX. </Text> Descrição das tecnologias de proteção coletiva e individual, assim como medidas administrativas; </Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>X. </Text> Conclusão;</Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>XI. </Text> Assinatura e identificação do médico do trabalho ou engenheiro de segurançaresponsável técnico pelo laudo ou demonstrações ambientais, anexando fotocópia da carteira profissional com inscrição no CRM ou CREA, comprovante de especialização e informação do número da Anotação de Responsabilidade Técnica - ART junto ao CREA; </Text>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>XII. </Text> Data da realização da demonstração ambiental ou do laudo. O LTCAT ou demais Demonstrações Ambientais serão exigidos conforme os seguintes períodos:</Text>
-            <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>{'\u2022'} Até 28.4.1995, exclusivamente para o Fator de Risco físico ruído, e unicamente o LTCAT;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} De 29.4.1995 até 13.10.1996 apenas para o fator de risco físico ruído, todavia podendo ser aceitos o LTCAT ou demais demonstrações ambientais;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} De 14.10.1996 a 17.11.2003, LTCAT ou demais demonstrações, para todos os fatores de riscos nocivos e avaliando de acordo com a metodologia e limite de tolerância da NR-15, da Portaria nº 3.214/1978, do MTE; </Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} De 18.11.2003 a 31.12.2003, LTCAT ou demais demonstrações, para todos os fatores de riscos nocivos e avaliando de acordo com a metodologia das NHO da FUNDACENTRO, embora os limites de tolerância continuem os da NR 15, da Portaria nº 3.214/1978, do MTE; A partir de 1.1.2004, quando inicia a vigência do PPP, não é exigida a apresentação do LTCAT ou demais demonstrações ambientais, podendo ser solicitados pelo perito médico, se necessário.</Text>
-            </View>
-          </View>
-        </View>
-        <FooterPage />
-
-      </Page>
-    );
-  };
-
   const ObjectivePage = () => {
     return (
       <Page style={PageStyles.Page} wrap>
@@ -734,51 +597,182 @@ function LipGenerate({ inventario, plano,
 
         <View style={ContainerStyles.textContainer} wrap={true}>
           <Text style={TextStyles.paragraph}>
-            Laudo coletivo de todos os cargos existentes na empresa, elaborado por determinação do empregador, atendendo o item II da referida solicitação de obrigatoriedade de informações.
+            O Ministério do Trabalho e Emprego, através da Portaria 3214, regulamentou toda a matéria de Segurança e Medicina do Trabalho, através de 36 Normas Regulamentadoras, estando inseridas na NR15 e seus 14 anexos as atividades e operações insalubres, assim consideradas as que se desenvolvem:
           </Text>
+
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Acima dos limites de tolerância previstos nos anexos 1, 2, 3, 5, 11 e 12.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Nas atividades mencionadas nos anexos 6 e 14.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Comprovadas através de laudo de inspeção do local de trabalho, constantes dos anexos 7, 8, 9, 10 e 13.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} O anexo 4 foi revogado pela portaria 3.751, de 23/11/1990.</Text>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Atualmente a lei 6.514/77 determina o pagamento do adicional em 3 graus diferentes: mínimo, médio e máximo, sobre o salário mínimo, da categoria, base ou conforme convenção coletiva, conforme tabela abaixo:</Text>
         </View>
-
-        <View style={ContainerStyles.space}></View>
-
-        <Text style={TextStyles.subTitleSumary}> 3. Metodologia de Reconhecimento</Text>
-
-        <View style={ContainerStyles.textContainer} wrap={true}>
-          <Text style={TextStyles.title}>Reconhecimento dos Riscos</Text>
-          <View style={ContainerStyles.spaceTop20}></View>
-          <Text style={TextStyles.paragraph}>
-            Os fatores de riscos serão levantados obedecendo a seguinte metodologia:
-          </Text>
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}>{'\u2022'} A sua identificação;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A determinação e localização das possíveis fontes geradoras;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A identificação das possíveis trajetórias e dos meios de propagação dos fatores de riscos no ambiente de trabalho; </Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A identificação das funções e determinação do número de trabalhadores expostos;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A caracterização das atividades e do tipo da exposição;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A obtenção de dados existentes na empresa, indicativos de possível comprometimento da saúde decorrente do trabalho;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} Os possíveis danos à saúde relacionados aos riscos identificados, disponíveis na literatura técnica;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} A descrição das medidas de controle já existentes e informação sobre a existência de tecnologia de proteção coletiva ou individual que diminua a intensidade do fator de risco agressivo a limites de tolerância e recomendação sobre a adoção, se for o caso.</Text>
+        <View style={TableStyles.table}>
+          <View style={TableStyles.headerTable}>
+            <View style={[TableStyles.headerCell, { width: '25%' }]}>
+              <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}> Anexo</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: '50%' }]}>
+              <Text style={TextStyles.tableTitle}> Agente</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: '25%' }]}>
+              <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}> Grau de Insalubridade</Text>
+            </View>
           </View>
-          <View style={ContainerStyles.spaceTop20}></View>
-
-          <Text style={TextStyles.title}>Metodologia</Text>
-          <View style={ContainerStyles.space}></View>
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}>{'\u2022'} Visita no local de trabalho;</Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} Análise da finalidade e/ou produtos fabricados no setor; </Text>
-            <Text style={TextStyles.listItem}>{'\u2022'} Entrevista com o encarregado do setor levantando informações relativas ao processo de trabalho e queixa de trabalhadores, situações de risco.</Text>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>1</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Ruído contínuo ou intermitente</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
           </View>
-          <View style={ContainerStyles.spaceTop20}></View>
-
-          <Text style={TextStyles.title}>Inspeções</Text>
-          <View style={ContainerStyles.space}></View>
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>A. Documentos;</Text></Text>
-            <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>{'\u2022'} Análise do tipo de maquinário, manuais e legislação pertinente;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Quando identificado riscos químicos, análise da FISPQ - Ficha de Informação de Segurança de Produtos Químicos</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Registro de acidentes e/ou incidentes nos últimos 5 anos. Caso a empresa não possua registros será realizada pesquisas sobre o ramo de atividade e índices de acidentes para determinação das prioridades;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Registro de doenças do trabalho conforme relatório anual do PCMSO;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Medidas existentes documentadas.</Text>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>2</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Ruído de Impacto</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>3</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Calor</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>4</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Revogado pela portaria 3751 de 23-11-90</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>-</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>5</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Radiações Ionizantes</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>40%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>6</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Condições Hiperbáricas</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>40%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>7</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Radiações não ionizantes</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>8</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Vibrações</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>9</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Frio</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>10</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Umidade</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>11</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Agentes químicos acima do limite de tolerância</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>10%, 20% e 40%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>12</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Poeiras Minerais</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>40%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>13</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Agentes químicos com inspeção no local de trabalho</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>14</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Agentes Biológicos</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '25%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>20% e 40%</Text>
             </View>
           </View>
         </View>
@@ -795,175 +789,1131 @@ function LipGenerate({ inventario, plano,
         <HeaderPage />
 
         <View style={ContainerStyles.textContainer} wrap={true}>
-          <View style={ContainerStyles.list}>
-            <Text style={TextStyles.listItem}><Text style={TextStyles.listItemRoman}>B. Avaliação de Campo;</Text></Text>
-            <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>{'\u2022'} Acompanhamento dos processos de trabalho;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Identificação dos riscos químicos, físicos e biológicos. Apenas os riscos de acidentes com energia elétrica contemplarão o documento.</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Identificado fatores de riscos químicos o avaliador de campo deverá obter as seguintes informações: forma física do fator de risco, quantidades empregadas no processo, frequência e média de utilização;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Determinação e localização das fontes geradoras;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Definição dos cargos e funções dos trabalhadores expostos;</Text>
-              <Text style={TextStyles.listItem}>{'\u2022'} Tipo de exposição ao risco;</Text>
+          <Text style={TextStyles.paragraph}>Serão considerados os seguintes agentes periculosos, conforme a Norma Regulamentadora nº 16. O Adicional de periculosidade é único, com percentual de 30% sobre o salário devido.</Text>
+        </View>
+
+        <View style={TableStyles.table}>
+          <View style={TableStyles.headerTable}>
+            <View style={[TableStyles.headerCell, { width: '20%' }]}>
+              <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}> Anexo</Text>
             </View>
-
-            <View style={ContainerStyles.spaceTop20}></View>
-
-            <Text style={TextStyles.title}>Riscos Ocupacionais</Text>
-            <View style={ContainerStyles.space}></View>
-            <View style={TableStyles.table}>
-              <View style={TableStyles.Column}>
-                <View style={TableStyles.headerColumn}>
-                  <Text>Físicos</Text>
-                </View>
-                <View style={TableStyles.contentColumn}>
-                  <Text>Ruído, vibrações, pressões anormais, temperaturas extremas, radiações ionizantes, radiações não ionizantes, eletricidade, bem como o infrassom e o ultrassom.</Text>
-                </View>
-              </View>
-
-              <View style={TableStyles.Column}>
-                <View style={TableStyles.headerColumn}>
-                  <Text>Químicos</Text>
-                </View>
-                <View style={TableStyles.contentColumn}>
-                  <Text>Substâncias, compostos ou produtos que possam penetrar no organismo pela via respiratória, nas formas de poeiras, fumos, névoas, neblinas, gases ou vapores, ou que, pela natureza da atividade de exposição, possam ter contato ou ser absorvidos pelo organismo através da pele ou por ingestão.</Text>
-                </View>
-              </View>
-
-              <View style={TableStyles.Column}>
-                <View style={TableStyles.headerColumn}>
-                  <Text>Biológicos</Text>
-                </View>
-                <View style={TableStyles.contentColumn}>
-                  <Text>Bactérias, fungos, bacilos, parasitas, protozoários, vírus, entre outros.</Text>
-                </View>
-              </View>
+            <View style={[TableStyles.headerCell, { width: '60%' }]}>
+              <Text style={TextStyles.tableTitle}> Agente</Text>
             </View>
-
-            <View style={ContainerStyles.spaceTop20}></View>
-
-            <Text style={TextStyles.title}>Tabela de Códigos de Ocorrência</Text>
-
-            <View style={[TableStyles.table, { paddingTop: 5, paddingHorizontal: 40, }]}>
-              <View style={TableStyles.headerTable}>
-                <View style={[TableStyles.headerCell, { width: '30%' }]}>
-                  <Text style={TextStyles.tableTitleSize8}>QTD de Vínculos</Text>
-                </View>
-                <View style={[TableStyles.headerCell, { width: '30%' }]}>
-                  <Text style={TextStyles.tableTitleSize8}>Código</Text>
-                </View>
-                <View style={[TableStyles.headerCell, { width: '40%' }]}>
-                  <Text style={TextStyles.tableTitleSize8}>Exposição a Fatores de Riscos Nocivos</Text>
-                </View>
-              </View>
-              {/* 01 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Um</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Um ou ' '</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Sem Exposição</Text>
-                </View>
-              </View>
-              {/* 02 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Um</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>2</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Aposentadoria Especial 15 Anos</Text>
-                </View>
-              </View>
-              {/* 03 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Um</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>3</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Aposentadoria Especial 20 Anos</Text>
-                </View>
-              </View>
-              {/* 04 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Um</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>4</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Aposentadoria Especial 25 Anos</Text>
-                </View>
-              </View>
-              {/* Múltipos 05 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Múltiplos</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>5</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Sem Exposição</Text>
-                </View>
-              </View>
-              {/* Múltiplos 6 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Múltiplos</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>6</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Aposentadoria Especial 15 Anos</Text>
-                </View>
-              </View>
-              {/* Múltiplos 7 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Múltiplis</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>7'</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>Aposentadoria Especial 20 Anos</Text>
-                </View>
-              </View>
-              {/* Múltilplos 8 */}
-              <View style={TableStyles.contentTable}>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>Múltiplos</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '30%', textAlign: 'center', }]}>
-                  <Text style={TextStyles.contentTableText}>8</Text>
-                </View>
-                <View style={[TableStyles.contentCell, { width: '40%' }]}>
-                  <Text style={TextStyles.contentTableText}>SAposentadoria Especial 25 Anos</Text>
-                </View>
-              </View>
+            <View style={[TableStyles.headerCell, { width: '20%' }]}>
+              <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}>Grau de Periculosidade</Text>
             </View>
-            <View style={ContainerStyles.space}></View>
-            <Text style={TextStyles.paragraph}><Text style={{ fontFamily: 'OpenSansSemiBold', fontSize: 10, }}>Nota: </Text>Embora o Manual da GFIP oriente que o código “em branco” seja utilizado para o segurado sem exposição a fatores de riscos nocivos, que nunca esteve exposto, e o código “01” para o segurado que já esteve exposto a fatores de riscos nocivos e não está mais, não há diferença para o cálculo do valor devido à Previdência Social, pois em nenhum dos casos há cálculo do adicional do RAT.</Text>
-
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>1</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Atividades e operações perigosas com explosivos.</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>30%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>2</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Atividades e operações perigosas com inflamáveis.</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>30%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>3</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Atividades e operações perigosas com exposição a roubos ou outras espécies de violência física nas atividades profissionais de segurança pessoal ou patrimonial</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>30%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>4</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Atividades e operações perigosas com energia elétrica.</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>30%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>5</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Atividades e operações perigosas em motocicleta </Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>30%</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>6</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10 }]}>Atividades e operações perigosas com radiações ionizantes ou substâncias radiotivas</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>30%</Text>
+            </View>
           </View>
         </View>
 
+        <View style={ContainerStyles.spaceTop20}></View>
+
+        <Text style={TextStyles.subTitleSumary}>3. Metodologia</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>O presente laudo será elaborado seguindo as seguintes etapas e considerações técnicas:</Text>
+        </View>
+
+        <View style={TableStyles.table}>
+          <View style={TableStyles.headerTable}>
+            <View style={[TableStyles.headerCell, { width: '20%' }]}>
+              <Text style={TextStyles.tableTitle}>Item</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: '30%' }]}>
+              <Text style={TextStyles.tableTitle}>Etapa</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: '50%' }]}>
+              <Text style={TextStyles.tableTitle}>Realizar a descrição dos itens abaixo</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>1</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Identificação</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} nome, endereço e CNPJ da empresa</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>2</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Identificação do local avaliado</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} nome do setor</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} descrição do setor</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>3</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Descrição do ambiente de trabalho</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} arranjo físico</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} tipo de construção</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} metragens</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} condições de higiene, ventilação e iluminação</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} tipo de cobertura, paredes, janelas e pisos</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} mobiliários e maquinários</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>4</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Análise qualitativa</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} as atividades do trabalhador</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} as etapas do processo operacional</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} os riscos ocupacionais</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} o tempo de exposição ao risco</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>5</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Análise quantitativa</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} medição dos riscos como: calor, ruído, agentes químicos</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} descrever a metodologia de avaliação NHO, NIOSH, etc</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>6</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Conclusão</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} fundamento científico: detalhar as doenças de acordo com os riscos</Text>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} fundamento legal: realizar o enquadramento do agente periciado nas normas regulamentadoras</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '20%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>7</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '30%' }]}>
+              <Text style={TextStyles.contentTableText}>Proposta técnica para correção</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '50%' }]}>
+              <Text style={TextStyles.contentTableText}>{'\u2022'} descrever as propostas para eliminação da insalubridade através de mudança do processo operacional ou utilização de EPIs</Text>
+            </View>
+          </View>
+        </View>
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimit = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>3. Limites de Tolerância</Text>
+
+        <View style={ContainerStyles.spaceTop20}></View>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.1. Ruído</Text>
+        </View>
+
+        <View style={[TableStyles.table, { paddingHorizontal: 50 }]}>
+          <View style={TableStyles.headerTable}>
+            <View style={[TableStyles.headerCell, { width: '40%' }]}>
+              <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}> Nível dB(A)</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: '60%' }]}>
+              <Text style={TextStyles.tableTitle}> Máxima Exposição Diária Permissíveis </Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>85</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>8 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>86</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>7 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>87</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>6 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>88</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>5 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>89</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>4 horas e 30 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>90</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>4 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>91</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>3 horas e 30 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>91</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>3 horas e 30 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>92</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>3 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>93</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>2 horas e 40 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>94</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>2 horas e 15 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>95</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>2 horas.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>96</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>1 hora e 45 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>98</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>1 hora e 15 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>100</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>1 hora</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>102</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>45 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>104</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>35 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>105</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>30 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>106</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>25 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>108</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>20 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>110</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>15 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>112</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>10 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>114</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>8 minutos.</Text>
+            </View>
+          </View>
+          <View style={TableStyles.contentTable}>
+            <View style={[TableStyles.contentCell, { width: '40%' }]}>
+              <Text style={[TextStyles.contentTableText, { textAlign: 'center', fontSize: 10 }]}>115</Text>
+            </View>
+            <View style={[TableStyles.contentCell, { width: '60%' }]}>
+              <Text style={[TextStyles.contentTableText, { fontSize: 10, textAlign: 'center' }]}>7 minutos.</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={ContainerStyles.spaceTop20}></View>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.1.1 Metodologia de Avaliação e Interpretação de Resultados</Text>
+          <View style={ContainerStyles.space}></View>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A metodologia de avaliação de ruído deve seguir as orientações da Norma de Higiene Ocupacional - NHO 01 - da Fundacentro.</Text>
+          </View>
+        </View>
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitRuido = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Segundo a NHO 01, os equipamentos de medição, quando em uso, devem estar calibrados e em perfeitas condições eletromecânicas. Antes de iniciar as medições deve-se:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Verificar a integridade eletromecânica e coerência na resposta do instrumento.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Verificar as condições de carga das baterias.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Ajustar os parâmetros de medição, conforme o critério a ser utilizado.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Efetuar a calibração de acordo com as instruções do fabricante.</Text>
+          </View>
+
+          <View style={ContainerStyles.space}></View>
+
+          <Text style={TextStyles.paragraph}>A Norma de Higiene Ocupacional 01 da Fundacentro determina que as medições devem ser feitas com o microfone posicionado dentro da zona auditiva do trabalhador, de forma a fornecer dados representativos da exposição ocupacional diária ao ruído a que está submetido o trabalhador no exercício de suas funções. No caso de medidores de uso pessoal, o microfone deve ser posicionado sobre o ombro, preso na vestimenta, dentro da zona auditiva do trabalhador.</Text>
+          <Text style={TextStyles.paragraph}>A interpretação dos resultados deve ser confrontada entre o resultado obtido pelo mostrador com a tabela de limite de tolerância descrita na NR-15 anexo I.</Text>
+          <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15, determina que se durante a jornada de trabalho ocorrerem dois ou mais períodos de exposição a ruído de diferentes níveis, devem ser considerados os seus efeitos combinados, de forma que, se a soma do tempo total de exposição, dividido pelo tempo de exposição máxima permissível a este nível, exceder a unidade, a exposição estará acima dos limites de tolerância.</Text>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.1.2 Medidas de Controle</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>As medidas de controle do ruído podem ser consideradas basicamente em 3 maneiras distintas: na fonte, na trajetória e no homem.</Text>
+          <View style={TableStyles.table}>
+            <View style={TableStyles.Column}>
+              <View style={TableStyles.headerColumn}>
+                <Text style={TextStyles.tableTitle}>Na Fonte</Text>
+              </View>
+              <View style={TableStyles.contentColumn}>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Substituir o equipamento por outro mais silencioso.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Balancear e equilibrar partes móveis.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Lubrificar mancais, rolamentos, etc.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Alterar o processo.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Aplicar material de modo a atenuar as vibrações.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Regular os motores.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Reapertar as estruturas. </Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Substituir engrenagens metálicas por material de plástico ou celeron.</Text>
+              </View>
+            </View>
+            <View style={TableStyles.Column}>
+              <View style={TableStyles.headerColumn}>
+                <Text style={TextStyles.tableTitle}>Na Trajetória</Text>
+              </View>
+              <View style={TableStyles.contentColumn}>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Isolar a fonte.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Isolar o receptor.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Evitar a propagação com barreiras.</Text>
+              </View>
+            </View>
+            <View style={TableStyles.Column}>
+              <View style={TableStyles.headerColumn}>
+                <Text style={TextStyles.tableTitle}>No Homem</Text>
+              </View>
+              <View style={TableStyles.contentColumn}>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Limitar o tempo de exposição.</Text>
+                <Text style={TextStyles.contentTableText}>{'\u2022'} Fornecer protetores auriculare.</Text>
+              </View>
+            </View>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Para enquadramento da atividade como insalubre, se for constatado o ruído acima dos limites de tolerância, deve analisar apenas as medidas de controle sobre o homem que podem ser feitas através da utilização de protetores auriculares ou através da redução do tempo de exposição ao ruído.</Text>
+        </View>
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitCalor = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subSubTitleSumary}>3.2. Calor</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.2.1 Conceito</Text>
+
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>O calor que o organismo precisa dissipar, para manter o equilíbrio homeotérmico, pode originar-se de duas fontes interna e externa.</Text>
+            <Text style={TextStyles.paragraph}>A fonte interna é originada pelo metabolismo do indivíduo, enquanto as fontes externas são classificadas por:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Condução: calor transmitido entre sólidos em contato direto.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Convecção: característico dos fluidos. Troca de calor devido aos movimentos do ar em contato com a pele.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Radiação: transmissão de calor por meio de raios ou ondas que se processam através do espaço vazio, sem contato.</Text>
+            </View>
+          </View>
+
+          <View style={ContainerStyles.space}></View>
+          <Text style={TextStyles.subSubTitleSumary}>3.2.2 Limites de Tolerância</Text>
+
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Segundo a Norma Regulamentadora de nº 15, os trabalhos em que há exposição a calor, acima dos limites de tolerância, serão considerados insalubres em grau médio. A exposição ao calor deve ser avaliada através do IBUTG (Índice de Bulbo Úmido) Termômetro de Globo definido pelas equações que se segue: </Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Ambientes internos ou externos sem carga solar.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>IBUTG = 0,7 tbn + 0,3 tg: </Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Ambientes externos com carga solar.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>IBUTG = 0,7 tbn + 0,1 tbs + 0,2 tg</Text>
+
+            <Text style={TextStyles.paragraph}>onde:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} tbn - Temperatura de bulbo úmido natural.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} tg - Temperatura do globo.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} tbs - Temperatura de bulbo seco.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15, em seu anexo 3, determina que o perito deva analisar os tipos de atividades desenvolvidas para aplicação da norma. São considerados dois tipos de trabalho: com exposição ao calor com regime de trabalho intermitente com períodos de descanso no próprio local de prestação de serviço e exposição ao calor em regime de trabalho intermitente com período de descanso em outro local. </Text>
+
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a)  Limites de tolerância para exposição ao calor, em regime de trabalho intermitente com períodos de descanso no próprio local de prestação de serviços. </Text>
+            </View>
+          </View>
+        </View>
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitCalorTable = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Em função do índice obtido, o regime de trabalho intermitente será definido na tabela a seguir:</Text>
+
+          <View style={TableStyles.table}>
+            <View style={TableStyles.headerTable}>
+              <View style={[TableStyles.headerCell, { width: '40%' }]}>
+                <Text style={TextStyles.tableTitle}>Regime de Trabalho intermitente com descanso no próprio local de trabalho (por hora)</Text>
+              </View>
+              <View style={[TableStyles.headerCell, { width: '60%' }]}>
+                <Text style={TextStyles.tableTitle}>Tipo de Atividade</Text>
+                <View style={TableStyles.headerCellTable}>
+                  <View style={[TableStyles.headerCell, { width: '33%' }]}>
+                    <Text style={TextStyles.tableTitle}>Leve</Text>
+                  </View>
+                  <View style={[TableStyles.headerCell, { width: '33%' }]}>
+                    <Text style={TextStyles.tableTitle}>Moderada</Text>
+                  </View>
+                  <View style={[TableStyles.headerCell, { width: '33%' }]}>
+                    <Text style={TextStyles.tableTitle}>Pesada</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>Trabalho Conínuo</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>Até 30,0</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>Até 26,7</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>Até 25,0</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>45 minutos trabalho</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>30,1 à 30,6</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>26,8 à 28,8</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>25,1 à 25,9</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>15 minutos descanso</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>30,1 à 30,6</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>26,8 à 28,8</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>25,1 à 25,9</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>30 minutos de trabalho</Text>
+                <Text style={TextStyles.contentTableText}>30 minutos de descanso</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>30,7 à 31,4</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>28,1 à 29,4</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>26,0 à 27,9</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>15 minutos de trabalho</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>31,5 à 32,2</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>29,5 à 31,1</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>28,0 à 30,0</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>30 minutos de descanso</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>31,5 à 32,2</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>29,5 à 31,1</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>28,0 à 30,0</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '40%' }]}>
+                <Text style={TextStyles.contentTableText}>Não é permitido o trabalho sem a adoção de medidas adequadas de controlo</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>Acima de 32,2</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>Acima de 31,1</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>Acima de 30,0</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>
+              b) Limites de tolerância para exposição ao calor, em regime de trabalho intermitente com períodos de
+              descanso em outro local
+            </Text>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Considera-se como local de descanso, ambiente termicamente mais ameno, com o trabalhador em repouso ou exercendo atividade leve. Os limites de tolerância são dados segundo o quadro a seguir:</Text>
+          <Text style={TextStyles.paragraph}>Limites de tolerância com descanso em outro local</Text>
+
+          <View style={[TableStyles.table, { paddingHorizontal: 60 }]}>
+            <View style={TableStyles.headerTable}>
+              <View style={[TableStyles.headerCell, { width: '50%' }]}>
+                <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}>M (Kcal/h)</Text>
+              </View>
+              <View style={[TableStyles.headerCell, { width: '50%' }]}>
+                <Text style={[TextStyles.tableTitle, { textAlign: 'center' }]}>Máximo IBUTG</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>175</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>30,5</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>200</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>30,0</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>250</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>28,5</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>300</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>27,5</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>350</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>26,5</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>400</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>26,0</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>450</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>25,5</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>500</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '50%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>25,0</Text>
+              </View>
+            </View>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Onde: M é a taxa de metabolismo média ponderada para uma hora, determinada pela seguinte fórmula:</Text>
+
+          <Image src={formula_m} />
+
+          <Text style={TextStyles.paragraph}>Legenda:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>Mt - Taxa de metabolismo no local de trabalho.</Text>
+            <Text style={TextStyles.listItem}>Tt - Soma dos tempos, em minutos, em que se permanece no local de trabalho. </Text>
+            <Text style={TextStyles.listItem}>Md - Taxa de metabolismo no local de descanso.</Text>
+            <Text style={TextStyles.listItem}>Td - Soma dos tempos, em minutos, em que se permanece no local de descanso.</Text>
+          </View>
+
+        </View>
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitCalorContinue = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+
+          <Text style={TextStyles.paragraph}>IBUTG é o valor IBUTG médio ponderado para uma hora, determinado pela seguinte fórmula:</Text>
+
+          <Image src={formula_ibutg} />
+
+          <Text style={TextStyles.paragraph}>Legenda:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>IBUTGt - Valor do IBUTG no local de trabalho.</Text>
+            <Text style={TextStyles.listItem}>IBUTGd - Valor do IBUTG no local de descanso.</Text>
+            <Text style={TextStyles.listItem}>Tt e Td - Como anteriormente definidos.</Text>
+            <Text style={TextStyles.listItem}>Os tempos Tt e Td devem ser tomados no período mais desfavorável do ciclo de trabalho, sendo Tt + Td = 60 minutos corridos</Text>
+          </View>
+
+          <Text style={TextStyles.paragraph}>As taxas de metabolismo Mt e Md serão obtidas consultando a tabela abaixo:</Text>
+
+          <View style={TableStyles.table}>
+            <View style={TableStyles.headerTable}>
+              <View style={[TableStyles.headerCell, { width: '80%' }]}>
+                <Text style={TextStyles.tableTitle}>Tipo de Atividade</Text>
+              </View>
+              <View style={[TableStyles.headerCell, { width: '20%' }]}>
+                <Text style={TextStyles.tableTitle}>Kcal/h</Text>
+              </View>
+            </View>
+
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '80%' }]}>
+                <Text style={TextStyles.contentTableText}>Sentado em repouso</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>100</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '80%' }]}>
+                <Text style={[TextStyles.contentTableText, { fontSize: 8, fontFamily: 'OpenSansSemiBold' }]}>Trabalho Leve</Text>
+                <Text style={TextStyles.contentTableText}>Sentado, movimentos moderados com braços e tronco (ex: datilografia).</Text>
+                <Text style={TextStyles.contentTableText}>Sentado, movimentos moderados com braços e pernas (ex: dirigir).</Text>
+                <Text style={TextStyles.contentTableText}>De pé, trabalho leve, em máquina ou bancada, principalmente com os braços.</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}> </Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>125</Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>150</Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>150</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '80%' }]}>
+                <Text style={[TextStyles.contentTableText, { fontSize: 8, fontFamily: 'OpenSansSemiBold' }]}>Trabalho Moderado</Text>
+                <Text style={TextStyles.contentTableText}>Sentados, movimento vigorosos com braços e pernas.</Text>
+                <Text style={TextStyles.contentTableText}>De pé, trabalho leve, em máquina ou bancada, com alguma movimentação.</Text>
+                <Text style={TextStyles.contentTableText}>De pé, trabalho moderado, em máquina ou bancada, com alguma movimentação.</Text>
+                <Text style={TextStyles.contentTableText}>Em movimento, trabalho moderado de levantar ou empurrar.</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}> </Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>180</Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>175</Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>220</Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>300</Text>
+              </View>
+            </View>
+            <View style={TableStyles.contentTable}>
+              <View style={[TableStyles.contentCell, { width: '80%' }]}>
+                <Text style={[TextStyles.contentTableText, { fontSize: 8, fontFamily: 'OpenSansSemiBold' }]}>Trabalho Pesado</Text>
+                <Text style={TextStyles.contentTableText}>Trabalho intermitente de levantar, empurrar ou arrastar pesos (ex: remoção com pá).</Text>
+                <Text style={TextStyles.contentTableText}>Trabalho fatigante.</Text>
+              </View>
+              <View style={[TableStyles.contentCell, { width: '20%' }]}>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}> </Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>440</Text>
+                <Text style={[TextStyles.contentTableText, { textAlign: 'center' }]}>550</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.2.3 Instrumentos de Medição</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Segundo a Norma de Higiene Ocupacional 06 da Fundacentro (2002), o conjunto convencional para a determinação do IBUTG é composto de termômetro de globo, termômetro de bulbo úmido natural e termômetro de bulbo seco, sendo classificados:</Text>
+
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Termômetro de globo (tg)</Text>
+          </View>
+        </View>
+
+
+        <Text style={TextStyles.subSubTitleSumary}>3.2.4 Metodologia de Avaliação e Interpretação de Resultados</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>A metodologia de avaliação de calor deve seguir as orientações da Norma de Higiene Ocupacional - NHO 06 - da Fundacentro (2002).</Text>
+          <Text style={TextStyles.paragraph}>Segundo a NHO 06 (2002), a avaliação de calor deverá ser feita de modo a caracterizar a exposição de todos os trabalhadores considerados em estudo.</Text>
+          <Text style={TextStyles.paragraph}>Ainda, segundo a norma, o conjunto de medições deve ser representativo das condições reais de exposição ocupacional. Dessa forma, a avaliação deve cobrir todas as condições ocupacionais e ambientais habituais que envolvem o trabalhador no exercício de suas funções.</Text>
+        </View>
 
         <FooterPage />
 
       </Page >
     );
   };
+
+  const ToleranceLimitCalorContinueControlMeasure = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>De acordo com a NHO 06 da Fundacentro (2002), para que as medições sejam representativas da exposição ocupacional é importante que o período de amostragem seja adequadamente escolhido, de maneira a considerar os 60 minutos corridos de exposição que correspondam à condição de sobrecarga térmica mais desfavorável, considerando-se as condições térmicas do ambiente e as atividades físicas desenvolvidas pelo trabalhador. Portanto, a identificação do período de exposição mais desfavorável deve ser feita mediante análise conjunta do par de variáveis, situação térmica e atividade física, e nunca por meio de análise isolada de cada uma delas.</Text>
+          <Text style={TextStyles.paragraph}>Determina a NHO 06 (2002) que uma vez determinados o IBUTG ponderado e o Metabolismo ponderado, o limite de exposição ao calor será considerado ultrapassado quando o IBUTG ponderado exceder o IBUTG máximo correspondente ao Metabolismo ponderado obtido, conforme definido nos quadros de limites de tolerância. Para os valores encontrados de taxa metabólica média ponderada intermediários aos valores constantes no quadro de limite de tolerância, será considerado o IBUTG ponderado máximo relativo à taxa metabólica média ponderada imediatamente mais elevado.</Text>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.2.5 Medidas de Controle</Text>
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>O calor, como todo agente ambiental, deve ser controlado primeiramente na fonte ou na trajetória, constituindo medidas aplicáveis ao ambiente. Não sendo possível este tipo de controle por razões de ordem técnica ou econômica, devem ser adotadas medidas aplicáveis ao trabalhador. A finalidade das medidas de controle é, obviamente, procurar diminuir a quantidade de calor que o organismo produz ou recebe e na possibilidade de dissipá-lo.</Text>
+          <Text style={TextStyles.paragraph}>Em relação à medida de controle no homem, sugere:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Aclimatização.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Limitação do tempo de exposição.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Exames médicos.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Equipamentos de proteção individual.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Educação e treinamento.</Text>
+          </View>
+          <Text style={TextStyles.paragraph}>Controle do Ambiente:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Metabolismo.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Redução da temperatura do processo de convecção.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Redução da radiação.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Condições que favoreçam a evaporação do suor.</Text>
+          </View>
+
+        </View>
+
+        <View style={ContainerStyles.spaceTop20}></View>
+        <Text style={TextStyles.subTitleSumary}>3.3 Radiação Ionizante</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.3.1 Conceito</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>As radiações ionizantes englobam: raios x, raios y, partículas a, b e nêutrons. Normalmente a emissão de uma radiação ionizante estará acompanhada de outras radiações.</Text>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitRadiacao = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>As radiações ionizantes são de natureza eletromagnética, que ionizam as substâncias presentes no meio em que se propagam, sendo classificadas em radiações ionizantes corpusculares e raios alfa e beta.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.3.2 Limites de Tolerância</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>O anexo 5 da NR-15, portaria 3214 estabelece que as atividades ou operações em que os trabalhadores ficam expostos a radiações ionizantes, os limites de tolerância, os princípios, as obrigações e controle básicos para a proteção do homem e do meio ambiente, contra possíveis efeitos indevidos causados pela radiação ionizante, são as constantes da Norma CNEN-NE 3.01, de julho de 1988, aprovada, em caráter experimental, pela Resolução CNEN (Comissão Nacional de Energia Nuclear), nº 12/88 ou daquela que venha a substitui-la.</Text>
+          </View>
+
+
+          <Text style={TextStyles.subSubTitleSumary}>3.3.3 Instrumentos de Medição</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A radiação ionizante pode ser avaliada no ambiente, utilizando-se o contador Gayger-Müller, ou individualmente, com os dosímetros de filmes de bolso.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.3.4 Metodologia de Avaliação e Interpretação de Resultados</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A Norma de Higiene Ocupacional 05 da Fundacentro (2001) descreve pormenorizadamente os procedimentos técnicos para avaliação da exposição ocupacional aos raios X.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.3.5 Medidas de Controle</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>As medidas de controle das radiações, dentre outras, são:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Controle da distância entre o trabalhador e a fonte.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Blindagem.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Limitação do tempo de exposição.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Impedir que outras fontes radioativas atinjam vias de absorção do organismo.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Sinalização.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Controle médico.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Uso de barreiras.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Limpeza adequada do ambiente de trabalho.</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={ContainerStyles.space}></View>
+        <Text style={TextStyles.subTitleSumary}>3.4 Vibrações</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.4.1 Conceito</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>“São fenômenos físicos observados quando um corpo está animado de um movimento oscilatório em torno de uma posição de referência.”</Text>
+            <Text style={TextStyles.paragraph}>As vibrações podem afetar o conforto e eficiência com consequente redução do rendimento do trabalho e efeitos adversos à saúde. Podem, ainda, progressivamente causar desordens irreversíveis das funções fisiológicas, quando de exposição intensa às mesmas.</Text>
+          </View>
+
+        </View>
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitRadiacaoContinue = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>As vibrações podem ocorrer das seguintes fontes:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Vibrações Localizadas.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Vibrações de corpo inteiro.</Text>
+            </View>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.4.2 Limites de Tolerância</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>O anexo 8 da NR-15 define que a perícia, visando à comprovação ou não da exposição, deve tomar por base os limites de tolerância da Organização Internacional para a Normalização - ISO em suas normas ISO 2631 e ISO/DIS 5349 ou suas substitutas.</Text>
+            <Text style={TextStyles.paragraph}>Os limites abordados pela norma ISO 2631/85 (corpo inteiro) consideram três aspectos:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Redução do conforto.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Redução de proficiência do trabalho devido à fadiga. </Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Limite de exposição (saúde e segurança).</Text>
+            </View>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.4.3 Instrumentos de Medição</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Os equipamentos utilizados para a medição de vibrações ocupacionais são compostos por um conjunto de medidores de vibração mecânica (que incluam vibração e velocidade), sensor de vibração, amplificador, um integrador ou diferenciador que permite a transformação da grandeza medida em sinal elétrico correspondente. Na prática são chamados de acelerômetros e sensores de vibração.</Text>
+            <Text style={TextStyles.paragraph}>Metodologia de Avaliação e Interpretação de Resultados</Text>
+            <Text style={TextStyles.paragraph}>Utiliza-se dois métodos:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Ponderação de frequências.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Análise de frequências.</Text>
+            </View>
+            <Text style={TextStyles.paragraph}>No primeiro método (ponderação de frequências) são obtidos sinais de frequência ponderada para um dado nível de vibração, que é função direta da exposição. No segundo método (análise de frequências) a faixa de frequência não pode ser superior a 1/3 de oitava. Para cada frequência central se obtém um valor de aceleração, o qual será comparado com as curvas estabelecidas pela norma da ISO.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.4.4 Medidas de Controle</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>As medidas de controle são tomadas na fonte e em seguida na trajetória.</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Evitar o contato entre o trabalhador e a ferramenta. Exemplo: construir braços articuláveis para o manuseio de serras elétricas portáteis, esmerilhadeiras, etc.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Tratamento de máquinas através da ação direta com redução das vibrações por intermédio de dispositivos técnicos que limitam tanto a intensidade das vibrações criadas por máquinas, quanto a transmissão de vibrações da máquina para o homem.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Arco sobre a transmissão e a propagação de vibrações: suprimir o meio transmissor, realizar montagens vibratórias, aumentar a inércia de um equipamento ou sistema.</Text>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitChemicalAgent = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subTitleSumary}>3.5 Agentes Químicos</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.5.1 Conceito</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Os agentes químicos são classificados como: aerodispersóides, gases e vapores.</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Gases.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>É a denominação dada às substâncias que, em condições normais de temperatura e pressão, estão no estado gasoso. Exemplo: hidrogênio, oxigênio e nitrogênio.</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Vapores.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>É a fase gasosa de uma substância que, a 25º e 760mmHg, é líquida ou sólida. Ex: vapores de água, vapores de gasolina. A principal diferença entre gases e vapores é a concentração de cada qual que deve existir no ambiente. Como para higiene do trabalho as concentrações que interessam são pequenas, situando-se normalmente abaixo da concentração de saturação, não se torna necessário distinguir os gases dos vapores, sendo os dois estudados de uma só vez.</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Particulado.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>De forma ampla, o material particulado contaminado é todo aquele aerosol que se encontram em suspensão no ar que pode ser nocivo à saúde. De acordo com sua formação os particulados podem ser classificados como sólidos ou líquidos. Como particulados líquidos temos as névoas e neblinas, e como particulados sólidos as poeiras e os fumos.</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Poeira.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>São partículas sólidas produzidas por ruptura mecânica de um sólido, seja pelo simples manuseio (limpeza de bancadas), ou em consequência de uma operação mecânica (trituração, moagem, peneiramento, polimento). Exemplo: poeira de sílica, asbesto e carvão.</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Fumos.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>São partículas sólidas resultantes da condensação de vapores ou reação química, geralmente após a volatização de metais fundidos. Exemplo: fumos de Pb (ponteamento de arames) e de Zn (galvanoplastia).</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Névoas e neblinas.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>Névoas e neblinas são partículas líquidas produzidas por ruptura mecânica de líquido ou por condensação de vapores de sustâncias que são líquidas à temperatura ambiente. Exemplo: névoa de tinta resultante de pintura à pistola</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>a) Fibras.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>São partículas sólidas produzidas por ruptura mecânica de sólidos, que se diferenciam da poeira por que têm forma alongada, com um comprimento de 3 a 5 vezes superior a seu diâmetro. Exemplo: Animal - lã, seda, pelo de cabra e camelo; Vegetal - algodão, linho, cânhamo; Mineral - asbestos, vidros e cerâmica.</Text>
+
+
+
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
 
   const CompanyPage = () => {
 
@@ -1254,10 +2204,10 @@ function LipGenerate({ inventario, plano,
               <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Medidas</Text>
             </View>
             <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
-              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Conclusão</Text>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Conclusão Insalubridade</Text>
             </View>
-            <View style={[TableStyles.headerCell, { width: ' 8%' }]}>
-              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>E-social</Text>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Conclusão Periculosidade</Text>
             </View>
           </View>
           {/* Body */}
@@ -1350,12 +2300,12 @@ function LipGenerate({ inventario, plano,
               </View>
               <View style={[TableStyles.contentCell, { width: '10%' }]}>
                 <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
-                  {item.conclusao || '-'}
+                  {item.conclusao_li || '-'}
                 </Text>
               </View>
-              <View style={[TableStyles.contentCell, { width: '8%' }]}>
-                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
-                  {find(item.fk_risco_id, 'esocial') || '-'}
+              <View style={[TableStyles.contentCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {item.conclusao_lp || '-'}
                 </Text>
               </View>
             </View>
@@ -1374,11 +2324,17 @@ function LipGenerate({ inventario, plano,
         <CoverPage />
         {/* <SumaryPage /> */}
         <CompanyPage />
-        <IntroductionPage />
-        <IntroductionPageContinue />
-        <IntroductionPageContinueTwo />
         <ObjectivePage />
         <ObjectivePageContinue />
+        <ToleranceLimit />
+        <ToleranceLimitRuido />
+        <ToleranceLimitCalor />
+        <ToleranceLimitCalorTable />
+        <ToleranceLimitCalorContinue />
+        <ToleranceLimitCalorContinueControlMeasure />
+        <ToleranceLimitRadiacao />
+        <ToleranceLimitRadiacaoContinue />
+        <ToleranceLimitChemicalAgent />
         <UnidadesPage />
         <PostPage />
         <RiskInventoryPage />

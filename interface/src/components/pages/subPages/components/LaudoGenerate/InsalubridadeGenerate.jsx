@@ -1256,9 +1256,6 @@ function InsalubridadeGenerate({ inventario, plano,
             <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
               <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Conclusão</Text>
             </View>
-            <View style={[TableStyles.headerCell, { width: ' 8%' }]}>
-              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>E-social</Text>
-            </View>
           </View>
           {/* Body */}
           {inventario.map((item, i) => (
@@ -1350,12 +1347,7 @@ function InsalubridadeGenerate({ inventario, plano,
               </View>
               <View style={[TableStyles.contentCell, { width: '10%' }]}>
                 <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
-                  {item.conclusao || '-'}
-                </Text>
-              </View>
-              <View style={[TableStyles.contentCell, { width: '8%' }]}>
-                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
-                  {find(item.fk_risco_id, 'esocial') || '-'}
+                  {item.conclusao_li || '-'}
                 </Text>
               </View>
             </View>

@@ -187,13 +187,11 @@ function LaudoPgr() {
 
 
       if (laudo === "LP") {
-        const filteredInventario = filterInventario.filter((i) => i.tipo_laudo === 'Periculosidade');
-        const res = await generateLP(filteredInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
+        const res = await generateLP(filterInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
         handleDownloadLtcat(res);
         setGeneratedPdf(res);
       } else if (laudo === "LI") {
-        const filteredInventario = filterInventario.filter((i) => i.tipo_laudo === 'Insalubridade');
-        const res = await generateLI(filteredInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
+        const res = await generateLI(filterInventario, filterCompany, filterContato, filterSetor, filterCargo, filterUnidades, user, data);
         handleDownloadLtcat(res);
         setGeneratedPdf(res);
       } else {
