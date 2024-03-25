@@ -76,10 +76,6 @@ function GridInventario({
     }
   };
 
-  const handleEditClick = (item) => () => {
-    setOnEdit(item);
-  };
-
   const formatData = (item) => {
     const data_formatada = new Date(item).toLocaleDateString('pr-BR');
     return data_formatada;
@@ -309,7 +305,7 @@ function GridInventario({
                   <td className="py-4 gap-4">
                     <a className="flex justify-center font-medium text-blue-400 cursor-pointer hover:text-sky-600">
                       <BsFillPencilFill
-                        onClick={handleEditClick(item)}
+                        onClick={() => setOnEdit(item)}
                       />
                     </a>
                   </td>

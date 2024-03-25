@@ -61,6 +61,7 @@ router.put("/empresas/:id_empresa", (req, res) => {
     inscricao_municipal_empresa,
     cnae_empresa,
     grau_risco_cnae,
+    descricao_cnae,
     fk_contato_id } = req.body;
 
   const q = `
@@ -72,7 +73,8 @@ router.put("/empresas/:id_empresa", (req, res) => {
     inscricao_municipal_empresa = ?,
     fk_contato_id = ?,
     cnae_empresa = ?,
-    grau_risco_cnae = ?
+    grau_risco_cnae = ?,
+    descricao_cnae = ?
     WHERE id_empresa = ?
     `;
 
@@ -85,6 +87,7 @@ router.put("/empresas/:id_empresa", (req, res) => {
     fk_contato_id,
     cnae_empresa,
     grau_risco_cnae,
+    descricao_cnae,
     id_empresa
   ];
 
@@ -1789,6 +1792,7 @@ router.get("/inventario", (req, res) => {
 //Add rows in table
 router.post("/inventario", (req, res) => {
   const data = req.body;
+  console.log(req.body)
 
   const q = "INSERT INTO inventario SET ?"
 
@@ -1813,7 +1817,7 @@ router.post("/inventario", (req, res) => {
 router.put("/inventario/:id_inventario", (req, res) => {
   const id_inventario = req.params.id_inventario;
   const {
-    data,
+    data_inventario,
     fk_empresa_id,
     fk_unidade_id,
     fk_setor_id,
@@ -1828,8 +1832,9 @@ router.put("/inventario/:id_inventario", (req, res) => {
     frequencia,
     fk_aparelho_id,
     comentarios,
-    conclusao,
-    tipo_laudo,
+    conclusao_ltcat,
+    conclusao_li,
+    conclusao_lp,
   } = req.body;
   console.log(req.body);
 
@@ -1850,13 +1855,14 @@ router.put("/inventario/:id_inventario", (req, res) => {
     frequencia = ?,
     fk_aparelho_id = ?,
     comentarios = ?,
-    conclusao = ?,
-    tipo_laudo = ?
+    conclusao_ltcat = ?,
+    conclusao_li = ?,
+    conclusao_lp = ?
     WHERE id_inventario = ?
     `;
 
   const values = [
-    data,
+    data_inventario,
     fk_empresa_id,
     fk_unidade_id,
     fk_setor_id, pessoas_expostas,
@@ -1870,10 +1876,13 @@ router.put("/inventario/:id_inventario", (req, res) => {
     frequencia,
     fk_aparelho_id,
     comentarios,
+    conclusao_ltcat,
+    conclusao_li,
+    conclusao_lp,
     id_inventario,
-    conclusao,
-    tipo_laudo,
   ];
+
+  console.log(values)
 
   pool.getConnection((err, con) => {
     con.release();
@@ -1991,48 +2000,6 @@ router.put("/global_sprm/:id_global_sprm", (req, res) => {
     });
   })
 });
-
-
-//Get Table
-router.get("/conclusao_inventario", (req, res) => {
-  const q = `SELECT * FROM conclusao_inventario`;
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, (err, data) => {
-      if (err) return res.status(500).json(err);
-
-      return res.status(200).json(data);
-    });
-
-    con.release();
-  });
-});
-
-//Add rows in table
-router.post("/conclusao_inventario", (req, res) => {
-  const data = req.body;
-
-  const q = "INSERT INTO conclusao_inventario SET ?"
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, data, (err, result) => {
-      if (err) {
-        console.error("Erro ao cadastrar conclusão no inventário", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json(`Conclusões adicionadas com sucesso!`);
-    });
-
-    con.release();
-  })
-
-});
-
 
 
 

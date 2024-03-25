@@ -20,7 +20,7 @@ function Inventario() {
     getInventario, inventario,
     getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId,
     getAparelhos, aparelhos,
-    getConclusoes, conclusoes, getConclusaoInventario, conclusaoInventario,
+    getConclusoes, conclusoes,
   } = useAuth(null);
 
   const [onEdit, setOnEdit] = useState(null);
@@ -46,7 +46,6 @@ function Inventario() {
     getMedidasEpc();
     getAparelhos();
     getConclusoes();
-    getConclusaoInventario();
   }, [companyId]);
 
 
@@ -76,7 +75,6 @@ function Inventario() {
         aparelhos={aparelhos}
         inventario={inventario}
         conclusoes={conclusoes}
-        conclusaoInventario={conclusaoInventario}
       />
 
       <GridInventario
