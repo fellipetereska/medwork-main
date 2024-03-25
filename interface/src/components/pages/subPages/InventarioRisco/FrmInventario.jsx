@@ -169,7 +169,6 @@ function FrmInventario({
     handleClearSetor();
     setLoading(false);
     setLoading(true);
-    setData(obterDataFormatada(onEdit ? onEdit.data_inventario : null));
   };
 
   const handleClearUnidade = () => {
@@ -279,6 +278,7 @@ function FrmInventario({
     closeModalRisco();
     setRiscoId(RiscoId);
     setRiscoNome(RiscoNome);
+    setData(obterDataFormatada(onEdit ? onEdit.data_inventario : null));
 
     const filteresRiscosMedidas = riscosMedidas.filter((i) => i.fk_risco_id === RiscoId);
     const riscoSelecionado = riscos.find((i) => i.id_risco === RiscoId);
@@ -500,6 +500,19 @@ function FrmInventario({
 
         setDescricao(onEdit.fontes || 'N/A');
         setComentarios(onEdit.comentarios || 'N/A');
+
+        if (onEdit.conclusao_ltcat) {
+          setLtcat(true);
+          setConclusaoLtcat(onEdit.conclusao_ltcat);
+        }
+        if (onEdit.conclusao_li) {
+          setLip(true);
+          setConclusaoLi(onEdit.conclusao_li);
+        }
+        if (onEdit.conclusao_lp) {
+          setLip(true);
+          setConclusaoLtcat(onEdit.conclusao_lp);
+        }
 
         setIsVerify(false);
         setIsMedidasSet(true);
