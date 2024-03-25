@@ -6,8 +6,6 @@ const ModalSearchConclusao = ({ onCancel, isOpen, laudo, conclusao, onSelectLtca
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    console.log(conclusao)
-
     if (!isOpen) {
       setSearchTerm('');
     }

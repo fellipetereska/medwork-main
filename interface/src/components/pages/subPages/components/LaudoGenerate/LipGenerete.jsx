@@ -8,6 +8,9 @@ import OpenSansBold from '../../../../media/fonts/OpenSans-Bold.ttf';
 import OpenSansExtraBold from '../../../../media/fonts/OpenSans-ExtraBold.ttf';
 import formula_m from '../../../../media/laudos/lip/formula_m.png'
 import formula_ibutg from '../../../../media/laudos/lip/formula_ibutg.png'
+import formula_pt from '../../../../media/laudos/lip/formula_pt.png'
+import formula_pr from '../../../../media/laudos/lip/formula_pr.png'
+import formula_silica from '../../../../media/laudos/lip/formula_silica.png'
 
 function LipGenerate({ inventario, plano,
   company, unidades, setores, cargos, contatos,
@@ -549,7 +552,7 @@ function LipGenerate({ inventario, plano,
     return (
       <View style={ContainerStyles.headerContainer}>
         <Text style={TextStyles.headerText}>Laudo de Insalubridade e Periculosidade - LIP</Text>
-        <Text style={TextStyles.littleText}>Nome da Empresa - Versão</Text>
+        <Text style={TextStyles.littleText}>{company.nome_empresa}</Text>
       </View>
     );
   }
@@ -557,8 +560,8 @@ function LipGenerate({ inventario, plano,
   const FooterPage = () => {
     return (
       <View style={ContainerStyles.footerContainer}>
-        <Text style={TextStyles.footerText}>Nome da Empresa</Text>
-        <Text style={TextStyles.footerAddresText}>Rua Goias, 1914 - apto 301 - Londrina/PR 86020-410</Text>
+        <Text style={TextStyles.footerText}>Medwork - Medicina e Segurança do Trabalho</Text>
+        <Text style={TextStyles.footerAddresText}>Rua Paes Leme, 1076 - Londrina/PR - Contato: (43) 3322-3010</Text>
       </View>
     );
   }
@@ -571,7 +574,7 @@ function LipGenerate({ inventario, plano,
           <Text style={TextStyles.centerText}>{company.nome_empresa}</Text>
         </View>
         <View style={ContainerStyles.bottomContainerVigencia}>
-          <Text style={TextStyles.smallTextVigencia}>Londrina, {formatData(data)} - Vigência: {setVigencia(formatData(data))}</Text>
+          <Text style={TextStyles.smallTextVigencia}>Londrina, {formatData(data)} - Vigência: {setVigencia(data)}</Text>
         </View>
       </Page>
     )
@@ -1873,32 +1876,32 @@ function LipGenerate({ inventario, plano,
 
             <Text style={TextStyles.paragraph}>É a denominação dada às substâncias que, em condições normais de temperatura e pressão, estão no estado gasoso. Exemplo: hidrogênio, oxigênio e nitrogênio.</Text>
             <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>a) Vapores.</Text>
+              <Text style={TextStyles.listItem}>b) Vapores.</Text>
             </View>
 
             <Text style={TextStyles.paragraph}>É a fase gasosa de uma substância que, a 25º e 760mmHg, é líquida ou sólida. Ex: vapores de água, vapores de gasolina. A principal diferença entre gases e vapores é a concentração de cada qual que deve existir no ambiente. Como para higiene do trabalho as concentrações que interessam são pequenas, situando-se normalmente abaixo da concentração de saturação, não se torna necessário distinguir os gases dos vapores, sendo os dois estudados de uma só vez.</Text>
             <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>a) Particulado.</Text>
+              <Text style={TextStyles.listItem}>c) Particulado.</Text>
             </View>
 
             <Text style={TextStyles.paragraph}>De forma ampla, o material particulado contaminado é todo aquele aerosol que se encontram em suspensão no ar que pode ser nocivo à saúde. De acordo com sua formação os particulados podem ser classificados como sólidos ou líquidos. Como particulados líquidos temos as névoas e neblinas, e como particulados sólidos as poeiras e os fumos.</Text>
             <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>a) Poeira.</Text>
+              <Text style={TextStyles.listItem}>d) Poeira.</Text>
             </View>
 
             <Text style={TextStyles.paragraph}>São partículas sólidas produzidas por ruptura mecânica de um sólido, seja pelo simples manuseio (limpeza de bancadas), ou em consequência de uma operação mecânica (trituração, moagem, peneiramento, polimento). Exemplo: poeira de sílica, asbesto e carvão.</Text>
             <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>a) Fumos.</Text>
+              <Text style={TextStyles.listItem}>e) Fumos.</Text>
             </View>
 
             <Text style={TextStyles.paragraph}>São partículas sólidas resultantes da condensação de vapores ou reação química, geralmente após a volatização de metais fundidos. Exemplo: fumos de Pb (ponteamento de arames) e de Zn (galvanoplastia).</Text>
             <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>a) Névoas e neblinas.</Text>
+              <Text style={TextStyles.listItem}>f) Névoas e neblinas.</Text>
             </View>
 
             <Text style={TextStyles.paragraph}>Névoas e neblinas são partículas líquidas produzidas por ruptura mecânica de líquido ou por condensação de vapores de sustâncias que são líquidas à temperatura ambiente. Exemplo: névoa de tinta resultante de pintura à pistola</Text>
             <View style={ContainerStyles.list}>
-              <Text style={TextStyles.listItem}>a) Fibras.</Text>
+              <Text style={TextStyles.listItem}>g) Fibras.</Text>
             </View>
 
             <Text style={TextStyles.paragraph}>São partículas sólidas produzidas por ruptura mecânica de sólidos, que se diferenciam da poeira por que têm forma alongada, com um comprimento de 3 a 5 vezes superior a seu diâmetro. Exemplo: Animal - lã, seda, pelo de cabra e camelo; Vegetal - algodão, linho, cânhamo; Mineral - asbestos, vidros e cerâmica.</Text>
@@ -1913,6 +1916,391 @@ function LipGenerate({ inventario, plano,
       </Page >
     );
   };
+
+  const ToleranceLimitChemicalAgentContinue = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <Text style={TextStyles.subSubTitleSumary}>3.5.2 Limites de Tolerância</Text>
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>A Portaria 3214 através da NR-15, que estabelece critérios para a caracterização de insalubridade, fixa limites de tolerância para alguns tipos de particulados.</Text>
+          <Text style={TextStyles.paragraph}>Os limites adotados pela NR-15 foram baseados naqueles recomendados pela ACGIH.</Text>
+          <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15, em seu anexo 11, determina os agentes químicos, o valor teto, o tempo de exposição e o respectivo grau de insalubridade.</Text>
+          <Text style={TextStyles.paragraph}>O anexo 12 da NR-15, indica que para as poeiras minerais os limites de tolerância são determinados pelas seguintes equações:</Text>
+
+          <Text style={TextStyles.paragraph}>Poeira Total</Text>
+          <Image src={formula_pt}></Image>
+          <Text style={TextStyles.paragraph}>Poeira Respirável</Text>
+          <Image src={formula_pr}></Image>
+          <Text style={TextStyles.paragraph}>Sílica Livre Cristalizada</Text>
+          <Image src={formula_silica}></Image>
+
+          <Text style={TextStyles.paragraph}>Legenda:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>LT = Limite de Tolerância</Text>
+            <Text style={TextStyles.listItem}>Sempre será entendido que “Quartzo” significa sílica livre cristalizada. Os limites são válidos para 48 horas semanais.</Text>
+            <Text style={TextStyles.listItem}>Para o manganês o limite de tolerância determinado no anexo 12 é de 5,0 mg/m³ para exposição à poeira de manganês e seus compostos nas operações de extração, moagem, transporte de minério, dentre outros e 1,0 mg/m³ para exposição a fumos de manganês nas operações de fabricação de baterias de pilhas secas, vidros especiais e cerâmicas, fabricação e uso de eletrodos de solda, tintas, fertilizantes, dentre outros.</Text>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.5.3 Instrumentos de Medição</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Para amostragem de particulados (poeira mineral, algodão, fumos, gases e vapores) são necessários os seguintes instrumentos:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Bomba gravimétrica de poeira.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Sistema filtrante (filtros, porta filtros e suporte).</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Sistema separador de tamanho de partícula (ciclone).</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Elutriador vertical para poeira de algodão.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Calibradores tipo bolha de sabão.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Calibrador eletrônico.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Tubos colorimétricos.</Text>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitChemicalAgentThree = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Tubos de carvão ativado.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'}  Amostradores passivos.</Text>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Os meios de coleta são:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Filtros.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Tubo sílica gel.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Tubo carvão ativado.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Impinger, dentre outros.</Text>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.5.4 Metodologia de Avaliação e Interpretação de Resultados</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Para cada tipo de substância deve-se consultar os métodos da NIOSH, que fornece toda a metodologia de amostragem de campo e análise laboratorial. A interpretação do resultado é feita com a comparação entre o resultado da análise e a tabela de limites de tolerância.</Text>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.5.5 Medidas de Controle</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Podem ser adotadas medidas de controle relativas ao ambiente e ao homem:</Text>
+
+          <Text style={TextStyles.paragraph}>Relativas ao ambiente</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Substituição do produto tóxico ou nocivo.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Mudanças ou alteração do processo ou operação.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Encerramento ou enclausuramento da operação.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Segregação da operação ou processo.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Umidificação.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Ventilação geral diluidora.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Ventilação local exaustora.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Projetos adequados.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Ordem e limpeza.</Text>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Relativas ao Homem</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Limitação do tempo de exposição.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Educação e treinamento.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Equipamentos de proteção individual.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Controle médico.</Text>
+
+          </View>
+        </View>
+
+        <Text style={TextStyles.subSubTitleSumary}>3.5.6 Avaliação Qualitativa</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Nos anexos 7, 9, 10 e 13, a Norma Regulamentadora de nº 15 estabelece que a insalubridade será comprovada pela inspeção realizada pelo perito no local de trabalho, ou seja, nesses anexos, o MTE não fixou limites de tolerância para os agentes, cabendo ao perito determinar a insalubridade pela constatação da existência do agente no ambiente de trabalho.</Text>
+        </View>
+
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitChemicalAgentAssessment = () => {
+    return (
+      <Page style={PageStyles.Page} wrap>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Na avaliação qualitativa, deve-se levar em conta na avaliação, dentre outros, o tempo de exposição, a forma de contato com o agente e o tipo de proteção usada.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.5.7 Avaliação</Text>
+
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15 em seu anexo 13, apresenta a relação das atividades e operações, envolvendo agentes químicos, em decorrência de inspeção realizada no local de trabalho, excluindo os agentes citados nosanexos 11 e 12.</Text>
+            <Text style={TextStyles.paragraph}>São considerados as operações com os seguintes agentes:</Text>
+
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Arsênico.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Carvão.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Chumbo.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Cromo.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Fósforo.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Hidrocarbonetos e outros compostos de carbono.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Mercúrio.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Silicatos.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Benzeno.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Outras operações diversas.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>O anexo 13 descreve quais as situações de exposição para cada agente citado anteriormente, não podendo, para fins de insalubridade ser mencionado atividades que não possuem enquadramento no referido anexo.</Text>
+
+          </View>
+
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>3.6 Radiações não Ionizantes</Text>
+        <View style={ContainerStyles.textContainer}>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.6.1 Conceito</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>As radiações não-ionizantes englobam: radiação ultravioleta, radiação visível e infravermelha, laser, micro-ondas e radiofreqüências. Podem incluir-se os ultra-sons, já que os riscos produzidos por eles são similares aos da radiação não-ionizantes, devido a sua natureza ondulatória e alta freqüência.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.6.2 Avaliação</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Segundo a Norma Regulamentadora de nº 15 em seu anexo 7, determina que serão consideradas insalubres as operações ou atividades que exponham os trabalhadores às radiações não ionizantes, sem a proteção adequada, em decorrência de laudo de inspeção realizada no local de trabalho.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.6.3 Medidas de Controle</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Microondas</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Enclausuramento das fontes.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Uso de barreiras.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Sinalização.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Controle Médico.</Text>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page >
+    );
+  };
+
+  const ToleranceLimitNoIonRadiation = () => {
+    return (
+
+      <Page style={PageStyles.Page}>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Radiação Ultravioleta</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Uso de barreiras.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Equipamentos de proteção individual, tais como: óculos com lentes filtrantes, roupas apropriadas para proteção do braço, tórax, mão e outros.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Controle Médico.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>Laser</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Equipamentos de proteção individual, tais como: protetores para os olhos, luvas protetoras, roupas, escudo.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Sinalização.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Blindagem.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Treinamento.</Text>
+            </View>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>3.7 Frio</Text>
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.7.1 Conceito</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A exposição ao frio ocorre quando há o desequilíbrio térmico, ou seja, quando o corpo do trabalhador está perdendo temperatura em relação ao ambiente de trabalho.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.7.2 Avaliação</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15 em seu anexo 9, determina que serão consideradas insalubres as operações em câmaras frigoríficas, ou em locais de condições similares, que exponham o trabalhador ao frio, sem a proteção adequada, em decorrência de laudo de inspeção realizada no local de trabalho.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.7.3 Medidas de Controle</Text>
+          <View style={ContainerStyles.textContainer}>
+
+            <Text style={TextStyles.paragraph}>Recomendações em relação ao frio:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Aclimatização.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Regime de trabalho.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Exames édicos admissionais e periódicos.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Projetos adequados e roupas protetoras.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Educação e treinamento.</Text>
+            </View>
+
+            <Text style={TextStyles.paragraph}>O fenômeno de condução-convecção é diminuído por meio do uso de roupas pesadas e isolantes e sugere que o mecanismo de evaporação seja evitado ao máximo, reduzindo desta forma o resfriamento do corpo.</Text>
+            <Text style={TextStyles.paragraph}>Descreve que quando ao mecanismo de radiação pouco pode ser feito, salvo nos casos em que o funcionário possa situar-se próximo de alguma fonte aquecida.</Text>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>3.8 Umidade</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.subSubTitleSumary}>3.8.1 Conceito</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>Segundo Vieira (2006) umidade é a qualidade ou estado de úmido ou ligeiramente molhado.</Text>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page >
+
+    );
+  };
+
+  const ToleranceLimitColdHumidity = () => {
+    return (
+
+      <Page style={PageStyles.Page}>
+
+        <HeaderPage />
+        <View style={ContainerStyles.textContainer}>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.8.2 Avalição</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15 em seu anexo 10, determina que serão consideradas insalubres as atividades e operações em locais alagados ou encharcados com umidade excessiva, capaz de produzir danos à saúde. Será comprovada através de inspeção no local de trabalho.</Text>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>3.8.3 Medidas de Controle</Text>
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.paragraph}>O trabalho de engenharia para este risco consiste em efetuar intervenção no meio ambiente, a fim de se eliminar ou minimizar os efeitos nocivos da exposição a ambientes úmidos, podendo adotar:</Text>
+            <View style={ContainerStyles.list}>
+              <Text style={TextStyles.listItem}>{'\u2022'} Efetuar mudança dos métodos produtivos.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Colocação de barreiras entre a fonte e o trabalhador.</Text>
+              <Text style={TextStyles.listItem}>{'\u2022'} Obrigatoriedade de luvas, avental e botas de borracha.</Text>
+            </View>
+          </View>
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>4. Avaliação Qualitativa de Riscos Inerentes á Atividade</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>O subitem 15.13 da NR-15 estabelece que serão insalubres as atividades mencionadas nos anexos 6 e 14.</Text>
+          <Text style={TextStyles.paragraph}>A insalubridade por riscos inerentes à função não é neutralizada porque não há dispositivos de segurança individual ou de caráter ambiental que possam neutralizar o risco. Por exemplo, no trabalho em contato com pacientes em hospitais (anexo-14 Agentes Biológicos) o risco biológico de contágio não pode ser totalmente eliminado com medidas no ambiente ou com o uso de EPI.</Text>
+
+          <Text style={TextStyles.subSubTitleSumary}>4.1 Condições Hiperbáricas</Text>
+
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.subSubTitleSumary}>4.1.1 Conceito</Text>
+            <View style={ContainerStyles.textContainer}>
+              <Text style={TextStyles.paragraph}>Os trabalhos em condições hiperbáricas ocorrem quando o trabalhador é submetido a pressão superior a uma atmosfera, podendo este trabalho ser realizado sob ar comprimido ou submerso, como os mergulhadores por exemplo.</Text>
+            </View>
+
+            <Text style={TextStyles.subSubTitleSumary}>4.1.2 Avaliação</Text>
+            <View style={ContainerStyles.textContainer}>
+              <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15 em seu anexo 6, determina que serão consideradas insalubres em grau máximo as atividades e operações sob ar comprimido e mergulho.</Text>
+            </View>
+
+            <Text style={TextStyles.subSubTitleSumary}>4.1.3 Medidas de Controle</Text>
+            <View style={ContainerStyles.textContainer}>
+              <Text style={TextStyles.paragraph}>O anexo 6 da NR 15, traz um capítulo detalhado sobre as medidas de controle de caráter ambiente e pessoal para as atividades sob condições hiperbáricas.</Text>
+            </View>
+          </View>
+
+          <Text style={TextStyles.subSubTitleSumary}>4.2 Avaliação</Text>
+
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.subSubTitleSumary}>4.2.1 Conceito</Text>
+            <View style={ContainerStyles.textContainer}>
+              <Text style={TextStyles.paragraph}>A exposição a agentes biológico ocorre em hospitais, ambulatórios, laboratórios, esgoto, lixo urbano, estábulos e cavalariças e outros citados no anexo 14 da NR 15.</Text>
+            </View>
+          </View>
+        </View>
+
+        <FooterPage />
+
+      </Page>
+
+    );
+  };
+
+  const QualitativeAssessment = () => {
+    return (
+
+      <Page style={PageStyles.Page}>
+
+        <HeaderPage />
+
+        <View style={ContainerStyles.textContainer}>
+
+          <View style={ContainerStyles.textContainer}>
+            <Text style={TextStyles.subSubTitleSumary}>4.2.2 Avaliação</Text>
+            <View style={ContainerStyles.textContainer}>
+              <Text style={TextStyles.paragraph}>A Norma Regulamentadora de nº 15 em seu anexo 14, determina que serão consideradas insalubres em grau máximo as seguintes atividades em contato permanente com pacientes e animais portadores de doenças infectocontagiosa, lixo urbano e esgoto.</Text>
+              <Text style={TextStyles.paragraph}>O anexo cita as atividades insalubres em grau médio, que são: contato com pacientes, animais e material infectocontagiante em hospitais, ambulatórios, postos de vacinação e outros estabelecimentos destinados aos cuidados da saúde humana e de tratamento de animais.</Text>
+              <Text style={TextStyles.paragraph}>Outros trabalhos considerados insalubres em grau médio são: gabinetes de autópsias, cemitérios (exumação de corpos), estábulos e cavalariças, além de contato com resíduos de animais deteriorados.</Text>
+            </View>
+
+            <Text style={TextStyles.subSubTitleSumary}>4.2.3 Medidas de Controle</Text>
+            <View style={ContainerStyles.textContainer}>
+              <Text style={TextStyles.paragraph}>Algumas medidas que podem ser adotadas visando diminuir o risco da ocupação:</Text>
+              <View style={ContainerStyles.list}>
+                <Text style={TextStyles.listItem}>{'\u2022'} Usar luvas para manipular objetos contaminados.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Lavar as mãos após o contato com todo e qualquer paciente ou animal.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Usar botas nos serviços de cemitérios, cavalarias e estábulos.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Instruir o empregado quanto ao melhor manuseio de um animal.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Instruir o empregado quanto a conhecer os hábitos de um animal.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Usar máscaras faciais no contato com pacientes com doenças transmissíveis por gotículas de saliva.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Usar materiais sempre descartáveis ou esterilizado.</Text>
+                <Text style={TextStyles.listItem}>{'\u2022'} Observar as normas da vigilância sanitária.</Text>
+              </View>
+            </View>
+          </View>
+
+        </View>
+
+        <Text style={TextStyles.subTitleSumary}>5. Análise Pericial sobre Equipamentos de Proteção Individual</Text>
+
+        <View style={ContainerStyles.textContainer}>
+          <Text style={TextStyles.paragraph}>Para os agentes considerados acima dos limites de tolerância, deverá levantar quais os equipamentos de proteção individual fornecidos e atender o que dispõe a NR-6:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>{'\u2022'} Adquirir o adequado ao risco de cada atividade.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Exigir seu uso</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Fornecer ao trabalhador somente o aprovado pelo órgão nacional competente em matéria de segurança e saúde no trabalho.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Orientar e treinar o trabalhador sobre o uso adequado, guarda e conservação.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Substituir imediatamente, quando danificado ou extraviado.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Responsabilizar-se pela higienização e manutenção periódica.</Text>
+            <Text style={TextStyles.listItem}>{'\u2022'} Comunicar o MTE qualquer irregularidade observada.</Text>
+          </View>
+
+          <Text style={TextStyles.paragraph}>Deve-se destacar, também, o estabelecido no Enunciado 289 do TST:</Text>
+          <View style={ContainerStyles.list}>
+            <Text style={TextStyles.listItem}>“O simples fornecimento do aparelho de proteção pelo empregador não o exime do pagamento do adicional de insalubridade, cabendo-lhe tomar as medidas que conduzam à diminuição ou eliminação da nocividade, dentre as quais as relativas ao uso efetivo do equipamento pelo empregado”.</Text>
+          </View>
+        </View>
+
+
+
+        <FooterPage />
+
+      </Page>
+
+    );
+  }
 
 
   const CompanyPage = () => {
@@ -2013,7 +2401,7 @@ function LipGenerate({ inventario, plano,
 
         <HeaderPage />
 
-        <Text style={TextStyles.subTitleSumary}>16. Unidades da empresa</Text>
+        <Text style={TextStyles.subTitleSumary}>6. Unidades da empresa</Text>
 
         {/* Unidades */}
         {unidades.map((item, i) => (
@@ -2049,7 +2437,7 @@ function LipGenerate({ inventario, plano,
     return (
       <Page style={PageStyles.Page}>
         <HeaderPage />
-        <Text style={TextStyles.subTitleSumary}>17. Caracterização das Atividades e Cargos</Text>
+        <Text style={TextStyles.subTitleSumary}>7. Caracterização das Atividades e Cargos</Text>
 
         {/* Tabela de Cargos */}
         <View style={TableStyles.table}>
@@ -2125,7 +2513,7 @@ function LipGenerate({ inventario, plano,
         <FooterPage />
       </Page>
     );
-  }
+  };
 
   const RiskInventoryPage = () => {
 
@@ -2146,7 +2534,7 @@ function LipGenerate({ inventario, plano,
         <HeaderPage />
 
         {/* Sumário */}
-        <Text style={TextStyles.subTitleSumary}>18. Inventário de Riscos</Text>
+        <Text style={TextStyles.subTitleSumary}>8. Inventário de Riscos</Text>
 
         {/* Tabela do Inventário */}
         <View style={TableStyles.table}>
@@ -2335,6 +2723,12 @@ function LipGenerate({ inventario, plano,
         <ToleranceLimitRadiacao />
         <ToleranceLimitRadiacaoContinue />
         <ToleranceLimitChemicalAgent />
+        <ToleranceLimitChemicalAgentContinue />
+        <ToleranceLimitChemicalAgentThree />
+        <ToleranceLimitChemicalAgentAssessment />
+        <ToleranceLimitNoIonRadiation />
+        <ToleranceLimitColdHumidity />
+        <QualitativeAssessment />
         <UnidadesPage />
         <PostPage />
         <RiskInventoryPage />

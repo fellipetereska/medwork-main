@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "../../../../services/api";
 import { toast } from "react-toastify";
+import { IoInformationCircleSharp } from "react-icons/io5";
 
 import LoadingScreen from "../components/LoadingScreen";
 import ModalSearchUnidade from "../components/Modal/ModalSearchUnidade";
@@ -10,6 +11,7 @@ import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
 import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 import ModalSearchAparelhos from '../components/Modal/ModalSearchAparelhos';
 import ModalSearchConclusao from '../components/Modal/ModalSearchConclusao';
+import Back from '../../../layout/Back'
 
 import icon_sair from '../../../media/icon_sair.svg';
 import icon_lupa from '../../../media/icon_lupa.svg';
@@ -54,6 +56,7 @@ function FrmInventario({
   const [isMedidasSet, setIsMedidasSet] = useState(true);
   const [isVerify, setIsVerify] = useState(false);
   const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
@@ -135,17 +138,21 @@ function FrmInventario({
     setShowModalMedidas(false);
   };
 
-  const obterDataFormatada = () => {
-    const dataAtual = new Date();
-    const ano = dataAtual.getFullYear();
-    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-    const dia = String(dataAtual.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
+  const obterDataFormatada = (dataBanco) => {
+    if (dataBanco) {
+      const data = new Date(dataBanco);
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    } else {
+      const dataAtual = new Date();
+      const ano = dataAtual.getFullYear();
+      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+      const dia = String(dataAtual.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
   };
-
-  useEffect(() => {
-    setData(obterDataFormatada)
-  }, [])
 
   useEffect(() => {
     if (showModalSetor && unidadeId) {
@@ -162,6 +169,7 @@ function FrmInventario({
     handleClearSetor();
     setLoading(false);
     setLoading(true);
+    setData(obterDataFormatada(onEdit ? onEdit.data_inventario : null));
   };
 
   const handleClearUnidade = () => {
@@ -171,6 +179,7 @@ function FrmInventario({
     handleClearRisco();
     handleClearSetor();
     setFilteredSetores([]);
+    setData('');
   };
 
   // Função para atualizar o Setor
@@ -308,6 +317,9 @@ function FrmInventario({
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
     try {
+      if (!setorId) {
+        return
+      }
       for (const { medidaId, medidaTipo } of medidasTipos) {
         const verificarResponse = await fetch(
           `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
@@ -382,16 +394,18 @@ function FrmInventario({
     } else {
       setAvaliacao(risco.classificacao_risco);
       setLimiteTolerancia(risco.limite_tolerancia_risco || '0');
-      setConsequencia(risco.danos_saude_risco || 'N/A');
-      setMetodologia(risco.metodologia_risco || 'N/A');
-      setSeveridade(risco.severidade_risco || '0');
+      setConsequencia(risco.danos_saude_risco);
+      setMetodologia(risco.metodologia_risco);
+      setSeveridade(risco.severidade_risco);
       risco.ltcat_risco > 0 ? setLtcat(true) : setLtcat(false);
       risco.lip_risco > 0 ? setLip(true) : setLip(false);
 
       if (risco.classificacao_risco === "Qualitativo") {
         setMedicao("0");
+        setCheckMedicao(true);
       } else {
         setMedicao('');
+        setCheckMedicao(false);
       }
     }
     setLoading(true);
@@ -440,87 +454,62 @@ function FrmInventario({
     }
   };
 
-  // useEffect(() => {
-  //   const handleEdit = () => {
-  //     if (onEdit) {
-  //       try {
-  //         setUnidadeId(onEdit.fk_unidade_id);
-  //         setSetorId(onEdit.fk_setor_id);
-  //         setProcessoId(onEdit.fk_processo_id);
-  //         setRiscoId(onEdit.fk_risco_id);
-  //       } catch (error) {
-  //         console.error("Erro ao setar ids para edição!", error)
-  //       }
-  //     }
-  //   }
+  useEffect(() => {
+    if (onEdit) {
+      try {
+        if (onEdit.fk_unidade_id) {
+          const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
+          handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
+          if (onEdit.fk_setor_id) {
+            const setorSelect = setores.find((i) => i.id_setor === onEdit.fk_setor_id);
+            handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
+            if (onEdit.fk_processo_id) {
+              const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
+              handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
+              if (setorId, onEdit.fk_risco_id) {
+                const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
+                handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
+              }
+            }
+          }
+        }
 
-  //   handleEdit();
-  // }, [onEdit])
+        setMedicao(onEdit.medicao || '0');
 
-  // useEffect(() => {
-  //   const handleOnEdit = async () => {
-  //     if (onEdit, unidadeId, setorId, processoId, riscoId) {
-  //       try {
-  //         if (unidadeId) {
-  //           const unidadeSelect = unidades.find((i) => i.id_unidade === unidadeId);
-  //           await handleUnidadeSelect(unidadeId, unidadeSelect.nome_unidade);
-  //         }
-  //         if (setorId) {
-  //           const setorSelect = setores.find((i) => i.id_setor === setorId);
-  //           await handleSetorSelect(setorId, setorSelect.nome_setor);
-  //         }
-  //         if (processoId) {
-  //           const processoSelect = processos.find((i) => i.id_processo === processoId);
-  //           await handleProcessoSelect(processoId, processoSelect.nome_processo);
-  //         }
-  //         if (riscoId) {
-  //           const riscoSelect = riscos.find((i) => i.id_risco === riscoId);
-  //           await handleRiscoSelect(riscoId, riscoSelect.nome_risco);
-  //         }
+        if (onEdit.fk_aparelho_id) {
+          const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
+          handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
+        }
 
-  //         setMedicao(onEdit.medicao || '0');
+        setFrequencia(onEdit.frequencia || '');
+        setProbabilidade(onEdit.probabilidade || '');
+        if (onEdit.nivel) {
+          const nivelValue = onEdit.nivel;
+          if (nivelValue >= 1 && nivelValue <= 6) {
+            setNivel("Baixo");
+          } else if (nivelValue >= 7 && nivelValue <= 12) {
+            setNivel("Moderado");
+          } else if (nivelValue >= 13 && nivelValue <= 16) {
+            setNivel("Alto");
+          } else if (nivelValue >= 20 && nivelValue <= 25) {
+            setNivel("Crítico");
+          } else {
+            setNivel(null);
+          }
+        }
 
-  //         if (onEdit.fk_aparelho_id) {
-  //           const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
-  //           await handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
-  //         }
+        setDescricao(onEdit.fontes || 'N/A');
+        setComentarios(onEdit.comentarios || 'N/A');
 
-  //         setFrequencia(onEdit.frequencia || '');
-  //         setProbabilidade(onEdit.probabilidade || '');
-  //         if (onEdit.nivel) {
-  //           const nivelValue = onEdit.nivel;
-  //           if (nivelValue >= 1 && nivelValue <= 6) {
-  //             setNivel("Baixo");
-  //           } else if (nivelValue >= 7 && nivelValue <= 12) {
-  //             setNivel("Moderado");
-  //           } else if (nivelValue >= 13 && nivelValue <= 16) {
-  //             setNivel("Alto");
-  //           } else if (nivelValue >= 20 && nivelValue <= 25) {
-  //             setNivel("Crítico");
-  //           } else {
-  //             setNivel(null);
-  //           }
-  //         }
-
-  //         setDescricao(onEdit.fontes || 'N/A');
-  //         setComentarios(onEdit.comentarios || 'N/A');
-  //         if (onEdit.data_inventario) {
-  //           const data_formatada = new Date(onEdit.data_inventario).toISOString().split('T')[0];
-  //           setData(data_formatada || '');
-  //         }
-
-  //         setIsVerify(false);
-  //         setIsMedidasSet(true);
-  //       } catch (error) {
-  //         toast.error("Erro ao buscar os dados!");
-  //         console.error("Erro ao buscar dados para edição", error);
-  //       }
-  //       window.scrollTo({ top: 0, behavior: 'smooth' });
-  //     }
-  //   }
-
-  //   handleOnEdit();
-  // }, [onEdit]);
+        setIsVerify(false);
+        setIsMedidasSet(true);
+      } catch (error) {
+        toast.error("Erro ao buscar os dados!");
+        console.error("Erro ao buscar dados para edição", error);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [onEdit, setorId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -536,8 +525,10 @@ function FrmInventario({
       toast.warn("Preencha todos os campos!");
       return
     }
+    console.log(data)
     try {
       const inventarioData = {
+        data_inventario: data || '',
         fk_empresa_id: companyId || '',
         fk_unidade_id: unidadeId || '',
         fk_setor_id: setorId || '',
@@ -549,10 +540,9 @@ function FrmInventario({
         medidas: JSON.stringify(medidasAplicadas) || '',
         probabilidade: probabilidade || '',
         nivel: probabilidade * severidade || '',
-        comentarios: comentarios || '',
-        data_inventario: data || '',
         frequencia: frequencia || '',
         fk_aparelho_id: aparelhoId || '',
+        comentarios: comentarios || '',
         conclusao_ltcat: conclusaoLtcat || '',
         conclusao_li: conclusaoLi || '',
         conclusao_lp: conclusaoLp || '',
@@ -594,15 +584,15 @@ function FrmInventario({
     setConsequencia('');
     setComentarios('');
     setMedicao('');
+    setCheckMedicao(false);
     setProbabilidade('');
     setNivel('');
     setDescricao('');
     setOnEdit(null);
-    setCheckMedicao(false);
     setIsMedidasSet(false);
     setFrequencia('');
     setIsVerify(false);
-    setData(obterDataFormatada);
+    setData('');
     handleClearConclusaoLtcat();
     handleClearConclusaoLi();
     handleClearConclusaoLp();
@@ -618,6 +608,9 @@ function FrmInventario({
 
   const handleMedicaoChange = (event) => {
     setMedicao(event.target.value);
+    if (event.target.value === '0') {
+      setCheckMedicao(true);
+    }
   };
 
   const handleMedidaChange = () => {
@@ -742,19 +735,19 @@ function FrmInventario({
 
   return (
     <>
-      {isVerify && (
+      {(isVerify && !onEdit) && (
         <>
           {/* PopOver */}
           <div className="block m-2 cursor-pointer" onClick={() => setIsVerify(false)}>
-            <div className={`bg-orange-50 text-yellow-300 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'} text-white`}>
+            <div className={`bg-orange-50 text-gray-600 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'}`}>
               <div className="flex items-center gap-6">
                 <div className="">
                   <img src={icon_warn} alt="" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-xl mb-2 mt-2">Risco já Cadastrado</h2>
+                  <h2 className="font-medium">Risco já Cadastrado</h2>
                   <div>
-                    <p className="text-sm">Risco: <span className="text-base font-bold text-yellow-300">{riscoNome}</span> - Porcesso: <span className="text-base font-bold text-yellow-300">{processoNome}</span> - Setor: <span className="text-base font-bold text-yellow-300">{setorNome}</span> - Unidade: <span className="text-base font-bold text-yellow-300">{nomeUnidade}.</span></p>
+                    <p className="font-normal text-gray-700">Risco: {riscoNome} - Porcesso: {processoNome} - Setor: {setorNome}- Unidade: {nomeUnidade}.</p>
                   </div>
                 </div>
               </div>
@@ -762,6 +755,38 @@ function FrmInventario({
           </div>
         </>
       )}
+
+      {/* Popover */}
+      <div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
+        <div className="fixed z-50 m-2 -mt-4">
+          <div className={`bg-gray-700 rounded-lg px-6 py-2 ${visible ? 'block' : 'hidden'} text-white`}>
+            <h2 className="font-bold text-xl mb-2 text-gray-100 mt-2">Página Cadastro Empresa</h2>
+            <div>
+              <p className="mb-2 text-justify font-light text-gray-300 flex">
+                A página de Invenário de Risco foi cuidadosamente desenvolvida para proporcionar uma maneira eficaz e organizada de registrar as informações fundamentais sobre os riscos da empresa.
+              </p>
+              <p className="mb-2 text-justify font-light text-gray-300 flex">
+                No centro da tela, um formulário claro e de fácil compreensão está disponível para o cadastro de informações dos riscos da empresa. Seguindo o mesmo padrão intuitivo das demais páginas, esse formulário facilita a inserção e a modificação de dados relevantes relacionados aos riscos. O formulário e separado em 3 etapas, a primeira etapa e a seleção da Unidade, do Setor, do Processo e do Risco (lembrando que todos os dados devem ser vinculados previamente), após teremos o campo de data. Os proximos campos são de preenchimento automático, Pessoas Expostas, são os funcionários dos cargos vinculados a esse setor, as Consequências, Avaliação, LT, Metodologia, são campos ja cadastrados previamente no risco, a medição fica disponivel caso o risco seja quantitativo, podendo ser desativada caso não haja medição, o aparelho fica disponivel assim quem a medição foi incluida, o campo de frequência e probabilidade são se seleção, a severidade vem do risco e o nivel e a probabilidade x severidade, a descrição das fontes e um campo de texto e os comentários também. A 2 etapada e a de conclusões, caso esse risco tenha uma conclusão o sistema libera automáticamente 3 campos para colocar a conclusão, também já previamente cadastrada no risco. A 3 etapa e a das medidas, todo risco já tem medidas vinculadas a ele, nessa parte você utilizando o botao de definir medidas, deve selecionar no select da tabela qual a referencia desse risco nessa empresa, se ela Aplica, Não Aplica ou se essa medida não é Aplicavel a essa empresa. Complementando a página, uma tabela organizada exibe os dados do inventário. Nessa tabela, é apresentado um botão de edição, caso necessário arrumar alguma informação.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Cabeçalho */}
+      <div className="grid grid-cols-3 mb-10 mt-10">
+        {/* Botão para voltar */}
+        <div className="">
+        </div>
+        <div className="flex justify-center">
+          <h1 className="text-3xl font-extrabold text-sky-700">Inventário de Risco</h1>
+        </div>
+        <div className="flex justify-end w-3/4 items-center">
+          <div onMouseEnter={() => setVisible(true)}>
+            <IoInformationCircleSharp className='text-sky-700' />
+          </div>
+        </div>
+      </div>
 
       {/* Formulário */}
       {loading && <LoadingScreen />}
@@ -1393,6 +1418,15 @@ function FrmInventario({
                   )}
 
                 </div>
+                <ModalSearchConclusao
+                  isOpen={showModalConclusoes}
+                  onCancel={closeModalConclusoes}
+                  onSelectLtcat={handleConclusaoLtcatSelect}
+                  onSelectLi={handleConclusaoLiSelect}
+                  onSelectLp={handleConclusaoLpSelect}
+                  laudo={laudo}
+                  conclusao={filterConclusao}
+                />
               </>
             )}
 
@@ -1472,15 +1506,6 @@ function FrmInventario({
 
           </div>
         </form >
-        <ModalSearchConclusao
-          isOpen={showModalConclusoes}
-          onCancel={closeModalConclusoes}
-          onSelectLtcat={handleConclusaoLtcatSelect}
-          onSelectLi={handleConclusaoLiSelect}
-          onSelectLp={handleConclusaoLpSelect}
-          laudo={laudo}
-          conclusao={filterConclusao}
-        />
       </div >
     </>
   );
