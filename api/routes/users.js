@@ -639,23 +639,20 @@ router.post("/processos", (req, res) => {
 
 //Update row int table
 router.put("/processos/:id_processo", (req, res) => {
-  const id_processo = req.params.id_processo; // Obtém o ID da empresa da URL
-  const { nome_processo, ramo_trabalho, fk_setor_id, fk_cargo_id } = req.body;
+  const id_processo = req.params.id_processo;
+  const { nome_processo, ramo_trabalho } = req.body;
+  console.log(req.body)
 
   const q = `
     UPDATE processos
     SET nome_processo = ?,
-    ramo_trabalho = ?,
-    fk_setor_id = ?,
-    fk_cargo_id = ?
+    ramo_trabalho = ?
     WHERE id_processo = ?
     `;
 
   const values = [
     nome_processo,
     ramo_trabalho,
-    fk_setor_id,
-    fk_cargo_id,
     id_processo
   ];
 

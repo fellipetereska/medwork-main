@@ -144,7 +144,10 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, riscos }) {
     user.metodologia_risco.value = "";
     user.severidade_risco.value = "0";
     setAvaliacao("0");
+    setEsocial('');
     setPgr(false);
+    setLip(false);
+    setLtcat(false);
     window.scrollTo({ top: 500, behavior: 'smooth' })
     getRiscos();
   };
@@ -172,7 +175,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, riscos }) {
     setLipSave(false);
     setOnEdit(null);
     setEsocial('');
-    setRiscoId('');
+    setRiscoId(false);
   };
 
   const checkedPgr = () => {
@@ -398,7 +401,7 @@ function CadastroRisco({ onEdit, setOnEdit, getRiscos, riscos }) {
           </div>
 
           {/* Laudo */}
-          <div className={`w-full md:w-1/3 px-3 ${classificacao ? 'opacity-50' : ''}`}>
+          <div className={`w-full md:w-1/3 px-3`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2">
               Laudo:
             </label>
