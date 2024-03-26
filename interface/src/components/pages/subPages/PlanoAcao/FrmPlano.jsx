@@ -71,6 +71,7 @@ function FrmPlano({
   const openModalProcesso = () => setShowModalProcesso(true);
   const openModalRisco = () => setShowModalRisco(true);
   const openModalMedidas = () => {
+    handleFilterGlobalSprm();
     setPlano(true);
     setShowModalMedidas(true)
   };
@@ -123,8 +124,7 @@ function FrmPlano({
             const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
             await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco, onEdit.fk_medida_id, onEdit.tipo_medida);
           }
-          const sprm = globalSprm.filter((i) => i.fk_setor_id === onEdit.fk_setor_id && i.fk_processo_id === onEdit.fk_processo_id && i.fk_risco_id === onEdit.fk_risco_id && i.fk_medida_id === onEdit.fk_medida_id && i.tipo_medida === onEdit.tipo_medida);
-          setFilterGlobalSprm(sprm);
+          handleFilterGlobalSprm();
         } catch (error) {
           console.error("Erro ao buscar dados para edição!", error)
         }
@@ -221,7 +221,7 @@ function FrmPlano({
     await handleRiscoEscolhido(RiscoId, medidasTipos);
 
     const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === RiscoId);
-    const filterApply = sprm.filter((c) => c.status && c.status === "Não Aplica")
+    const filterApply = sprm.filter((c) => c.status && c.status !== "Aplica");
     setFilterGlobalSprm(filterApply);
   };
 
@@ -232,8 +232,9 @@ function FrmPlano({
       }
 
       for (const { medidaId, medidaTipo } of medidasTipos) {
+        console.log(setorId, processoId, RiscoId, medidaId, medidaTipo)
         const verificarResponse = await fetch(
-          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
+          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_processo_id=${processoId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
           {
             method: 'GET',
             headers: {
@@ -265,7 +266,7 @@ function FrmPlano({
             fk_risco_id: RiscoId,
             fk_medida_id: medidaId,
             tipo_medida: medidaTipo,
-            status: '0',
+            status: 'Não Aplicavel',
           }),
         });
 
@@ -275,8 +276,9 @@ function FrmPlano({
 
         const adicionarData = await adicionarResponse.json();
         toast.success("Meddias Adicionadas com sucesso!");
+        getGlobalSprm();
+        handleFilterGlobalSprm();
       }
-      getGlobalSprm();
       setLoading(false);
       setLoading(true);
     } catch (error) {
@@ -362,10 +364,14 @@ function FrmPlano({
     closeModalMedidas();
   };
 
-  useEffect(() => {
+  const handleFilterGlobalSprm = () => {
     const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === riscoId);
-    const filterApply = sprm.filter((c) => c.status && c.status === "Não Aplica")
-    setFilterGlobalSprm(filterApply);
+    const filterApply = sprm.filter((c) => c.status && c.status !== "Aplica");
+    console.log("Filtradas pelo risco", filterApply);
+  };
+
+  useEffect(() => {
+    handleFilterGlobalSprm();
   }, [globalSprm])
 
   const find = (item, tipo) => {

@@ -337,7 +337,6 @@ function FrmInventario({
 
         const verificarData = await verificarResponse.json();
 
-        // Se a combinação já existir, continue para a próxima iteração
         if (verificarData.existeCombinação) {
           continue;
         }
@@ -355,7 +354,7 @@ function FrmInventario({
             fk_risco_id: RiscoId,
             fk_medida_id: medidaId,
             tipo_medida: medidaTipo,
-            status: '0',
+            status: 'Não Aplicavel',
           }),
         });
 
@@ -364,7 +363,7 @@ function FrmInventario({
         }
 
         const adicionarData = await adicionarResponse.json();
-        toast.success("Meddias Adicionadas com sucesso!");
+        toast.success("Medidas Adicionadas com sucesso!");
       }
       getGlobalSprm();
     } catch (error) {
