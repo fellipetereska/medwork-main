@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [aparelhos, setAparelhos] = useState([]);
   const [companyId, setCompanyId] = useState('');
   const [user, setUser] = useState([]);
-  const [pdfVersion, setPdfVersion] = useState([]);
+  const [laudoVersion, setLaudoVersion] = useState([]);
   const [conclusoes, setConclusoes] = useState([]);
 
   const handleSetCompanyId = () => {
@@ -408,19 +408,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getPdfVersion = async () => {
+  const getLaudoVersion = async () => {
     try {
-      const response = await fetch(`${connect}/pgr_version`);
+      const response = await fetch(`${connect}/laudo_version`);
 
       if (!response.ok) {
-        throw new Error(`Erro ao buscar PGR. Status: ${response.status}`)
+        throw new Error(`Erro ao buscar laudos. Status: ${response.status}`)
       }
 
       const data = await response.json();
       data.sort((a, b) => a.data_versao < b.data_versao);
-      setPdfVersion(data)
+      setLaudoVersion(data)
     } catch (error) {
-      console.log(`Erro ao buscar Versões do PGR. ${error}`);
+      console.log(`Erro ao buscar Versões do laudo. ${error}`);
     }
   };
 
@@ -572,9 +572,9 @@ export const AuthProvider = ({ children }) => {
         handleSignInUser,
         checkSignIn,
         clearUser,
-        getPdfVersion,
-        setPdfVersion,
-        pdfVersion,
+        getLaudoVersion,
+        setLaudoVersion,
+        laudoVersion,
         getConclusoes,
         setConclusoes,
         conclusoes,

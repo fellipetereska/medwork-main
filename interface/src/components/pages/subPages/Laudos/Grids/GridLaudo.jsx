@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { FaDownload } from "react-icons/fa6";
 import { MdNoteAdd } from "react-icons/md";
 
-function GridPgr({ children, companyId, empresas, handleGenerate, pdf }) {
+function GridLaudo({ children, companyId, empresas, handleGenerate, pdf }) {
 
   const [grid, setGrid] = useState(true);
   const [pdfComponents, setPdfComponents] = useState([]);
@@ -50,16 +50,16 @@ function GridPgr({ children, companyId, empresas, handleGenerate, pdf }) {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-3 text-center">
-              ID
+              Versão
             </th>
             <th scope="col" className="px-6 py-3 text-center">
-              Versão
+              Data
             </th>
             <th scope="col" className="px-6 py-3">
               Empresa
             </th>
             <th scope="col" className="px-6 py-3 text-center">
-              Data
+              Comentário
             </th>
             <th scope="col" className="px-6 py-3 text-center">
               Dowmload
@@ -68,29 +68,27 @@ function GridPgr({ children, companyId, empresas, handleGenerate, pdf }) {
         </thead>
         <tbody>
           {children && children
-            .filter((i) => i.fk_empresa_id === companyId)
-            .sort((a, b) => b.id_versao - a.id_versao)
             .map((item, i) => (
               <tr
                 key={i}
                 className={`border-b bg-white`}
               >
                 <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
-                  {item.id_versao}
+                  {item.versao}
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
-                  {item.versao}
+                  {formatData(item.data)}
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                   {find(item.fk_empresa_id)}
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
-                  {formatData(item.data)}
+                  {item.comentario}
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
                   <div
                     className="flex justify-center items-center text-blue-600 hover:text-blue-800 cursor-pointer"
-                    onClick={() => handleGeneratePdf(item.empresas, item.contatos, item.usuarios, item.setores, item.cargos, item.inventarios, item.planos, item.unidades, item.data, item.versao, i)}
+                    onClick={() => handleGeneratePdf(item.data, item.fk_empresa_id, item.comentario, item.versao, i)}
                   >
                     {pdf && pdfComponents[i] ? (
                       pdf
@@ -107,4 +105,4 @@ function GridPgr({ children, companyId, empresas, handleGenerate, pdf }) {
   );
 }
 
-export default GridPgr;
+export default GridLaudo;

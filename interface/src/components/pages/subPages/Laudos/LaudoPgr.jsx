@@ -5,13 +5,13 @@ import ReactDOM from 'react-dom';
 
 import PgrGenerate from "../components/LaudoGenerate/PgrGenerate";
 import ModalSearchSetor from "../../subPages/components/Modal/ModalSearchSetor";
-import ModalSearchUnidade from "../../subPages/components/Modal/ModalSearchUnidade"
+import ModalSearchUnidade from "../../subPages/components/Modal/ModalSearchUnidade";
 
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { connect } from "../../../../services/api";
-import GridPgr from "./Grids/GridPgr";
+import GridLaudo from "./Grids/GridLaudo";
 import { FaDownload } from "react-icons/fa6";
 import Back from '../../../layout/Back'
 import { Link } from "react-router-dom";
@@ -39,7 +39,7 @@ function LaudoPgr() {
     getContatos, contatos,
     checkSignIn, user,
     getAparelhos, aparelhos,
-    getPdfVersion, pdfVersion,
+    getLaudoVersion, laudoVersion,
   } = useAuth(null);
 
   const [filteredInventario, setFilteredInventario] = useState([]);
@@ -57,7 +57,10 @@ function LaudoPgr() {
   const [nomeUnidade, setNomeUnidade] = useState('');
   const [setorNome, setSetorNome] = useState('');
   const [data, setData] = useState('');
-  const [pdfBlob, setPdfBlob] = useState(null);
+  const [comentario, setComentario] = useState('');
+  const [versao, setVersao] = useState('');
+  const [exists, setExists] = useState(false);
+  const [laudos, setLaudos] = useState([]);
   const [pdfGrid, setPdfGrid] = useState(false);
   const [generatedPdf, setGeneratedPdf] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -85,12 +88,24 @@ function LaudoPgr() {
     getContatos();
     getEmpresas();
     getAparelhos();
-    getPdfVersion();
+    getLaudoVersion();
   };
 
   useEffect(() => {
     handleGet();
   }, [companyId]);
+
+  useEffect(() => {
+    const pdfExists = laudoVersion.filter((i) => i.fk_empresa_id === companyId && i.laudo === 'pgr');
+    setLaudos(pdfExists);
+    if (pdfExists) {
+      setVersao(pdfExists.length + 1);
+      setExists(true);
+    } else {
+      setVersao(1);
+      setExists(false);
+    }
+  }, [laudoVersion]);
 
   useEffect(() => {
     try {
@@ -162,46 +177,45 @@ function LaudoPgr() {
     setSetorNome(null);
   };
 
-  const handleSubmit = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades) => {
-    await getPdfVersion();
-    try {
-      const pdfExists = pdfVersion.filter((i) => i.fk_empresa_id === companyId);
-      let versaoPgr = pdfExists.length + 1 || 1;
-      let pgrId = null;
+  const handleSubmit = async () => {
+    if (!comentario) {
+      toast.warn("Campo comentário em branco!");
+      return;
+    } else {
+      try {
+        const pdfVersionData = {
+          data: data,
+          fk_empresa_id: companyId,
+          laudo: 'pgr',
+          versao: versao,
+          comentario: comentario,
+        }
 
-      const pdfVersionData = {
-        data: data,
-        fk_empresa_id: companyId,
-        unidades: JSON.stringify(filterUnidades),
-        setores: JSON.stringify(filterSetor),
-        cargos: JSON.stringify(filterCargo),
-        inventarios: JSON.stringify(filterInventario),
-        planos: JSON.stringify(filterPlano),
-        contatos: JSON.stringify(filterContato),
-        empresas: JSON.stringify(filterCompany),
-        usuarios: JSON.stringify(user),
-        versao: versaoPgr,
-        id_pgr: pgrId,
+        const response = await fetch(`${connect}/laudo_version`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(pdfVersionData),
+        });
+
+
+        if (!response.ok) {
+          throw new Error(`Erro ao gerar versão do PGR`);
+        };
+
+        toast.success(`PGR Gerado com sucesso, Versão: ${versao}`);
+        getLaudoVersion();
+        setNomeUnidade('');
+        setUnidadeId('');
+        setSetorNome('');
+        setSetorId('');
+        setComentario('');
+      } catch (error) {
+        console.error("Erro ao adicionar versão do pdf!", error)
       }
-
-      const response = await fetch(`${connect}/pgr_version`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(pdfVersionData),
-      });
-
-
-      if (!response.ok) {
-        throw new Error(`Erro ao gerar versão do PGR`);
-      };
-
-      toast.success(`PGR Gerado com sucesso, Versão: ${versaoPgr}`);
-      getPdfVersion();
-    } catch (error) {
-      console.error("Erro ao adicionar versão do pdf!", error)
     }
+
   };
 
   const generatePdf = async (filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, unidades, filterpdf, data, versao) => {
@@ -266,10 +280,10 @@ function LaudoPgr() {
     }
   };
 
-  const handleGenerate = async (companys, contacts, users, sectors, departaments, inventarios, planos, units, date, grid, versao) => {
+  const handleGenerate = async (companys, contacts, users, sectors, departaments, inventarios, planos, units, date, grid, version) => {
     await handleGet();
+    await handleSubmit();
     try {
-
       let filterUnidades;
       let filterSetor;
 
@@ -293,18 +307,16 @@ function LaudoPgr() {
       const filterCargo = cargos.filter((i) => mapSetor.includes(i.fk_setor_id));
       const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
       const filterPlano = plano.filter((i) => i.fk_empresa_id === companyId);
-      const filterpdf = pdfVersion.filter((i) => i.fk_empresa_id === companyId);
-      const filterVersion = filterpdf.length + 1;
+      await getLaudoVersion();
 
       if (grid) {
-        const res = await generatePdf(companys, contacts, users, sectors, departaments, inventarios, planos, units, filterpdf, date, versao);
+        const res = await generatePdf(companys, contacts, users, sectors, departaments, inventarios, planos, units, laudos, date, version);
         handleDownloadPGR(res, grid)
         setGeneratedPdf(res)
       } else {
-        const res = await generatePdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, filterpdf, data, filterVersion);
+        const res = await generatePdf(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, laudos, data, versao);
         handleDownloadPGR(res)
         setGeneratedPdf(res)
-        // handleSubmit(filterCompany, filterContato, user, filterSetor, filterCargo, filterInventario, filterPlano, filterUnidades, data);
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -346,6 +358,10 @@ function LaudoPgr() {
       </PDFViewer>,
       newWindow.document.body
     );
+  };
+
+  const handleComentarioChange = (e) => {
+    setComentario(e.target.value);
   };
 
   useEffect(() => {
@@ -505,6 +521,39 @@ function LaudoPgr() {
               />
             </div>
 
+            {/* Versão */}
+            <div className="w-full md:w-1/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="versao">
+                Versão:
+              </label>
+              <input
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 `}
+                type="text"
+                id="versao"
+                name="versao"
+                value={versao}
+                placeholder="Versão do Laudo"
+                disabled
+              />
+            </div>
+
+            {/* Comentário */}
+            <div className="w-full md:w-11/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="comentario">
+                Comentário:
+              </label>
+              <textarea
+                className={`resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 `}
+                type="text"
+                id="comentario"
+                name="comentario"
+                value={comentario}
+                placeholder="Descreva as atualizações"
+                onChange={handleComentarioChange}
+              />
+            </div>
+
+
           </div>
 
           {/* Botões */}
@@ -539,8 +588,8 @@ function LaudoPgr() {
       )}
 
       {/* Grid */}
-      <GridPgr
-        children={pdfVersion}
+      <GridLaudo
+        children={laudos}
         empresas={empresas}
         handleGenerate={handleGenerate}
         pdf={pdfGrid}

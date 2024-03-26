@@ -8,11 +8,13 @@ import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import LtcatGenerate from "../components/LaudoGenerate/LtcatGenerate";
 import ModalSearchSetor from "../../subPages/components/Modal/ModalSearchSetor";
 import ModalSearchUnidade from "../../subPages/components/Modal/ModalSearchUnidade"
+import GridLaudo from "./Grids/GridLaudo";
 
 import Back from '../../../layout/Back';
 import { IoInformationCircleSharp } from "react-icons/io5";
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
+import { connect } from "../../../../services/api";
 
 function LaudoPgr() {
 
@@ -35,7 +37,7 @@ function LaudoPgr() {
     getContatos, contatos,
     checkSignIn, user,
     getAparelhos, aparelhos,
-    getPdfVersion, pdfVersion,
+    getLaudoVersion, laudoVersion,
   } = useAuth(null);
 
 
@@ -50,11 +52,15 @@ function LaudoPgr() {
   const [nomeUnidade, setNomeUnidade] = useState('');
   const [setorNome, setSetorNome] = useState('');
   const [data, setData] = useState(false);
+  const [comentario, setComentario] = useState('');
+  const [versao, setVersao] = useState('');
 
   // Laudo
   const [pdfComponent, setPdfComponent] = useState(null);
   const [generatedPdf, setGeneratedPdf] = useState(null);
   const [pdfGrid, setPdfGrid] = useState(false);
+  const [laudos, setLaudos] = useState([]);
+  const [exists, setExists] = useState(false);
 
   // Popover
   const [visible, setVisible] = useState(false);
@@ -88,12 +94,26 @@ function LaudoPgr() {
     getContatos();
     getEmpresas();
     getAparelhos();
-    getPdfVersion();
+    getLaudoVersion();
   };
 
   useEffect(() => {
     handleGet();
   }, [companyId]);
+
+  useEffect(() => {
+    if (laudoVersion) {
+      const pdfExists = laudoVersion.filter((i) => i.fk_empresa_id === companyId && i.laudo === 'ltcat');
+      setLaudos(pdfExists);
+      if (pdfExists) {
+        setVersao(pdfExists.length + 1);
+        setExists(true);
+      } else {
+        setVersao(1);
+        setExists(false);
+      }
+    }
+  }, [laudoVersion])
 
   useEffect(() => {
     if (showModalSetor && unidadeId) {
@@ -149,6 +169,8 @@ function LaudoPgr() {
   const handleGenerate = async () => {
     await handleGet();
     try {
+      
+      handleSubmit();
 
       const filterRisco = riscos.filter((i) => i.ltcat_risco === 1);
       const mapRisk = filterRisco.map((i) => i.id_risco);
@@ -240,6 +262,47 @@ function LaudoPgr() {
     })
   };
 
+  const handleSubmit = async () => {
+    await getLaudoVersion();
+
+    if (!comentario) {
+      return toast.warn("Campo comentário em branco!")
+    }
+
+    try {
+      const pdfVersionData = {
+        data: data,
+        fk_empresa_id: companyId,
+        laudo: 'ltcat',
+        versao: versao,
+        comentario: comentario,
+      }
+
+      const response = await fetch(`${connect}/laudo_version`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(pdfVersionData),
+      });
+
+
+      if (!response.ok) {
+        throw new Error(`Erro ao gerar versão do PGR`);
+      };
+
+      toast.success(`PGR Gerado com sucesso, Versão: ${versao}`);
+      getLaudoVersion();
+      setNomeUnidade('');
+      setUnidadeId('');
+      setSetorNome('');
+      setSetorId('');
+      setComentario('');
+    } catch (error) {
+      console.error("Erro ao adicionar versão do pdf!", error)
+    }
+  };
+
 
   // Clear
   const handleClear = () => {
@@ -285,6 +348,10 @@ function LaudoPgr() {
   }, []);
 
   // 
+
+  const handleComentarioChange = (e) => {
+    setComentario(e.target.value);
+  };
 
   return (
     <>
@@ -438,6 +505,38 @@ function LaudoPgr() {
               />
             </div>
 
+            {/* Versão */}
+            <div className="w-full md:w-1/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="versao">
+                Versão:
+              </label>
+              <input
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 `}
+                type="text"
+                id="versao"
+                name="versao"
+                value={versao}
+                placeholder="Versão do Laudo"
+                disabled
+              />
+            </div>
+
+            {/* Comentário */}
+            <div className="w-full md:w-11/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="comentario">
+                Comentário:
+              </label>
+              <textarea
+                className={`resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 `}
+                type="text"
+                id="comentario"
+                name="comentario"
+                value={comentario}
+                placeholder="Descreva as atualizações"
+                onChange={handleComentarioChange}
+              />
+            </div>
+
           </div>
 
           {/* Botões */}
@@ -472,13 +571,13 @@ function LaudoPgr() {
       )}
 
       {/* Grid */}
-      {/* <GridPgr
-        children={pdfVersion}
+      <GridLaudo
+        children={laudos}
         empresas={empresas}
         handleGenerate={handleGenerate}
         pdf={pdfGrid}
         companyId={companyId}
-      /> */}
+      />
 
     </>
   )
