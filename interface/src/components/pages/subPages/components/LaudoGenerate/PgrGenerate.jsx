@@ -667,17 +667,15 @@ function PgrGenerate({
         {/* Versões */}
         <View style={TableStyles.table}>
           <View style={RiskInventoryStyles.headerRow}>
-            <Text style={RiskInventoryStyles.headerCellCenter}>ID</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Versão</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Empresa</Text>
             <Text style={RiskInventoryStyles.headerCellCenter}>Data</Text>
+            <Text style={RiskInventoryStyles.headerCell}>Comentário</Text>
           </View>
           {pdfVersion.map((item, i) => (
             <View key={i} style={RiskInventoryStyles.dataRow}>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{item.id_versao || ''}</Text>
               <Text style={RiskInventoryStyles.dataCellCenter}>{item.versao}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{company.nome_empresa}</Text>
               <Text style={RiskInventoryStyles.dataCellCenter}>{formatData(item.data)}</Text>
+              <Text style={RiskInventoryStyles.dataCell}>{item.comentario}</Text>
             </View>
           ))}
         </View>
