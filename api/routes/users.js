@@ -1922,24 +1922,23 @@ router.get("/global_sprm", (req, res) => {
 // Verifica se a combinação existe na tabela global_sprm
 router.get("/verificar_sprm", async (req, res) => {
   try {
-    const { fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida } = req.query;
+    const { fk_setor_id, fk_processo_id, fk_risco_id, fk_medida_id, tipo_medida } = req.query;
 
-    if (!fk_setor_id || !fk_risco_id || !fk_medida_id || !tipo_medida) {
+    if (!fk_setor_id || !fk_processo_id || !fk_risco_id || !fk_medida_id || !tipo_medida) {
       return res.status(400).json({ error: 'Parâmetros insuficientes' });
     }
 
     // Execute uma consulta SQL para verificar a existência
     const q = `
       SELECT * FROM global_sprm
-      WHERE fk_setor_id = ? AND fk_risco_id = ? AND fk_medida_id = ? AND tipo_medida = ?
+      WHERE fk_setor_id = ? AND fk_processo_id = ? AND fk_risco_id = ? AND fk_medida_id = ? AND tipo_medida = ?
     `;
 
-    pool.query(q, [fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida], (err, data) => {
+    pool.query(q, [fk_setor_id, fk_processo_id, fk_risco_id, fk_medida_id, tipo_medida], (err, data) => {
       if (err) {
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      // Verifique se há uma correspondência
       const existeCombinação = data.length > 0;
 
       return res.status(200).json({ existeCombinação });
