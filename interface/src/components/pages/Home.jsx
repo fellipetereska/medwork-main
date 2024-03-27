@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import GridHome from "./subPages/GridHome";
 import SearchInput from "./subPages/components/SearchInput";
 import { IoInformationCircleSharp } from "react-icons/io5";
+import img from '../media/logo_menu.png'
 
 function Home() {
 
@@ -37,6 +38,7 @@ function Home() {
 
   return (
     <div>
+      {/* Popover */}
       <div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
         <div className="fixed z-50 m-2 -mt-4">
           <div className={`bg-gray-700 rounded-lg px-6 py-2 ${visible ? 'block' : 'hidden'} text-white`}>
@@ -52,22 +54,38 @@ function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 justify-between w-full items-center">
-        <div></div>
-        <div className="w-full">
-          <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
-        </div>
-        <div className="flex justify-end w-3/4">
-          <div onMouseEnter={() => setVisible(true)}>
-            <IoInformationCircleSharp className='text-sky-700' />
+      <div className="my-3">
+        <div className="md:grid md:grid-cols-3 flex justify-center gap-8">
+          <div></div>
+          <div className="flex justify-center items-center gap-4 mb-8">
+            <img src={img} className="w-14" alt="" />
+            <div>
+              <h1 className="text-3xl font-bold text-sky-700">Medwork Londrina</h1>
+              <p className="text-end font-extralight -mt-2">Segurança do Trabalho</p>
+            </div>
+          </div>
+          <div className="flex justify-end md:w-3/4 mt-5">
+            <div onMouseEnter={() => setVisible(true)}>
+              <IoInformationCircleSharp className='text-sky-700' />
+            </div>
           </div>
         </div>
       </div>
 
-      <GridHome
-        empresas={filteredEmpresas}
-        contatos={contatos}
-      />
+      {/* Search */}
+      <div className="flex justify-center">
+        <div className="w-full md:w-2/4 md:px-0 px-10">
+          <p className="text-center text-xl font-semibold text-gray-700 mb-4">Selecione uma empresa</p>
+          <SearchInput onSearch={handleSearch} placeholder="Buscar Empresa..." />
+        </div>
+      </div>
+
+      {searchTerm && (
+        <GridHome
+          empresas={filteredEmpresas}
+          contatos={contatos}
+        />
+      )}
     </div>
   )
 }
