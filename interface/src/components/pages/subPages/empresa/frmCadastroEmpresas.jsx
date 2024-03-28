@@ -175,7 +175,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
   //Funções para formatação do CNPJ
   const handleFormatCnpj = (value) => {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-  }
+  };
 
   const handlePasteCnpj = (event) => {
     const inputCnpj = event.clipboardData.getData('text/plain');
@@ -194,7 +194,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCnpj(formattedCnpj);
     }
-  }
+  };
 
   //Funções para formatação do CNAE
   const handleFormatCnae = (value) => {

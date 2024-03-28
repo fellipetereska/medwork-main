@@ -8,6 +8,9 @@ module.exports = {
       backdropBlur: {
         xs: '1px',
       },
+      backgroundImage: {
+        'logo':"url(/src/components/media/logo_menu.png)",
+      }
     }
   },
   fontFamily: {

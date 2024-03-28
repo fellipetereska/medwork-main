@@ -1835,7 +1835,6 @@ router.put("/inventario/:id_inventario", (req, res) => {
     conclusao_li,
     conclusao_lp,
   } = req.body;
-  console.log(req.body);
 
   const q = `
     UPDATE inventario

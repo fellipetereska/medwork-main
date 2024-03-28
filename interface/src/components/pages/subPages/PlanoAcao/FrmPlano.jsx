@@ -71,7 +71,9 @@ function FrmPlano({
   const openModalProcesso = () => setShowModalProcesso(true);
   const openModalRisco = () => setShowModalRisco(true);
   const openModalMedidas = () => {
-    handleFilterGlobalSprm();
+    const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === riscoId);
+    const filterApply = sprm.filter((c) => c.status && c.status !== "Aplica");
+    setFilterGlobalSprm(filterApply);
     setPlano(true);
     setShowModalMedidas(true)
   };
@@ -103,6 +105,14 @@ function FrmPlano({
       setFilteredSetores(filtered);
     }
   }, [showModalSetor, unidadeId, setores]);
+
+  useEffect(() => {
+    const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === riscoId);
+    console.log(sprm)
+    const filterApply = sprm.filter((c) => c.status && c.status !== "Aplica");
+    console.log(filterApply)
+    setFilterGlobalSprm(filterApply);
+  }, [riscoId])
 
   useEffect(() => {
     const handleEdit = async () => {
@@ -147,9 +157,6 @@ function FrmPlano({
     const nomeResponsavel = arrayResponsavel.nome_contato;
 
     setResponsavel(nomeResponsavel);
-
-    setLoading(false);
-    setLoading(true);
   };
 
   const handleClearUnidade = () => {
@@ -219,10 +226,6 @@ function FrmPlano({
 
 
     await handleRiscoEscolhido(RiscoId, medidasTipos);
-
-    const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === RiscoId);
-    const filterApply = sprm.filter((c) => c.status && c.status !== "Aplica");
-    setFilterGlobalSprm(filterApply);
   };
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
@@ -232,7 +235,6 @@ function FrmPlano({
       }
 
       for (const { medidaId, medidaTipo } of medidasTipos) {
-        console.log(setorId, processoId, RiscoId, medidaId, medidaTipo)
         const verificarResponse = await fetch(
           `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_processo_id=${processoId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
           {
@@ -277,7 +279,6 @@ function FrmPlano({
         const adicionarData = await adicionarResponse.json();
         toast.success("Meddias Adicionadas com sucesso!");
         getGlobalSprm();
-        handleFilterGlobalSprm();
       }
       setLoading(false);
       setLoading(true);
@@ -367,7 +368,6 @@ function FrmPlano({
   const handleFilterGlobalSprm = () => {
     const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === riscoId);
     const filterApply = sprm.filter((c) => c.status && c.status !== "Aplica");
-    console.log("Filtradas pelo risco", filterApply);
   };
 
   useEffect(() => {
@@ -655,7 +655,7 @@ function FrmPlano({
             {/* Medidas de Controle Aplicadas*/}
             <div className="w-full md:w-2/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Medidas Aplicadas:
+                Medidas Não Aplicadas:
               </label>
               {riscoId && filterGlobalSprm.filter((i) => i.status === "Não Aplica").map((item, i) => (
                 <ul key={i}>
