@@ -506,7 +506,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(`selectedCompany_${companyId}_cargosInfo`);
   };
 
-  return (
+  return ( 
     <AuthContext.Provider
       value={{
         handleSelectedCompany,
