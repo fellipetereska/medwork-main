@@ -75,7 +75,7 @@ function CadastroUsuario() {
         <div className="grid grid-cols-3 mb-10 mt-10">
           {/* Botão para voltar */}
           <div className="">
-            <Link to="/cadastros">
+            <Link to="/gestao">
               <Back />
             </Link>
           </div>

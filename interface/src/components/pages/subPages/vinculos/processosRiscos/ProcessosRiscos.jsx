@@ -57,7 +57,10 @@ function SetoresProcessos() {
                 <div className="mb-6">
                   <p>Processo selecionado:</p>
                   <div className="flex gap-2 items-center">
-                    <div className="w-full bg-gray-100 shadow-md rounded-md px-2 justify-center flex py-2 text-sky-700 font-bold text-sm">
+                    <div
+                      className="w-full bg-gray-100 shadow-md rounded-md px-2 justify-center flex py-2 text-sky-700 font-bold text-sm cursor-pointer"
+                      onClick={handleClear}
+                    >
                       <h3>{processoNome}</h3>
                     </div>
                     <IoClose className="text-2xl cursor-pointer" onClick={handleClear} />

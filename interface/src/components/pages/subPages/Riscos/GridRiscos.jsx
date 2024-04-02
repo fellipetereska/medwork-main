@@ -28,6 +28,29 @@ function GridRiscos({ riscos, setOnEdit }) {
     setRiscoId(item.id_risco)
     setRiscoName(item.nome_risco)
     openModal();
+  };
+
+  const filterSeverity = (item) => {
+    try {
+      switch (item) {
+        case 0:
+          return "N/A";
+        case 1:
+          return "Muito Baixa";
+        case 2:
+          return "Baixa";
+        case 3:
+          return "Média";
+        case 4:
+          return "Alta";
+        case 5:
+          return "Muito Alta";
+        default:
+          return "N/A";
+      }
+    } catch (error) {
+      console.error("Erro ao filtrar Severidade", error)
+    }
   }
 
   return (
@@ -87,7 +110,7 @@ function GridRiscos({ riscos, setOnEdit }) {
                   {item.limite_tolerancia_risco} {item.unidade_medida_risco}
                 </td>
                 <td className="px-4 py-4 text-center">
-                  {item.severidade_risco}
+                  {filterSeverity(item.severidade_risco)}
                 </td>
                 <td className="py-4 px-2">
                   <div className="gap-4 flex justify-center items-center">

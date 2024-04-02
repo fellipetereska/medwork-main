@@ -9,7 +9,7 @@ import Gestao from './components/pages/Gestao';
 import Cadastros from './components/pages/Cadastros';
 import Inventario from './components/pages/Inventario';
 import Plano from './components/pages/Plano';
-import Laudos from './components/pages/Laudos'
+import Laudos from './components/pages/Laudos';
 import Empresa from './components/pages/subPages/empresa/Empresa';
 import Unidade from './components/pages/subPages/Unidade/CadastroUnidade';
 import Setor from './components/pages/subPages/setor/CadastroSetor';
@@ -19,9 +19,10 @@ import Usuario from './components/pages/subPages/usuarios/CadastroUsuario';
 import Login from './components/pages/Login';
 import Processos from './components/pages/subPages/Processos/Processos';
 import Riscos from './components/pages/subPages/Riscos/Riscos';
-import Medidas from './components/pages/subPages/CadastroMedidas'
-import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
+import Medidas from './components/pages/subPages/CadastroMedidas';
+import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos';
 import ImportXlsx from './components/pages/subPages/components/ImportXlsx';
+import Elaboradores from './components/pages/subPages/Elaborador/CadastroElaborador';
 import Vinculos from './components/pages/subPages/vinculos/Vinculos';
 import LaudoPgr from './components/pages/subPages/Laudos/LaudoPgr';
 import LaudoLtcat from './components/pages/subPages/Laudos/LaudoLtcat';
@@ -62,6 +63,7 @@ function App() {
           <Route path='/cadastro_risco' element={<PrivateRoute requiredPermission={2}><Riscos /></PrivateRoute>} />
           <Route path='/cadastro_medida' element={<PrivateRoute requiredPermission={2}><Medidas /></PrivateRoute>} />
           <Route path='/cadastro_aparelhos' element={<PrivateRoute requiredPermission={2}><Aparelhos /></PrivateRoute>} />
+          <Route path='/cadastro_elaboradores' element={<PrivateRoute requiredPermission={2}><Elaboradores /></PrivateRoute>} />
           <Route path='/importxlsx' element={<PrivateRoute requiredPermission={1}><ImportXlsx /></PrivateRoute>} />
           <Route path='/vinculos' element={<PrivateRoute requiredPermission={2}><Vinculos /></PrivateRoute>} />
           <Route path='/gerar_pgr' element={<PrivateRoute requiredPermission={2}><LaudoPgr /></PrivateRoute>} />
