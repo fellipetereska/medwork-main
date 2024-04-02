@@ -719,7 +719,7 @@ router.post("/riscos", (req, res) => {
 
 //Update row int table
 router.put("/riscos/:id_risco", (req, res) => {
-  const id_risco = req.params.id_risco; // Obtém o ID da empresa da URL
+  const id_risco = req.params.id_risco;
   const {
     nome_risco,
     grupo_risco,
@@ -782,8 +782,7 @@ router.put("/riscos/:id_risco", (req, res) => {
         console.error("Erro ao atualizar risco na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
-
-      return res.status(200).json("Risco atualizado com sucesso!");
+      return res.status(200).json({ message: `Risco cadastrado com sucesso!` });
     });
 
     con.release();

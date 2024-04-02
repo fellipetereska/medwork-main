@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import BotaoUsuario from "./subPages/buttons/Gestao/BotaoUsuarios";
 import BotaoCadastroAparelho from "./subPages/buttons/Cadastros/BotaoCadastroAparelho";
-import BotaoImportCsv from './subPages/buttons/Gestao/BotaoImportCsv'
+import BotaoImportCsv from './subPages/buttons/Gestao/BotaoImportCsv';
+import BotaoELaborador from './subPages/buttons/Gestao/BotaoElaborador';
 import { useState } from "react";
 
 import { IoInformationCircleSharp } from "react-icons/io5";
@@ -51,6 +52,11 @@ function Gestao() {
                     <figure className="flex flex-col justify-center">
                         <Link to="/importxlsx">
                             <BotaoImportCsv />
+                        </Link>
+                    </figure>
+                    <figure className="flex flex-col justify-center">
+                        <Link to="/cadastro_elaboradores">
+                            <BotaoELaborador />
                         </Link>
                     </figure>
                 </div>

@@ -2,7 +2,7 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
-import { IoInformationCircleSharp } from "react-icons/io5";
+import { IoIosHelpCircle } from "react-icons/io";
 
 import ModarSearchContato from "../components/Modal/ModalSearchContato";
 import icon_lupa from '../../../media/icon_lupa.svg'
@@ -199,7 +199,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
   //Funções para formatação do CNAE
   const handleFormatCnae = (value) => {
     return value.replace(/\D/g, '').replace(/(\d{4})(\d{1})(\d{2})/, '$1-$2/$3');
-  }
+  };
 
   const handlePastCnae = async (event) => {
     await handleCnaeChange(event);
@@ -371,8 +371,8 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
                 </label>
               </div>
               <div className="flex items-center text-sm pt-1">
-                <a href="https://concla.ibge.gov.br/busca-online-cnae.html" target="_blank">
-                  <button type="button"><IoInformationCircleSharp className='text-sky-700' /></button>
+                <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-04-atualizada-2022-2-1.pdf" target="_blank">
+                  <button type="button"><IoIosHelpCircle className='text-sky-700' /></button>
                 </a>
               </div>
             </div>

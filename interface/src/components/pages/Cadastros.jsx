@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import useAuth from '../../hooks/useAuth';
 
 import BotaoEmpresa from "./subPages/buttons/Cadastros/BotaoEmpresa";
 import BotaoUnidade from "./subPages/buttons/Cadastros/BotaoUnidade";
@@ -15,21 +16,11 @@ import { IoInformationCircleSharp } from "react-icons/io5";
 
 function Cadastros() {
 
-  const [companyId, setCompanyId] = useState('');
+  const { loadSelectedCompanyFromLocalStorage, companyId } = useAuth(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Função para recuperar o nome da empresa do localStorage
-    const selectedCompanyName = () => {
-      const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
-
-      if (selectedCompanyDataLocal) {
-        const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
-        setCompanyId(selectedCompanyData.id_empresa);
-      }
-    };
-
-    selectedCompanyName();
+    loadSelectedCompanyFromLocalStorage();
   }, []);
 
   return (
@@ -71,11 +62,13 @@ function Cadastros() {
               <BotaoContato />
             </Link>
           </figure>
-          <figure className="flex flex-col justify-center">
-            <Link to="/cadastro_empresa">
-              <BotaoEmpresa />
-            </Link>
-          </figure>
+          {companyId ? (null) : (
+            <figure className="flex flex-col justify-center">
+              <Link to="/cadastro_empresa">
+                <BotaoEmpresa />
+              </Link>
+            </figure>
+          )}
           {companyId ? (
             <>
               <figure className="flex flex-col justify-center">
