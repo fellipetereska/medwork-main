@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { connect } from "../../../../services/api";
+import { toast } from "react-toastify";
 
-function FrmElaboador({ onEdit, setOnEdit }) {
+function FrmElaboador({ onEdit, setOnEdit, getTable }) {
 
   const ref = useRef(null);
   const [nome, setNome] = useState('');
@@ -11,21 +13,69 @@ function FrmElaboador({ onEdit, setOnEdit }) {
   const [registro, setRegistro] = useState('');
   const [emailError, setEmailError] = useState(false);
 
-
   useEffect(() => {
-
-  }, []);
-
-  useEffect(() => {
-
+    if (onEdit) {
+      if (onEdit.nome_elaborador) setNome(onEdit.nome_elaborador);
+      if (onEdit.cpf_elaborador) setCpf(onEdit.cpf_elaborador);
+      if (onEdit.email_elaborador) setEmail(onEdit.email_elaborador);
+      if (onEdit.telefone_elaborador) setTelefone(onEdit.telefone_elaborador);
+      if (onEdit.cargo_elaborador) setCargo(onEdit.cargo_elaborador);
+      if (onEdit.registro_elaborador) setRegistro(onEdit.registro_elaborador);
+    }
   }, [onEdit])
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
 
+      if (!nome || !cpf || !email || !telefone || !cargo || !registro) {
+        return toast.warn("Preencha todos os campos!");
+      }
+
+      const values = {
+        nome_elaborador: nome,
+        cpf_elaborador: cpf,
+        email_elaborador: email,
+        telefone_elaborador: telefone,
+        cargo_elaborador: cargo,
+        registro_elaborador: registro,
+      };
+
+      const url = onEdit
+        ? `${connect}/elaboradores/${onEdit.id_elaborador}?idFieldName=id_elaborador`
+        : `${connect}/elaboradores`;
+
+      const method = onEdit ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!res.ok) throw new Error(`Erro ao registrar elaborador!`)
+
+      const response = await res.json();
+      toast.success(response);
+    } catch (error) {
+      console.error(`Erro ao criar o registro do Elaborador: `, error)
+    }
+
+    handleClear();
+    await getTable();
   };
 
   const handleClear = () => {
-
+    setNome('');
+    setCpf('');
+    setEmail('');
+    setTelefone('');
+    setCargo('');
+    setRegistro('');
+    setEmailError(false);
+    setOnEdit(null);
   };
 
   const handleChangeCPF = (e) => {
@@ -67,7 +117,7 @@ function FrmElaboador({ onEdit, setOnEdit }) {
   const handlePhoneChange = (e) => {
     const data = e.target.value;
     const dataNum = data.replace(/\D/g, '');
-    const truncateData = dataNum.slice(0, 14);
+    const truncateData = dataNum.slice(0, 11);
     const phone = handlePhoneFormat(truncateData);
     setTelefone(phone);
   };
@@ -107,6 +157,10 @@ function FrmElaboador({ onEdit, setOnEdit }) {
     }
   };
 
+  const handleChangeNome = (e) => {
+    setNome(e.target.value)
+  };
+
   return (
     <>
       <div className="flex justify-center mt-10">
@@ -125,7 +179,7 @@ function FrmElaboador({ onEdit, setOnEdit }) {
                 name="nome_elaborador"
                 placeholder="Nome do Elaborador"
                 value={nome}
-                onChange={(e) => setNome(e)}
+                onChange={handleChangeNome}
               />
             </div>
 
@@ -179,6 +233,7 @@ function FrmElaboador({ onEdit, setOnEdit }) {
                 placeholder="Telefone do Elaborador"
                 onChange={handlePhoneChange}
                 value={telefone}
+                max={11}
               />
             </div>
 

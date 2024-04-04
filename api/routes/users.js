@@ -1879,8 +1879,6 @@ router.put("/inventario/:id_inventario", (req, res) => {
     id_inventario,
   ];
 
-  console.log(values)
-
   pool.getConnection((err, con) => {
     con.release();
 
@@ -1993,6 +1991,85 @@ router.put("/global_sprm/:id_global_sprm", (req, res) => {
       }
 
       return res.status(200).json("Medida atualizada com sucesso!");
+    });
+  })
+});
+
+
+
+// Generic Function
+router.route('/:table')
+  // Obter Registros
+  .get(async (req, res) => {
+    const table = req.params.table;
+    const q = `SELECT * FROM ${table}`;
+
+    pool.getConnection((err, con) => {
+      if (err) return next(err);
+
+      con.query(q, (err, data) => {
+        if (err) {
+          console.error(`Erro ao buscar tabela: ${table}. Status: ${err}`)
+          return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+        }
+
+        return res.status(200).json(data);
+      })
+    })
+  })
+  // Criar Registros
+  .post(async (req, res) => {
+    const table = req.params.table;
+    const data = req.body;
+
+    const q = `INSERT INTO ${table} SET ?`
+
+    pool.getConnection((err, con) => {
+      if (err) return next(err);
+
+      con.query(q, data, (err, result) => {
+        if (err) {
+          console.error(`Erro ao registrar dado na tabela ${table}. Status: ${err}`);
+          return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+        }
+
+        return res.status(200).json(`Registro concluido com sucesso!`)
+      });
+
+      con.release();
+    })
+  })
+
+router.put("/:table/:id", (req, res) => {
+  const table = req.params.table;
+  const idName = req.query.idFieldName || 'id';
+  const id = req.params.id;
+
+  const columns = Object.keys(req.body);
+  const values = Object.values(req.body);
+
+  const setClause = columns.map(column => `${column} = ?`).join(', ');
+
+  const q = `
+      UPDATE ${table}
+      SET ${setClause}
+      WHERE ${idName} = ?
+    `;
+
+  const finalValues = [...values, id];
+
+  pool.getConnection((err, con) => {
+    con.release();
+
+    if (err) return next(err);
+
+    con.query(q, finalValues, (err) => {
+      if (err) {
+        console.error(`Erro ao atualizar registro na tabela ${table}:`, err);
+        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+      }
+
+      return res.status(200).json(`${table} atualizado com sucesso!`);
     });
   })
 });

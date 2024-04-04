@@ -209,7 +209,7 @@ function FrmPlano({
     setProcessoNome(null);
     handleClearRisco();
     setFilteredRiscos([]);
-  }
+  };
 
   // Função para atualizar o Risco
   const handleRiscoSelect = async (RiscoId, RiscoNome) => {
