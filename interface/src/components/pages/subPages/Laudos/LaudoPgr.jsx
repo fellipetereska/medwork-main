@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import PgrGenerate from "../components/LaudoGenerate/PgrGenerate";
 import ModalSearchSetor from "../../subPages/components/Modal/ModalSearchSetor";
 import ModalSearchUnidade from "../../subPages/components/Modal/ModalSearchUnidade";
+import ModalSearchElaborador from "../components/Modal/ModalSearchElaborador";
 
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
@@ -40,30 +41,39 @@ function LaudoPgr() {
     checkSignIn, user,
     getAparelhos, aparelhos,
     getLaudoVersion, laudoVersion,
+    getTable,
   } = useAuth(null);
 
   const [filteredInventario, setFilteredInventario] = useState([]);
   const [filteredPlano, setFilteredPlano] = useState([]);
   const [filteredSetores, setFilteredSetores] = useState([]);
   const [filteredUnidade, setFilteredUnidades] = useState([]);
-  const [pdfComponent, setPdfComponent] = useState(null);
+  const [laudos, setLaudos] = useState([]);
+  const [elaboradores, setElaboradores] = useState([]);
+  const [filteredElaborador, setFilteredElaborador] = useState([]);
 
   const [showModalUnidade, setShowModalUnidade] = useState(false);
   const [showModalSetor, setShowModalSetor] = useState(false);
+  const [showModalElaborador, setShowModalElaborador] = useState(false);
+  const [exists, setExists] = useState(false);
+  const [pdfGrid, setPdfGrid] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-  const [nameCompany, setNameCompany] = useState(null);
+  const [nameCompany, setNameCompany] = useState('');
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
+  const [elaboradorId, setElaboradorId] = useState('');
   const [nomeUnidade, setNomeUnidade] = useState('');
   const [setorNome, setSetorNome] = useState('');
+  const [elaboradorNome, setElaboradorNome] = useState('');
   const [data, setData] = useState('');
   const [comentario, setComentario] = useState('');
   const [versao, setVersao] = useState('');
-  const [exists, setExists] = useState(false);
-  const [laudos, setLaudos] = useState([]);
-  const [pdfGrid, setPdfGrid] = useState(false);
+
   const [generatedPdf, setGeneratedPdf] = useState(null);
-  const [visible, setVisible] = useState(false);
+  const [pdfComponent, setPdfComponent] = useState(null);
+
+
 
   useEffect(() => {
     loadSelectedCompanyFromLocalStorage();
@@ -89,6 +99,8 @@ function LaudoPgr() {
     getEmpresas();
     getAparelhos();
     getLaudoVersion();
+    const authors = await getTable('elaboradores');
+    setElaboradores(authors);
   };
 
   useEffect(() => {
@@ -134,48 +146,11 @@ function LaudoPgr() {
   //Função para abrir o Modal
   const openModalUnidade = () => setShowModalUnidade(true);
   const openModalSetor = () => setShowModalSetor(true);
+  const openModalElaborador = () => setShowModalElaborador(true);
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
-
-  // Função para atualizar a Unidade
-  const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
-    closeModalUnidade();
-    setUnidadeId(unidadeId)
-    setNomeUnidade(nomeUnidade)
-    handleClearSetor();
-    const inventarioFilter = inventario.filter((i) => i.fk_unidade_id === unidadeId);
-    setFilteredInventario(inventarioFilter);
-    const planoFilter = plano.filter((i) => i.fk_unidade_id === unidadeId);
-    setFilteredPlano(planoFilter);
-    const unidadesFilter = unidades.filter((i) => i.id_unidade === unidadeId);
-    setFilteredUnidades(unidadesFilter);
-  };
-
-  const handleClearUnidade = () => {
-    setUnidadeId(null);
-    setNomeUnidade(null);
-    handleClearSetor();
-    setFilteredSetores([]);
-  };
-
-  const handleSetorSelect = (SetorId, SetorName) => {
-    closeModalSetor();
-    setSetorId(SetorId);
-    setSetorNome(SetorName);
-
-    const inventarioFilter = inventario.filter((i) => i.fk_setor_id === setorId);
-    setFilteredInventario(inventarioFilter);
-    const planoFilter = plano.filter((i) => i.fk_setor_id === setorId);
-    setFilteredPlano(planoFilter);
-    const setorFilter = setores.filter((i) => i.id_setor === SetorId);
-    setFilteredSetores(setorFilter);
-  };
-
-  const handleClearSetor = () => {
-    setSetorId(null);
-    setSetorNome(null);
-  };
+  const closeModalElaborador = () => setShowModalElaborador(false);
 
   const handleSubmit = async () => {
     if (!comentario) {
@@ -238,6 +213,7 @@ function LaudoPgr() {
         data={data}
         versao={versao}
         pdfVersion={filterpdf}
+        elaborador={filteredElaborador}
       />
     );
   };
@@ -282,7 +258,7 @@ function LaudoPgr() {
 
   const handleGenerate = async (companys, contacts, users, sectors, departaments, inventarios, planos, units, date, grid, version) => {
     await handleGet();
-    await handleSubmit();
+    // await handleSubmit();
     try {
       let filterUnidades;
       let filterSetor;
@@ -329,6 +305,12 @@ function LaudoPgr() {
   const handleClear = () => {
     setPdfComponent(null);
     setPdfGrid(null);
+    setData(obterDataFormatada());
+    setVersao(versao);
+    setComentario('');
+    handleClearUnidade();
+    handleClearSetor();
+    handleClearElaborador();
     window.location.reload();
   };
 
@@ -369,6 +351,59 @@ function LaudoPgr() {
       setData(dataFormatada);
     });
   }, []);
+
+  // Função para atualizar a Unidade
+  const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
+    closeModalUnidade();
+    setUnidadeId(unidadeId)
+    setNomeUnidade(nomeUnidade)
+    handleClearSetor();
+    const inventarioFilter = inventario.filter((i) => i.fk_unidade_id === unidadeId);
+    setFilteredInventario(inventarioFilter);
+    const planoFilter = plano.filter((i) => i.fk_unidade_id === unidadeId);
+    setFilteredPlano(planoFilter);
+    const unidadesFilter = unidades.filter((i) => i.id_unidade === unidadeId);
+    setFilteredUnidades(unidadesFilter);
+  };
+
+  const handleClearUnidade = () => {
+    setUnidadeId(null);
+    setNomeUnidade(null);
+    handleClearSetor();
+    setFilteredSetores([]);
+  };
+
+  const handleSetorSelect = (SetorId, SetorName) => {
+    closeModalSetor();
+    setSetorId(SetorId);
+    setSetorNome(SetorName);
+
+    const inventarioFilter = inventario.filter((i) => i.fk_setor_id === setorId);
+    setFilteredInventario(inventarioFilter);
+    const planoFilter = plano.filter((i) => i.fk_setor_id === setorId);
+    setFilteredPlano(planoFilter);
+    const setorFilter = setores.filter((i) => i.id_setor === SetorId);
+    setFilteredSetores(setorFilter);
+  };
+
+  const handleClearSetor = () => {
+    setSetorId(null);
+    setSetorNome(null);
+  };
+
+  const handleElaboradorSelect = (authorsId, authorsName) => {
+    setElaboradorId(authorsId);
+    setElaboradorNome(authorsName);
+
+    const filter = elaboradores.find((i) => i.id_elaborador === authorsId);
+    setFilteredElaborador(filter);
+    closeModalElaborador();
+  }
+
+  const handleClearElaborador = () => {
+    setElaboradorId('');
+    setElaboradorNome('');
+  }
 
   return (
     <>
@@ -521,6 +556,53 @@ function LaudoPgr() {
               />
             </div>
 
+            {/* ELaborador */}
+            <div className="w-full md:w-4/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="elaborador">
+                Elaborador:
+              </label>
+              <div className="flex items-center w-full" id="elaborador">
+                {elaboradorId ? (
+                  <>
+                    <button
+                      className="flex w-full appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      onClick={openModalElaborador}
+                    >
+                      <p className="font-bold w-full">
+                        {elaboradorNome}
+                      </p>
+                    </button>
+                    <button className="ml-4 cursor-pointer" onClick={handleClearElaborador}>
+                      <img src={icon_sair} alt="" className="h-9" />
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    onClick={openModalElaborador}
+                  >
+                    <p className="px-2 text-sm font-medium w-full">
+                      Nenhum Elaborador Selecionado
+                    </p>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={openModalElaborador}
+                  className={`flex cursor-pointer ml-4`}
+                >
+                  <img src={icon_lupa} className="h-9 cursor-pointer" alt="Icone adicionar elaborador"></img>
+                </button>
+              </div>
+              <ModalSearchElaborador
+                isOpen={showModalElaborador}
+                onCancel={closeModalElaborador}
+                children={elaboradores}
+                onSelect={handleElaboradorSelect}
+              />
+            </div>
+
             {/* Versão */}
             <div className="w-full md:w-1/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="versao">
@@ -538,7 +620,7 @@ function LaudoPgr() {
             </div>
 
             {/* Comentário */}
-            <div className="w-full md:w-11/12 px-3">
+            <div className="w-full md:w-7/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="comentario">
                 Comentário:
               </label>
