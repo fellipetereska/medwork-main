@@ -39,6 +39,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getTable = async (table) => {
+    try {
+      const res = await fetch(`${connect}/${table}`, {
+        method: 'GET',
+      });
+
+      if (!res.ok) {
+        throw new Error(`Erro ao buscar tabela. Status: ${res.status}`)
+      }
+
+      return res.json();
+    } catch (error) {
+      console.error(`Erro ao buscar tabela. Status: ${error}`);
+    }
+  }
+
   const getEmpresas = async () => {
     try {
       const response = await fetch(`${connect}/empresas`);
@@ -506,7 +522,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(`selectedCompany_${companyId}_cargosInfo`);
   };
 
-  return ( 
+  return (
     <AuthContext.Provider
       value={{
         handleSelectedCompany,
@@ -578,6 +594,7 @@ export const AuthProvider = ({ children }) => {
         getConclusoes,
         setConclusoes,
         conclusoes,
+        getTable,
       }}>
       {children}
     </AuthContext.Provider>

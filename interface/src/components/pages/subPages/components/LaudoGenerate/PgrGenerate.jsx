@@ -6,12 +6,16 @@ import OpenSansMedium from '../../../../media/fonts/OpenSans-Medium.ttf';
 import OpenSansSemiBold from '../../../../media/fonts/OpenSans-SemiBold.ttf';
 import OpenSansBold from '../../../../media/fonts/OpenSans-Bold.ttf';
 import OpenSansExtraBold from '../../../../media/fonts/OpenSans-ExtraBold.ttf';
+import { FaPhoneAlt } from "react-icons/fa";
+import { IoMail } from "react-icons/io5";
+import { FaAddressCard } from "react-icons/fa";
+
 
 function PgrGenerate({
   inventario, plano,
   company, unidades, setores, cargos, contatos,
   processos, riscos, medidasAdm, medidasEpi, medidasEpc,
-  user, aparelhos, data, versao, pdfVersion,
+  user, aparelhos, data, versao, pdfVersion, elaborador,
 }) {
 
   const findSetor = (item) => {
@@ -264,6 +268,27 @@ function PgrGenerate({
     }
   };
 
+  const findRegisterName = (item) => {
+    try {
+      switch (item) {
+        case 'Engenheiro':
+          return 'CREA'
+        case 'Médico':
+          return 'CRM'
+        case 'Técnico':
+          return 'Registro'
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error(`Erro ao filtrar registro ${error}`)
+    }
+  };
+
+  const getFirstLetter = (item) => {
+    return item.charAt(0);
+  }
+
 
   Font.register({ family: 'OpenSansLight', src: OpenSansLight });
   Font.register({ family: 'OpenSansRegular', src: OpenSansRegular });
@@ -406,6 +431,7 @@ function PgrGenerate({
       fontSize: 12,
       color: '#f8f9fa',
       fontFamily: 'OpenSansBold',
+      textAlign: 'center',
     },
 
     footerText: {
@@ -434,6 +460,28 @@ function PgrGenerate({
       textTransform: 'none',
       marginBottom: 10,
       fontFamily: 'OpenSansRegular',
+    },
+
+    tableContentText: {
+      flexWrap: 'wrap',
+      fontFamily: 'OpenSansRegular',
+      fontSize: 8,
+    },
+
+    tableContentSubText: {
+      fontFamily: 'OpenSansLight',
+      fontSize: 6,
+      color: '#6c757d',
+    },
+
+    legend: {
+      fontFamily: 'OpenSansLight',
+      fontSize: 7,
+    },
+
+    legendBold: {
+      fontFamily: 'OpenSansMedium',
+      fontSize: 7,
     },
   });
 
@@ -491,15 +539,13 @@ function PgrGenerate({
     },
 
     headerCell: {
-      paddingHorizontal: 10,
-      paddingVertical: 10,
+      padding: 5,
       backgroundColor: '#0077b6',
       width: '100%',
     },
 
     headerTable: {
-      paddingHorizontal: 10,
-      paddingVertical: 10,
+      padding: 2,
       backgroundColor: '#0077b6',
       width: '100%',
       flexDirection: 'row',
@@ -552,6 +598,34 @@ function PgrGenerate({
       paddingHorizontal: 10,
       paddingVertical: 5,
       width: '15%',
+    },
+
+    contentTable: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 2,
+    },
+
+    contentCell: {
+      width: '100%',
+    },
+
+    contentColumm: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
+
+    contentRiskTable: {
+      flexDirection: 'row',
+    },
+
+    contentRiskCell: {
+      border: '0.3 solid #333333',
+      height: '100%',
+      justifyContent: 'center',
+      paddingHorizontal: 5,
+      paddingVertical: 2,
     },
 
   });
@@ -706,14 +780,14 @@ function PgrGenerate({
       },
 
       headerSignatureCell: {
-        width: '50%',
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
       },
 
       signatureLine: {
-        height: '20%',
-        borderBottom: '1 solida #343a40'
+        paddingTop: 50,
+        borderBottom: '1 solid #343a40'
       },
 
     });
@@ -755,45 +829,84 @@ function PgrGenerate({
 
         {/* Signature Table */}
         <View style={ContainerStyles.signatureContainer}>
+          <Text style={[TextStyles.subTitleSumary, { textAlign: 'center' }]}>Assinaturas</Text>
           <Text style={TextStyles.SignatureDate}>Londrina, {formatData(data)}</Text>
 
           {/* Assinatura do Técnico */}
-          <View style={TableStyles.table}>
-            <View style={CompanyStyles.headerSignatureContentCell}>
-              <View style={CompanyStyles.headerSignatureCell}>
-                <Text style={TextStyles.valueTextSignatureTitle}>Elaborador</Text>
+          <View style={{ width: '100%', flexDirection: 'row' }}>
+            {/* Elaborador */}
+            <View style={[TableStyles.table, { width: '50%', justifyContent: 'center', alignItems: 'center', paddingRight: 10 }]}>
+              <View style={CompanyStyles.headerSignatureContentCell}>
+                <View style={CompanyStyles.headerSignatureCell}>
+                  <Text style={[TextStyles.valueTextSignatureTitle, { textAlign: 'center' }]}>Elaborador</Text>
+                </View>
               </View>
-              <View style={CompanyStyles.headerSignatureCell}>
-                <Text style={TextStyles.valueTextSignatureTitle}>Assinatura</Text>
-              </View>
-            </View>
-            <View style={TableStyles.tableRow}>
-              <View style={CompanyStyles.officeFiftyRow}>
-                <Text style={TextStyles.officeText}>{user.nome_usuario}</Text>
-              </View>
-              <View style={TableStyles.fiftyRow}>
-                <View style={CompanyStyles.signatureLine}></View>
-              </View>
-            </View>
-          </View>
+              <View style={[TableStyles.contentTable, { width: '100%' }]}>
+                {/* Linha de Assinatura */}
+                <View style={[TableStyles.contentCell, { width: '100%' }]}>
+                  <Text style={TextStyles.tableContentSubText}>Assinatura:</Text>
+                  <View style={CompanyStyles.signatureLine}></View>
+                </View>
+                <View style={[TableStyles.contentCell, { width: '100%' }]}>
+                  {/* Nome e Registro */}
+                  <View style={[TableStyles.contentColumm, { width: '100%' }]}>
+                    <View style={[TableStyles.contentCell, { width: '75%' }]}>
+                      <Text style={[TextStyles.tableContentText, { fontFamily: 'OpenSansBold', fontSize: 10 }]}>{elaborador.nome_elaborador}</Text>
+                    </View>
+                    <View style={[TableStyles.contentCell, { width: '25%' }]}>
+                      <Text style={[TextStyles.tableContentSubText, { textAlign: 'left' }]}>{findRegisterName(elaborador.cargo_elaborador)}:</Text>
+                      <Text style={[TextStyles.tableContentText, { textAlign: 'right' }]}>{elaborador.registro_elaborador}</Text>
+                    </View>
+                  </View>
+                  {/* Email e Telefone */}
+                  <View style={[TableStyles.contentColumm, { width: '100%' }]}>
+                    <View style={[TableStyles.contentCell, { width: '75%' }]}>
+                      <Text style={[TextStyles.tableContentSubText, { textAlign: 'left' }]}>Email:</Text>
+                      <Text style={[TextStyles.tableContentText, { textAlign: 'left' }]}>{elaborador.email_elaborador}</Text>
+                    </View>
+                    <View style={[TableStyles.contentCell, { width: '25%' }]}>
+                      <Text style={[TextStyles.tableContentSubText, { textAlign: 'left' }]}>Telefone:</Text>
+                      <Text style={[TextStyles.tableContentText, { textAlign: 'right' }]}>{elaborador.telefone_elaborador}</Text>
+                    </View>
+                  </View>
 
-          {/* Signature Table */}
-          <View style={TableStyles.table}>
-            <View style={CompanyStyles.headerSignatureContentCell}>
-              <View style={CompanyStyles.headerSignatureCell}>
-                <Text style={TextStyles.valueTextSignatureTitle}>Responsável</Text>
-              </View>
-              <View style={CompanyStyles.headerSignatureCell}>
-                <Text style={TextStyles.valueTextSignatureTitle}>Assinatura</Text>
+                </View>
               </View>
             </View>
-            <View style={TableStyles.tableRow}>
-              <View style={CompanyStyles.officeFiftyRow}>
-                <Text style={TextStyles.officeText}>{contatos.nome_contato}</Text>
-                <Text style={TextStyles.officeSmallText}>{contatos.email_contato}</Text>
+
+            {/* Responsável */}
+            <View style={[TableStyles.table, { width: '50%', justifyContent: 'center', alignItems: 'center', paddingLeft: 10 }]}>
+              <View style={CompanyStyles.headerSignatureContentCell}>
+                <View style={CompanyStyles.headerSignatureCell}>
+                  <Text style={[TextStyles.valueTextSignatureTitle, { textAlign: 'center' }]}>Responsável</Text>
+                </View>
               </View>
-              <View style={TableStyles.fiftyRow}>
-                <View style={CompanyStyles.signatureLine}></View>
+              <View style={[TableStyles.contentTable, { width: '100%' }]}>
+                {/* Linha de Assinatura */}
+                <View style={[TableStyles.contentCell, { width: '100%' }]}>
+                  <Text style={TextStyles.tableContentSubText}>Assinatura:</Text>
+                  <View style={CompanyStyles.signatureLine}></View>
+                </View>
+                <View style={[TableStyles.contentCell, { width: '100%' }]}>
+                  {/* Nome e Registro */}
+                  <View style={[TableStyles.contentColumm, { width: '100%' }]}>
+                    <View style={[TableStyles.contentCell, { width: '75%' }]}>
+                      <Text style={[TextStyles.tableContentText, { fontFamily: 'OpenSansBold', fontSize: 10 }]}>{contatos.nome_contato}</Text>
+                    </View>
+                    <View style={[TableStyles.contentCell, { width: '25%' }]}>
+                      <Text style={[TextStyles.tableContentSubText, { textAlign: 'left' }]}>Telefone:</Text>
+                      <Text style={[TextStyles.tableContentText, { textAlign: 'right' }]}>{contatos.telefone_contato}</Text>
+                    </View>
+                  </View>
+                  {/* Email e Telefone */}
+                  <View style={[TableStyles.contentColumm, { width: '100%' }]}>
+                    <View style={[TableStyles.contentCell, { width: '100%' }]}>
+                      <Text style={[TextStyles.tableContentSubText, { textAlign: 'left' }]}>Email:</Text>
+                      <Text style={[TextStyles.tableContentText, { textAlign: 'left' }]}>{contatos.email_contato}</Text>
+                    </View>
+                  </View>
+
+                </View>
               </View>
             </View>
           </View>
@@ -3886,6 +3999,13 @@ function PgrGenerate({
         alignItems: 'center',
       },
 
+      contentText: {
+        fontFamily: 'OpenSansRegular',
+        fontSize: 6,
+        wordWrap: 'break-word',
+        overflow: 'hidden',
+        whiteSpace: 'pre',
+      },
     });
 
     return (
@@ -3900,63 +4020,184 @@ function PgrGenerate({
         {/* Tabela do Inventário */}
         <View style={TableStyles.table}>
           {/* Header */}
-          <View style={RiskInventoryStyles.headerRow}>
-            <Text style={RiskInventoryStyles.headerCellCenter}>ID</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Data</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Unidade</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Setor</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Processo</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Risco</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Tipo</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Consequência</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Fontes</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Pessoas Expostas</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Avaliação</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Frequência</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Medição</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Aparelho</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Limite de Tolerância</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Metodologia</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Medidas</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Probabilidade</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Severidade</Text>
-            <Text style={RiskInventoryStyles.headerCellCenter}>Nível</Text>
-            <Text style={RiskInventoryStyles.headerCell}>Comentários</Text>
+          <View style={[TableStyles.headerTable, { justifyContent: 'center', alignItems: 'center', }]} fixed>
+            <View style={[TableStyles.headerCell, { width: ' 8%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Data</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 8%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Unidade</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Setor</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Processo</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Risco</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Tipo</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 12%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Consequência</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Fontes</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>PE</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Avaliação</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Freq</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Medição</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Aparelho</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>LT</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Metodologia</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Medidas</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>P</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>S</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 5%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>N</Text>
+            </View>
+            <View style={[TableStyles.headerCell, { width: ' 10%' }]}>
+              <Text style={[{ fontFamily: 'OpenSansBold', fontSize: 6, color: '#ffffff', textAlign: 'center' }]}>Comentários</Text>
+            </View>
           </View>
           {/* Body */}
           {inventario.map((item, i) => (
-            <View key={i} style={RiskInventoryStyles.dataRow}>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{item.id_inventario || ''}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{formatData(item.data_inventario) || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_unidade_id, 'nome_unidade')}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_setor_id, 'nome_setor')}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_processo_id, 'nome_processo')}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_risco_id, 'nome_risco') || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{find(item.fk_risco_id, 'grupo_risco') || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_risco_id, 'consequencia') || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{item.fontes || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{item.pessoas_expostas || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{find(item.fk_risco_id, 'avaliacao') || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{item.frequencia || '0'}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{item.medicao + " " + find(item.fk_risco_id, 'unidade_medida') || '0'}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_aparelho_id, 'nome_aparelho') || 'N/A'}</Text>
-              <Text style={RiskInventoryStyles.dataCellCenter}>{find(item.fk_risco_id, 'limite_tolerancia') + " " + find(item.fk_risco_id, 'unidade_medida') || '0'}</Text>
-              <Text style={RiskInventoryStyles.dataCell}>{find(item.fk_risco_id, 'metodologia') || 'N/A'}</Text>
-              <View style={RiskInventoryStyles.dataCell}>
-                <Text>{convertMedidas(item.medidas) || 'N/A'}</Text>
+            <View key={i} style={TableStyles.contentRiskTable} wrap={false}>
+              <View style={[TableStyles.contentRiskCell, { width: '8%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
+                  {formatData(item.data_inventario) || 'N/A'}
+                </Text>
               </View>
-              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(item.probabilidade) }}>
-                <Text>{convertProbSev(item.probabilidade) || 'N/A'}</Text>
+              <View style={[TableStyles.contentRiskCell, { width: '8%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_unidade_id, 'nome_unidade')}
+                </Text>
               </View>
-              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColor(find(item.fk_risco_id, 'severidade')) }}>
-                <Text>{convertProbSev(find(item.fk_risco_id, 'severidade')) || 'N/A'}</Text>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_setor_id, 'nome_setor')}
+                </Text>
               </View>
-              <View style={{ ...RiskInventoryStyles.dataCellColor, backgroundColor: getColorNivel(item.nivel) }}>
-                <Text>{convertNivel(item.nivel) || 'N/A'}</Text>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_processo_id, 'nome_processo')}
+                </Text>
               </View>
-              <Text style={RiskInventoryStyles.dataCell}>{item.comentarios || ''}</Text>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_risco_id, 'nome_risco') || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
+                  {getFirstLetter(find(item.fk_risco_id, 'grupo_risco')) || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '12%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_risco_id, 'consequencia') || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {item.fontes || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
+                  {item.pessoas_expostas || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
+                  {find(item.fk_risco_id, 'avaliacao') || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {item.frequencia || '0'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
+                  {item.medicao + " " + find(item.fk_risco_id, 'unidade_medida') || '0'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_aparelho_id, 'nome_aparelho') || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'center', }]}>
+                  {find(item.fk_risco_id, 'limite_tolerancia') + " " + find(item.fk_risco_id, 'unidade_medida') || '0'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_risco_id, 'metodologia') || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {convertMedidas(item.medidas) || 'N/A'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%', backgroundColor: getColor(item.probabilidade) }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {item.probabilidade || '-'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%', backgroundColor: getColor(find(item.fk_risco_id, 'severidade')) }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {find(item.fk_risco_id, 'severidade') || '-'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '5%', backgroundColor: getColorNivel(item.nivel) }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {item.nivel || '-'}
+                </Text>
+              </View>
+              <View style={[TableStyles.contentRiskCell, { width: '10%' }]}>
+                <Text style={[RiskInventoryStyles.contentText, { textAlign: 'left', }]}>
+                  {item.comentarios || '-'}
+                </Text>
+              </View>
             </View>
           ))}
+        </View>
+        {/* Legenda */}
+        <View style={{ textAlign: 'right', paddingRight: 5 }}>
+          <Text style={TextStyles.legend}>
+            <Text style={TextStyles.legendBold}>PE:</Text> Pessoas Expostas -
+            <Text style={TextStyles.legendBold}> Freq:</Text> Frequência -
+            <Text style={TextStyles.legendBold}> LT</Text> Limite de Tolerância -
+            <Text style={TextStyles.legendBold}> P:</Text> Probabilidade -
+            <Text style={TextStyles.legendBold}> S:</Text> Severidade -
+            <Text style={TextStyles.legendBold}> N:</Text> Nível
+          </Text>
         </View>
 
         {/* Footer */}
