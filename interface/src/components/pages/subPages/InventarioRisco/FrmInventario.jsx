@@ -322,7 +322,7 @@ function FrmInventario({
       }
       for (const { medidaId, medidaTipo } of medidasTipos) {
         const verificarResponse = await fetch(
-          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
+          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_processo_id=${processoId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
           {
             method: 'GET',
             headers: {
