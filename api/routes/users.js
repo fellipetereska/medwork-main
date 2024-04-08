@@ -2,8 +2,6 @@ import express from "express";
 import { pool } from "../db.js";
 import jwt from "jsonwebtoken";
 
-console.log(pool)
-
 const router = express.Router();
 
 const SECRET = 'medworkldn'
