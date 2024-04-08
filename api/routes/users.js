@@ -1,8 +1,8 @@
 import express from "express";
 import { pool } from "../db.js";
-// import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
+console.log(pool)
 
 const router = express.Router();
 
@@ -1790,7 +1790,6 @@ router.get("/inventario", (req, res) => {
 //Add rows in table
 router.post("/inventario", (req, res) => {
   const data = req.body;
-  console.log(req.body)
 
   const q = "INSERT INTO inventario SET ?"
 
