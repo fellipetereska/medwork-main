@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-const SECRET = 'medworkldn'
+const SECRET = 'medworkldn';
 
 //Tabela Empresa
 //Get table
