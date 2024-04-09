@@ -9,6 +9,7 @@ function CadastroEpi({ onEdit, get, epis }) {
   //Instanciando as Variáveis
   const ref = useRef(null); // Referência do formulario
   const [certificado, setCertificado] = useState('');
+  const [epi, setEpi] = useState('');
 
   useEffect(() => {
     if (onEdit) {
@@ -65,7 +66,7 @@ function CadastroEpi({ onEdit, get, epis }) {
       !user.vencimento_certificado_medida) {
       return toast.warn("Preencha todos os campos!");
     }
-    
+
     if (certificado == 0) {
       return toast.warn("Preencha o campo certificado de aprovação!");
     }
@@ -137,6 +138,37 @@ function CadastroEpi({ onEdit, get, epis }) {
     setCertificado(numericValue);
   }
 
+  const teste = () => {
+    const user = ref.current;
+
+    const epiData = {
+      nome_medida: user.nome_medida.value || "",
+      certificado_medida: user.certificado_medida.value || "",
+      fator_reducao_medida: user.fator_reducao_medida.value || "",
+      vencimento_certificado_medida: user.vencimento_certificado_medida.value || "",
+      fabricante_medida: user.fabricante_medida.value || "",
+    };
+
+    const json = JSON.stringify(epiData)
+
+    const data = {
+      id_medida: 1,
+      medida: json,
+      grupo_medida: 'MI',
+    }
+
+    // Convertendo a string JSON de volta para um objeto
+    const medidaObjeto = JSON.parse(data.medida);
+
+    console.log(medidaObjeto);
+    console.log(medidaObjeto.nome_medida);
+
+    // Convertendo o objeto em um array de pares chave-valor
+    const medidaArray = Object.entries(medidaObjeto);
+
+    console.log(medidaArray);
+  }
+
   return (
     <div className="flex justify-center mt-10">
       <form className="w-full max-w-5xl" ref={ref} onSubmit={handleSubmit}>
@@ -206,6 +238,11 @@ function CadastroEpi({ onEdit, get, epis }) {
             <div className="px-3 pl-8">
               <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                 Cadastrar
+              </button>
+            </div>
+            <div className="px-3 pl-8">
+              <button className="shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button" onClick={teste}>
+                Teste
               </button>
             </div>
           </div>
