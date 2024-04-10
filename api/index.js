@@ -10,15 +10,15 @@ const app = express();
 // // Log das solicitações HTTP
 // morgan.token('body', (req) => JSON.stringify(req.body));
 // app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body - :user-agent'));
-// console.log(morgan.token)
+// console.log(morgan.token);
 
 // Analisando as solicitações com corpo JSON
 app.use(express.json());
 
 // Middleware para permitir solicitações CORS
 const corsConfig = {
-  // origin: 'https://medwork-main.vercel.app',
-  origin: 'http://localhost:3000',
+  origin: 'https://medwork-main.vercel.app',
+  // origin: 'http://localhost:3000',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,

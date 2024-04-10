@@ -84,6 +84,7 @@ function Home() {
         <GridHome
           empresas={filteredEmpresas}
           contatos={contatos}
+          searchTerm={handleSearch}
         />
       )}
     </div>
