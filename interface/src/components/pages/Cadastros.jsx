@@ -57,11 +57,13 @@ function Cadastros() {
       {/* Botões Relacionados a Empresa*/}
       <div className="mt-16 px-12 mb-12">
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
+          {/* Contato */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_contato">
               <BotaoContato />
             </Link>
           </figure>
+          {/* Empresa */}
           {companyId ? (null) : (
             <figure className="flex flex-col justify-center">
               <Link to="/cadastro_empresa">
@@ -69,6 +71,7 @@ function Cadastros() {
               </Link>
             </figure>
           )}
+          {/* Unidade | Setor | Cargo */}
           {companyId ? (
             <>
               <figure className="flex flex-col justify-center">
@@ -95,21 +98,25 @@ function Cadastros() {
 
         {/* Botões Realcionados aos Processos */}
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
+          {/* Processos */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_processo">
               <BotaoProcessos />
             </Link>
           </figure>
+          {/* Riscos */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_risco">
               <BotaoRiscos />
             </Link>
           </figure>
+          {/* Medidas */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_medida">
               <BotaoMedidasDeProtecao />
             </Link>
           </figure>
+          {/* Vinculos */}
           {companyId ? (
             <>
               <figure className="flex flex-col justify-center">

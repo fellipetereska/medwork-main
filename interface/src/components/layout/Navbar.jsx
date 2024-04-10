@@ -117,7 +117,7 @@ function Navbar() {
   const handleCompanyInfo = () => {
     handleSetProfile();
     openModalProfileCompany(true);
-  }
+  };
 
   const openModalProfileCompany = () => setShowModalProfileCompany(true);
   const closeModalProfileCompany = () => setShowModalProfileCompany(false);
@@ -146,14 +146,14 @@ function Navbar() {
 
               {/* Informa a empresa selecioanda */}
               {selectedCompany && empresa ? (
-                <div className='flex items-center gap-2'>
-                  <p className='font- text-sm text-zinc-600 hidden md:block'>Empresa:</p>
-                  <div
-                    className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[150px]'
-                    onClick={handleCompanyInfo}
-                  >
+                <div className='flex items-center gap-2 cursor-pointer'>
+                  <div className='flex items-center gap-2' onClick={handleCompanyInfo}>
+                    <p className='font- text-sm text-zinc-600 hidden md:block'>Empresa:</p>
+                    <div
+                      className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[150px]'>
 
-                    <p className='text-sky-700 font-bold text-base'>{empresa}</p>
+                      <p className='text-sky-700 font-bold text-base'>{empresa}</p>
+                    </div>
                   </div>
                   <button onClick={clearLocalSotrageCompany}>
                     <IoClose />
@@ -200,13 +200,13 @@ function Navbar() {
 
                 {/* Informa a empresa selecionada */}
                 {selectedCompany && empresa ? (
-                  <div className='flex items-center gap-2'>
-                    <p className={`font- text-sm text-zinc-600 hidden md:block`}>Empresa:</p>
-                    <div
-                      className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[200px]'
-                      onClick={handleCompanyInfo}
-                    >
-                      <p className='text-sky-700 font-bold text-base'>{empresa}</p>
+                  <div className='flex items-center gap-2 cursor-pointer'>
+                    <div className='flex items-center gap-2' onClick={handleCompanyInfo}>
+                      <p className={`font- text-sm text-zinc-600 hidden md:block`}>Empresa:</p>
+                      <div
+                        className='bg-zinc-50 rounded-md py-2 px-3 hover:bg-zinc-100 truncate max-w-[200px]'>
+                        <p className='text-sky-700 font-bold text-base'>{empresa}</p>
+                      </div>
                     </div>
                     <button onClick={clearLocalSotrageCompany}>
                       <IoClose />

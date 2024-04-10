@@ -284,7 +284,7 @@ function LaudoPgr() {
       const filterInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
       const filterPlano = plano.filter((i) => i.fk_empresa_id === companyId);
       await getLaudoVersion();
-
+      
       if (grid) {
         const res = await generatePdf(companys, contacts, users, sectors, departaments, inventarios, planos, units, laudos, date, version);
         handleDownloadPGR(res, grid)

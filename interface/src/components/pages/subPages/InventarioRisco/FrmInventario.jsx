@@ -45,6 +45,7 @@ function FrmInventario({
   const [filteredSetores, setFilteredSetores] = useState([]);
   const [filteredProcessos, setFilteredProcessos] = useState([]);
   const [filteredRiscos, setFilteredRiscos] = useState([]);
+  const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
 
   const [showModalUnidade, setShowModalUnidade] = useState(false);
   const [showModalSetor, setShowModalSetor] = useState(false);
@@ -55,7 +56,6 @@ function FrmInventario({
   const [showModalConclusoes, setShowModalConclusoes] = useState(false);
   const [isMedidasSet, setIsMedidasSet] = useState(true);
   const [isVerify, setIsVerify] = useState(false);
-  const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
   const [visible, setVisible] = useState(false);
 
   const [unidadeId, setUnidadeId] = useState('');
@@ -188,7 +188,7 @@ function FrmInventario({
     setSetorNome(SetorName);
     handleClearProcesso();
     setPessoasExpostas('');
-
+    
     const filteredProcessosSetores = setoresProcessos.filter((i) => i.fk_setor_id === SetorId);
     const IdsProcesso = filteredProcessosSetores.map((item) => item.fk_processo_id);
     const filteredProcessos = processos.filter((i) => IdsProcesso.includes(i.id_processo));
@@ -749,7 +749,7 @@ function FrmInventario({
     <>
       {(isVerify && !onEdit) && (
         <>
-          {/* PopOver */}
+          {/* Alert */}
           <div className="block m-2 cursor-pointer" onClick={() => setIsVerify(false)}>
             <div className={`bg-orange-50 text-gray-600 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'}`}>
               <div className="flex items-center gap-6">
