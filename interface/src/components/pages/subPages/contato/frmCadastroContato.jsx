@@ -90,7 +90,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
     setShowMailError2(false);
 
     getContato();
-  };
+  }
 
   const handleClear = () => {
     // Limpa todos os campos do formulário
@@ -117,7 +117,7 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
 
     setMailCompleted1(isValid);
     setShowMailError1(!isValid);
-  };
+  }
 
   const handleInputChangeMail2 = (e) => {
     const inputValue = e.target.value;
@@ -125,19 +125,20 @@ function FrmCadastroContato({ onEdit, setOnEdit, getContato }) {
 
     setMailCompleted2(isValid);
     setShowMailError2(!isValid);
-  };
+  }
+
 
   const handleClickMail1 = () => {
     if (!mailCompleted1) {
       setShowMailError1(true);
     }
-  };
+  }
 
   const handleClickMail2 = () => {
     if (!mailCompleted2) {
       setShowMailError2(true);
     }
-  };
+  }
 
 
   return (

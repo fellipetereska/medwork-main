@@ -3,6 +3,7 @@ import useAuth from "../../hooks/useAuth";
 
 import FrmInventario from "./subPages/InventarioRisco/FrmInventario";
 import GridInventario from "./subPages/InventarioRisco/GridInventario";
+import FrmForm from './subPages/InventarioRisco/FrmForm'
 
 function Inventario() {
 
@@ -20,7 +21,6 @@ function Inventario() {
     getInventario, inventario,
     getGlobalSprm, setGlobalSprm, globalSprm, getGlobalSprmByRiscoId,
     getAparelhos, aparelhos,
-    getConclusoes, conclusoes,
   } = useAuth(null);
 
   const [onEdit, setOnEdit] = useState(null);
@@ -45,13 +45,17 @@ function Inventario() {
     getMedidasEpi();
     getMedidasEpc();
     getAparelhos();
-    getConclusoes();
   }, [companyId]);
 
+  const handleEdit = (selectedInventario) => {
+    setOnEdit(selectedInventario);
+  };
 
   return (
     <>
-      <FrmInventario
+      
+
+      <FrmInventario  
         unidades={unidades}
         cargos={cargos}
         setores={setores}
@@ -74,7 +78,6 @@ function Inventario() {
         getInventario={getInventario}
         aparelhos={aparelhos}
         inventario={inventario}
-        conclusoes={conclusoes}
       />
 
       <GridInventario

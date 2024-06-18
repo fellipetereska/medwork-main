@@ -6,7 +6,7 @@ import LoadingScreen from './components/LoadingScreen';
 import { useState } from 'react';
 
 
-function GridHome({ empresas, contatos, searchTerm }) {
+function GridHome({ empresas, contatos }) {
 
   const navigate = useNavigate();
   const { handleSelectedCompany } = useAuth();
@@ -22,7 +22,6 @@ function GridHome({ empresas, contatos, searchTerm }) {
       setLoading(true);
       await handleSelectedCompany(id, nome_empresa);
       setLoading(false);
-      searchTerm('');
       window.scrollTo({ top: 0, behavior: 'smooth' });  
     } catch (error) {
       toast.warn("Erro ao selecionar empresa!")

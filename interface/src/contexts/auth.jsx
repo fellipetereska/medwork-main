@@ -28,8 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [aparelhos, setAparelhos] = useState([]);
   const [companyId, setCompanyId] = useState('');
   const [user, setUser] = useState([]);
-  const [laudoVersion, setLaudoVersion] = useState([]);
-  const [conclusoes, setConclusoes] = useState([]);
+  const [pdfVersion, setPdfVersion] = useState([]);
 
   const handleSetCompanyId = () => {
     try {
@@ -38,22 +37,6 @@ export const AuthProvider = ({ children }) => {
       console.log("Erro ao setar id da empresa.", error)
     }
   };
-
-  const getTable = async (table) => {
-    try {
-      const res = await fetch(`${connect}/${table}`, {
-        method: 'GET',
-      });
-
-      if (!res.ok) {
-        throw new Error(`Erro ao buscar tabela. Status: ${res.status}`)
-      }
-
-      return res.json();
-    } catch (error) {
-      console.error(`Erro ao buscar tabela. Status: ${error}`);
-    }
-  }
 
   const getEmpresas = async () => {
     try {
@@ -424,34 +407,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getLaudoVersion = async () => {
+  const getPdfVersion = async () => {
     try {
-      const response = await fetch(`${connect}/laudo_version`);
+      const response = await fetch(`${connect}/pgr_version`);
 
       if (!response.ok) {
-        throw new Error(`Erro ao buscar laudos. Status: ${response.status}`)
+        throw new Error(`Erro ao buscar PGR. Status: ${response.status}`)
       }
 
       const data = await response.json();
       data.sort((a, b) => a.data_versao < b.data_versao);
-      setLaudoVersion(data)
+      setPdfVersion(data)
     } catch (error) {
-      console.log(`Erro ao buscar Versões do laudo. ${error}`);
-    }
-  };
-
-  const getConclusoes = async () => {
-    try {
-      const response = await fetch(`${connect}/conclusoes`);
-
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar conclusões. Status: ${response.status}`)
-      }
-
-      const data = await response.json();
-      setConclusoes(data)
-    } catch (error) {
-      console.log(`Erro ao buscar conclusões. ${error}`);
+      console.log(`Erro ao buscar Versões do PGR. ${error}`);
     }
   };
 
@@ -588,13 +556,9 @@ export const AuthProvider = ({ children }) => {
         handleSignInUser,
         checkSignIn,
         clearUser,
-        getLaudoVersion,
-        setLaudoVersion,
-        laudoVersion,
-        getConclusoes,
-        setConclusoes,
-        conclusoes,
-        getTable,
+        getPdfVersion,
+        setPdfVersion,
+        pdfVersion,
       }}>
       {children}
     </AuthContext.Provider>

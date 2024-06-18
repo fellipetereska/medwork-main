@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "../../../../services/api";
 import { toast } from "react-toastify";
-import { IoInformationCircleSharp } from "react-icons/io5";
 
 import LoadingScreen from "../components/LoadingScreen";
 import ModalSearchUnidade from "../components/Modal/ModalSearchUnidade";
@@ -10,8 +9,6 @@ import ModalSearchProcesso from '../components/Modal/ModalSearchProcesso';
 import ModalSearchRisco from '../components/Modal/ModalSearchRisco';
 import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 import ModalSearchAparelhos from '../components/Modal/ModalSearchAparelhos';
-import ModalSearchConclusao from '../components/Modal/ModalSearchConclusao';
-import Back from '../../../layout/Back'
 
 import icon_sair from '../../../media/icon_sair.svg';
 import icon_lupa from '../../../media/icon_lupa.svg';
@@ -35,17 +32,15 @@ function FrmInventario({
   getInventario,
   aparelhos,
   inventario,
-  conclusoes,
 }) {
 
   const user = useRef();
 
   const [loading, setLoading] = useState(false);
 
-  const [filteredSetores, setFilteredSetores] = useState([]);
-  const [filteredProcessos, setFilteredProcessos] = useState([]);
+  const [filteredSetores, setFilteredSetores] = useState([])
+  const [filteredProcessos, setFilteredProcessos] = useState([])
   const [filteredRiscos, setFilteredRiscos] = useState([]);
-  const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
 
   const [showModalUnidade, setShowModalUnidade] = useState(false);
   const [showModalSetor, setShowModalSetor] = useState(false);
@@ -53,10 +48,9 @@ function FrmInventario({
   const [showModalRisco, setShowModalRisco] = useState(false);
   const [showModalMedidas, setShowModalMedidas] = useState(false);
   const [showModalAparelhos, setShowModalAparelhos] = useState(false);
-  const [showModalConclusoes, setShowModalConclusoes] = useState(false);
-  const [isMedidasSet, setIsMedidasSet] = useState(true);
+  const [isMedidasSet, setIsMedidasSet] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [filteredInventarioRisco, setFiltereinventarioRisco] = useState([]);
 
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
@@ -85,20 +79,6 @@ function FrmInventario({
   const [data, setData] = useState('');
   const [frequencia, setFrequencia] = useState('');
   const [plano, setPlano] = useState(false);
-  const [filterConclusao, setFilterConclusao] = useState([]);
-  const [filterConclusaoLtcat, setFilterConclusaoLtcat] = useState([]);
-  const [filterConclusaoLi, setFilterConclusaoLi] = useState([]);
-  const [filterConclusaoLp, setFilterConclusaoLp] = useState([]);
-  const [conclusaoLtcat, setConclusaoLtcat] = useState('');
-  const [conclusaoLtcatNome, setConclusaoLtcatNome] = useState('');
-  const [conclusaoLi, setConclusaoLi] = useState('');
-  const [conclusaoLiNome, setConclusaoLiNome] = useState('');
-  const [conclusaoLp, setConclusaoLp] = useState('');
-  const [conclusaoLpNome, setConclusaoLpNome] = useState('');
-  const [ltcat, setLtcat] = useState(false);
-  const [lip, setLip] = useState(false);
-  const [laudo, setLaudo] = useState('');
-  const [laudoTipo, setLaudoTipo] = useState('');
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -108,51 +88,28 @@ function FrmInventario({
   const openModalRisco = () => setShowModalRisco(true);
   const openModalMedidas = () => setShowModalMedidas(true);
   const openModalAparelhos = () => setShowModalAparelhos(true);
-  const openModalConclusoes = () => setShowModalConclusoes(true);
-  const openModalConclusaoLtcat = () => {
-    setLaudo('ltcat');
-    setShowModalConclusoes(true);
-    setFilterConclusao(filterConclusaoLtcat);
-  }
-  const openModalConclusaoLi = () => {
-    setLaudo('insalubridade');
-    setFilterConclusao(filterConclusaoLi);
-    setShowModalConclusoes(true);
-  }
-  const openModalConclusaoLp = () => {
-    setLaudo('periculosidade');
-    setFilterConclusao(filterConclusaoLp);
-    setShowModalConclusoes(true);
-  }
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
   const closeModalProcesso = () => setShowModalProcesso(false);
   const closeModalRisco = () => setShowModalRisco(false);
   const closeModalAparelhos = () => setShowModalAparelhos(false);
-  const closeModalConclusoes = () => {
-    setShowModalConclusoes(false);
-  }
   const closeModalMedidas = () => {
     getGlobalSprm();
     setShowModalMedidas(false);
+  }
+
+  const obterDataFormatada = () => {
+    const dataAtual = new Date();
+    const ano = dataAtual.getFullYear();
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
   };
 
-  const obterDataFormatada = (dataBanco) => {
-    if (dataBanco) {
-      const data = new Date(dataBanco);
-      const ano = data.getFullYear();
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const dia = String(data.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
-    } else {
-      const dataAtual = new Date();
-      const ano = dataAtual.getFullYear();
-      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-      const dia = String(dataAtual.getDate()).padStart(2, '0');
-      return `${ano}-${mes}-${dia}`;
-    }
-  };
+  useEffect(() => {
+    setData(obterDataFormatada)
+  }, [])
 
   useEffect(() => {
     if (showModalSetor && unidadeId) {
@@ -178,7 +135,6 @@ function FrmInventario({
     handleClearRisco();
     handleClearSetor();
     setFilteredSetores([]);
-    setData('');
   };
 
   // Função para atualizar o Setor
@@ -188,7 +144,7 @@ function FrmInventario({
     setSetorNome(SetorName);
     handleClearProcesso();
     setPessoasExpostas('');
-    
+
     const filteredProcessosSetores = setoresProcessos.filter((i) => i.fk_setor_id === SetorId);
     const IdsProcesso = filteredProcessosSetores.map((item) => item.fk_processo_id);
     const filteredProcessos = processos.filter((i) => IdsProcesso.includes(i.id_processo));
@@ -218,7 +174,7 @@ function FrmInventario({
     handleClearProcesso();
     handleClearRisco();
     setFilteredProcessos([]);
-  };
+  }
 
   // Função para atualizar o Processo
   const handleProcessoSelect = async (ProcessoId, ProcessoNome) => {
@@ -239,7 +195,7 @@ function FrmInventario({
     setProcessoNome(null);
     handleClearRisco();
     setFilteredRiscos([]);
-  };
+  }
 
   const verify = async (riscoId) => {
     getInventario();
@@ -271,14 +227,13 @@ function FrmInventario({
     } catch (error) {
       console.error("Erro ao verificar cadastro duplicado!", error)
     }
-  };
+  }
 
   // Função para atualizar o Risco
   const handleRiscoSelect = async (RiscoId, RiscoNome) => {
     closeModalRisco();
     setRiscoId(RiscoId);
     setRiscoNome(RiscoNome);
-    setData(obterDataFormatada(onEdit ? onEdit.data_inventario : null));
 
     const filteresRiscosMedidas = riscosMedidas.filter((i) => i.fk_risco_id === RiscoId);
     const riscoSelecionado = riscos.find((i) => i.id_risco === RiscoId);
@@ -287,42 +242,21 @@ function FrmInventario({
       setRiscosInput(riscoSelecionado);
     }
 
-    const filteredConclusao = conclusoes.filter((i) => i.fk_risco_id === RiscoId);
-
-    const filterLtcat = filteredConclusao.filter((i) => i.laudo === 'ltcat');
-    const filterLip = filteredConclusao.filter((i) => i.laudo === 'lip');
-    const filterLi = filterLip.filter((i) => i.tipo === "Insalubridade" || i.tipo === "Ambos");
-    const filterLp = filterLip.filter((i) => i.tipo === "Periculosidade" || i.tipo === "Ambos");
-
-    if (filterLtcat) {
-      setFilterConclusaoLtcat(filterLtcat);
-    }
-
-    if (filterLi) {
-      setFilterConclusaoLi(filterLi);
-    }
-
-    if (filterLp) {
-      setFilterConclusaoLp(filterLp);
-    }
-
     // Criar um array para armazenar as medidas e tipos
     const medidasTipos = filteresRiscosMedidas.map((filteredRiscosMedidas) => ({
       medidaId: filteredRiscosMedidas.fk_medida_id,
       medidaTipo: filteredRiscosMedidas.tipo,
     }));
+
     await handleRiscoEscolhido(RiscoId, medidasTipos);
     await verify(RiscoId);
   };
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
     try {
-      if (!setorId) {
-        return
-      }
       for (const { medidaId, medidaTipo } of medidasTipos) {
         const verificarResponse = await fetch(
-          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_processo_id=${processoId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
+          `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
           {
             method: 'GET',
             headers: {
@@ -337,6 +271,7 @@ function FrmInventario({
 
         const verificarData = await verificarResponse.json();
 
+        // Se a combinação já existir, continue para a próxima iteração
         if (verificarData.existeCombinação) {
           continue;
         }
@@ -354,7 +289,7 @@ function FrmInventario({
             fk_risco_id: RiscoId,
             fk_medida_id: medidaId,
             tipo_medida: medidaTipo,
-            status: 'Não Aplicavel',
+            status: '0',
           }),
         });
 
@@ -363,7 +298,7 @@ function FrmInventario({
         }
 
         const adicionarData = await adicionarResponse.json();
-        toast.success("Medidas Adicionadas com sucesso!");
+        toast.success("Meddias Adicionadas com sucesso!");
       }
       getGlobalSprm();
     } catch (error) {
@@ -379,7 +314,7 @@ function FrmInventario({
     setDescricao('');
     setCheckMedicao(false);
     setIsVerify(false);
-  };
+  }
 
   const setRiscosInput = (risco) => {
     if (!risco) {
@@ -389,22 +324,17 @@ function FrmInventario({
       setMetodologia('');
       setSeveridade('');
       setMedicao('');
-      setLtcat('');
     } else {
       setAvaliacao(risco.classificacao_risco);
       setLimiteTolerancia(risco.limite_tolerancia_risco || '0');
-      setConsequencia(risco.danos_saude_risco);
-      setMetodologia(risco.metodologia_risco);
-      setSeveridade(risco.severidade_risco);
-      risco.ltcat_risco > 0 ? setLtcat(true) : setLtcat(false);
-      risco.lip_risco > 0 ? setLip(true) : setLip(false);
+      setConsequencia(risco.danos_saude_risco || 'N/A');
+      setMetodologia(risco.metodologia_risco || 'N/A');
+      setSeveridade(risco.severidade_risco || '0');
 
       if (risco.classificacao_risco === "Qualitativo") {
         setMedicao("0");
-        setCheckMedicao(true);
       } else {
         setMedicao('');
-        setCheckMedicao(false);
       }
     }
     setLoading(true);
@@ -414,13 +344,13 @@ function FrmInventario({
     closeModalAparelhos();
     setAparelhoId(aparelhoId);
     setAparelhoNome(aparelhoNome);
-  };
+  }
 
   const handleClearAparelhos = () => {
     closeModalAparelhos();
     setAparelhoId('');
     setAparelhoNome('');
-  };
+  }
 
   const handleProbabilidadeChange = (event) => {
     const selectedProbabilidade = parseInt(event.target.value, 10);
@@ -446,82 +376,73 @@ function FrmInventario({
 
   const handleMedicaoCheck = () => {
     setCheckMedicao(!checkMedicao);
-    if (medicao === '0') {
-      setMedicao('');
-    } else {
-      setMedicao('0');
-    }
-  };
+    setMedicao('');
+  }
 
   useEffect(() => {
-    if (onEdit) {
-      try {
-        if (onEdit.fk_unidade_id) {
-          const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
-          handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
+    const handleOnEdit = async () => {
+      if (onEdit) {
+        try {
+          if (onEdit.fk_unidade_id) {
+            const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
+            await handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
+          }
           if (onEdit.fk_setor_id) {
             const setorSelect = setores.find((i) => i.id_setor === onEdit.fk_setor_id);
-            handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
-            if (onEdit.fk_processo_id) {
-              const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
-              handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
-              if (setorId, onEdit.fk_risco_id) {
-                const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
-                handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
-              }
+            await handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
+          }
+          if (onEdit.fk_processo_id) {
+            const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
+            await handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
+          }
+          if (onEdit.fk_risco_id) {
+            const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
+            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco);
+          }
+
+          setMedicao(onEdit.medicao || '');
+
+          if (onEdit.fk_aparelho_id) {
+            const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
+            await handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
+          }
+
+          setFrequencia(onEdit.frequencia || '');
+          setProbabilidade(onEdit.probabilidade || '');
+          if (onEdit.nivel) {
+            const nivelValue = onEdit.nivel;
+            if (nivelValue >= 1 && nivelValue <= 6) {
+              setNivel("Baixo");
+            } else if (nivelValue >= 7 && nivelValue <= 12) {
+              setNivel("Moderado");
+            } else if (nivelValue >= 13 && nivelValue <= 16) {
+              setNivel("Alto");
+            } else if (nivelValue >= 20 && nivelValue <= 25) {
+              setNivel("Crítico");
+            } else {
+              setNivel(null);
             }
           }
-        }
 
-        setMedicao(onEdit.medicao || '0');
-
-        if (onEdit.fk_aparelho_id) {
-          const aparelhoSelect = aparelhos.find((i) => i.id_aparelho === onEdit.fk_aparelho_id);
-          handleAparelhoSelect(onEdit.fk_aparelho_id, aparelhoSelect.nome_aparelho);
-        }
-
-        setFrequencia(onEdit.frequencia || '');
-        setProbabilidade(onEdit.probabilidade || '');
-        if (onEdit.nivel) {
-          const nivelValue = onEdit.nivel;
-          if (nivelValue >= 1 && nivelValue <= 6) {
-            setNivel("Baixo");
-          } else if (nivelValue >= 7 && nivelValue <= 12) {
-            setNivel("Moderado");
-          } else if (nivelValue >= 13 && nivelValue <= 16) {
-            setNivel("Alto");
-          } else if (nivelValue >= 20 && nivelValue <= 25) {
-            setNivel("Crítico");
-          } else {
-            setNivel(null);
+          setDescricao(onEdit.fontes || 'N/A');
+          setComentarios(onEdit.comentarios || 'N/A');
+          if (onEdit.data_inventario) {
+            const data_formatada = new Date(onEdit.data_inventario).toISOString().split('T')[0];
+            setData(data_formatada || '');
           }
-        }
 
-        setDescricao(onEdit.fontes || 'N/A');
-        setComentarios(onEdit.comentarios || 'N/A');
-
-        if (onEdit.conclusao_ltcat) {
-          setLtcat(true);
-          setConclusaoLtcat(onEdit.conclusao_ltcat);
+          setIsVerify(false);
+          setIsMedidasSet(true);
+        } catch (error) {
+          toast.error("Erro ao buscar os dados!");
+          console.error("Erro ao buscar dados para edição", error);
         }
-        if (onEdit.conclusao_li) {
-          setLip(true);
-          setConclusaoLi(onEdit.conclusao_li);
-        }
-        if (onEdit.conclusao_lp) {
-          setLip(true);
-          setConclusaoLtcat(onEdit.conclusao_lp);
-        }
-
-        setIsVerify(false);
-        setIsMedidasSet(true);
-      } catch (error) {
-        toast.error("Erro ao buscar os dados!");
-        console.error("Erro ao buscar dados para edição", error);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [onEdit, setorId]);
+
+    handleOnEdit();
+  }, [onEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -535,12 +456,9 @@ function FrmInventario({
 
     if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !medicao || !data) {
       toast.warn("Preencha todos os campos!");
-      return
     }
-    console.log(data)
     try {
       const inventarioData = {
-        data_inventario: data || '',
         fk_empresa_id: companyId || '',
         fk_unidade_id: unidadeId || '',
         fk_setor_id: setorId || '',
@@ -552,12 +470,10 @@ function FrmInventario({
         medidas: JSON.stringify(medidasAplicadas) || '',
         probabilidade: probabilidade || '',
         nivel: probabilidade * severidade || '',
+        comentarios: comentarios || '',
+        data_inventario: data || '',
         frequencia: frequencia || '',
         fk_aparelho_id: aparelhoId || '',
-        comentarios: comentarios || '',
-        conclusao_ltcat: conclusaoLtcat || '',
-        conclusao_li: conclusaoLi || '',
-        conclusao_lp: conclusaoLp || '',
       };
 
       const url = onEdit
@@ -588,7 +504,7 @@ function FrmInventario({
     }
 
     handleClear();
-  };
+  }
 
   const handleClear = () => {
     handleClearRisco();
@@ -596,19 +512,16 @@ function FrmInventario({
     setConsequencia('');
     setComentarios('');
     setMedicao('');
-    setCheckMedicao(false);
     setProbabilidade('');
     setNivel('');
     setDescricao('');
     setOnEdit(null);
+    setCheckMedicao(false);
     setIsMedidasSet(false);
     setFrequencia('');
     setIsVerify(false);
-    setData('');
-    handleClearConclusaoLtcat();
-    handleClearConclusaoLi();
-    handleClearConclusaoLp();
-  };
+    setData(obterDataFormatada);
+  }
 
   const handleDescricaoFontesChange = (event) => {
     setDescricao(event.target.value);
@@ -620,16 +533,13 @@ function FrmInventario({
 
   const handleMedicaoChange = (event) => {
     setMedicao(event.target.value);
-    if (event.target.value === '0') {
-      setCheckMedicao(true);
-    }
   };
 
   const handleMedidaChange = () => {
     getGlobalSprm();
     closeModalMedidas();
     setIsMedidasSet(true);
-  };
+  }
 
   const find = (item, tipo) => {
     try {
@@ -669,7 +579,7 @@ function FrmInventario({
       default:
         return 'N/A'
     }
-  };
+  }
 
   const handleChangeData = (event) => {
     setData(event.target.value);
@@ -677,89 +587,29 @@ function FrmInventario({
 
   const handleChangeSeveridade = (e) => {
     setSeveridade(e.target.value);
-  };
+  }
 
   const handleChangeFrequencia = (e) => {
     setFrequencia(e.target.value);
-  };
-
-  const handleConclusaoLtcatChange = (event) => {
-    setConclusaoLtcat(event.target.value);
-  };
-
-  const handleConclusaoLiChange = (event) => {
-    setConclusaoLi(event.target.value);
-  };
-
-  const handleConclusaoLpChange = (event) => {
-    setConclusaoLp(event.target.value);
-  };
-
-  const handleConclusaoLtcatSelect = (conclusao, nome) => {
-    if (!conclusao) {
-      return toast.warn("Nenhuma conclusão selecionada");
-    }
-
-    setConclusaoLtcatNome(nome)
-    setConclusaoLtcat(conclusao);
-    closeModalConclusoes();
-    setLaudo('');
-  };
-
-  const handleConclusaoLiSelect = (conclusao, nome) => {
-    if (!conclusao) {
-      return toast.warn("Nenhuma conclusão selecionada");
-    }
-
-    setConclusaoLiNome(nome)
-    setConclusaoLi(conclusao);
-    closeModalConclusoes();
-    setLaudo('');
-  };
-
-  const handleConclusaoLpSelect = (conclusao, nome) => {
-    if (!conclusao) {
-      return toast.warn("Nenhuma conclusão selecionada");
-    }
-
-    setConclusaoLpNome(nome);
-    setConclusaoLp(conclusao);
-    closeModalConclusoes();
-    setLaudo('');
-  };
-
-  const handleClearConclusaoLtcat = () => {
-    setConclusaoLtcat('');
-
-  };
-
-  const handleClearConclusaoLi = () => {
-    setConclusaoLi('');
-
-  };
-
-  const handleClearConclusaoLp = () => {
-    setConclusaoLp('');
-
-  };
+  }
 
   const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
 
   return (
     <>
-      {(isVerify && !onEdit) && (
+      {isVerify && (
         <>
-          {/* Alert */}
+          {/* PopOver */}
           <div className="block m-2 cursor-pointer" onClick={() => setIsVerify(false)}>
-            <div className={`bg-orange-50 text-gray-600 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'}`}>
+            <div className={`bg-orange-50 text-yellow-300 rounded-lg px-6 py-2 ${isVerify ? 'block' : 'hidden'} text-white`}>
               <div className="flex items-center gap-6">
                 <div className="">
                   <img src={icon_warn} alt="" />
                 </div>
                 <div>
-                  <h2 className="font-medium">Risco já Cadastrado</h2>
+                  <h2 className="font-bold text-xl mb-2 mt-2">Risco já Cadastrado</h2>
                   <div>
-                    <p className="font-normal text-gray-700">Risco: {riscoNome} - Porcesso: {processoNome} - Setor: {setorNome}- Unidade: {nomeUnidade}.</p>
+                    <p className="text-sm">Risco: <span className="text-base font-bold text-yellow-300">{riscoNome}</span> - Porcesso: <span className="text-base font-bold text-yellow-300">{processoNome}</span> - Setor: <span className="text-base font-bold text-yellow-300">{setorNome}</span> - Unidade: <span className="text-base font-bold text-yellow-300">{nomeUnidade}.</span></p>
                   </div>
                 </div>
               </div>
@@ -767,38 +617,6 @@ function FrmInventario({
           </div>
         </>
       )}
-
-      {/* Popover */}
-      <div className="flex w-full mt-6" onMouseLeave={() => setVisible(false)}>
-        <div className="fixed z-50 m-2 -mt-4">
-          <div className={`bg-gray-700 rounded-lg px-6 py-2 ${visible ? 'block' : 'hidden'} text-white`}>
-            <h2 className="font-bold text-xl mb-2 text-gray-100 mt-2">Página Cadastro Empresa</h2>
-            <div>
-              <p className="mb-2 text-justify font-light text-gray-300 flex">
-                A página de Invenário de Risco foi cuidadosamente desenvolvida para proporcionar uma maneira eficaz e organizada de registrar as informações fundamentais sobre os riscos da empresa.
-              </p>
-              <p className="mb-2 text-justify font-light text-gray-300 flex">
-                No centro da tela, um formulário claro e de fácil compreensão está disponível para o cadastro de informações dos riscos da empresa. Seguindo o mesmo padrão intuitivo das demais páginas, esse formulário facilita a inserção e a modificação de dados relevantes relacionados aos riscos. O formulário e separado em 3 etapas, a primeira etapa e a seleção da Unidade, do Setor, do Processo e do Risco (lembrando que todos os dados devem ser vinculados previamente), após teremos o campo de data. Os proximos campos são de preenchimento automático, Pessoas Expostas, são os funcionários dos cargos vinculados a esse setor, as Consequências, Avaliação, LT, Metodologia, são campos ja cadastrados previamente no risco, a medição fica disponivel caso o risco seja quantitativo, podendo ser desativada caso não haja medição, o aparelho fica disponivel assim quem a medição foi incluida, o campo de frequência e probabilidade são se seleção, a severidade vem do risco e o nivel e a probabilidade x severidade, a descrição das fontes e um campo de texto e os comentários também. A 2 etapada e a de conclusões, caso esse risco tenha uma conclusão o sistema libera automáticamente 3 campos para colocar a conclusão, também já previamente cadastrada no risco. A 3 etapa e a das medidas, todo risco já tem medidas vinculadas a ele, nessa parte você utilizando o botao de definir medidas, deve selecionar no select da tabela qual a referencia desse risco nessa empresa, se ela Aplica, Não Aplica ou se essa medida não é Aplicavel a essa empresa. Complementando a página, uma tabela organizada exibe os dados do inventário. Nessa tabela, é apresentado um botão de edição, caso necessário arrumar alguma informação.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Cabeçalho */}
-      <div className="grid grid-cols-3 mb-10 mt-10">
-        {/* Botão para voltar */}
-        <div className="">
-        </div>
-        <div className="flex justify-center">
-          <h1 className="text-3xl font-extrabold text-sky-700">Inventário de Risco</h1>
-        </div>
-        <div className="flex justify-end w-3/4 items-center">
-          <div onMouseEnter={() => setVisible(true)}>
-            <IoInformationCircleSharp className='text-sky-700' />
-          </div>
-        </div>
-      </div>
 
       {/* Formulário */}
       {loading && <LoadingScreen />}
@@ -1096,11 +914,12 @@ function FrmInventario({
                   onChange={handleMedicaoChange}
                   step="any"
                 />
-                <div className={`${medicao === '0' ? '' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
+                <div className={`${medicao === '0' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
                   <input
                     type="checkbox"
                     id="medica_risco"
                     className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
+                    disabled={medicao === "0"}
                     checked={checkMedicao}
                     onChange={handleMedicaoCheck}
                   />
@@ -1142,7 +961,7 @@ function FrmInventario({
                   <button
                     type="button"
                     onClick={openModalAparelhos}
-                    className={`flex ml-4 ${medicao <= 0 ? 'cursor-auto' : 'cursor-pointer'}`}
+                    className={`flex cursor-pointer ml-4 ${medicao > 0 ? '' : 'cursor-auto'}`}
                     disabled={medicao <= 0}
                   >
                     <img src={icon_lupa} className="h-9" alt="Icone adicionar Aparelho"></img>
@@ -1241,7 +1060,7 @@ function FrmInventario({
 
             <div className="w-full flex items-center">
               {/* Descrição das Fontes */}
-              <div className={`w-full md:w-1/2 px-3`}>
+              <div className="w-full md:w-1/2 px-3">
                 <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
                   Descrição das Fontes:
                 </label>
@@ -1255,8 +1074,8 @@ function FrmInventario({
                 />
               </div>
               {/* Comentários */}
-              <div className={`w-full md:w-1/2 px-3`}>
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="gcomentarios">
+              <div className="w-full md:w-1/2 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
                   Comentários:
                 </label>
                 <textarea
@@ -1270,177 +1089,45 @@ function FrmInventario({
               </div>
             </div>
 
-            {/* Conclusões */}
-            {(riscoId && ltcat || lip) && (
+            {/* Card */}
+            {/* {riscoId ? (
               <>
-                <div className="border-b border-gray-200 w-full mt-5"></div>
-                <div className="text-4xl font-bold text-sky-700 mt-5 mb-5 w-full flex justify-center">
-                  <h1>Conclusões</h1>
+                <div className="w-full px-3">
+                  <div className="bg-gray-100 rounded">
+                    <div className="grid grid-cols-2 px-4 py-2 text-lg font-bold text-sky-700">
+                      <div>
+                        <div className="flex justify-center">
+                          <p>{nomeUnidade}</p>
+                        </div>
+                        <div className="flex justify-center">
+                          <p>{processoNome}</p>
+                        </div>
+                      </div>
+                      <div> 
+                        <div className="flex justify-center">
+                          <p>{setorNome}</p>
+                        </div>
+                        <div className="flex justify-center">
+                          <p>{riscoNome}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-4 py-2">
+                      <div>
+                        <p>{pessoasExpostas}</p>
+                        <p>{avaliacao}</p>
+                      </div>
+                      <div>
+
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="w-full flex">
-
-                  {/* Conclusão LTCAT */}
-                  {ltcat && (
-                    <div className="w-full md:w-1/3 px-3">
-                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusaoLtcat">
-                        Conclusão LTCAT:
-                      </label>
-                      <div className="flex items-center w-full">
-                        {conclusaoLtcat ? (
-                          <>
-                            <div className="w-full">
-                              <p className="text-xs">Conclusão: <span className="text-sm font-semibold">{conclusaoLtcatNome}</span></p>
-                              <div className="flex w-full">
-                                <textarea
-                                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                                  type="text"
-                                  id="conclusaoLtcat"
-                                  name="conclusaoLtcat"
-                                  value={conclusaoLtcat}
-                                  onChange={handleConclusaoLtcatChange}
-                                />
-                                <button type="button" className="ml-4" onClick={handleClearConclusaoLtcat}>
-                                  <img src={icon_sair} alt="" className="h-9" />
-                                </button>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                              onClick={openModalConclusaoLtcat}
-                              type="button"
-                            >
-                              <p className="px-2 text-sm font-medium">
-                                Nenhuma Conclusão Selecionada
-                              </p>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={openModalConclusaoLtcat}
-                              className={`flex cursor-pointer ml-4`}
-                            >
-                              <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Conclusão LI */}
-                  {lip && (
-                    <div className="w-full md:w-1/3 px-3">
-                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusaoLi">
-                        Conclusão Insalubridade:
-                      </label>
-                      <div className="flex items-center w-full">
-                        {conclusaoLi ? (
-                          <>
-                            <div className="w-full">
-                              <p className="text-xs">Conclusão: <span className="text-sm font-semibold">{conclusaoLiNome}</span></p>
-                              <div className="flex w-full">
-                                <textarea
-                                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                                  type="text"
-                                  id="conclusaoLi"
-                                  name="conclusaoLi"
-                                  value={conclusaoLi}
-                                  onChange={handleConclusaoLiChange}
-                                />
-                                <button type="button" className="ml-4" onClick={handleClearConclusaoLi}>
-                                  <img src={icon_sair} alt="" className="h-9" />
-                                </button>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                              onClick={openModalConclusaoLi}
-                              type="button"
-                            >
-                              <p className="px-2 text-sm font-medium">
-                                Nenhuma Conclusão Selecionada
-                              </p>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={openModalConclusaoLi}
-                              className={`flex cursor-pointer ml-4`}
-                            >
-                              <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Conclusão LP */}
-                  {lip && (
-                    <div className="w-full md:w-1/3 px-3">
-                      <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="conclusaoLp">
-                        Conclusão Periculosidade:
-                      </label>
-                      <div className="flex items-center w-full">
-                        {conclusaoLp ? (
-                          <>
-                            <div className="w-full">
-                              <p className="text-xs">Conclusão: <span className="text-sm font-semibold">{conclusaoLpNome}</span></p>
-                              <div className="flex w-full">
-                                <textarea
-                                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-                                  type="text"
-                                  id="conclusaoLp"
-                                  name="conclusaoLp"
-                                  value={conclusaoLp}
-                                  onChange={handleConclusaoLpChange}
-                                />
-                                <button type="button" className="ml-4" onClick={handleClearConclusaoLp}>
-                                  <img src={icon_sair} alt="" className="h-9" />
-                                </button>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
-                              onClick={openModalConclusaoLp}
-                              type="button"
-                            >
-                              <p className="px-2 text-sm font-medium">
-                                Nenhuma Conclusão Selecionada
-                              </p>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={openModalConclusaoLp}
-                              className={`flex cursor-pointer ml-4`}
-                            >
-                              <img src={icon_lupa} className="h-9" alt="Icone adicionar Conclusão"></img>
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                </div>
-                <ModalSearchConclusao
-                  isOpen={showModalConclusoes}
-                  onCancel={closeModalConclusoes}
-                  onSelectLtcat={handleConclusaoLtcatSelect}
-                  onSelectLi={handleConclusaoLiSelect}
-                  onSelectLp={handleConclusaoLpSelect}
-                  laudo={laudo}
-                  conclusao={filterConclusao}
-                />
               </>
-            )}
+            ) : (
+              null
+            )} */}
+
 
             {/* Medidas */}
             <div className="border-b border-gray-200 w-full mt-5"></div>

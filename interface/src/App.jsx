@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { AuthProvider } from './contexts/auth';
+import useAuth from './hooks/useAuth';
+// import PrivateRoute from './components/pages/subPages/components/PrivateRoute';
 import "react-toastify/dist/ReactToastify.css";
 
 // Importante as Paginas
@@ -19,14 +21,10 @@ import Usuario from './components/pages/subPages/usuarios/CadastroUsuario';
 import Login from './components/pages/Login';
 import Processos from './components/pages/subPages/Processos/Processos';
 import Riscos from './components/pages/subPages/Riscos/Riscos';
-import Medidas from './components/pages/subPages/CadastroMedidas';
-import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos';
+import Medidas from './components/pages/subPages/CadastroMedidas'
+import Aparelhos from './components/pages/subPages/aparelhos/Aparelhos'
 import ImportXlsx from './components/pages/subPages/components/ImportXlsx';
-import Elaboradores from './components/pages/subPages/Elaborador/CadastroElaborador';
 import Vinculos from './components/pages/subPages/vinculos/Vinculos';
-import LaudoPgr from './components/pages/subPages/Laudos/LaudoPgr';
-import LaudoLtcat from './components/pages/subPages/Laudos/LaudoLtcat';
-import LaudoLip from './components/pages/subPages/Laudos/LaudoLip';
 
 // Importando os Componentes
 import Navbar from './components/layout/Navbar';
@@ -63,12 +61,8 @@ function App() {
           <Route path='/cadastro_risco' element={<PrivateRoute requiredPermission={2}><Riscos /></PrivateRoute>} />
           <Route path='/cadastro_medida' element={<PrivateRoute requiredPermission={2}><Medidas /></PrivateRoute>} />
           <Route path='/cadastro_aparelhos' element={<PrivateRoute requiredPermission={2}><Aparelhos /></PrivateRoute>} />
-          <Route path='/cadastro_elaboradores' element={<PrivateRoute requiredPermission={2}><Elaboradores /></PrivateRoute>} />
           <Route path='/importxlsx' element={<PrivateRoute requiredPermission={1}><ImportXlsx /></PrivateRoute>} />
           <Route path='/vinculos' element={<PrivateRoute requiredPermission={2}><Vinculos /></PrivateRoute>} />
-          <Route path='/gerar_pgr' element={<PrivateRoute requiredPermission={2}><LaudoPgr /></PrivateRoute>} />
-          <Route path='/gerar_ltcat' element={<PrivateRoute requiredPermission={2}><LaudoLtcat /></PrivateRoute>} />
-          <Route path='/gerar_lip' element={<PrivateRoute requiredPermission={2}><LaudoLip /></PrivateRoute>} />
           <Route path='/*' element={<Navigate to='/' />} />
         </Routes>
 

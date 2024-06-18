@@ -168,7 +168,7 @@ const ModalSearchMedidas = ({ onCancel, isOpen, medidasAdm, medidasEpi, medidasE
         <div className='flex items-center justify-center'>
           <ul className='flex gap-4'>
             <li className='bg-sky-600 py-2 px-4 rounded-md shadow-sm hover:bg-sky-900 font-medium text-white' onClick={() => handleTabClick(1)}>
-              <button>Administrativas</button>
+              <button>Adminitrativas</button>
             </li>
             <li className='bg-sky-600 py-2 px-4 rounded-md shadow-sm hover:bg-sky-900 font-medium text-white' onClick={() => handleTabClick(2)}>
               <button>EPI's</button>

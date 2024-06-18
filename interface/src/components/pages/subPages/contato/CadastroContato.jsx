@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 import Back from '../../../layout/Back'
 import FrmCadastroContato from "./frmCadastroContato";
-import GridCadastroContato from './gridCadastroContato';
-import SearchInput from '../components/SearchInput';
-import useAuth from '../../../../hooks/useAuth';
+import GridCadastroContato from './gridCadastroContato'
+import SearchInput from '../components/SearchInput'
+import useAuth from '../../../../hooks/useAuth'
 import { IoInformationCircleSharp } from "react-icons/io5";
 
 function CadastroContato() {

@@ -76,6 +76,15 @@ function GridInventario({
     }
   };
 
+  const handleEditClick = (item) => () => {
+    handleEdit(item);
+  };
+
+  //Função para editar Item
+  const handleEdit = (item) => {
+    setOnEdit(item);
+  };
+
   const formatData = (item) => {
     const data_formatada = new Date(item).toLocaleDateString('pr-BR');
     return data_formatada;
@@ -119,7 +128,7 @@ function GridInventario({
     } catch (error) {
       console.log("Erro ao filtrar probablidade", error)
     }
-  };
+  }
 
   const filterNivel = (item) => {
     try {
@@ -137,10 +146,6 @@ function GridInventario({
     } catch (error) {
       console.log("Erro ao filtrar Nivel", error)
     }
-  };
-
-  const setLaudo = (item) => {
-
   }
 
   const filteredInventario = inventario.filter((i) => i.fk_empresa_id === companyId);
@@ -217,12 +222,6 @@ function GridInventario({
                   Comentários
                 </th>
                 <th scope="col" className="px-4 py-2">
-                  Conclusão
-                </th>
-                <th scope="col" className="px-4 py-2">
-                  Laudo
-                </th>
-                <th scope="col" className="px-4 py-2">
                   Ações
                 </th>
               </tr>
@@ -296,16 +295,10 @@ function GridInventario({
                   <td className="px-2 py-2 text-gray-800">
                     {item.comentarios}
                   </td>
-                  <td className="px-2 py-2 text-gray-800">
-                    {item.conclusao}
-                  </td>
-                  <td className="px-2 py-2 text-gray-800">
-                    {setLaudo(item.tipo_laudo)}
-                  </td>
                   <td className="py-4 gap-4">
                     <a className="flex justify-center font-medium text-blue-400 cursor-pointer hover:text-sky-600">
                       <BsFillPencilFill
-                        onClick={() => setOnEdit(item)}
+                        onClick={handleEditClick(item)}
                       />
                     </a>
                   </td>

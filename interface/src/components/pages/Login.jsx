@@ -26,7 +26,7 @@ function Login() {
 
   const signIn = async (email, password) => {
     try {
-      const res = await signInWithEmailAndPassword("schiavonjohn@gmail.com", "fuinha1234");
+      const res = await signInWithEmailAndPassword(email, password);
 
       if (!res.user) {
         toast.error("Erro ao fazer login");

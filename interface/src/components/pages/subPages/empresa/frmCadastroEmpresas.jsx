@@ -2,7 +2,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { connect } from "../../../../services/api"; //Conexão com o banco de dados
-import { IoIosHelpCircle } from "react-icons/io";
 
 import ModarSearchContato from "../components/Modal/ModalSearchContato";
 import icon_lupa from '../../../media/icon_lupa.svg'
@@ -21,7 +20,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
   const [cnpj, setCnpj] = useState(""); //Armazena o CNPJ
   const [cnae, setCnae] = useState(""); //Armazena o CNAE
   const [grauRisco, setGrauRisco] = useState(""); //Armazena o Grau de Risco
-  const [descricao, setDescricao] = useState(""); //Armazena a Descrição
 
   // Colocando as informações do formulario nas variaveis
   useEffect(() => {
@@ -33,7 +31,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
       razao_social.value = onEdit?.razao_social || "";
       setCnae(onEdit.cnae_empresa || '');
       setGrauRisco(onEdit.grau_risco_cnae || '')
-      setDescricao(onEdit.descricao_cnae || '');
       setCnpj(onEdit?.cnpj_empresa || "");
       if (onEdit?.inscricao_estadual_empresa == 0 || "") {
         setCheckedEstadual(true);
@@ -83,7 +80,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
         fk_contato_id: contactId || null,
         cnae_empresa: cnae || null,
         grau_risco_cnae: grauRisco || null,
-        descricao_cnae: descricao || '',
         ativo: 1,
       };
 
@@ -137,7 +133,6 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     setOnEdit(null);
     setCnae('');
     setGrauRisco('');
-    setDescricao('');
   };
 
   //Funções do Modal
@@ -175,7 +170,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
   //Funções para formatação do CNPJ
   const handleFormatCnpj = (value) => {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-  };
+  }
 
   const handlePasteCnpj = (event) => {
     const inputCnpj = event.clipboardData.getData('text/plain');
@@ -196,13 +191,33 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     }
   };
 
-  //Funções para formatação do CNAE
-  const handleFormatCnae = (value) => {
-    return value.replace(/\D/g, '').replace(/(\d{4})(\d{1})(\d{2})/, '$1-$2/$3');
+  const ObterInfoCnae = async (cnae) => {
+    try {
+      const response = await fetch(`https://api-grau-de-risco.onrender.com/cnae/${cnae}`);
+      const data = await response.json();
+
+      // Verifica se há um erro na resposta
+      if (response.ok) {
+        return data;
+      } else {
+        console.error("Erro ao obter informações do CNAE:", data);
+        return null;
+      }
+    } catch (error) {
+      console.error("Erro ao obter informações do CNAE:", error);
+      return null;
+    }
   };
 
-  const handlePastCnae = async (event) => {
-    await handleCnaeChange(event);
+  //Funções para formatação do CNPJ
+  const handleFormatCnae = (value) => {
+    return value.replace(/\D/g, '').replace(/(\d{4})(\d{1})(\d{2})/, '$1-$2/$3');
+  }
+
+  const handlePastCnae = (event) => {
+    const inputCnae = event.clipboardData.getData('text/plain');
+    const cnaeFormated = handleFormatCnae(inputCnae);
+    setCnae(cnaeFormated);
   };
 
   const handleCnaeChange = async (e) => {
@@ -211,6 +226,12 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     const truncatedValue = numericValue.slice(0, 7);
     const formatedCnae = handleFormatCnae(truncatedValue);
     setCnae(formatedCnae);
+
+    if (truncatedValue.length === 7) {
+      const cnaeInfo = await ObterInfoCnae(truncatedValue);
+      console.log(cnaeInfo);
+      setGrauRisco(cnaeInfo.risco)
+    }
   };
 
   const handleInputChange = (e) => {
@@ -233,7 +254,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCheckedEstadual(false);
     }
-  };
+  }
 
   const handleBlurMunicipal = (e) => {
     const inputValue = e.target.value;
@@ -243,17 +264,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
     } else {
       setCheckedMunicipal(false);
     }
-  };
-
-  const handleGrauChange = (e) => {
-    const inputValue = e.target.value;
-    const numericValue = inputValue.replace(/\D/g, '');
-    setGrauRisco(numericValue);
-  };
-
-  const handleDescricaoChange = (event) => {
-    setDescricao(event.target.value)
-  };
+  }
 
   return (
     <div className="flex justify-center mt-10">
@@ -307,7 +318,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
           </div>
 
           {/* Incrição Estadual */}
-          <div className="w-full md:w-3/12 px-3">
+          <div className="w-full md:w-2/12 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="inscricao_estadual">
               Inscrição Estadual:
             </label>
@@ -335,15 +346,15 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
           </div>
 
           {/* Incrição Municipal */}
-          <div className="w-full md:w-3/12 px-3">
+          <div className="w-full md:w-2/12 px-3">
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="inscricao_municipal">
               Inscrição Municipal:
             </label>
             <input
               className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${checkedMunicipal ? 'opacity-25' : 'bg-gray-100'}`}
               type="number"
-              name="inscricao_municipal_empresa"
-              id="inscricao_municipal"
+              name="inscricao_municipal"
+              id="inscricao_estadual"
               placeholder="Inscrição Municipal"
               disabled={checkedMunicipal}
               onChange={handleInputChange}
@@ -363,19 +374,10 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
           </div>
 
           {/* CNAE */}
-          <div className={`w-full px-3 md:w-3/12`}>
-            <div className="flex gap-2">
-              <div className="h-full">
-                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cnae">
-                  CNAE:
-                </label>
-              </div>
-              <div className="flex items-center text-sm pt-1">
-                <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-04-atualizada-2022-2-1.pdf" target="_blank">
-                  <button type="button"><IoIosHelpCircle className='text-sky-700' /></button>
-                </a>
-              </div>
-            </div>
+          <div className={`w-full px-3 ${grauRisco ? 'md:w-2/12' : 'md:w-4/12'}`}>
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="cnae">
+              CNAE:
+            </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
               type="text"
@@ -390,7 +392,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
           </div>
 
           {/* Grau de Risco */}
-          <div className={`w-full md:w-3/12 px-3`}>
+          <div className={`w-full md:w-2/12 px-3 ${grauRisco ? '' : 'hidden'}`}>
             <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grau_risco">
               Grau de Risco:
             </label>
@@ -400,24 +402,7 @@ function CadastroEmpresa({ onEdit, setOnEdit, getEmpresa, contact, contatos }) {
               type="text"
               name="grau_risco_empresa"
               value={grauRisco}
-              onChange={handleGrauChange}
-              placeholder="Grau de Risco CNAE"
-            />
-          </div>
-
-          {/* Descrição */}
-          <div className={`w-full md:w-8/12 px-3`}>
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="descricao">
-              Descrição:
-            </label>
-            <textarea
-              className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              id="descricao"
-              type="text"
-              name="descricao_cnae"
-              value={descricao}
-              onChange={handleDescricaoChange}
-              placeholder="Descrição CNAE"
+              disabled
             />
           </div>
 

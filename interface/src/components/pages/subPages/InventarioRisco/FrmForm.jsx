@@ -12,7 +12,7 @@ import ModalMedidasDefine from "../components/Modal/ModalMedidasDefine";
 import icon_sair from '../../../media/icon_sair.svg'
 import icon_lupa from '../../../media/icon_lupa.svg'
 
-function FrmPlano({
+function FrmForm({
   unidades,
   cargos,
   setores,
@@ -27,8 +27,7 @@ function FrmPlano({
   medidasAdm, medidasEpi, medidasEpc,
   getGlobalSprm, setGlobalSprm, globalSprm,
   companyName,
-  getPlano,
-  contatos,
+  getInventario,
 }) {
 
   const user = useRef();
@@ -44,6 +43,7 @@ function FrmPlano({
   const [showModalProcesso, setShowModalProcesso] = useState(false);
   const [showModalRisco, setShowModalRisco] = useState(false);
   const [showModalMedidas, setShowModalMedidas] = useState(false);
+  const [isMedidasSet, setIsMedidasSet] = useState(false);
 
   const [unidadeId, setUnidadeId] = useState('');
   const [setorId, setSetorId] = useState('');
@@ -53,16 +53,21 @@ function FrmPlano({
   const [setorNome, setSetorNome] = useState('');
   const [processoNome, setProcessoNome] = useState('');
   const [riscoNome, setRiscoNome] = useState('');
-  const [responsavel, setResponsavel] = useState('');
-  const [isOk, setIsOk] = useState(false);
-  const [plano, setPlano] = useState(false);
-  const [filterGlobalSprm, setFilterGlobalSprm] = useState([]);
 
   //Inputs Form
+  const [consequencia, setConsequencia] = useState('');
+  const [avaliacao, setAvaliacao] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [pessoasExpostas, setPessoasExpostas] = useState('');
+  const [limiteTolerancia, setLimiteTolerancia] = useState('');
+  const [medicao, setMedicao] = useState('');
+  const [checkMedicao, setCheckMedicao] = useState(false);
+  const [probabilidade, setProbabilidade] = useState('');
+  const [severidade, setSeveridade] = useState('');
+  const [nivel, setNivel] = useState('');
+  const [metodologia, setMetodologia] = useState('');
+  const [comentarios, setComentarios] = useState('');
   const [data, setData] = useState('');
-  const [selectedPrazos, setSelectedPrazos] = useState({});
-  const [existingPrazos, setExistingPrazos] = useState({});
-
 
   //Funções do Modal
   //Função para abrir o Modal
@@ -70,10 +75,7 @@ function FrmPlano({
   const openModalSetor = () => setShowModalSetor(true);
   const openModalProcesso = () => setShowModalProcesso(true);
   const openModalRisco = () => setShowModalRisco(true);
-  const openModalMedidas = () => {
-    setPlano(true);
-    setShowModalMedidas(true)
-  };
+  const openModalMedidas = () => setShowModalMedidas(true);
   //Função para fechar o Modal
   const closeModalUnidade = () => setShowModalUnidade(false);
   const closeModalSetor = () => setShowModalSetor(false);
@@ -84,15 +86,15 @@ function FrmPlano({
     setShowModalMedidas(false);
   }
 
-  const obterDataFormatada = () => {
-    const dataAtual = new Date();
-    const ano = dataAtual.getFullYear();
-    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-    const dia = String(dataAtual.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  };
-
   useEffect(() => {
+    const obterDataFormatada = () => {
+      const dataAtual = new Date();
+      const ano = dataAtual.getFullYear();
+      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+      const dia = String(dataAtual.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    };
+
     setData(obterDataFormatada)
   }, [])
 
@@ -103,51 +105,12 @@ function FrmPlano({
     }
   }, [showModalSetor, unidadeId, setores]);
 
-  useEffect(() => {
-    const handleEdit = async () => {
-      if (onEdit) {
-        try {
-          if (onEdit.fk_unidade_id) {
-            const unidadeSelect = unidades.find((i) => i.id_unidade === onEdit.fk_unidade_id);
-            await handleUnidadeSelect(onEdit.fk_unidade_id, unidadeSelect.nome_unidade);
-          }
-          if (onEdit.fk_setor_id) {
-            const setorSelect = setores.find((i) => i.id_setor === onEdit.fk_setor_id);
-            await handleSetorSelect(onEdit.fk_setor_id, setorSelect.nome_setor);
-          }
-          if (onEdit.fk_processo_id) {
-            const processoSelect = processos.find((i) => i.id_processo === onEdit.fk_processo_id);
-            await handleProcessoSelect(onEdit.fk_processo_id, processoSelect.nome_processo);
-          }
-          if (onEdit.fk_risco_id) {
-            const riscoSelect = riscos.find((i) => i.id_risco === onEdit.fk_risco_id);
-            await handleRiscoSelect(onEdit.fk_risco_id, riscoSelect.nome_risco, onEdit.fk_medida_id, onEdit.tipo_medida);
-          }
-          const sprm = globalSprm.filter((i) => i.fk_setor_id === onEdit.fk_setor_id && i.fk_processo_id === onEdit.fk_processo_id && i.fk_risco_id === onEdit.fk_risco_id && i.fk_medida_id === onEdit.fk_medida_id && i.tipo_medida === onEdit.tipo_medida);
-          setFilterGlobalSprm(sprm);
-        } catch (error) {
-          console.error("Erro ao buscar dados para edição!", error)
-        }
-      }
-    }
-
-    handleEdit();
-  }, [onEdit])
-
   // Função para atualizar a Unidade
-  const handleUnidadeSelect = async (unidadeId, nomeUnidade) => {
+  const handleUnidadeSelect = (unidadeId, nomeUnidade) => {
     closeModalUnidade();
     setUnidadeId(unidadeId)
     setNomeUnidade(nomeUnidade)
     handleClearSetor();
-
-    const unicunidade = unidades.filter((i) => i.id_unidade === unidadeId);
-    const idResponsavel = unicunidade[0].fk_contato_id;
-    const arrayResponsavel = contatos.find((i) => i.id_contato === idResponsavel);
-    const nomeResponsavel = arrayResponsavel.nome_contato;
-
-    setResponsavel(nomeResponsavel);
-
     setLoading(false);
     setLoading(true);
   };
@@ -162,29 +125,46 @@ function FrmPlano({
   };
 
   // Função para atualizar o Setor
-  const handleSetorSelect = async (SetorId, SetorName) => {
+  const handleSetorSelect = (SetorId, SetorName) => {
     closeModalSetor();
     setSetorId(SetorId);
     setSetorNome(SetorName);
     handleClearProcesso();
+    setPessoasExpostas('');
 
     const filteredProcessosSetores = setoresProcessos.filter((i) => i.fk_setor_id === SetorId);
     const IdsProcesso = filteredProcessosSetores.map((item) => item.fk_processo_id);
     const filteredProcessos = processos.filter((i) => IdsProcesso.includes(i.id_processo));
 
     setFilteredProcessos(filteredProcessos);
+
+
+    const findCargo = cargos.find((i) => i.fk_setor_id === SetorId);
+    const selectFuncMasc = findCargo ? findCargo.func_masc : 0
+    const selectFuncFem = findCargo ? findCargo.func_fem : 0
+    const selectFuncMenor = findCargo ? findCargo.func_menor : 0
+
+    if (selectFuncFem != undefined || selectFuncMasc != undefined || selectFuncMenor != undefined) {
+      const sum = selectFuncFem + selectFuncMasc + selectFuncMenor;
+      if (sum === 0) {
+        setPessoasExpostas('0')
+      } else {
+        setPessoasExpostas(sum);
+      }
+    }
   };
 
   const handleClearSetor = () => {
     setSetorId(null);
     setSetorNome(null);
+    setPessoasExpostas('');
     handleClearProcesso();
     handleClearRisco();
     setFilteredProcessos([]);
   }
 
   // Função para atualizar o Processo
-  const handleProcessoSelect = async (ProcessoId, ProcessoNome) => {
+  const handleProcessoSelect = (ProcessoId, ProcessoNome) => {
     closeModalProcesso();
     setProcessoId(ProcessoId);
     setProcessoNome(ProcessoNome);
@@ -211,26 +191,23 @@ function FrmPlano({
     setRiscoNome(RiscoNome);
 
     const filteresRiscosMedidas = riscosMedidas.filter((i) => i.fk_risco_id === RiscoId);
+    const riscoSelecionado = riscos.find((i) => i.id_risco === RiscoId);
 
+    if (riscoSelecionado) {
+      setRiscosInput(riscoSelecionado);
+    }
+
+    // Criar um array para armazenar as medidas e tipos
     const medidasTipos = filteresRiscosMedidas.map((filteredRiscosMedidas) => ({
       medidaId: filteredRiscosMedidas.fk_medida_id,
       medidaTipo: filteredRiscosMedidas.tipo,
     }));
 
-
     await handleRiscoEscolhido(RiscoId, medidasTipos);
-
-    const sprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_processo_id === processoId && i.fk_risco_id === RiscoId);
-    const filterApply = sprm.filter((c) => c.status && c.status === "Não Aplica")
-    setFilterGlobalSprm(filterApply);
   };
 
   const handleRiscoEscolhido = async (RiscoId, medidasTipos) => {
     try {
-      if (onEdit) {
-        return
-      }
-
       for (const { medidaId, medidaTipo } of medidasTipos) {
         const verificarResponse = await fetch(
           `${connect}/verificar_sprm?fk_setor_id=${setorId}&fk_risco_id=${RiscoId}&fk_medida_id=${medidaId}&tipo_medida=${medidaTipo}`,
@@ -252,6 +229,7 @@ function FrmPlano({
         if (verificarData.existeCombinação) {
           continue;
         }
+
 
         // Caso contrário, adicione a nova medida
         const adicionarResponse = await fetch(`${connect}/global_sprm`, {
@@ -277,89 +255,177 @@ function FrmPlano({
         toast.success("Meddias Adicionadas com sucesso!");
       }
       getGlobalSprm();
-      setLoading(false);
-      setLoading(true);
     } catch (error) {
       console.error("Erro ao adicionar medidas", error);
     }
   };
 
   const handleClearRisco = () => {
-    setRiscoId(null);
-    setRiscoNome(null);
-    setIsOk(false);
-    setFilterGlobalSprm([]);
+    setLoading(true);
+    setRiscoId('');
+    setRiscoNome('');
+    setRiscosInput('');
+    setDescricao('');
+    setCheckMedicao(false);
   }
+
+  const setRiscosInput = (risco) => {
+    if (!risco) {
+      setAvaliacao('');
+      setLimiteTolerancia('');
+      setConsequencia('');
+      setMetodologia('');
+      setSeveridade('');
+      setMedicao('');
+    } else {
+      setAvaliacao(risco.classificacao_risco || 'N/A');
+      setLimiteTolerancia(risco.limite_tolerancia_risco || 'N/A');
+      setConsequencia(risco.danos_saude_risco || 'N/A');
+      setMetodologia(risco.metodologia_risco || 'N/A');
+      setSeveridade(risco.severidade_risco || 'N/A');
+
+      if (risco.classificacao_risco === "Qualitativo") {
+        setMedicao("N/A");
+      } else {
+        setMedicao('');
+      }
+    }
+    setLoading(true);
+  };
+
+  const handleProbabilidadeChange = (event) => {
+    const selectedProbabilidade = parseInt(event.target.value, 10);
+    const severidadeValue = parseInt(severidade, 10);
+
+    if (!isNaN(selectedProbabilidade) && !isNaN(severidadeValue)) {
+      const nivelValue = selectedProbabilidade * severidadeValue;
+      setProbabilidade(selectedProbabilidade);
+
+      if (nivelValue >= 1 && nivelValue <= 6) {
+        setNivel("Baixo");
+      } else if (nivelValue >= 7 && nivelValue <= 12) {
+        setNivel("Moderado");
+      } else if (nivelValue >= 13 && nivelValue <= 16) {
+        setNivel("Alto");
+      } else if (nivelValue >= 20 && nivelValue <= 25) {
+        setNivel("Crítico");
+      } else {
+        setNivel(null);
+      }
+    }
+  };
+
+  const handleMedicaoCheck = () => {
+    setCheckMedicao(!checkMedicao);
+    setMedicao('');
+  }
+
+  useEffect(() => {
+    if (onEdit) {
+      setUnidadeId(onEdit.fk_unidade_id || '');
+      setSetorId(onEdit.fk_setor_id || '');
+      setPessoasExpostas(onEdit.pessoas_expostas || '');
+      setProcessoId(onEdit.fk_processo_id || '');
+      setRiscoId(onEdit.fk_risco_id || '');
+      setConsequencia(onEdit.fontes || '');
+      setMedicao(onEdit.medicao || '');
+      setProbabilidade(onEdit.probabilidade || '');
+      setNivel(onEdit.nivel || '');
+      setComentarios(onEdit.comentarios || '');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [onEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !data) {
+    const medidasAplicadas = filteredGlobalSprm
+      .filter((item) => item.status === 'Aplica')
+      .map((item) => ({
+        nome: find(item.fk_medida_id, item.tipo_medida),
+        tipo: tipoDefine(item.tipo_medida),
+      }));
+
+    if (!nomeUnidade || !setorNome || !processoNome || !riscoNome || !medicao || !data) {
       toast.warn("Preencha todos os campos!");
-      return;
     }
-
     try {
-      for (const medida of filterGlobalSprm) {
-        const prazo = selectedPrazos[`${medida.fk_medida_id}-${medida.tipo_medida}`];
+      const inventarioData = {
+        fk_empresa_id: companyId || '',
+        fk_unidade_id: unidadeId || '',
+        fk_setor_id: setorId || '',
+        pessoas_expostas: pessoasExpostas || '',
+        fk_processo_id: processoId || '',
+        fk_risco_id: riscoId || '',
+        fontes: descricao || '',
+        medicao: medicao || '0',
+        medidas: JSON.stringify(medidasAplicadas) || '',
+        probabilidade: probabilidade || '',
+        nivel: probabilidade * severidade || '',
+        comentarios: comentarios || '',
+        data_inventario: data || ''
+      };
 
-        const planoData = {
-          data: data || '',
-          fk_empresa_id: companyId || '',
-          fk_unidade_id: unidadeId || '',
-          fk_setor_id: setorId || '',
-          fk_processo_id: processoId || '',
-          fk_risco_id: riscoId || '',
-          fk_medida_id: medida.fk_medida_id || '',
-          tipo_medida: medida.tipo_medida || '',
-          responsavel: responsavel || '',
-          prazo: prazo || '',
-          status: 'Não Realizado',
-          data_conclusao: '',
-        };
+      const url = onEdit
+        ? `${connect}/inventario/${onEdit.id_inventario}`
+        : `${connect}/inventario`
 
-        const url = onEdit
-          ? `${connect}/plano/${onEdit.id_plano}`
-          : `${connect}/plano`;
+      const method = onEdit ? 'PUT' : 'POST';
 
-        const method = onEdit ? 'PUT' : 'POST';
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(inventarioData),
+      });
 
-        const response = await fetch(url, {
-          method,
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(planoData),
-        });
-
-        if (!response.ok) {
-          toast.error("Erro ao adicionar Plano de Ação!")
-          throw new Error(`Erro ao adicionar Plano de Ação. Status: ${response.status}`)
-        }
-
-        const responseData = await response.json();
-
-        toast.success(responseData);
-        getPlano();
+      if (!response.ok) {
+        toast.error("Erro ao adicionar inventário!")
+        throw new Error(`Erro ao adicionar inventário. Status: ${response.status}`)
       }
+
+      const responseData = await response.json();
+
+      toast.success(responseData);
+      getInventario();
     } catch (error) {
-      console.log("Erro ao inserir inventário: ", error);
+      console.log("Erro ao inserir inventário: ", error)
     }
 
     handleClear();
-  };
+  }
 
   const handleClear = () => {
-    handleClearUnidade();
+    handleClearRisco();
+    setConsequencia('');
+    setComentarios('');
+    setMedicao('');
+    setProbabilidade('');
+    setNivel('');
+    setDescricao('');
+    setPessoasExpostas('');
     setOnEdit(null);
-    setIsOk(false);
-    setData(obterDataFormatada);
-    setFilterGlobalSprm([]);
+    setCheckMedicao(false)
   }
+
+  const handleDescricaoFontesChange = (event) => {
+    setDescricao(event.target.value);
+  };
+
+  const handleComentariosChange = (event) => {
+    setComentarios(event.target.value);
+  };
+
+  const handleMedicaoChange = (event) => {
+    setMedicao(event.target.value);
+  };
 
   const handleMedidaChange = () => {
     getGlobalSprm();
     closeModalMedidas();
+    setIsMedidasSet(true);
   }
 
   const find = (item, tipo) => {
@@ -406,13 +472,19 @@ function FrmPlano({
     setData(event.target.value);
   };
 
+  const filteredGlobalSprm = globalSprm.filter((i) => i.fk_setor_id === setorId && i.fk_risco_id === riscoId)
+
   return (
     <>
+
       {loading && <LoadingScreen />}
       <div className="flex justify-center mt-10">
         <form className="w-full max-w-7xl" ref={user} onSubmit={handleSubmit}>
+          <div className="flex justify-center items-center mb-10">
+            <h1 className="text-3xl font-extrabold text-sky-700">Inventário de Riscos</h1>
+          </div>
           <div className="flex flex-wrap -mx-3 mb-6 p-3">
-
+            
             {/* Data */}
             <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
@@ -426,6 +498,7 @@ function FrmPlano({
                 onChange={handleChangeData}
               />
             </div>
+
             {/* Unidade */}
             <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
@@ -564,8 +637,6 @@ function FrmPlano({
                 onSetorSelect={handleProcessoSelect}
               />
             </div>
-
-
             {/* Risco */}
             <div className="w-full md:w-1/4 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-fk_contato_id">
@@ -575,7 +646,7 @@ function FrmPlano({
                 {riscoNome ? (
                   <>
                     <button
-                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                      className="flex appearance-none hover:shadow-sm text-sky-600 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                       onClick={openModalRisco}
                     >
                       <p className="font-bold">
@@ -588,7 +659,7 @@ function FrmPlano({
                   </>
                 ) : (
                   <button
-                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center py-3 px-4 rounded leading-tight focus:outline-none with-text"
+                    className="flex w-full appearance-none text-gray-400 bg-gray-100 border-gray-200 justify-center mt-1 py-3 px-4 rounded leading-tight focus:outline-none with-text"
                     onClick={openModalRisco}
                   >
                     <p className="px-2 text-sm font-medium">
@@ -614,100 +685,209 @@ function FrmPlano({
               />
             </div>
 
-            {/* Medidas de Controle */}
+
+            {/* Pessoas Expostas */}
             <div className="w-full md:w-1/4 px-3">
-              <label className="tracking-wide text-gray-700 text-xs font-bold" htmlFor="grid-raza_social">
-                Medidas de Controle:
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Pessoas Expostas:
               </label>
-              <div>
-                <button
-                  type="button"
-                  className="w-full mt-1 bg-gray-100 px-4 py-2 hover:bg-gray-200 font-semibold text-base rounded-md text-sky-700"
-                  onClick={openModalMedidas}
-                >
-                  Defina as Medidas
-                </button>
-              </div>
-              <ModalMedidasDefine
-                isOpen={showModalMedidas}
-                onCancel={closeModalMedidas}
-                companyName={companyName}
-                globalSprm={filterGlobalSprm}
-                medidasAdm={medidasAdm}
-                medidasEpi={medidasEpi}
-                medidasEpc={medidasEpc}
-                medidasDefine={handleMedidaChange}
-                plano={plano}
+              <input
+                className={`${pessoasExpostas ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                type="tex"
+                name="pessoas_expostas"
+                placeholder="Pessoas Expostas"
+                value={pessoasExpostas}
+                disabled
               />
             </div>
-            {/* Medidas de Controle Aplicadas*/}
-            <div className="w-full md:w-2/4 px-3">
+
+
+            {/* Medição */}
+            <div className="w-full md:w-3/12 px-3">
               <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
-                Medidas Aplicadas:
+                Medição:
               </label>
-              {riscoId && filterGlobalSprm.map((item, i) => (
-                <ul key={i}>
-                  <li className="pb-3 sm:pb-4">
-                    <div className="grid grid-cols-5 items-center space-x-4 rtl:space-x-reverse border-b border-gray-300 px-4 py-2 hover:bg-gray-50">
-                      <div className="flex-1 min-w-0 pr-4 col-span-2">
-                        <p className="text-sm font-medium text-gray-900 whitespace-break-spaces truncate">
-                          {find(item.fk_medida_id, item.tipo_medida)}
-                        </p>
-                      </div>
-                      <div className="inline-flex justify-center items-center text-base font-semibold text-gray-900">
-                        {tipoDefine(item.tipo_medida)}
-                      </div>
-                      <div className="inline-flex justify-center col-span-2 items-center text-base text-gray-800">
-                        <select
-                          className="appearence-none bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight cursor-pointer"
-                          type="text"
-                          name="prazo_medida"
-                          value={
-                            onEdit
-                              ? onEdit.prazo || '0'
-                              : selectedPrazos[`${item.fk_medida_id}-${item.tipo_medida}`] || '0'
-                          }
-                          onChange={(e) => {
-                            const key = `${item.fk_medida_id}-${item.tipo_medida}`;
-                            setSelectedPrazos((prevPrazos) => ({
-                              ...prevPrazos,
-                              [key]: onEdit ? e.target.value : e.target.value,
-                            }));
-
-                            const prazosValues = Object.values({
-                              ...selectedPrazos,
-                              [key]: onEdit ? e.target.value : e.target.value,
-                            });
-
-                            const allPrazosSelected = prazosValues.every((prazo) => prazo !== '0');
-                            setIsOk(allPrazosSelected);
-                          }}
-                        >
-                          <option value="0">Selecione um Prazo</option>
-                          <option value="6 Meses">6 Meses</option>
-                          <option value="12 Meses">12 Meses</option>
-                          <option value="24 Meses">24 Meses</option>
-                        </select>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              ))}
+              <input
+                className={`appearence-none block w-full bg-gray-100 rounded py-3 px-4 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${medicao === 'N/A' || medicao === "0" ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''} ${checkMedicao ? 'bg-gray-50 opacity-50 text-gray-600 cursor-not-allowed' : ''}`}
+                type="number"
+                name="medicao_risco"
+                placeholder="Medição"
+                value={medicao}
+                disabled={medicao === "0" || medicao === "N/A" || checkMedicao}
+                onChange={handleMedicaoChange}
+                step="any"
+              />
+              <div className={`${medicao === '0' ? 'hidden' : ''} flex items-center gap-2 px-1 mb-3 mt-1`}>
+                <input
+                  type="checkbox"
+                  id="medica_risco"
+                  className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500`}
+                  disabled={medicao === "0"}
+                  checked={checkMedicao}
+                  onChange={handleMedicaoCheck}
+                />
+                <label className="text-sm font-ligth text-gray-500" htmlFor="medica_risco">Sem Medição</label>
+              </div>
+            </div>
+            {/* Probabilidade */}
+            <div className="w-full md:w-2/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Probabilidade:
+              </label>
+              <select
+                className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                type="text"
+                name="probabilidade_risco"
+                placeholder="Probabilidade"
+                onChange={handleProbabilidadeChange}
+                value={probabilidade}
+                disabled={probabilidade === "N/A"}
+              >
+                <option value="0"> Selecione</option>
+                <option value="1">Muito Baixa</option>
+                <option value="2">Baixa</option>
+                <option value="3">Média</option>
+                <option value="4">Alta</option>
+                <option value="5">Muito Alta</option>
+              </select>
+            </div>
+            {/* Severidade */}
+            <div className="w-full md:w-2/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Severidade:
+              </label>
+              <select
+                className={`${severidade ? "opacity-30" : ""} appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white`}
+                type="text"
+                name="severidade_risco"
+                value={severidade}
+                disabled={severidade === '0'}
+              >
+                <option value="0"> Selecione</option>
+                <option value="1">Muito Baixa</option>
+                <option value="2">Baixa</option>
+                <option value="3">Média</option>
+                <option value="4">Alta</option>
+                <option value="5">Muito Alta</option>
+              </select>
+            </div>
+            {/* Nível */}
+            <div className="w-full md:w-2/12 px-3">
+              <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                Nível:
+              </label>
+              <input
+                className={`appearance-none block w-full rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white ${nivel === "Baixo" ? "bg-green-200" : nivel === "Moderado" ? "bg-yellow-200" : nivel === "Alto" ? "bg-orange-200" : nivel === "Crítico" ? "bg-red-200" : "bg-gray-100"
+                  }`}
+                type="text"
+                name="nivel_risco"
+                placeholder="Nível"
+                disabled
+                value={nivel || ""}
+              />
             </div>
 
 
-            <div className="w-full px-3 pl-8 flex justify-end">
+            <div className="w-full flex">
+              {/* Descrição das Fontes */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-nome_empresa">
+                  Descrição das Fontes:
+                </label>
+                <textarea
+                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  type="text"
+                  name="descricao_fontes"
+                  value={descricao}
+                  placeholder="Descrição das Fontes ou Circunstâncias (Causas)"
+                  onChange={handleDescricaoFontesChange}
+                />
+              </div>
+              {/* Comentários */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Comentários:
+                </label>
+                <textarea
+                  className="resize-none appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
+                  type="text"
+                  name="comentarios"
+                  placeholder="Comentários..."
+                  value={comentarios}
+                  onChange={handleComentariosChange}
+                />
+              </div>
+            </div>
+
+
+            {/* Medidas */}
+            <div className="border-b border-gray-200 w-full mt-5"></div>
+            <div className="text-4xl font-bold text-sky-700 mt-5 mb-5 w-full flex justify-center">
+              <h1>Medidas</h1>
+            </div>
+            <div className="w-full flex">
+              {/* Medidas de Controle */}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Medidas de Controle:
+                </label>
+                <div>
+                  <button
+                    type="button"
+                    className="w-full bg-gray-100 px-4 py-2 hover:bg-gray-200 font-semibold text-base rounded-md text-sky-700"
+                    onClick={openModalMedidas}
+                  >
+                    Defina as Medidas
+                  </button>
+                </div>
+                <ModalMedidasDefine
+                  isOpen={showModalMedidas}
+                  onCancel={closeModalMedidas}
+                  companyName={companyName}
+                  globalSprm={filteredGlobalSprm}
+                  medidasAdm={medidasAdm}
+                  medidasEpi={medidasEpi}
+                  medidasEpc={medidasEpc}
+                  medidasDefine={handleMedidaChange}
+                />
+              </div>
+              {/* Medidas de Controle Aplicadas*/}
+              <div className="w-full md:w-1/3 px-3">
+                <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-raza_social">
+                  Medidas Aplicadas:
+                </label>
+                {filteredGlobalSprm.filter((c) => c.status && c.status === 'Aplica')
+                  .map((item, i) => (
+                    <ul key={i}>
+                      <li className="pb-3 sm:pb-4">
+                        <div className="flex items-center space-x-4 rtl:space-x-reverse bg-gray-100 px-4 py-2 rounded-md hover:bg-gray-50">
+                          <div className="flex-1 min-w-0 pr-4">
+                            <p className="text-sm font-medium text-gray-900">
+                              {find(item.fk_medida_id, item.tipo_medida)}
+                            </p>
+                            <p className="text-sm text-gray-500 truncate"></p>
+                          </div>
+                          <div className="inline-flex items-center text-base font-semibold text-gray-900">
+                            {tipoDefine(item.tipo_medida)}
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  ))}
+              </div>
+            </div>
+
+
+
+            {/* Botões */}
+            <div className="w-full px-3 pl-8 flex justify-end mt-10">
               <div className="px-3 pl-8">
-                <button onClick={() => handleClear()} className="shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+                <button onClick={() => handleClear()} className="w-full shadow mt-4 bg-red-600 hover:bg-red-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
                   Limpar
                 </button>
               </div>
               <div className="px-3 pl-8">
-                <button
-                  className={`shadow mt-4 bg-green-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded ${isOk ? 'hover:bg-green-700' : 'opacity-50 cursor-not-allowed'}`}
-                  type="submit"
-                  disabled={!isOk}
-                >
+                <button className="w-full shadow mt-4 bg-green-600 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit">
                   Adicionar
                 </button>
               </div>
@@ -720,4 +900,4 @@ function FrmPlano({
   );
 }
 
-export default FrmPlano;
+export default FrmForm;

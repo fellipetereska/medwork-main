@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import useAuth from '../../hooks/useAuth';
 
 import BotaoEmpresa from "./subPages/buttons/Cadastros/BotaoEmpresa";
 import BotaoUnidade from "./subPages/buttons/Cadastros/BotaoUnidade";
@@ -16,11 +15,21 @@ import { IoInformationCircleSharp } from "react-icons/io5";
 
 function Cadastros() {
 
-  const { loadSelectedCompanyFromLocalStorage, companyId } = useAuth(null);
+  const [companyId, setCompanyId] = useState('');
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    loadSelectedCompanyFromLocalStorage();
+    // Função para recuperar o nome da empresa do localStorage
+    const selectedCompanyName = () => {
+      const selectedCompanyDataLocal = localStorage.getItem('selectedCompanyData');
+
+      if (selectedCompanyDataLocal) {
+        const selectedCompanyData = JSON.parse(selectedCompanyDataLocal);
+        setCompanyId(selectedCompanyData.id_empresa);
+      }
+    };
+
+    selectedCompanyName();
   }, []);
 
   return (
@@ -57,21 +66,16 @@ function Cadastros() {
       {/* Botões Relacionados a Empresa*/}
       <div className="mt-16 px-12 mb-12">
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
-          {/* Contato */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_contato">
               <BotaoContato />
             </Link>
           </figure>
-          {/* Empresa */}
-          {companyId ? (null) : (
-            <figure className="flex flex-col justify-center">
-              <Link to="/cadastro_empresa">
-                <BotaoEmpresa />
-              </Link>
-            </figure>
-          )}
-          {/* Unidade | Setor | Cargo */}
+          <figure className="flex flex-col justify-center">
+            <Link to="/cadastro_empresa">
+              <BotaoEmpresa />
+            </Link>
+          </figure>
           {companyId ? (
             <>
               <figure className="flex flex-col justify-center">
@@ -98,25 +102,21 @@ function Cadastros() {
 
         {/* Botões Realcionados aos Processos */}
         <div className="grid xl:grid-cols-5 md:grid-cols-3 gap-6 bg-white">
-          {/* Processos */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_processo">
               <BotaoProcessos />
             </Link>
           </figure>
-          {/* Riscos */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_risco">
               <BotaoRiscos />
             </Link>
           </figure>
-          {/* Medidas */}
           <figure className="flex flex-col justify-center">
             <Link to="/cadastro_medida">
               <BotaoMedidasDeProtecao />
             </Link>
           </figure>
-          {/* Vinculos */}
           {companyId ? (
             <>
               <figure className="flex flex-col justify-center">

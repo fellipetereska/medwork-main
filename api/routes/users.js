@@ -1,14 +1,16 @@
 import express from "express";
 import { pool } from "../db.js";
+// import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
+
 
 const router = express.Router();
 
-const SECRET = 'medworkldn';
+const SECRET = 'medworkldn'
 
 //Tabela Empresa
 //Get table
-router.get("/empresas", (req, res, next) => {
+router.get("/empresas", (req, res) => {
   const q = `SELECT * FROM empresas`;
 
   pool.getConnection((err, con) => {
@@ -59,7 +61,6 @@ router.put("/empresas/:id_empresa", (req, res) => {
     inscricao_municipal_empresa,
     cnae_empresa,
     grau_risco_cnae,
-    descricao_cnae,
     fk_contato_id } = req.body;
 
   const q = `
@@ -71,8 +72,7 @@ router.put("/empresas/:id_empresa", (req, res) => {
     inscricao_municipal_empresa = ?,
     fk_contato_id = ?,
     cnae_empresa = ?,
-    grau_risco_cnae = ?,
-    descricao_cnae = ?
+    grau_risco_cnae = ?
     WHERE id_empresa = ?
     `;
 
@@ -85,7 +85,6 @@ router.put("/empresas/:id_empresa", (req, res) => {
     fk_contato_id,
     cnae_empresa,
     grau_risco_cnae,
-    descricao_cnae,
     id_empresa
   ];
 
@@ -637,20 +636,23 @@ router.post("/processos", (req, res) => {
 
 //Update row int table
 router.put("/processos/:id_processo", (req, res) => {
-  const id_processo = req.params.id_processo;
-  const { nome_processo, ramo_trabalho } = req.body;
-  console.log(req.body)
+  const id_processo = req.params.id_processo; // Obtém o ID da empresa da URL
+  const { nome_processo, ramo_trabalho, fk_setor_id, fk_cargo_id } = req.body;
 
   const q = `
     UPDATE processos
     SET nome_processo = ?,
-    ramo_trabalho = ?
+    ramo_trabalho = ?,
+    fk_setor_id = ?,
+    fk_cargo_id = ?
     WHERE id_processo = ?
     `;
 
   const values = [
     nome_processo,
     ramo_trabalho,
+    fk_setor_id,
+    fk_cargo_id,
     id_processo
   ];
 
@@ -706,8 +708,8 @@ router.post("/riscos", (req, res) => {
         console.error("Erro ao inserir risco na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
-      const id = result.insertId;
-      return res.status(200).json({ message: `Risco cadastrado com sucesso!`, id });
+
+      return res.status(200).json(`Risco cadastrado com sucesso!`);
     });
 
     con.release();
@@ -717,7 +719,7 @@ router.post("/riscos", (req, res) => {
 
 //Update row int table
 router.put("/riscos/:id_risco", (req, res) => {
-  const id_risco = req.params.id_risco;
+  const id_risco = req.params.id_risco; // Obtém o ID da empresa da URL
   const {
     nome_risco,
     grupo_risco,
@@ -780,97 +782,8 @@ router.put("/riscos/:id_risco", (req, res) => {
         console.error("Erro ao atualizar risco na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
-      return res.status(200).json({ message: `Risco cadastrado com sucesso!` });
-    });
 
-    con.release();
-  })
-
-});
-
-
-// Tabela de Conclusões
-// Get Table
-router.get("/conclusoes", (req, res) => {
-  const q = `SELECT * FROM conclusoes`;
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, (err, data) => {
-      if (err) return res.status(500).json(err);
-
-      return res.status(200).json(data);
-    });
-
-    con.release();
-  })
-
-});
-
-// Add rows in table
-router.post("/conclusoes", (req, res) => {
-  const data = req.body;
-
-  const q = "INSERT INTO conclusoes SET ?"
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, data, (err, result) => {
-      if (err) {
-        console.error("Erro ao inserir conclusão na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json(`Conclusão cadastrado com sucesso!`);
-    });
-
-    con.release();
-  })
-
-});
-
-//Update row int table
-router.put("/conclusoes/:id_conclusao", (req, res) => {
-  const id_conclusao = req.params.id_conclusao; // Obtém o ID da empresa da URL
-  const {
-    fk_risco_id,
-    nome_conclusao,
-    tipo,
-    conclusao,
-    laudo
-  } = req.body;
-
-  const q = `
-    UPDATE conclusoes
-    SET fk_risco_id = ?,
-    nome_conclusao = ?,
-    tipo = ?,
-    conclusao = ?,
-    laudo = ?
-    WHERE id_conclusao = ?
-    `;
-
-  const values = [
-    fk_risco_id,
-    nome_conclusao,
-    tipo,
-    conclusao,
-    laudo,
-    id_conclusao
-  ];
-
-  pool.getConnection((err, con) => {
-    if (err) return next(err);
-
-    con.query(q, values, (err) => {
-      if (err) {
-        console.error("Erro ao atualizar conclusão na tabela", err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json("Conclusão atualizado com sucesso!");
+      return res.status(200).json("Risco atualizado com sucesso!");
     });
 
     con.release();
@@ -1281,8 +1194,8 @@ router.put("/aparelhos/:id_aparelho", (req, res) => {
 
 //Tabela de Versões do PDF
 //Get Table
-router.get("/laudo_version", (req, res) => {
-  const q = `SELECT * FROM laudo_version`;
+router.get("/pgr_version", (req, res) => {
+  const q = `SELECT * FROM pgr_version`;
 
   pool.getConnection((err, con) => {
     if (err) return next(err);
@@ -1297,24 +1210,23 @@ router.get("/laudo_version", (req, res) => {
 });
 
 //Add rows in table
-router.post("/laudo_version", (req, res) => {
+router.post("/pgr_version", (req, res) => {
   const data = req.body;
 
-  const q = "INSERT INTO laudo_version SET ?"
+  const q = "INSERT INTO pgr_version SET ?"
 
   pool.getConnection((err, con) => {
+
     if (err) return next(err);
 
     con.query(q, data, (err, result) => {
       if (err) {
-        console.error("Erro ao criar versão do pdf", err);
+        console.error("Erro ao inserir pdf na tabela", err);
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
-      return res.status(200).json(`Versão criada com sucesso!`);
-    });
-
-    con.release();
+      return res.status(200).json(`Versão Criada com sucesso!`);
+    })
   })
 
 });
@@ -1812,7 +1724,7 @@ router.post("/inventario", (req, res) => {
 router.put("/inventario/:id_inventario", (req, res) => {
   const id_inventario = req.params.id_inventario;
   const {
-    data_inventario,
+    data,
     fk_empresa_id,
     fk_unidade_id,
     fk_setor_id,
@@ -1826,10 +1738,7 @@ router.put("/inventario/:id_inventario", (req, res) => {
     nivel,
     frequencia,
     fk_aparelho_id,
-    comentarios,
-    conclusao_ltcat,
-    conclusao_li,
-    conclusao_lp,
+    comentarios
   } = req.body;
 
   const q = `
@@ -1848,15 +1757,12 @@ router.put("/inventario/:id_inventario", (req, res) => {
     nivel = ?,
     frequencia = ?,
     fk_aparelho_id = ?,
-    comentarios = ?,
-    conclusao_ltcat = ?,
-    conclusao_li = ?,
-    conclusao_lp = ?
+    comentarios = ?
     WHERE id_inventario = ?
     `;
 
   const values = [
-    data_inventario,
+    data,
     fk_empresa_id,
     fk_unidade_id,
     fk_setor_id, pessoas_expostas,
@@ -1870,10 +1776,7 @@ router.put("/inventario/:id_inventario", (req, res) => {
     frequencia,
     fk_aparelho_id,
     comentarios,
-    conclusao_ltcat,
-    conclusao_li,
-    conclusao_lp,
-    id_inventario,
+    id_inventario
   ];
 
   pool.getConnection((err, con) => {
@@ -1917,23 +1820,24 @@ router.get("/global_sprm", (req, res) => {
 // Verifica se a combinação existe na tabela global_sprm
 router.get("/verificar_sprm", async (req, res) => {
   try {
-    const { fk_setor_id, fk_processo_id, fk_risco_id, fk_medida_id, tipo_medida } = req.query;
+    const { fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida } = req.query;
 
-    if (!fk_setor_id || !fk_processo_id || !fk_risco_id || !fk_medida_id || !tipo_medida) {
+    if (!fk_setor_id || !fk_risco_id || !fk_medida_id || !tipo_medida) {
       return res.status(400).json({ error: 'Parâmetros insuficientes' });
     }
 
     // Execute uma consulta SQL para verificar a existência
     const q = `
       SELECT * FROM global_sprm
-      WHERE fk_setor_id = ? AND fk_processo_id = ? AND fk_risco_id = ? AND fk_medida_id = ? AND tipo_medida = ?
+      WHERE fk_setor_id = ? AND fk_risco_id = ? AND fk_medida_id = ? AND tipo_medida = ?
     `;
 
-    pool.query(q, [fk_setor_id, fk_processo_id, fk_risco_id, fk_medida_id, tipo_medida], (err, data) => {
+    pool.query(q, [fk_setor_id, fk_risco_id, fk_medida_id, tipo_medida], (err, data) => {
       if (err) {
         return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
       }
 
+      // Verifique se há uma correspondência
       const existeCombinação = data.length > 0;
 
       return res.status(200).json({ existeCombinação });
@@ -1992,84 +1896,6 @@ router.put("/global_sprm/:id_global_sprm", (req, res) => {
   })
 });
 
-
-
-// Generic Function
-router.route('/:table')
-  // Obter Registros
-  .get(async (req, res) => {
-    const table = req.params.table;
-    const q = `SELECT * FROM ${table}`;
-
-    pool.getConnection((err, con) => {
-      if (err) return next(err);
-
-      con.query(q, (err, data) => {
-        if (err) {
-          console.error(`Erro ao buscar tabela: ${table}. Status: ${err}`)
-          return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-        }
-
-        return res.status(200).json(data);
-      })
-    })
-  })
-  // Criar Registros
-  .post(async (req, res) => {
-    const table = req.params.table;
-    const data = req.body;
-
-    const q = `INSERT INTO ${table} SET ?`
-
-    pool.getConnection((err, con) => {
-      if (err) return next(err);
-
-      con.query(q, data, (err, result) => {
-        if (err) {
-          console.error(`Erro ao registrar dado na tabela ${table}. Status: ${err}`);
-          return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-        }
-
-        return res.status(200).json(`Registro concluido com sucesso!`)
-      });
-
-      con.release();
-    })
-  })
-
-router.put("/:table/:id", (req, res) => {
-  const table = req.params.table;
-  const idName = req.query.idFieldName || 'id';
-  const id = req.params.id;
-
-  const columns = Object.keys(req.body);
-  const values = Object.values(req.body);
-
-  const setClause = columns.map(column => `${column} = ?`).join(', ');
-
-  const q = `
-      UPDATE ${table}
-      SET ${setClause}
-      WHERE ${idName} = ?
-    `;
-
-  const finalValues = [...values, id];
-
-  pool.getConnection((err, con) => {
-    con.release();
-
-    if (err) return next(err);
-
-    con.query(q, finalValues, (err) => {
-      if (err) {
-        console.error(`Erro ao atualizar registro na tabela ${table}:`, err);
-        return res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
-      }
-
-      return res.status(200).json(`${table} atualizado com sucesso!`);
-    });
-  })
-});
 
 
 

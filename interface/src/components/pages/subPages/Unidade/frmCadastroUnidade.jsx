@@ -277,12 +277,12 @@ function FrmCadastroUnidade({ onEdit, setOnEdit, getUnidades, contact, company, 
 
           {/* Nome Unidade */}
           <div className="w-full md:w-1/3 px-3">
-            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="nome">
+            <label className="tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="nomw">
               Nome da Unidade:
             </label>
             <input
               className="appearence-none block w-full bg-gray-100 rounded py-3 px-4 mb-3 mt-1 leading-tight focus:outline-gray-100 focus:bg-white"
-              id="nome"
+              is="nome"
               type="text"
               name="nome_unidade"
               placeholder="Nome da Unidade"

@@ -24,6 +24,7 @@ function GridCadastroEmpresa({ empresa, setEmpresa, setOnEdit, contato, getEmpre
     return contatos ? contatos.nome_contato : 'N/A';
   };
 
+
   const handleDesactivation = async (id, ativo) => {
     try {
       const response = await fetch(`${connect}/empresas/activate/${id}`, {
