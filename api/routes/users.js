@@ -8,7 +8,7 @@ const SECRET = 'medworkldn';
 
 //Tabela Empresa
 //Get table
-router.get("/empresas", (req, res) => {
+router.get("/empresas", (req, res, next) => {
   const q = `SELECT * FROM empresas`;
 
   pool.getConnection((err, con) => {

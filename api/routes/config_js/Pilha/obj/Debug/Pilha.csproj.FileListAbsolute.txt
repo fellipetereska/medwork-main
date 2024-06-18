@@ -1,0 +1,10 @@
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\bin\Debug\Pilha.exe.config
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\bin\Debug\Pilha.exe
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\bin\Debug\Pilha.pdb
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.csproj.AssemblyReference.cache
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.Form1.resources
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.Properties.Resources.resources
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.csproj.GenerateResource.cache
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.csproj.CoreCompileInputs.cache
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.exe
+C:\Users\Schiavon\Desktop\MedWork-Pro\medwork-main\api\routes\config_js\Pilha\obj\Debug\Pilha.pdb
